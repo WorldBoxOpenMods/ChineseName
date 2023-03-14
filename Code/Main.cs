@@ -11,8 +11,10 @@ namespace Chinese_Name
         private bool is_chinese = false;
         private bool initialized = false;
         private bool disabled = false;
+        internal static Main instance;
         internal NameGeneratorLibrary name_generators;
         internal WordLibraries word_libraries;
+        internal const string family_name = "chinese_family_name";
         void Update()
         {
             if (!initialized && !disabled)
@@ -24,6 +26,7 @@ namespace Chinese_Name
                     initialized = false;
                     return;
                 }
+                instance = this;
                 init_word_libraries();
                 load_word_libraries();
                 init_name_generator_library();
@@ -50,6 +53,7 @@ namespace Chinese_Name
         }
         private void load_word_libraries()
         {
+            word_libraries.unzip_word_libraries();
             word_libraries.load_default_word_libraries();
             word_libraries.load_mods_word_libraries();
         }
@@ -59,6 +63,7 @@ namespace Chinese_Name
         }
         private void load_name_generators()
         {
+            name_generators.unzip_name_generators();
             name_generators.load_default_name_generators();
             name_generators.load_mods_name_generators();
         }
