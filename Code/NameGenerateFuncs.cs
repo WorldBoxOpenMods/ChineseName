@@ -92,7 +92,7 @@ namespace Chinese_Name
         public static string alliance_name_generator(NameGenerator generator, object[] @params)
         {
             Alliance alliance = (Alliance)@params[0];
-            return generator.get_random_template().get_template().Replace("$alliance_kingdom_union_name$", get_alliance_kingdom_union_name(alliance)).Replace("$alliance_pos$", get_alliance_pos(alliance)).Replace("$alliance_kingdom_name$", alliance.kingdoms_list.GetRandom().data.name);
+            return generator.get_random_template().get_template().Replace("$alliance_kingdom_union_name$", get_alliance_kingdom_union_name(alliance)).Replace("$alliance_pos$", get_alliance_pos(alliance)).Replace("$alliance_kingdom_name$", alliance.kingdoms_list.GetRandom().data.name).Replace("$age$", LocalizedTextManager.getText(World.world.eraManager.getCurrentEra().id+ "_title").Replace("纪元", "").Replace("時代",""));
         }
         private static readonly string[] region_word_library_ids = new string[] { "tile_ground_names", "tile_ocean_names", "tile_lava_names", "tile_block_names", "tile_goo_names" };
         private static string get_alliance_pos(Alliance alliance)
@@ -160,8 +160,9 @@ namespace Chinese_Name
                 .Replace("$war_defender_kingdom_name$", defender.name)
                 .Replace("$war_attacker_kingdom_name$", attacker.name)
                 .Replace("$war_kingdom_union_name$", get_kingdom_name_abb(attacker) + get_kingdom_name_abb(defender))
-                .Replace("$war_defender_capital_name$", defender.capital==null?defender.name:defender.capital.name)
-                .Replace("$war_defender_leader_name$", (defender.king == null) ? String.Empty : defender.king.name);
+                .Replace("$war_defender_capital_name$", defender.capital==null?(defender.king==null || defender.king.city == null ? (defender.cities.Count == 0 ? defender.name : defender.cities[0].name):defender.king.city.name):defender.capital.name)
+                .Replace("$war_defender_leader_name$", (defender.king == null) ? (defender.capital==null ? (defender.cities.Count==0 || defender.cities[0].leader==null ? defender.name : defender.cities[0].leader.name):defender.capital.leader.name) : defender.king.name)
+                .Replace("$age$", LocalizedTextManager.getText(World.world.eraManager.getCurrentEra().id+ "_title").Replace("纪元", "").Replace("時代",""));
         }
 
         private static string get_kingdom_name_abb(Kingdom defender)
