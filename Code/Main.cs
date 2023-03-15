@@ -41,7 +41,7 @@ namespace Chinese_Name
             if (!initialized && !disabled)
             {
                 initialized = true;
-                is_chinese = LocalizedTextManager.instance.language == "cz";
+                is_chinese = LocalizedTextManager.instance.language == "cz" || LocalizedTextManager.instance.language == "ch";
                 if (!is_chinese)
                 {
                     initialized = false;
