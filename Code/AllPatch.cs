@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using HarmonyLib;
 namespace Chinese_Name
 {
-    internal class AllPatch
+    public class AllPatch
     {
-        private const string patch_id = "inmny.Chinese_Name";
+        public const string patch_id = "inmny.Chinese_Name";
         public static void patch_all()
         {
             Harmony.CreateAndPatchAll(typeof(AllPatch), patch_id);
@@ -44,7 +44,7 @@ namespace Chinese_Name
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
             NameGenerator generator = Main.instance.name_generators.get("clan_mottos");
             if (generator == null) return true;
-            __instance.data.name = generator.generate(__instance);
+            __instance.data.motto = generator.generate(__instance);
             return true;
         }
         #endregion
@@ -76,7 +76,7 @@ namespace Chinese_Name
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
             NameGenerator generator = Main.instance.name_generators.get("kingdom_mottos");
             if (generator == null) return true;
-            __instance.data.name = generator.generate(__instance);
+            __instance.data.motto = generator.generate(__instance);
             return true;
         }
         #endregion
@@ -97,7 +97,7 @@ namespace Chinese_Name
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
             NameGenerator generator = Main.instance.name_generators.get("alliance_mottos");
             if (generator == null) return true;
-            __instance.data.name = generator.generate(__instance);
+            __instance.data.motto = generator.generate(__instance);
             return true;
         }
         #endregion
@@ -106,16 +106,23 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(WarManager), nameof(WarManager.newWar))]
         public static void modify_war_name(War __result, Kingdom pAttacker, Kingdom pDefender, WarTypeAsset pType)
         {
+            if(pDefender != null && pDefender.getAge() <= 1)
+            {
+                pType = WarTypeLibrary.rebellion;
+            }
             NameGenerator generator = Main.instance.name_generators.get(pType.name_template);
             if(generator == null) return;
+            
             __result.data.name = generator.generate(__result, pAttacker, pDefender, pType);
+            Main.log($"{pType.name_template}:{__result.data.name}");
         }
         #endregion
         #region 生物
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(Actor), nameof(Actor.getName))]
-        public static bool set_actor_name(Actor __instance)
+        [HarmonyPatch(typeof(ActorBase), nameof(ActorBase.getName))]
+        public static bool set_actor_name(ActorBase __instance)
         {
+            if (!string.IsNullOrEmpty(__instance.data.name)) return true;
             NameGenerator generator = Main.instance.name_generators.get(__instance.asset.nameTemplate);
             if(generator == null) return true;
             __instance.data.name = generator.generate(__instance);
@@ -126,8 +133,15 @@ namespace Chinese_Name
         public static void set_actor_family_name(Clan __instance, Actor pActor)
         {
             string tmp;
-            __instance.units.Values.First().data.get(Main.family_name, out tmp, "");
-            pActor.data.set(Main.family_name, tmp);
+            foreach(Actor unit in __instance.units.Values)
+            {
+                unit.data.get(Main.family_name, out tmp, "");
+                if(!string.IsNullOrEmpty(tmp))
+                {
+                    pActor.data.set(Main.family_name, tmp);
+                    return;
+                }
+            }
         }
         #endregion
         #region 装备

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NCMS\Core\Assemblies\0Harmony.dll</HintPath>
     </Reference>

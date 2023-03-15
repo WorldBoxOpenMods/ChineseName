@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace Chinese_Name
 {
-    internal class WordLibrary
+    public class WordLibrary
     {
+        public List<string> words;
+        public WordLibrary(List<string> words)
+        {
+            this.words = words;
+        }
+
+        public string get_random()
+        {
+            return this.words.GetRandom();
+        }
     }
 }
