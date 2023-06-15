@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
+using UnityEngine;
+
 namespace Chinese_Name
 {
     public class WordLibraries
@@ -17,21 +19,31 @@ namespace Chinese_Name
             //WorldBoxConsole.Console.print(Main.path_to_word_libraries);
             Directory.CreateDirectory(Main.path_to_word_libraries);
             ZipFile.ExtractToDirectory(Main.zipped_word_libraries_path, Main.path_to_word_libraries);
+
+
+            if (Directory.Exists(Main.path_to_word_libraries)) return;
+
+            /* If unzip fails */
+            Main.curr_path_to_word_libraries = Main.path_to_tmp_word_libraries;
+            if (Directory.Exists(Main.path_to_tmp_word_libraries)) return;
+
+            Directory.CreateDirectory(Main.path_to_tmp_word_libraries);
+            ZipFile.ExtractToDirectory(Main.zipped_word_libraries_path, Main.path_to_tmp_word_libraries);
         }
         public void load_default_word_libraries()
         {
-            string[] files = System.IO.Directory.GetFiles(Main.path_to_word_libraries);
-            Main.warn($"WORD LIBRARIES at ({Main.path_to_word_libraries}):"+files.Length.ToString());
+            string[] files = System.IO.Directory.GetFiles(Main.curr_path_to_word_libraries);
+            Main.warn($"WORD LIBRARIES at ({Main.curr_path_to_word_libraries}):"+files.Length.ToString());
             foreach (string file_path in files)
             {
-                Main.warn(file_path);
-                string[] paths = file_path.Split('\\');
+                //Main.warn(file_path);
+                string[] paths = file_path.Replace("\\", "/").Split('/');
                 libraries[paths[paths.Length - 1].Replace(".txt","")] = new WordLibrary(load_list_str(file_path));
             }
         }
         public void load_mods_word_libraries()
         {
-            throw new NotImplementedException();
+            
         }
         public WordLibrary get(string id)
         {

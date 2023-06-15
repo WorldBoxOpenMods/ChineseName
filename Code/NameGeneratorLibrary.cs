@@ -28,14 +28,23 @@ namespace Chinese_Name
             WorldBoxConsole.Console.print(Main.path_to_name_generators);
             Directory.CreateDirectory(Main.path_to_name_generators);
             ZipFile.ExtractToDirectory(Main.zipped_name_generators_path, Main.path_to_name_generators);
+
+            if (Directory.Exists(Main.path_to_name_generators)) return;
+            /* If unzip fails */
+            Main.curr_path_to_name_generators = Main.path_to_tmp_name_generators;
+            if (Directory.Exists(Main.path_to_tmp_name_generators)) return;
+
+            Directory.CreateDirectory(Main.path_to_tmp_name_generators);
+            ZipFile.ExtractToDirectory(Main.zipped_name_generators_path, Main.path_to_tmp_name_generators);
         }
         public void load_default_name_generators()
         {
-            string[] files = System.IO.Directory.GetFiles(Main.path_to_name_generators);
-            Main.warn($"NAME GENERATORS at ({Main.path_to_name_generators}):"+files.Length.ToString());
+            string[] files = System.IO.Directory.GetFiles(Main.curr_path_to_name_generators);
+            
+            Main.warn($"NAME GENERATORS at ({Main.curr_path_to_name_generators}):"+files.Length.ToString());
             foreach (string file_path in files)
             {
-                Main.warn(file_path);
+                //Main.warn(file_path);
                 Dictionary<string, NameGenerator> generators_in_file = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, NameGenerator>>(File.ReadAllText(file_path));
                 if (generators_in_file == null) continue;
                 foreach(string key in generators_in_file.Keys)
@@ -53,7 +62,7 @@ namespace Chinese_Name
         }
         public void load_mods_name_generators()
         {
-            throw new NotImplementedException();
+
         }
         public NameGenerator get(string id)
         {
