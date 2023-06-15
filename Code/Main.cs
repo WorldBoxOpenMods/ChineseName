@@ -80,7 +80,7 @@ namespace Chinese_Name
         {
             word_libraries.unzip_word_libraries();
             word_libraries.load_default_word_libraries();
-            //word_libraries.load_mods_word_libraries();
+            word_libraries.load_mods_word_libraries();
         }
         public void init_name_generator_library()
         {
@@ -90,7 +90,7 @@ namespace Chinese_Name
         {
             name_generators.unzip_name_generators();
             name_generators.load_default_name_generators();
-            //name_generators.load_mods_name_generators();
+            name_generators.load_mods_name_generators();
         }
 
     }
