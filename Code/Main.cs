@@ -24,14 +24,14 @@ namespace Chinese_Name
         public NameGeneratorLibrary name_generators;
         public WordLibraries word_libraries;
         public const string family_name = "chinese_family_name";
-        public static string curr_path_to_word_libraries;
-        public static string curr_path_to_name_generators;
         public static readonly string zipped_word_libraries_path = Mod.Info.Path + "/word_libraries.zip";
         public static readonly string zipped_name_generators_path = Mod.Info.Path + "/name_generators.zip";
         public static readonly string path_to_word_libraries = Application.streamingAssetsPath + "/mods/ChineseName/word_libraries";
         public static readonly string path_to_name_generators = Application.streamingAssetsPath + "/mods/ChineseName/name_generators";
         public static readonly string path_to_tmp_word_libraries = Application.temporaryCachePath + "/ChineseName/word_libraries";
         public static readonly string path_to_tmp_name_generators = Application.temporaryCachePath + "/ChineseName/name_generators";
+        public static string curr_path_to_word_libraries = path_to_word_libraries;
+        public static string curr_path_to_name_generators = path_to_name_generators;
         public static void warn(string str)
         {
             UnityEngine.Debug.LogWarning(str);
