@@ -5,7 +5,6 @@ using ReflectionUtility;
 using HarmonyLib;
 using UnityEngine.UI;
 using UnityEngine.Events;
-
 /**
 public class Mod
 {
@@ -15,6 +14,7 @@ public class Mod
 */
 namespace Chinese_Name
 {
+    
     [ModEntry]
     public class Main : MonoBehaviour{
         public bool is_chinese = false;
@@ -30,7 +30,7 @@ namespace Chinese_Name
         public static readonly string path_to_name_generators = Application.streamingAssetsPath + "/mods/ChineseName/name_generators";
         public static void warn(string str)
         {
-            UnityEngine.Debug.LogWarning(str);
+            //UnityEngine.Debug.LogWarning(str);
         }
         public static void log(string str)
         {

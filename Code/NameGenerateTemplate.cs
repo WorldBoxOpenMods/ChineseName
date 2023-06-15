@@ -9,7 +9,7 @@ namespace Chinese_Name
     public class TemplateElement
     {
         public float possibility;
-        private string id;
+        public string id;
         public List<WordLibrary> libraries = new List<WordLibrary>();
         public Dictionary<string, WordLibrary> optional_libraries = new Dictionary<string, WordLibrary>();
         public TemplateElement(string word_library_id, float possibility)

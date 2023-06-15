@@ -32,6 +32,8 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(Clan), nameof(Clan.createClan))]
         public static void modify_clan_name(Clan __instance, Actor pFounder)
         {
+            //__instance.data.name = string.Empty;
+            if(pFounder==null)Main.log("NOT FOUND FOUNDER");
             NameGenerator generator = Main.instance.name_generators.get(pFounder == null ? SK.elf : pFounder.race.name_template_clan);
             if (generator == null) return;
             __instance.data.name = generator.generate(__instance, pFounder);
@@ -141,6 +143,13 @@ namespace Chinese_Name
                     pActor.data.set(Main.family_name, tmp);
                     return;
                 }
+				else{
+					NameGenerator generator = Main.instance.name_generators.get(unit.asset.nameTemplate);
+					if(generator!=null){ generator.generate(unit); unit.data.get(Main.family_name, out tmp, "");}
+					
+					pActor.data.set(Main.family_name, tmp);
+                    return;
+				}
             }
         }
         #endregion

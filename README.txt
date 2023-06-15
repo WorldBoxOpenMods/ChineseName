@@ -1,3 +1,7 @@
+# 更新相关
+
+更新时自行按需更新词库。
+
 # 词库及命名模板相关
 
 检查worldbox_Data\StreamingAssets\mods\ChineseName目录下两个文件即可

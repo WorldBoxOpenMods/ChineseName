@@ -1,7 +1,7 @@
 {
     "name": "中文名",
     "author": "一米",
-    "version": "1.2.1",
+    "version": "1.2.4",
     "description": "\"简简单单\"的中文名",
 	"targetGameBuild": 522,
     "iconPath": "icon.png"
