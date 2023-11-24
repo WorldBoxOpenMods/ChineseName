@@ -51,13 +51,14 @@ namespace Chinese_Name
         }
         #endregion
         #region 城市
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(City), nameof(City.generateName))]
-        public static void modify_city_name(City __instance)
+        public static bool modify_city_name(City __instance)
         {
             NameGenerator generator = Main.instance.name_generators.get(__instance.race.name_template_city);
-            if (generator == null) return;
+            if (generator == null) return true;
             __instance.data.name = generator.generate(__instance);
+            return false;
         }
         #endregion
         #region 国家
