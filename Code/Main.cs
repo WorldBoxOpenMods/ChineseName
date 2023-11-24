@@ -1,22 +1,12 @@
-using System;
 using NCMS;
 using UnityEngine;
-using ReflectionUtility;
-using HarmonyLib;
-using UnityEngine.UI;
-using UnityEngine.Events;
-/**
-public class Mod
-{
-    public static ModDeclaration.Info Info;
-    public static GameObject GameObject;
-}
-*/
+using NeoModLoader.api;
+
 namespace Chinese_Name
 {
     
     [ModEntry]
-    public class Main : MonoBehaviour{
+    public class Main : BasicMod<Main>{
         public bool is_chinese = false;
         public bool initialized = false;
         public bool disabled = false;
@@ -24,8 +14,8 @@ namespace Chinese_Name
         public NameGeneratorLibrary name_generators;
         public WordLibraries word_libraries;
         public const string family_name = "chinese_family_name";
-        public static readonly string zipped_word_libraries_path = Mod.Info.Path + "/word_libraries.zip";
-        public static readonly string zipped_name_generators_path = Mod.Info.Path + "/name_generators.zip";
+        public static string zipped_word_libraries_path { get; private set; }
+        public static string zipped_name_generators_path { get; private set; }
         public static readonly string path_to_word_libraries = Application.streamingAssetsPath + "/mods/ChineseName/word_libraries";
         public static readonly string path_to_name_generators = Application.streamingAssetsPath + "/mods/ChineseName/name_generators";
         public static readonly string path_to_tmp_word_libraries = Application.temporaryCachePath + "/ChineseName/word_libraries";
@@ -39,6 +29,12 @@ namespace Chinese_Name
         public static void log(string str)
         {
             //UnityEngine.Debug.Log(str);
+        }
+        protected override void OnModLoad()
+        {
+            ModDeclare decl = GetDeclaration();
+            zipped_word_libraries_path = Path.Combine(decl.FolderPath, "word_libraries.zip");
+            zipped_name_generators_path = Path.Combine(decl.FolderPath, "name_generators.zip");
         }
         void Update()
         {

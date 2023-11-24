@@ -81,7 +81,7 @@ namespace Chinese_Name
             }
             foreach (NCMod mod in NCMS.ModLoader.Mods)
             {
-                if (mod.name == Mod.Info.Name) continue;
+                if (mod.name == Main.instance.GetDeclaration().Name) continue;
 
                 string folder_name = Hash128.Compute(mod.name).ToString();
                     
