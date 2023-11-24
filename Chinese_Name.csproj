@@ -13,106 +13,106 @@
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\MoreWarPlots\Includes\0Harmony.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\MoreWarPlots\Assemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\CW_Core\Assemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
-      <HintPath>..\MoreWarPlots\Includes\DOTween.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\DOTween.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zlib.CF">
-      <HintPath>..\MoreWarPlots\Includes\Ionic.Zlib.CF.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\Ionic.Zlib.CF.dll</HintPath>
     </Reference>
-    <Reference Include="NCMS">
-      <HintPath>..\MoreWarPlots\Includes\NCMS.dll</HintPath>
+    <Reference Include="NeoModLoader">
+      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader.dll</HintPath>
     </Reference>
     <Reference Include="Purchasing.Common">
-      <HintPath>..\MoreWarPlots\Includes\Purchasing.Common.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\Purchasing.Common.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ClothModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.ClothModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GridModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.GridModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.GridModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.LocalizationModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.LocalizationModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.AppleCore">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.AppleCore.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleCore.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.AppleMacosStub">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.AppleMacosStub.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleMacosStub.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.AppleStub">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.AppleStub.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleStub.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.Codeless">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.Codeless.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.Codeless.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.SecurityCore">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.SecurityCore.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.SecurityCore.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.SecurityStub">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.SecurityStub.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.SecurityStub.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.Stores">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.Stores.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.Stores.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.WinRTCore">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.WinRTCore.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.WinRTCore.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Purchasing.WinRTStub">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.Purchasing.WinRTStub.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.WinRTStub.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpriteMaskModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.SpriteMaskModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StreamingModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.StreamingModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.TextCoreModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TilemapModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.TilemapModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsNativeModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.UIElementsNativeModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\MoreWarPlots\Includes\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
