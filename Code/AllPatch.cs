@@ -135,7 +135,7 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(Clan), nameof(Clan.addUnit))]
         public static void set_actor_family_name(Clan __instance, Actor pActor)
         {
-            string tmp;
+            string tmp = "";
             foreach(Actor unit in __instance.units.Values)
             {
                 unit.data.get(Main.family_name, out tmp, "");
@@ -144,13 +144,14 @@ namespace Chinese_Name
                     pActor.data.set(Main.family_name, tmp);
                     return;
                 }
-				else{
-					NameGenerator generator = Main.instance.name_generators.get(unit.asset.nameTemplate);
-					if(generator!=null){ generator.generate(unit); unit.data.get(Main.family_name, out tmp, "");}
-					
-					pActor.data.set(Main.family_name, tmp);
-                    return;
-				}
+            }
+            foreach(Actor unit in __instance.units.Values)
+            {
+                NameGenerator generator = Main.instance.name_generators.get(unit.asset.nameTemplate);
+                if(generator!=null){ generator.generate(unit); unit.data.get(Main.family_name, out tmp, "");}
+                
+                pActor.data.set(Main.family_name, tmp);
+                return;
             }
         }
         #endregion
