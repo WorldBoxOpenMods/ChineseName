@@ -62,6 +62,10 @@ namespace Chinese_Name
                         template.finish();
                         generators[key].total_weight += template.weight;
                     }
+                    if(!AssetManager.nameGenerator.dict.ContainsKey(key)) 
+                    {
+                        AssetManager.nameGenerator.clone(key, "human_culture").templates = new List<string>(){"Part_group"};
+                    }
                 }
             }
         }
