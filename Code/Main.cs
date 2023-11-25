@@ -1,11 +1,10 @@
-using NCMS;
+using System;
+using System.IO;
 using UnityEngine;
 using NeoModLoader.api;
 
 namespace Chinese_Name
 {
-    
-    [ModEntry]
     public class Main : BasicMod<Main>{
         public bool is_chinese = false;
         public bool initialized = false;
