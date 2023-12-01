@@ -33,6 +33,7 @@ public class CN_NameTemplate
         
         foreach(var atom in atoms_before_generate)
         {
+            if (!string.IsNullOrEmpty(atom.Tag)) continue;
             pParameters[atom.Tag] = WordLibraryManager.GetRandomWord(atom.GetWordLibraryId(pParameters));
         }
 

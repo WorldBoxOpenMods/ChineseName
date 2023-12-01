@@ -11,6 +11,7 @@ namespace Chinese_Name
             CN_NameGeneratorLibrary.Instance.init();
 
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+            // 虽然可以直接patch getName和getNameFromTemplate, 但那样无法获取更多的参数
             foreach (Type type in types)
             {
                 if (type.GetInterface(nameof(IPatch))!=null)
