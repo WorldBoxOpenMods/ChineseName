@@ -1,0 +1,26 @@
+[
+    {
+        "id": "human_name",
+        "generate_type": "creature_name",
+        "templates": [
+            {
+                "format": "<$姓氏$_前缀:b>{百家姓:姓氏}{千字文:dsad}<$dsad$_后缀>",
+                "weight": 8
+            },
+            {
+                "format": "<$姓氏$_前缀>{百家姓:姓氏}<$month$_名>",
+                "weight": 0.1
+            }
+        ]
+    },
+    {
+        "id": "orc_name",
+        "generate_type": "creature_name",
+        "templates": [
+            {
+                "format": "{first_name} {last_name}",
+                "weight": 1
+            }
+        ]
+    }
+]

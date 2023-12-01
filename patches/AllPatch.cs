@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HarmonyLib;
 namespace Chinese_Name
-{
+{/*
     public class AllPatch
     {
         public const string patch_id = "inmny.Chinese_Name";
@@ -22,7 +22,7 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(Culture), nameof(Culture.createCulture))]
         public static void modify_culture_name(Culture __instance, Race pRace, City pCity)
         {
-            NameGenerator generator = Main.instance.name_generators.get(pRace.name_template_culture);
+            NameGenerator generator = ModClass.instance.name_generators.get(pRace.name_template_culture);
             if (generator == null) return;
             __instance.data.name = generator.generate(__instance, pRace, pCity);
         }
@@ -33,8 +33,8 @@ namespace Chinese_Name
         public static void modify_clan_name(Clan __instance, Actor pFounder)
         {
             //__instance.data.name = string.Empty;
-            if(pFounder==null)Main.log("NOT FOUND FOUNDER");
-            NameGenerator generator = Main.instance.name_generators.get(pFounder == null ? SK.elf : pFounder.race.name_template_clan);
+            if(pFounder==null)ModClass.log("NOT FOUND FOUNDER");
+            NameGenerator generator = ModClass.instance.name_generators.get(pFounder == null ? SK.elf : pFounder.race.name_template_clan);
             if (generator == null) return;
             __instance.data.name = generator.generate(__instance, pFounder);
         }
@@ -44,7 +44,7 @@ namespace Chinese_Name
         public static bool set_clan_motto(Kingdom __instance)
         {
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
-            NameGenerator generator = Main.instance.name_generators.get("clan_mottos");
+            NameGenerator generator = ModClass.instance.name_generators.get("clan_mottos");
             if (generator == null) return true;
             __instance.data.motto = generator.generate(__instance);
             return true;
@@ -55,7 +55,7 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(City), nameof(City.generateName))]
         public static bool modify_city_name(City __instance)
         {
-            NameGenerator generator = Main.instance.name_generators.get(__instance.race.name_template_city);
+            NameGenerator generator = ModClass.instance.name_generators.get(__instance.race.name_template_city);
             if (generator == null) return true;
             __instance.data.name = generator.generate(__instance);
             return false;
@@ -67,7 +67,7 @@ namespace Chinese_Name
         public static bool set_kingdom_name(Kingdom __instance, City pCity)
         {
             if (!string.IsNullOrEmpty(__instance.data.name)) return true;
-            NameGenerator generator = Main.instance.name_generators.get(__instance.race.name_template_kingdom);
+            NameGenerator generator = ModClass.instance.name_generators.get(__instance.race.name_template_kingdom);
             if (generator == null) return true;
             __instance.data.name = generator.generate(__instance, pCity);
             return true;
@@ -77,7 +77,7 @@ namespace Chinese_Name
         public static bool set_kingdom_motto(Kingdom __instance)
         {
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
-            NameGenerator generator = Main.instance.name_generators.get("kingdom_mottos");
+            NameGenerator generator = ModClass.instance.name_generators.get("kingdom_mottos");
             if (generator == null) return true;
             __instance.data.motto = generator.generate(__instance);
             return true;
@@ -88,7 +88,7 @@ namespace Chinese_Name
         [HarmonyPatch(typeof(WorldLog), nameof(WorldLog.logAllianceCreated))]
         public static bool modify_alliance_name(Alliance pAlliance)
         {
-            NameGenerator generator = Main.instance.name_generators.get("alliance_name");
+            NameGenerator generator = ModClass.instance.name_generators.get("alliance_name");
             if (generator == null) return true;
             pAlliance.data.name = generator.generate(pAlliance);
             return true;
@@ -98,7 +98,7 @@ namespace Chinese_Name
         public static bool set_alliance_motto(Alliance __instance)
         {
             if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
-            NameGenerator generator = Main.instance.name_generators.get("alliance_mottos");
+            NameGenerator generator = ModClass.instance.name_generators.get("alliance_mottos");
             if (generator == null) return true;
             __instance.data.motto = generator.generate(__instance);
             return true;
@@ -113,11 +113,11 @@ namespace Chinese_Name
             {
                 pType = WarTypeLibrary.rebellion;
             }
-            NameGenerator generator = Main.instance.name_generators.get(pType.name_template);
+            NameGenerator generator = ModClass.instance.name_generators.get(pType.name_template);
             if(generator == null) return;
             
             __result.data.name = generator.generate(__result, pAttacker, pDefender, pType);
-            Main.log($"{pType.name_template}:{__result.data.name}");
+            ModClass.log($"{pType.name_template}:{__result.data.name}");
         }
         #endregion
         #region 生物
@@ -126,7 +126,7 @@ namespace Chinese_Name
         public static bool set_actor_name(ActorBase __instance)
         {
             if (!string.IsNullOrEmpty(__instance.data.name)) return true;
-            NameGenerator generator = Main.instance.name_generators.get(__instance.asset.nameTemplate);
+            NameGenerator generator = ModClass.instance.name_generators.get(__instance.asset.nameTemplate);
             if(generator == null) return true;
             __instance.data.name = generator.generate(__instance);
             return true;
@@ -138,19 +138,19 @@ namespace Chinese_Name
             string tmp = "";
             foreach(Actor unit in __instance.units.Values)
             {
-                unit.data.get(Main.family_name, out tmp, "");
+                unit.data.get(ModClass.family_name, out tmp, "");
                 if(!string.IsNullOrEmpty(tmp))
                 {
-                    pActor.data.set(Main.family_name, tmp);
+                    pActor.data.set(ModClass.family_name, tmp);
                     return;
                 }
             }
             foreach(Actor unit in __instance.units.Values)
             {
-                NameGenerator generator = Main.instance.name_generators.get(unit.asset.nameTemplate);
-                if(generator!=null){ generator.generate(unit); unit.data.get(Main.family_name, out tmp, "");}
+                NameGenerator generator = ModClass.instance.name_generators.get(unit.asset.nameTemplate);
+                if(generator!=null){ generator.generate(unit); unit.data.get(ModClass.family_name, out tmp, "");}
                 
-                pActor.data.set(Main.family_name, tmp);
+                pActor.data.set(ModClass.family_name, tmp);
                 return;
             }
         }
@@ -167,7 +167,7 @@ namespace Chinese_Name
                 while (string.IsNullOrEmpty(name) || ItemGenerator.unique_legendary_names.Contains(name))
                 {
                     string randomNameTemplate = pItemAsset.getRandomNameTemplate(pActor);
-                    NameGenerator generator = Main.instance.name_generators.get(randomNameTemplate);
+                    NameGenerator generator = ModClass.instance.name_generators.get(randomNameTemplate);
 
                     if (generator == null) return true;
 
@@ -183,5 +183,5 @@ namespace Chinese_Name
             return false;
         }
         #endregion
-    }
+    }*/
 }
