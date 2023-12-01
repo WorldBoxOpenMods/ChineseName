@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Chinese_Name;
 
 public class WordLibraryAsset : Asset

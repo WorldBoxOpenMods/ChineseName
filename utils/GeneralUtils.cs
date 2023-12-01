@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,6 +14,7 @@ internal class GeneralUtils
         List<T> assets = new List<T>();
         foreach (TextAsset text_asset in text_assets)
         {
+            ModClass.LogInfo($"To parse the following into {typeof(T).Name}:\n {text_asset.text}");
             T asset = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(text_asset.text);
             if (asset != null)
             {

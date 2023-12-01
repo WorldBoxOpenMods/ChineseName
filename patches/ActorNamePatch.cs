@@ -36,11 +36,11 @@ public class ActorNamePatch : IPatch
         var para = template.GetParametersToFill();
         
         __instance.data.get(DataS.family_name, out var family_name, "");
-        para[DataS.family_name] = family_name;
+        para[DataS.family_name_in_template] = family_name;
         
         __instance.data.name = template.GenerateName(para);
         
-        para.TryGetValue(DataS.family_name, out family_name);
+        para.TryGetValue(DataS.family_name_in_template, out family_name);
         __instance.data.set(DataS.family_name, family_name);
         
         return true;

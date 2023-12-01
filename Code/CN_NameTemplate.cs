@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
 namespace Chinese_Name;
-
+[Serializable]
 public class CN_NameTemplate
 {
     [JsonProperty("format")]
@@ -10,11 +13,20 @@ public class CN_NameTemplate
     
     [JsonProperty("weight")]
     public float weight { get; private set; }
-    public CN_NameTemplate(string pFormat, float pWeight)
+    public static CN_NameTemplate Create(string pFormat, float pWeight)
+    {
+        return new CN_NameTemplate(pFormat, pWeight);
+    }
+    CN_NameTemplate(string pFormat, float pWeight)
     {
         raw_format = pFormat;
         weight = pWeight;
         Parse();
+    }
+
+    CN_NameTemplate()
+    {
+        
     }
     /// <summary>
     /// 获取需要填充的参数

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Chinese_Name.utils;
 
 namespace Chinese_Name;

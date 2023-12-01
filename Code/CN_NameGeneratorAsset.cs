@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Chinese_Name;
-
+[Serializable]
 public class CN_NameGeneratorAsset : Asset
 {
     [JsonProperty("templates")]
@@ -16,7 +18,7 @@ public class CN_NameGeneratorAsset : Asset
         {
             weights = new float[templates.Count];
             weights[0] = templates[0].weight;
-            for (int i = 0; i < templates.Count; i++)
+            for (int i = 1; i < templates.Count; i++)
             {
                 weights[i] = weights[i-1] + templates[i].weight;
             }

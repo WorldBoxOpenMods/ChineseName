@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
     <LangVersion>11</LangVersion>
@@ -122,10 +122,6 @@
     <Reference Include="UnityEngine.UIModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="GameResources\chinese_name\word_libraries\default\" />
   </ItemGroup>
 
 </Project>
