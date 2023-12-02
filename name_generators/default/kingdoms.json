@@ -1,0 +1,10 @@
+[
+    {
+        "id": "human_kingdom",
+        "templates": [
+            {
+                "format": "{真实国名}"
+            }
+        ]
+    }
+]

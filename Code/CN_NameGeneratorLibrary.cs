@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Chinese_Name.utils;
 
 namespace Chinese_Name;
@@ -12,9 +13,18 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
     {
         base.init();
         id = "CN_NameGeneratorLibrary";
-        SubmitDirectoryToLoad("chinese_name/name_generators/default");
+        SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "name_generators/default"));
     }
 
+    internal void Reload()
+    {
+        HashSet<string> reload_dir = new HashSet<string>(submitted_dir);
+        submitted_dir.Clear();
+        foreach (var dir in reload_dir)
+        {
+            SubmitDirectoryToLoad(dir);
+        }
+    }
     public override CN_NameGeneratorAsset get(string pID)
     {
         if (string.IsNullOrEmpty(pID)) return null;

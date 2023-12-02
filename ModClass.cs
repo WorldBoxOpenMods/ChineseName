@@ -33,7 +33,8 @@ namespace Chinese_Name
         
         public void Reload()
         {
-            
+            WordLibraryManager.Instance.Reload();
+            CN_NameGeneratorLibrary.Instance.Reload();
         }
     }
 }

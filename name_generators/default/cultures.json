@@ -1,0 +1,10 @@
+[
+    {
+        "id": "human_culture",
+        "templates": [
+            {
+                "format": "{真实城名}#文化#"
+            }
+        ]
+    }
+]

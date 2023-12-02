@@ -49,7 +49,7 @@ public class CN_NameTemplate
         foreach(var atom in atoms_before_generate)
         {
             if (pParameters.TryGetValue(atom.Tag, out string para) && !string.IsNullOrEmpty(para)) continue;
-            pParameters[atom.Tag] = WordLibraryManager.GetRandomWord(atom.GetWordLibraryId(pParameters));
+            pParameters[atom.Tag] = WordLibraryManager.GetRandomWord(atom.GetFilledTemplate(pParameters));
         }
 
         foreach (var atom in atoms)
@@ -59,12 +59,18 @@ public class CN_NameTemplate
                 builder.Append(pParameters[atom.Tag]);
                 continue;
             }
-            if (atom.IsRawText)
+            switch (atom.Type)
             {
-                builder.Append(atom.Format);
-                continue;
+                case AtomType.Parameter:
+                    builder.Append(atom.GetFilledTemplate(pParameters));
+                    continue;
+                case AtomType.RawText:
+                    builder.Append(atom.Format);
+                    continue;
+                case AtomType.WordLibrary:
+                    builder.Append(WordLibraryManager.GetRandomWord(atom.GetFilledTemplate(pParameters)));
+                    continue;
             }
-            builder.Append(WordLibraryManager.GetRandomWord(atom.GetWordLibraryId(pParameters)));
         }
         
         return builder.ToString();
@@ -74,6 +80,12 @@ public class CN_NameTemplate
     private readonly List<CN_NameTemplateAtom> atoms = new();
     private List<CN_NameTemplateAtom> atoms_before_generate = new();
 
+    private enum AtomType
+    {
+        WordLibrary,
+        RawText,
+        Parameter
+    }
     private class CN_NameTemplateAtom
     {
         public string Tag;
@@ -81,9 +93,9 @@ public class CN_NameTemplate
         public string[] ParametersValue;
         public string[] ParametersKey;
         public string Format;
-        public bool IsRawText = false;
+        public AtomType Type = AtomType.WordLibrary;
 
-        public string GetWordLibraryId(Dictionary<string, string> pParameters)
+        public string GetFilledTemplate(Dictionary<string, string> pParameters)
         {
             for (int i = 0; i < ParametersKey.Length; i++)
             {
@@ -154,6 +166,7 @@ public class CN_NameTemplate
                 requiring_right_bracket = false;
                 reading_parameters = false;
                 reading_tag = false;
+                atom_in_recog.Type = AtomType.WordLibrary;
                 
                 atoms.Add(atom_in_recog);
                 atom_in_recog = new();
@@ -176,7 +189,6 @@ public class CN_NameTemplate
                     {
                         throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
                     }
-                    atom_in_recog = new();
                     atom_in_recog.AllParametersRequired = false;
                     requiring_right_bracket = true;
                     format_key_index = 1;
@@ -194,7 +206,6 @@ public class CN_NameTemplate
                     {
                         throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
                     }
-                    atom_in_recog = new();
                     atom_in_recog.AllParametersRequired = true;
                     requiring_right_bracket = true;
                     format_key_index = 3;
@@ -211,6 +222,22 @@ public class CN_NameTemplate
                     }
                     if (reading_parameters)
                     {
+                        if (!requiring_right_bracket)
+                        {
+                            atom_in_recog.Format = format_builder.ToString();
+                            atom_in_recog.Tag = tag_builder.ToString();
+                            atom_in_recog.AllParametersRequired = true;
+                            atom_in_recog.ParametersKey = new string[1] { para_builder.ToString() };
+                            atom_in_recog.ParametersValue = new string[atom_in_recog.ParametersKey.Length];
+                            atom_in_recog.Type = AtomType.Parameter;
+                            atoms.Add(atom_in_recog);
+                            tag_builder.Clear();
+                            para_builder.Clear();
+                            format_builder.Clear();
+                            reading_parameters = false;
+                            atom_in_recog = new();
+                            continue;
+                        }
                         para_builder.Append(';');
                     }
                     else
@@ -236,7 +263,7 @@ public class CN_NameTemplate
                         atom_in_recog.AllParametersRequired = false;
                         atom_in_recog.ParametersKey = Array.Empty<string>();
                         atom_in_recog.ParametersValue = Array.Empty<string>();
-                        atom_in_recog.IsRawText = true;
+                        atom_in_recog.Type = AtomType.RawText;
                         atoms.Add(atom_in_recog);
                         tag_builder.Clear();
                         para_builder.Clear();

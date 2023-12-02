@@ -1,0 +1,10 @@
+[
+    {
+        "id": "human_city",
+        "templates": [
+            {
+                "format": "{真实城名}"
+            }
+        ]
+    }
+]
