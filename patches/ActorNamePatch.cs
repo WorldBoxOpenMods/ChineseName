@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Chinese_Name.constants;
 using HarmonyLib;
 
@@ -33,22 +34,22 @@ public class ActorNamePatch : IPatch
         var generator = CN_NameGeneratorLibrary.Instance.get(__instance.asset.nameTemplate);
         if (generator == null) return true;
         int max_try = 10;
+        
+        var para = new Dictionary<string, string>();
+        ParameterGetters.GetActorParameterGetter(generator.parameter_getter)(__instance.a, para);
+        
+        __instance.data.get(DataS.family_name, out var family_name, "");
+        para[DataS.family_name_in_template] = family_name;
+        
         while (!string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
         {
             var template = generator.GetRandomTemplate();
-            var para = template.GetParametersToFill();
-
-            ParameterGetters.GetActorParameterGetter(generator.parameter_getter)(__instance.a, para);
-
-            __instance.data.get(DataS.family_name, out var family_name, "");
-            para[DataS.family_name_in_template] = family_name;
-
             __instance.data.name = template.GenerateName(para);
-
-            para.TryGetValue(DataS.family_name_in_template, out family_name);
-            __instance.data.set(DataS.family_name, family_name);
         }
 
+        para.TryGetValue(DataS.family_name_in_template, out family_name);
+        __instance.data.set(DataS.family_name, family_name);
+        
         return true;
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using NeoModLoader.General.Event.Handlers;
 using NeoModLoader.General.Event.Listeners;
@@ -25,12 +26,15 @@ public class KingdomNamePatch : IPatch
 
             var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if (asset == null) return;
+
+            var para = new Dictionary<string, string>();
+            
+            ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
+            
             int max_try = 10;
             while (!string.IsNullOrWhiteSpace(pKingdom.data.name) && max_try-- > 0)
             {
                 var template = asset.GetRandomTemplate();
-                var para = template.GetParametersToFill();
-                ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
                 pKingdom.data.name = template.GenerateName(para);
             }
         }
@@ -47,10 +51,17 @@ public class KingdomNamePatch : IPatch
         if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get("kingdom_mottos");
         if (generator == null) return true;
-        var template = generator.GetRandomTemplate();
-        var para = template.GetParametersToFill();
+
+        var para = new Dictionary<string, string>();
+            
         ParameterGetters.GetKingdomParameterGetter(generator.parameter_getter)(__instance, para);
-        __instance.data.motto = template.GenerateName(para);
+
+        int max_try = 10;
+        while (!string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
+        {
+            var template = generator.GetRandomTemplate();
+            __instance.data.motto = template.GenerateName(para);
+        }
         return true;
     }
 }

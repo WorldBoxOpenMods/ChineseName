@@ -14,14 +14,15 @@ public class CityNamePatch : IPatch
             string name_generator_id = pCity.race.name_template_city;
             CN_NameGeneratorAsset asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if(asset == null) return;
+
+            var para = new Dictionary<string, string>();
+            
+            ParameterGetters.GetCityParameterGetter(asset.parameter_getter)(pCity, para);
+            
             int max_try = 10;
             while (!string.IsNullOrWhiteSpace(pCity.data.name) && max_try-- > 0)
             {
                 CN_NameTemplate template = asset.GetRandomTemplate();
-            
-                Dictionary<string, string> para = template.GetParametersToFill();
-                ParameterGetters.GetCityParameterGetter(asset.parameter_getter)(pCity, para);
-                
                 pCity.data.name = template.GenerateName(para);
             }
         }

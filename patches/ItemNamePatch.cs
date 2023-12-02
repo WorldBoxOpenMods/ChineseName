@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 
 namespace Chinese_Name;
@@ -18,7 +19,8 @@ public class ItemNamePatch : IPatch
         string name = null;
         int num = 0;
         int no_found = 0;
-        
+
+        var para = new Dictionary<string, string>();
         while (string.IsNullOrWhiteSpace(name) || ItemGenerator.unique_legendary_names.Contains(name))
         {
             string random_name_template = pItemAsset.getRandomNameTemplate(pActor);
@@ -33,7 +35,6 @@ public class ItemNamePatch : IPatch
             }
 
             var template = generator.GetRandomTemplate();
-            var para = template.GetParametersToFill();
             ParameterGetters.GetItemParameterGetter(generator.parameter_getter)(pItemData, pItemAsset, pActor.a, para);
             name = template.GenerateName(para);
             

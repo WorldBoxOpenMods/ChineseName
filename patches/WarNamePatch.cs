@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NeoModLoader.General.Event.Handlers;
 using NeoModLoader.General.Event.Listeners;
 
@@ -16,13 +17,14 @@ public class WarNamePatch : IPatch
             }
             var generator = CN_NameGeneratorLibrary.Instance.get(pWarType.name_template);
             if (generator == null) return;
+
+            var para = new Dictionary<string, string>();
+            ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
+            
             int max_try = 10;
             while (!string.IsNullOrWhiteSpace(pWar.data.name) && max_try-- > 0)
             {
                 var template = generator.GetRandomTemplate();
-                var para = template.GetParametersToFill();
-                ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
-                
                 pWar.data.name = template.GenerateName(para);
             }
         }
