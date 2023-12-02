@@ -71,10 +71,25 @@ public static class ParameterGetters
     [Hotfixable]
     private static void default_clan_parameter_getter(Clan pClan, Actor pActor, Dictionary<string, string> pParameters)
     {
-        pParameters["founder_home"] = string.IsNullOrEmpty(pClan.data.founder_home) ? pClan.data.founder_home : pClan.data.founder_kingdom;
-        
-        pActor.data.get(DataS.family_name, out var family_name, "无名");
-        pParameters["founder_family_name"] = family_name;
+        pParameters["founder_home"] = string.IsNullOrEmpty(pClan.data.founder_home) ? pClan.data.founder_kingdom : pClan.data.founder_home;
+
+        if (pActor == null)
+        {
+            foreach (var unit in pClan.units)
+            {
+                unit.Value.data.get(DataS.family_name, out var family_name, "");
+                if (!string.IsNullOrEmpty(family_name))
+                {
+                    pParameters["founder_family_name"] = family_name;
+                    return;
+                }
+            }
+        }
+        else
+        {
+            pActor.data.get(DataS.family_name, out var family_name, "无名");
+            pParameters["founder_family_name"] = family_name;
+        }
     }
     [Hotfixable]
     private static void default_alliance_parameter_getter(Alliance pAlliance, Dictionary<string, string> pParameters)
