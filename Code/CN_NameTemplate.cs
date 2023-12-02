@@ -13,8 +13,7 @@ public class CN_NameTemplate
     [JsonProperty("format")]
     public string raw_format { get; private set; }
     
-    [JsonProperty("weight")]
-    public float weight { get; private set; }
+    [JsonProperty("weight")] public float weight { get; private set; } = 1;
     public static CN_NameTemplate Create(string pFormat, float pWeight)
     {
         return new CN_NameTemplate(pFormat, pWeight);
