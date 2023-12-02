@@ -94,6 +94,6 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
         {
             "space"
         };
-        vanilla_asset.vowels = Array.Empty<string>();
+        vanilla_asset.vowels = new string[] { "" };
     }
 }
