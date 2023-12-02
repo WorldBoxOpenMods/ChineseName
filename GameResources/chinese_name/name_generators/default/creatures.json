@@ -16,7 +16,12 @@
         "id": "elf_name",
         "templates": [
             {
-                "format": "{西方名字} {西方姓氏:family_name}"
+                "format": "{西方名字}#·#{西方名字中缀}#·#{西方姓氏:family_name}",
+                "weight": 1
+            },
+            {
+                "format": "{西方名字}#·#{西方姓氏:family_name}",
+                "weight": 4
             }
         ]
     }
