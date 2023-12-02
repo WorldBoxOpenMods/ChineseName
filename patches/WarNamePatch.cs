@@ -7,7 +7,7 @@ public class WarNamePatch : IPatch
 {
     class RenameWar : WarStartHandler
     {
-        public override void Handle(WarManager pWarManager, War pWar, Kingdom pAttacker, Kingdom pDefender, WarTypeAsset pWarType)
+        public override void Handle(War pWar, Kingdom pAttacker, Kingdom pDefender, WarTypeAsset pWarType)
         {
             if (!string.IsNullOrWhiteSpace(pWar.data.name)) return;
             if (pDefender != null && pDefender.getAge() <= 1)
