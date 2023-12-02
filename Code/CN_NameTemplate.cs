@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Chinese_Name.exceptions;
+using NeoModLoader.api.attributes;
 using Newtonsoft.Json;
 
 namespace Chinese_Name;
@@ -39,19 +41,29 @@ public class CN_NameTemplate
     /// 通过参数生成名字
     /// </summary>
     /// <param name="pParameters">填充后的通过<see cref="GetParametersToFill"/>获取的参数表</param>
+    [Hotfixable]
     public string GenerateName(Dictionary<string, string> pParameters)
     {
         StringBuilder builder = new();
         
         foreach(var atom in atoms_before_generate)
         {
-            if (!string.IsNullOrEmpty(atom.Tag)) continue;
+            if (pParameters.TryGetValue(atom.Tag, out string para) && !string.IsNullOrEmpty(para)) continue;
             pParameters[atom.Tag] = WordLibraryManager.GetRandomWord(atom.GetWordLibraryId(pParameters));
         }
 
         foreach (var atom in atoms)
         {
-            if(!string.IsNullOrEmpty(atom.Tag)) builder.Append(pParameters[atom.Tag]);
+            if (!string.IsNullOrEmpty(atom.Tag))
+            {
+                builder.Append(pParameters[atom.Tag]);
+                continue;
+            }
+            if (atom.IsRawText)
+            {
+                builder.Append(atom.Format);
+                continue;
+            }
             builder.Append(WordLibraryManager.GetRandomWord(atom.GetWordLibraryId(pParameters)));
         }
         
@@ -69,6 +81,7 @@ public class CN_NameTemplate
         public string[] ParametersValue;
         public string[] ParametersKey;
         public string Format;
+        public bool IsRawText = false;
 
         public string GetWordLibraryId(Dictionary<string, string> pParameters)
         {
@@ -102,12 +115,13 @@ public class CN_NameTemplate
         
         bool reading_parameters = false;
         bool reading_tag = false;
+        bool reading_raw_text = false;
         int parameter_index = 0;
         StringBuilder para_builder = new();
         StringBuilder tag_builder = new();
         StringBuilder format_builder = new();
 
-        CN_NameTemplateAtom atom_in_recog = null;
+        CN_NameTemplateAtom atom_in_recog = new();
         for(int i = 0; i < raw_format.Length; i++)
         {
             char ch = raw_format[i];
@@ -143,18 +157,43 @@ public class CN_NameTemplate
                 
                 atoms.Add(atom_in_recog);
                 atom_in_recog = new();
+                parameter_index = 0;
                 continue;
             }
             
             switch (ch)
             {
                 case '{':
+                    if (reading_tag)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+                    if (reading_raw_text)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Raw Text Block");
+                    }
+                    if (reading_parameters)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
+                    }
                     atom_in_recog = new();
                     atom_in_recog.AllParametersRequired = false;
                     requiring_right_bracket = true;
                     format_key_index = 1;
                     continue;
                 case '<':
+                    if (reading_tag)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+                    if (reading_raw_text)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Raw Text Block");
+                    }
+                    if (reading_parameters)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
+                    }
                     atom_in_recog = new();
                     atom_in_recog.AllParametersRequired = true;
                     requiring_right_bracket = true;
@@ -163,7 +202,12 @@ public class CN_NameTemplate
                 case '$':
                     if (reading_tag)
                     {
-                        throw new Exception($"Invalid character '{ch}' at {i} in format '{raw_format}', tag does not support reference.");
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+
+                    if (reading_raw_text)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Raw Text Block");
                     }
                     if (reading_parameters)
                     {
@@ -175,16 +219,66 @@ public class CN_NameTemplate
                     }
                     reading_parameters = !reading_parameters;
                     continue;
-                case ':':
+                case '#':
+                    if (reading_tag)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+
                     if (reading_parameters)
                     {
-                        throw new Exception($"Invalid character '{ch}' at {i} in format '{raw_format}', parameter block is not closed.");
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
+                    }
+                    if (reading_raw_text)
+                    {
+                        atom_in_recog.Format = format_builder.ToString();
+                        atom_in_recog.Tag = tag_builder.ToString();
+                        atom_in_recog.AllParametersRequired = false;
+                        atom_in_recog.ParametersKey = Array.Empty<string>();
+                        atom_in_recog.ParametersValue = Array.Empty<string>();
+                        atom_in_recog.IsRawText = true;
+                        atoms.Add(atom_in_recog);
+                        tag_builder.Clear();
+                        para_builder.Clear();
+                        format_builder.Clear();
+                        reading_raw_text = false;
+                        atom_in_recog = new();
+                    }
+                    else
+                    {
+                        reading_raw_text = true;
+                    }
+                    continue;
+                case ':':
+                    if (reading_tag)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+                    if (reading_raw_text)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Raw Text Block");
+                    }
+                    if (reading_parameters)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
                     }
                     reading_tag = true;
                     continue;
                 case '}':
                 case '>':
-                    throw new Exception($"Invalid character '{ch}' at {i} in format '{raw_format}', need to have left bracket('<' or '{{') before it.");
+                    if (reading_tag)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Tag Block");
+                    }
+                    if (reading_raw_text)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Raw Text Block");
+                    }
+                    if (reading_parameters)
+                    {
+                        throw new InvalidKeyCharException(ch, i, raw_format, "Parameter Block");
+                    }
+                    throw new InvalidKeyCharException(ch, i, raw_format, "Missing Left Bracket");
                 default:
                     if (reading_parameters)
                     {
@@ -201,6 +295,11 @@ public class CN_NameTemplate
                     continue;
             }
             
+        }
+
+        if (requiring_right_bracket)
+        {
+            throw new Exception($"Missing right bracket('>' or '}}') in format '{raw_format}'. (Maybe you forget to close a atom block?)");
         }
         Dictionary<string, AtomNode> atom_nodes = new();
         foreach (CN_NameTemplateAtom atom in atoms.Where(atom => !string.IsNullOrEmpty(atom.Tag)))
