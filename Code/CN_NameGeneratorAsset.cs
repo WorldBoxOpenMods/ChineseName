@@ -34,4 +34,14 @@ public class CN_NameGeneratorAsset : Asset
         }
         return templates[templates.Count - 1];
     }
+
+    public string GenerateName(Dictionary<string, string> pParameters)
+    {
+        int max_try = 10;
+        while (max_try-- > 0)
+        {
+            string name = GetRandomTemplate().GenerateName(pParameters);
+            if (!string.IsNullOrEmpty(name)) return name;
+        }
+    }
 }
