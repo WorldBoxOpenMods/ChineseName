@@ -11,7 +11,7 @@ public class KingdomNamePatch : IPatch
         public override void Handle(Kingdom pKingdom, bool pCiv)
         {
             if (!pCiv) return;
-            if (!string.IsNullOrEmpty(pKingdom.data.name)) return;
+            if (!string.IsNullOrWhiteSpace(pKingdom.data.name)) return;
 
             string name_generator_id = "human_kingdom";
             if (pKingdom.race == null)
@@ -28,7 +28,7 @@ public class KingdomNamePatch : IPatch
             var template = asset.GetRandomTemplate();
             
             var para = template.GetParametersToFill();
-            
+            ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
             
             
             pKingdom.data.name = template.GenerateName(para);
@@ -43,11 +43,12 @@ public class KingdomNamePatch : IPatch
 
     private static bool set_kingdom_motto(Kingdom __instance)
     {
-        if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
+        if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get("kingdom_mottos");
         if (generator == null) return true;
         var template = generator.GetRandomTemplate();
         var para = template.GetParametersToFill();
+        ParameterGetters.GetKingdomParameterGetter(generator.parameter_getter)(__instance, para);
         __instance.data.motto = template.GenerateName(para);
         return true;
     }

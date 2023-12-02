@@ -9,12 +9,13 @@ public class CultureNamePatch : IPatch
     {
         public override void Handle(Culture pCulture, Race pRace, City pCity)
         {
-            if (!string.IsNullOrEmpty(pCulture.data.name)) return;
+            if (!string.IsNullOrWhiteSpace(pCulture.data.name)) return;
             string name_generator_id = pRace.name_template_culture;
             var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if (asset == null) return;
             var template = asset.GetRandomTemplate();
             var para = template.GetParametersToFill();
+            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
             pCulture.data.name = template.GenerateName(para);
         }
     }

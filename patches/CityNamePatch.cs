@@ -10,7 +10,7 @@ public class CityNamePatch : IPatch
     {
         public override void Handle(City pCity)
         {
-            if(!string.IsNullOrEmpty(pCity.data.name)) return;
+            if(!string.IsNullOrWhiteSpace(pCity.data.name)) return;
             string name_generator_id = pCity.race.name_template_city;
             CN_NameGeneratorAsset asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if(asset == null) return;
@@ -18,7 +18,7 @@ public class CityNamePatch : IPatch
             CN_NameTemplate template = asset.GetRandomTemplate();
             
             Dictionary<string, string> para = template.GetParametersToFill();
-            
+            ParameterGetters.GetCityParameterGetter(asset.parameter_getter)(pCity, para);
             
             
             pCity.data.name = template.GenerateName(para);

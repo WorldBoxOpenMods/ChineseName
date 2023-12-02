@@ -7,7 +7,7 @@ namespace Chinese_Name;
 public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
 {
     internal static readonly WordLibraryManager Instance = new();
-
+    private static HashSet<string> submitted_dir = new HashSet<string>();
     public override void init()
     {
         base.init();
@@ -24,11 +24,13 @@ public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
     }
     public static void SubmitDirectoryToLoad(string pDirectory)
     {
+        if (submitted_dir.Contains(pDirectory)) return;
         TextAsset[] text_assets = Resources.LoadAll<TextAsset>(pDirectory);
         foreach (TextAsset text_asset in text_assets)
         {
             Instance.add(new WordLibraryAsset(text_asset.name, text_asset.text.Replace("\r", "").Split('\n').ToList()));
         }
+        submitted_dir.Add(pDirectory);
     }
 
     public static void Submit(string pId, List<string> pWords)

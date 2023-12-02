@@ -9,7 +9,7 @@ public class WarNamePatch : IPatch
     {
         public override void Handle(WarManager pWarManager, War pWar, Kingdom pAttacker, Kingdom pDefender, WarTypeAsset pWarType)
         {
-            if (!string.IsNullOrEmpty(pWar.data.name)) return;
+            if (!string.IsNullOrWhiteSpace(pWar.data.name)) return;
             if (pDefender != null && pDefender.getAge() <= 1)
             {
                 pWarType = WarTypeLibrary.rebellion;
@@ -19,6 +19,7 @@ public class WarNamePatch : IPatch
             
             var template = generator.GetRandomTemplate();
             var para = template.GetParametersToFill();
+            ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
             
             pWar.data.name = template.GenerateName(para);
         }

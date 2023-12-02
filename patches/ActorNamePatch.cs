@@ -20,7 +20,7 @@ public class ActorNamePatch : IPatch
         foreach (Actor unit in __instance.units.Values)
         {
             unit.data.get(DataS.family_name, out tmp, "");
-            if (!string.IsNullOrEmpty(tmp))
+            if (!string.IsNullOrWhiteSpace(tmp))
             {
                 pActor.data.set(DataS.family_name, tmp);
                 return;
@@ -29,11 +29,13 @@ public class ActorNamePatch : IPatch
     }
     private static bool set_actor_name(ActorBase __instance)
     {
-        if (!string.IsNullOrEmpty(__instance.data.name)) return true;
+        if (!string.IsNullOrWhiteSpace(__instance.data.name)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get(__instance.asset.nameTemplate);
         if (generator == null) return true;
         var template = generator.GetRandomTemplate();
         var para = template.GetParametersToFill();
+
+        ParameterGetters.GetActorParameterGetter(generator.parameter_getter)(__instance.a, para);
         
         __instance.data.get(DataS.family_name, out var family_name, "");
         para[DataS.family_name_in_template] = family_name;

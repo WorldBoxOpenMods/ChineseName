@@ -10,12 +10,13 @@ public class AllianceNamePatch : IPatch
     {
         public override void Handle(Alliance pAlliance, Kingdom pKingdom, Kingdom pKingdom2)
         {
-            if (!string.IsNullOrEmpty(pAlliance.data.name)) return;
+            if (!string.IsNullOrWhiteSpace(pAlliance.data.name)) return;
             var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
             if (generator == null) return;
             
             var template = generator.GetRandomTemplate();
             var para = template.GetParametersToFill();
+            ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
             
             pAlliance.data.name = template.GenerateName(para);
         }
@@ -30,11 +31,12 @@ public class AllianceNamePatch : IPatch
 
     private static bool set_alliance_motto(Alliance __instance)
     {
-        if (!string.IsNullOrEmpty(__instance.data.motto)) return true;
+        if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get("alliance_mottos");
         if (generator == null) return true;
         var template = generator.GetRandomTemplate();
         var para = template.GetParametersToFill();
+        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
         __instance.data.motto = template.GenerateName(para);
         return true;
     }

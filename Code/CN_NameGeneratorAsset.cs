@@ -6,6 +6,8 @@ namespace Chinese_Name;
 [Serializable]
 public class CN_NameGeneratorAsset : Asset
 {
+    [JsonProperty("parameter_getter")]
+    public string parameter_getter = "default";
     [JsonProperty("templates")]
     public List<CN_NameTemplate> templates;
 

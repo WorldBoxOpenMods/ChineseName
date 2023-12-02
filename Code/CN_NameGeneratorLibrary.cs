@@ -7,6 +7,7 @@ namespace Chinese_Name;
 public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>  
 {
     internal static CN_NameGeneratorLibrary Instance = new();
+    private static HashSet<string> submitted_dir = new HashSet<string>();
     public override void init()
     {
         base.init();
@@ -22,6 +23,7 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
 
     public static void SubmitDirectoryToLoad(string pDirectory)
     {
+        if (submitted_dir.Contains(pDirectory)) return;
         List<List<CN_NameGeneratorAsset>> name_generator_assets =
             GeneralUtils.DeserializeAllFromResource<List<CN_NameGeneratorAsset>>(pDirectory);
         List<CN_NameGeneratorAsset> name_generator_assets_flatten = new List<CN_NameGeneratorAsset>();
@@ -33,6 +35,7 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
         {
             Submit(asset);
         }
+        submitted_dir.Add(pDirectory);
     }
     public static void Submit(CN_NameGeneratorAsset pAsset)
     {
@@ -62,6 +65,20 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
             return;
         }
         Instance.add(pAsset);
-        // TODO: Patch to vanilla name generator
+
+        if(!AssetManager.nameGenerator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
+        {
+            vanilla_asset = AssetManager.nameGenerator.add(new NameGeneratorAsset()
+            {
+                id = pAsset.id
+            });
+        }
+
+        vanilla_asset.use_dictionary = false;
+        vanilla_asset.templates = new List<string>()
+        {
+            "space"
+        };
+        vanilla_asset.vowels = Array.Empty<string>();
     }
 }
