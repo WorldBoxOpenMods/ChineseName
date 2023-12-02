@@ -16,6 +16,11 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
         SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "name_generators/default"));
     }
 
+    public static CN_NameGeneratorAsset Get(string pId)
+    {
+        return Instance.get(pId);
+    }
+
     internal void Reload()
     {
         HashSet<string> reload_dir = new HashSet<string>(submitted_dir);

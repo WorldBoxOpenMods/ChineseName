@@ -6,15 +6,15 @@ namespace Chinese_Name;
 [Serializable]
 public class CN_NameGeneratorAsset : Asset
 {
-    [JsonProperty("parameter_getter")]
-    public string parameter_getter = "default";
+    [JsonProperty("parameter_getter")] public string parameter_getter { get; private set; } = "default";
+
     [JsonProperty("templates")]
-    public List<CN_NameTemplate> templates;
+    public List<CN_NameTemplate> templates { get; private set; }
 
     private float[] weights = null;
     private float total_weight = 0f;
     
-    internal CN_NameTemplate GetRandomTemplate()
+    public CN_NameTemplate GetRandomTemplate()
     {
         if (weights == null || weights.Length != templates.Count)
         {

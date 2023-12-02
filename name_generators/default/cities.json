@@ -6,5 +6,29 @@
                 "format": "{真实城名}"
             }
         ]
+    },
+    {
+        "id": "elf_city",
+        "templates": [
+            {
+                "format": "{西方姓氏}#城#"
+            }
+        ]
+    },
+    {
+        "id": "orc_city",
+        "templates": [
+            {
+                "format": "{西方姓氏}#城#"
+            }
+        ]
+    },
+    {
+        "id": "dwarf_city",
+        "templates": [
+            {
+                "format": "{西方姓氏}#城#"
+            }
+        ]
     }
 ]

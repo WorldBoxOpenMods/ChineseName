@@ -1,0 +1,47 @@
+[
+    {
+        "id": "war_conquest",
+        "templates": [
+            {
+                "format": "$defender_capital$#保卫战#",
+                "weight": 5
+            },
+            {
+                "format": "#侵略战争#",
+                "weight": 0.5
+            }
+        ]
+    },
+    {
+        "id": "war_spite",
+        "templates": [
+            {
+                "format": "#战争#"
+            }
+        ]
+    },
+    {
+        "id": "war_inspire",
+        "templates": [
+            {
+                "format": "#战争#"
+            }
+        ]
+    },
+    {
+        "id": "war_rebellion",
+        "templates": [
+            {
+                "format": "#战争#"
+            }
+        ]
+    },
+    {
+        "id": "war_whisper",
+        "templates": [
+            {
+                "format": "#战争#"
+            }
+        ]
+    }
+]

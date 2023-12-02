@@ -1,0 +1,10 @@
+[
+    {
+        "id": "alliance_name",
+        "templates": [
+            {
+                "format": "#联盟#"
+            }
+        ]
+    }
+]

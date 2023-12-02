@@ -1,0 +1,26 @@
+[
+    {
+        "id": "kingdom_mottos",
+        "templates": [
+            {
+                "format": "{常见格言}"
+            }
+        ]
+    },
+    {
+        "id": "clan_mottos",
+        "templates": [
+            {
+                "format": "{常见格言}"
+            }
+        ]
+    },
+    {
+        "id": "alliance_mottos",
+        "templates": [
+            {
+                "format": "{常见格言}"
+            }
+        ]
+    }
+]

@@ -6,5 +6,29 @@
                 "format": "{真实城名}#文化#"
             }
         ]
+    },
+    {
+        "id": "elf_culture",
+        "templates": [
+            {
+                "format": "{真实城名}#文化#"
+            }
+        ]
+    },
+    {
+        "id": "orc_culture",
+        "templates": [
+            {
+                "format": "{真实城名}#文化#"
+            }
+        ]
+    },
+    {
+        "id": "dwarf_culture",
+        "templates": [
+            {
+                "format": "{真实城名}#文化#"
+            }
+        ]
     }
 ]

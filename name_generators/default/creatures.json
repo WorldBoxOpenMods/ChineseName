@@ -24,5 +24,31 @@
                 "weight": 4
             }
         ]
+    },
+    {
+        "id": "orc_name",
+        "templates": [
+            {
+                "format": "{西方名字}#·#{西方名字中缀}#·#{西方姓氏:family_name}",
+                "weight": 1
+            },
+            {
+                "format": "{西方名字}#·#{西方姓氏:family_name}",
+                "weight": 4
+            }
+        ]
+    },
+    {
+        "id": "dwarf_name",
+        "templates": [
+            {
+                "format": "{西方名字}#·#{西方名字中缀}#·#{西方姓氏:family_name}",
+                "weight": 1
+            },
+            {
+                "format": "{西方名字}#·#{西方姓氏:family_name}",
+                "weight": 4
+            }
+        ]
     }
 ]

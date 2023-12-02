@@ -6,5 +6,29 @@
                 "format": "{真实国名}"
             }
         ]
+    },
+    {
+        "id": "elf_kingdom",
+        "templates": [
+            {
+                "format": "{西方姓氏}{西方国名后缀}"
+            }
+        ]
+    },
+    {
+        "id": "orc_kingdom",
+        "templates": [
+            {
+                "format": "{西方姓氏}{西方国名后缀}"
+            }
+        ]
+    },
+    {
+        "id": "dwarf_kingdom",
+        "templates": [
+            {
+                "format": "{西方姓氏}{西方国名后缀}"
+            }
+        ]
     }
 ]

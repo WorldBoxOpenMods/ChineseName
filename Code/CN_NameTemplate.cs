@@ -62,6 +62,11 @@ public class CN_NameTemplate
             switch (atom.Type)
             {
                 case AtomType.Parameter:
+                    string para = atom.GetFilledTemplate(pParameters);
+                    if (string.IsNullOrEmpty(para))
+                    {
+                        return string.Empty;
+                    }
                     builder.Append(atom.GetFilledTemplate(pParameters));
                     continue;
                 case AtomType.RawText:
