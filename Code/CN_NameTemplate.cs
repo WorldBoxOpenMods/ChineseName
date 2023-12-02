@@ -72,7 +72,12 @@ public class CN_NameTemplate
                     builder.Append(atom.Format);
                     continue;
                 case AtomType.WordLibrary:
-                    builder.Append(WordLibraryManager.GetRandomWord(atom.GetFilledTemplate(pParameters)));
+                    string word = WordLibraryManager.GetRandomWord(atom.GetFilledTemplate(pParameters));
+                    if (string.IsNullOrEmpty(word) && atom.AllParametersRequired)
+                    {
+                        return string.Empty;
+                    }
+                    builder.Append(word);
                     continue;
             }
         }
