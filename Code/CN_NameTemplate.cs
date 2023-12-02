@@ -98,7 +98,7 @@ public class CN_NameTemplate
         public string[] ParametersKey;
         public string Format;
         public AtomType Type = AtomType.WordLibrary;
-
+        [Hotfixable]
         public string GetFilledTemplate(Dictionary<string, string> pParameters)
         {
             for (int i = 0; i < ParametersKey.Length; i++)
@@ -108,7 +108,17 @@ public class CN_NameTemplate
                     return string.Empty;
                 }
             }
-            return string.Format(Format, ParametersValue);
+
+            try
+            {
+                return string.Format(Format, ParametersValue);
+            }
+            catch (Exception)
+            {
+                ModClass.LogError($"Failed to format '{Format}' with parameters '{string.Join(", ", ParametersValue)}'.");
+                return string.Empty;
+            }
+
         }
     }
     internal void Parse()
@@ -240,6 +250,7 @@ public class CN_NameTemplate
                             format_builder.Clear();
                             reading_parameters = false;
                             atom_in_recog = new();
+                            parameter_index = 0;
                             continue;
                         }
                         para_builder.Append(';');
