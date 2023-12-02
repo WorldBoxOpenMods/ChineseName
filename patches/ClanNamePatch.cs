@@ -9,9 +9,13 @@ public class ClanNamePatch : IPatch
 {
     class RenameClan : ClanCreateHandler
     {
+        private static readonly HashSet<string> vanilla_postfix = new()
+        {
+            "ak", "an", "ok", "on", "uk", "un"
+        };
         public override void Handle(Clan pClan, Actor pFounder)
         {
-            if (!string.IsNullOrWhiteSpace(pClan.data.name)) return;
+            if (!string.IsNullOrWhiteSpace(pClan.data.name) && !vanilla_postfix.Contains(pClan.data.name.Trim())) return;
             if (pFounder == null) return;
 
             var asset = CN_NameGeneratorLibrary.Instance.get(pFounder.race.name_template_clan);
@@ -22,7 +26,9 @@ public class ClanNamePatch : IPatch
             ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pClan.data.name) && max_try-- > 0)
+
+            pClan.data.name = "";
+            while (string.IsNullOrEmpty(pClan.data.name) && max_try-- > 0)
             {
                 var template = asset.GetRandomTemplate();
                 pClan.data.name = template.GenerateName(para);
@@ -47,7 +53,7 @@ public class ClanNamePatch : IPatch
         ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, null, para);
         
         int max_try = 10;
-        while (!string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
+        while (string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
         {
             var template = generator.GetRandomTemplate();
             __instance.data.motto = template.GenerateName(para);

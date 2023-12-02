@@ -24,7 +24,9 @@ public class CultureNamePatch : IPatch
             ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pCulture.data.name) && max_try-- > 0)
+
+            pCulture.data.name = "";
+            while (string.IsNullOrEmpty(pCulture.data.name) && max_try-- > 0)
             {
                 var template = asset.GetRandomTemplate();
                 pCulture.data.name = template.GenerateName(para);

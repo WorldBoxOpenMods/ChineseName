@@ -43,5 +43,6 @@ public class CN_NameGeneratorAsset : Asset
             string name = GetRandomTemplate().GenerateName(pParameters);
             if (!string.IsNullOrEmpty(name)) return name;
         }
+        return "NO_NAME";
     }
 }

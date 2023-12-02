@@ -41,7 +41,7 @@ public class ActorNamePatch : IPatch
         __instance.data.get(DataS.family_name, out var family_name, "");
         para[DataS.family_name_in_template] = family_name;
         
-        while (!string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
+        while (string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
         {
             var template = generator.GetRandomTemplate();
             __instance.data.name = template.GenerateName(para);

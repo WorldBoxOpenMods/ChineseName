@@ -20,7 +20,7 @@ public class CityNamePatch : IPatch
             ParameterGetters.GetCityParameterGetter(asset.parameter_getter)(pCity, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pCity.data.name) && max_try-- > 0)
+            while (string.IsNullOrWhiteSpace(pCity.data.name) && max_try-- > 0)
             {
                 CN_NameTemplate template = asset.GetRandomTemplate();
                 pCity.data.name = template.GenerateName(para);

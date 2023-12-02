@@ -20,7 +20,7 @@ public class AllianceNamePatch : IPatch
             ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pAlliance.data.name) && max_try-- > 0)
+            while (string.IsNullOrWhiteSpace(pAlliance.data.name) && max_try-- > 0)
             {
                 var template = generator.GetRandomTemplate();
                 pAlliance.data.name = template.GenerateName(para);
@@ -46,7 +46,7 @@ public class AllianceNamePatch : IPatch
         ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
         
         int max_try = 10;
-        while (!string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
+        while (string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
         {
             var template = generator.GetRandomTemplate();
             __instance.data.motto = template.GenerateName(para);

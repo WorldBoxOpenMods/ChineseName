@@ -22,7 +22,7 @@ public class WarNamePatch : IPatch
             ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pWar.data.name) && max_try-- > 0)
+            while (string.IsNullOrWhiteSpace(pWar.data.name) && max_try-- > 0)
             {
                 var template = generator.GetRandomTemplate();
                 pWar.data.name = template.GenerateName(para);

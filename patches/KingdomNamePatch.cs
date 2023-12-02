@@ -32,7 +32,7 @@ public class KingdomNamePatch : IPatch
             ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
             
             int max_try = 10;
-            while (!string.IsNullOrWhiteSpace(pKingdom.data.name) && max_try-- > 0)
+            while (string.IsNullOrWhiteSpace(pKingdom.data.name) && max_try-- > 0)
             {
                 var template = asset.GetRandomTemplate();
                 pKingdom.data.name = template.GenerateName(para);
@@ -57,7 +57,7 @@ public class KingdomNamePatch : IPatch
         ParameterGetters.GetKingdomParameterGetter(generator.parameter_getter)(__instance, para);
 
         int max_try = 10;
-        while (!string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
+        while (string.IsNullOrWhiteSpace(__instance.data.name) && max_try-- > 0)
         {
             var template = generator.GetRandomTemplate();
             __instance.data.motto = template.GenerateName(para);
