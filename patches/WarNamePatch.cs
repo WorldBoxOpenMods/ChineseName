@@ -16,12 +16,15 @@ public class WarNamePatch : IPatch
             }
             var generator = CN_NameGeneratorLibrary.Instance.get(pWarType.name_template);
             if (generator == null) return;
-            
-            var template = generator.GetRandomTemplate();
-            var para = template.GetParametersToFill();
-            ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
-            
-            pWar.data.name = template.GenerateName(para);
+            int max_try = 10;
+            while (!string.IsNullOrWhiteSpace(pWar.data.name) && max_try-- > 0)
+            {
+                var template = generator.GetRandomTemplate();
+                var para = template.GetParametersToFill();
+                ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
+                
+                pWar.data.name = template.GenerateName(para);
+            }
         }
     }
     public void Initialize()

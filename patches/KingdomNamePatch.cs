@@ -25,13 +25,14 @@ public class KingdomNamePatch : IPatch
 
             var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if (asset == null) return;
-            var template = asset.GetRandomTemplate();
-            
-            var para = template.GetParametersToFill();
-            ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
-            
-            
-            pKingdom.data.name = template.GenerateName(para);
+            int max_try = 10;
+            while (!string.IsNullOrWhiteSpace(pKingdom.data.name) && max_try-- > 0)
+            {
+                var template = asset.GetRandomTemplate();
+                var para = template.GetParametersToFill();
+                ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
+                pKingdom.data.name = template.GenerateName(para);
+            }
         }
     }
     public void Initialize()

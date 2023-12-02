@@ -14,11 +14,15 @@ public class AllianceNamePatch : IPatch
             var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
             if (generator == null) return;
             
-            var template = generator.GetRandomTemplate();
-            var para = template.GetParametersToFill();
-            ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
-            
-            pAlliance.data.name = template.GenerateName(para);
+            int max_try = 10;
+            while (!string.IsNullOrWhiteSpace(pAlliance.data.name) && max_try-- > 0)
+            {
+                var template = generator.GetRandomTemplate();
+                var para = template.GetParametersToFill();
+                ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
+                
+                pAlliance.data.name = template.GenerateName(para);
+            }
         }
     }
 
@@ -34,10 +38,15 @@ public class AllianceNamePatch : IPatch
         if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get("alliance_mottos");
         if (generator == null) return true;
-        var template = generator.GetRandomTemplate();
-        var para = template.GetParametersToFill();
-        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
-        __instance.data.motto = template.GenerateName(para);
+        int max_try = 10;
+        while (!string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
+        {
+            var template = generator.GetRandomTemplate();
+            var para = template.GetParametersToFill();
+            ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
+            __instance.data.motto = template.GenerateName(para);
+        }
+
         return true;
     }
 }

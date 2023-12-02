@@ -15,10 +15,14 @@ public class ClanNamePatch : IPatch
 
             var asset = CN_NameGeneratorLibrary.Instance.get(pFounder.race.name_template_clan);
             if (asset == null) return;
-            var template = asset.GetRandomTemplate();
-            var para = template.GetParametersToFill();
-            ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
-            pClan.data.name = template.GenerateName(para);
+            int max_try = 10;
+            while (!string.IsNullOrWhiteSpace(pClan.data.name) && max_try-- > 0)
+            {
+                var template = asset.GetRandomTemplate();
+                var para = template.GetParametersToFill();
+                ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
+                pClan.data.name = template.GenerateName(para);
+            }
         }
     }
     public void Initialize()
@@ -33,10 +37,14 @@ public class ClanNamePatch : IPatch
         if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
         var generator = CN_NameGeneratorLibrary.Instance.get("clan_mottos");
         if (generator == null) return true;
-        var template = generator.GetRandomTemplate();
-        var para = template.GetParametersToFill();
-        ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, null, para);
-        __instance.data.motto = template.GenerateName(para);
+        int max_try = 10;
+        while (!string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
+        {
+            var template = generator.GetRandomTemplate();
+            var para = template.GetParametersToFill();
+            ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, null, para);
+            __instance.data.motto = template.GenerateName(para);
+        }
         return true;
     }
 }

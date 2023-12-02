@@ -18,10 +18,14 @@ public class CultureNamePatch : IPatch
             string name_generator_id = pRace.name_template_culture;
             var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if (asset == null) return;
-            var template = asset.GetRandomTemplate();
-            var para = template.GetParametersToFill();
-            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
-            pCulture.data.name = template.GenerateName(para);
+            int max_try = 10;
+            while (!string.IsNullOrWhiteSpace(pCulture.data.name) && max_try-- > 0)
+            {
+                var template = asset.GetRandomTemplate();
+                var para = template.GetParametersToFill();
+                ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
+                pCulture.data.name = template.GenerateName(para);
+            }
         }
     }
     public void Initialize()
