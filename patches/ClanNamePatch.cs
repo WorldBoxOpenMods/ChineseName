@@ -7,34 +7,6 @@ namespace Chinese_Name;
 
 public class ClanNamePatch : IPatch
 {
-    class RenameClan : ClanCreateHandler
-    {
-        private static readonly HashSet<string> vanilla_postfix = new()
-        {
-            "ak", "an", "ok", "on", "uk", "un"
-        };
-        public override void Handle(Clan pClan, Actor pFounder)
-        {
-            if (!string.IsNullOrWhiteSpace(pClan.data.name) && !vanilla_postfix.Contains(pClan.data.name.Trim())) return;
-            if (pFounder == null) return;
-
-            var asset = CN_NameGeneratorLibrary.Instance.get(pFounder.race.name_template_clan);
-            if (asset == null) return;
-
-            var para = new Dictionary<string, string>();
-            
-            ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
-            
-            int max_try = 10;
-
-            pClan.data.name = "";
-            while (string.IsNullOrEmpty(pClan.data.name) && max_try-- > 0)
-            {
-                var template = asset.GetRandomTemplate();
-                pClan.data.name = template.GenerateName(para);
-            }
-        }
-    }
     public void Initialize()
     {
         ClanCreateListener.RegisterHandler(new RenameClan());
@@ -49,15 +21,34 @@ public class ClanNamePatch : IPatch
         if (generator == null) return true;
 
         var para = new Dictionary<string, string>();
-            
+
         ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, null, para);
-        
-        int max_try = 10;
-        while (string.IsNullOrWhiteSpace(__instance.data.motto) && max_try-- > 0)
-        {
-            var template = generator.GetRandomTemplate();
-            __instance.data.motto = template.GenerateName(para);
-        }
+
+        __instance.data.motto = generator.GenerateName(para);
         return true;
+    }
+
+    class RenameClan : ClanCreateHandler
+    {
+        private static readonly HashSet<string> vanilla_postfix = new()
+        {
+            "ak", "an", "ok", "on", "uk", "un"
+        };
+
+        public override void Handle(Clan pClan, Actor pFounder)
+        {
+            if (!string.IsNullOrWhiteSpace(pClan.data.name) &&
+                !vanilla_postfix.Contains(pClan.data.name.Trim())) return;
+            if (pFounder == null) return;
+
+            var asset = CN_NameGeneratorLibrary.Instance.get(pFounder.race.name_template_clan);
+            if (asset == null) return;
+
+            var para = new Dictionary<string, string>();
+
+            ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
+
+            pClan.data.name = asset.GenerateName(para);
+        }
     }
 }

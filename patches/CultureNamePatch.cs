@@ -6,35 +6,30 @@ namespace Chinese_Name;
 
 public class CultureNamePatch : IPatch
 {
+    public void Initialize()
+    {
+        CultureCreateListener.RegisterHandler(new RenameCulture());
+    }
+
     class RenameCulture : CultureCreateHandler
     {
         private static readonly HashSet<string> vanilla_postfix = new()
         {
             "ak", "an", "ok", "on", "uk", "un"
         };
+
         public override void Handle(Culture pCulture, Race pRace, City pCity)
         {
-            if (!string.IsNullOrWhiteSpace(pCulture.data.name) && !vanilla_postfix.Contains(pCulture.data.name.Trim())) return;
+            if (!string.IsNullOrWhiteSpace(pCulture.data.name) &&
+                !vanilla_postfix.Contains(pCulture.data.name.Trim())) return;
             string name_generator_id = pRace.name_template_culture;
             var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
             if (asset == null) return;
 
             var para = new Dictionary<string, string>();
-            
-            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
-            
-            int max_try = 10;
 
-            pCulture.data.name = "";
-            while (string.IsNullOrEmpty(pCulture.data.name) && max_try-- > 0)
-            {
-                var template = asset.GetRandomTemplate();
-                pCulture.data.name = template.GenerateName(para);
-            }
+            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
+            pCulture.data.name = asset.GenerateName(para);
         }
-    }
-    public void Initialize()
-    {
-        CultureCreateListener.RegisterHandler(new RenameCulture());
     }
 }

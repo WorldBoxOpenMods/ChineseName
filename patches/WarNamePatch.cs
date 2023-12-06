@@ -6,6 +6,11 @@ namespace Chinese_Name;
 
 public class WarNamePatch : IPatch
 {
+    public void Initialize()
+    {
+        WarStartListener.RegisterHandler(new RenameWar());
+    }
+
     class RenameWar : WarStartHandler
     {
         public override void Handle(War pWar, Kingdom pAttacker, Kingdom pDefender, WarTypeAsset pWarType)
@@ -15,22 +20,14 @@ public class WarNamePatch : IPatch
             {
                 pWarType = WarTypeLibrary.rebellion;
             }
+
             var generator = CN_NameGeneratorLibrary.Instance.get(pWarType.name_template);
             if (generator == null) return;
 
             var para = new Dictionary<string, string>();
             ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
-            
-            int max_try = 10;
-            while (string.IsNullOrWhiteSpace(pWar.data.name) && max_try-- > 0)
-            {
-                var template = generator.GetRandomTemplate();
-                pWar.data.name = template.GenerateName(para);
-            }
+
+            pWar.data.name = generator.GenerateName(para);
         }
-    }
-    public void Initialize()
-    {
-        WarStartListener.RegisterHandler(new RenameWar());
     }
 }
