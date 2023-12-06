@@ -7,48 +7,58 @@ namespace Chinese_Name;
 
 public static class ParameterGetters
 {
-    private static Dictionary<string, Action<Actor, Dictionary<string, string>>> actor_parameter_getters = new()
-    {
-        { "default", default_actor_parameter_getter }
-    };
+    private static readonly Dictionary<string, Action<Actor, Dictionary<string, string>>> actor_parameter_getters =
+        new()
+        {
+            { "default", default_actor_parameter_getter }
+        };
 
-    private static Dictionary<string, Action<City, Dictionary<string, string>>> city_parameter_getters = new()
+    private static readonly Dictionary<string, Action<City, Dictionary<string, string>>> city_parameter_getters = new()
     {
         { "default", default_city_parameter_getter }
     };
 
-    private static Dictionary<string, Action<Kingdom, Dictionary<string, string>>> kingdom_parameter_getters = new()
-    {
-        { "default", default_kingdom_parameter_getter }
-    };
+    private static readonly Dictionary<string, Action<Kingdom, Dictionary<string, string>>> kingdom_parameter_getters =
+        new()
+        {
+            { "default", default_kingdom_parameter_getter }
+        };
 
-    private static Dictionary<string, Action<Culture, Dictionary<string, string>>> culture_parameter_getters = new()
-    {
-        { "default", default_culture_parameter_getter }
-    };
+    private static readonly Dictionary<string, Action<Culture, Dictionary<string, string>>> culture_parameter_getters =
+        new()
+        {
+            { "default", default_culture_parameter_getter }
+        };
 
-    private static Dictionary<string, Action<Clan, Actor, Dictionary<string, string>>> clan_parameter_getters = new()
-    {
-        { "default", default_clan_parameter_getter }
-    };
+    private static readonly Dictionary<string, Action<Clan, Actor, Dictionary<string, string>>> clan_parameter_getters =
+        new()
+        {
+            { "default", default_clan_parameter_getter }
+        };
 
-    private static Dictionary<string, Action<Alliance, Dictionary<string, string>>> alliance_parameter_getters = new()
-    {
-        { "default", default_alliance_parameter_getter }
-    };
+    private static readonly Dictionary<string, Action<Alliance, Dictionary<string, string>>>
+        alliance_parameter_getters = new()
+        {
+            { "default", default_alliance_parameter_getter }
+        };
 
-    private static Dictionary<string, Action<War, Dictionary<string, string>>> war_parameter_getters = new()
+    private static readonly Dictionary<string, Action<War, Dictionary<string, string>>> war_parameter_getters = new()
     {
         { "default", default_war_parameter_getter }
     };
 
-    private static Dictionary<string, Action<ItemData, ItemAsset, Actor, Dictionary<string, string>>>
+    private static readonly Dictionary<string, Action<ItemData, ItemAsset, Actor, Dictionary<string, string>>>
         item_parameter_getters = new()
         {
             { "default", default_item_parameter_getter }
         };
 
-    private static Dictionary<Type, Dictionary<string, Delegate>> custom_parameter_getters = new();
+    internal static readonly List<Action<Dictionary<string, string>>> global_parameter_getters = new()
+    {
+        default_global_parameter_getter
+    };
+
+    private static readonly Dictionary<Type, Dictionary<string, Delegate>> custom_parameter_getters = new();
 
     [Hotfixable]
     private static void default_actor_parameter_getter(Actor pActor, Dictionary<string, string> pParameters)
@@ -119,6 +129,14 @@ public static class ParameterGetters
     private static void default_item_parameter_getter(ItemData pItemData, ItemAsset pItemAsset, Actor pActor,
         Dictionary<string, string> pParameters)
     {
+    }
+
+    [Hotfixable]
+    private static void default_global_parameter_getter(Dictionary<string, string> pParameters)
+    {
+        pParameters["month"] = AssetManager.months.getMonth(World.world.mapStats.getCurrentMonth() + 1).english_name;
+        pParameters["year"] = World.world.mapStats.getCurrentYear().ToString();
+        pParameters["era"] = World.world.mapStats.era_id;
     }
 
     public static Action<Actor, Dictionary<string, string>> GetActorParameterGetter(string pName)
@@ -230,5 +248,10 @@ public static class ParameterGetters
         }
 
         getters[pName] = pGetter;
+    }
+
+    public static void PutGlobalParameterGetter(Action<Dictionary<string, string>> pGetter)
+    {
+        global_parameter_getters.Add(pGetter);
     }
 }
