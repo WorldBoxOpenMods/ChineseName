@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using NeoModLoader.api.attributes;
 
 namespace Chinese_Name;
 
@@ -41,9 +42,10 @@ public class ItemNamePatch : IPatch
             if (++num > 10)
             {
                 ItemGenerator.unique_legendary_names.Clear();
-                return true;
             }
+            if (num > 12) return true;
         }
+        pItemData.name = name;
         
         return false;
     }
