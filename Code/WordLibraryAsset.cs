@@ -11,4 +11,8 @@ public class WordLibraryAsset : Asset
         this.words = words;
         this.words ??= new List<string>();
     }
+    public string GetRandom()
+    {
+        return words.GetRandom();
+    }
 }

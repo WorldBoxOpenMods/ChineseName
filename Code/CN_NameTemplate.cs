@@ -7,7 +7,9 @@ using NeoModLoader.api.attributes;
 using Newtonsoft.Json;
 
 namespace Chinese_Name;
-
+/// <summary>
+/// 单个的命名模板
+/// </summary>
 [Serializable]
 public class CN_NameTemplate
 {
@@ -15,6 +17,7 @@ public class CN_NameTemplate
 
     private readonly HashSet<string> required_parameters = new();
     private List<CN_NameTemplateAtom> atoms_before_generate = new();
+    private bool has_parsed = false;
 
     CN_NameTemplate(string pFormat, float pWeight)
     {
@@ -30,7 +33,12 @@ public class CN_NameTemplate
     [JsonProperty("format")] public string raw_format { get; private set; }
 
     [JsonProperty("weight")] public float weight { get; private set; } = 1;
-
+    /// <summary>
+    /// 创建器
+    /// </summary>
+    /// <param name="pFormat">format文本</param>
+    /// <param name="pWeight">权重</param>
+    /// <returns></returns>
     public static CN_NameTemplate Create(string pFormat, float pWeight)
     {
         return new CN_NameTemplate(pFormat, pWeight);
@@ -98,6 +106,9 @@ public class CN_NameTemplate
 
     internal void Parse()
     {
+        if (has_parsed) return;
+        has_parsed = true;
+
         bool requiring_right_bracket = false;
 
         char[] format_key = new char[] { '{', '}', '<', '>' };

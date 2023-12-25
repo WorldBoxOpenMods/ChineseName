@@ -11,14 +11,17 @@ public class CN_NameGeneratorAsset : Asset
     private float total_weight = 0f;
 
     private float[] weights = null;
-    [JsonProperty("parameter_getter")] public string parameter_getter { get; private set; } = "default";
+    [JsonProperty("parameter_getter")] public string parameter_getter { get; protected set; } = "default";
 
     [JsonProperty("default_template")]
-    public CN_NameTemplate default_template { get; private set; } = CN_NameTemplate.Create("#NO_NAME#", 1);
+    public CN_NameTemplate default_template { get; protected set; } = CN_NameTemplate.Create("#NO_NAME#", 1);
 
-    [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; private set; }
-
-    public CN_NameTemplate GetRandomTemplate()
+    [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; protected set; }
+    /// <summary>
+    /// 按权重随机获取一个模板
+    /// </summary>
+    /// <remarks>你也可以override这个方法, 然后用单个提交的方式:Submit, 来提交派生的<see cref="CN_NameGeneratorAsset"/></remarks>
+    public virtual CN_NameTemplate GetRandomTemplate()
     {
         if (weights == null || weights.Length != templates.Count)
         {
@@ -41,8 +44,11 @@ public class CN_NameGeneratorAsset : Asset
 
         return templates[templates.Count - 1];
     }
-
-    public string GenerateName(Dictionary<string, string> pParameters)
+    /// <summary>
+    /// 根据参数, 尝试10次随机获取模板并生成名字
+    /// </summary>
+    /// <remarks>你也可以override这个方法, 然后用单个提交的方式:Submit, 来提交派生的<see cref="CN_NameGeneratorAsset"/></remarks>
+    public virtual string GenerateName(Dictionary<string, string> pParameters)
     {
         int max_try = 10;
         while (max_try-- > 0)

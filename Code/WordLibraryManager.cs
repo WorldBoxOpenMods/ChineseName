@@ -25,11 +25,16 @@ public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
             SubmitDirectoryToLoad(dir);
         }
     }
-    internal static string GetRandomWord(string pId)
+    /// <summary>
+    /// 从指定的词库中随机获取一个词
+    /// </summary>
+    /// <param name="pId">指定词库的id, 为对应文件文件名去除后缀</param>
+    /// <returns>指定词库中随机一个词, 如果词库不存在则返回空串</returns>
+    public static string GetRandomWord(string pId)
     {
         if (Instance.dict.TryGetValue(pId, out WordLibraryAsset asset) && asset.words.Count > 0)
         {
-            return Instance.dict[pId].words.GetRandom();
+            return Instance.dict[pId].GetRandom();
         }
         return "";
     }
