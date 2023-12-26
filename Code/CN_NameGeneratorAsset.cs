@@ -16,7 +16,8 @@ public class CN_NameGeneratorAsset : Asset
     [JsonProperty("default_template")]
     public CN_NameTemplate default_template { get; protected set; } = CN_NameTemplate.Create("#NO_NAME#", 1);
 
-    [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; protected set; }
+    [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; protected set; } = new();
+
     /// <summary>
     /// 按权重随机获取一个模板
     /// </summary>
@@ -44,6 +45,7 @@ public class CN_NameGeneratorAsset : Asset
 
         return templates[templates.Count - 1];
     }
+
     /// <summary>
     /// 根据参数, 尝试10次随机获取模板并生成名字
     /// </summary>
