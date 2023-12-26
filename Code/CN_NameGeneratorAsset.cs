@@ -22,7 +22,7 @@ public class CN_NameGeneratorAsset : Asset
     /// 按权重随机获取一个模板
     /// </summary>
     /// <remarks>你也可以override这个方法, 然后用单个提交的方式:Submit, 来提交派生的<see cref="CN_NameGeneratorAsset"/></remarks>
-    public virtual CN_NameTemplate GetRandomTemplate()
+    public virtual CN_NameTemplate GetTemplate(Dictionary<string, string> pParameters = null)
     {
         if (weights == null || weights.Length != templates.Count)
         {
@@ -55,7 +55,7 @@ public class CN_NameGeneratorAsset : Asset
         int max_try = 10;
         while (max_try-- > 0)
         {
-            string name = GetRandomTemplate().GenerateName(pParameters);
+            string name = GetTemplate(pParameters).GenerateName(pParameters);
             if (!string.IsNullOrEmpty(name)) return name;
         }
 

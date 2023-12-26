@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using HarmonyLib;
-using NeoModLoader.api.attributes;
 
 namespace Chinese_Name;
 
@@ -8,15 +7,17 @@ public class ItemNamePatch : IPatch
 {
     public void Initialize()
     {
-        new Harmony(nameof(set_item_name)).Patch(AccessTools.Method(typeof(ItemGenerator), nameof(ItemGenerator.checkModName)),
+        new Harmony(nameof(set_item_name)).Patch(
+            AccessTools.Method(typeof(ItemGenerator), nameof(ItemGenerator.checkModName)),
             prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_item_name))));
     }
 
-    private static bool set_item_name(ref ItemData pItemData, ItemAsset pModAsset, ItemAsset pItemAsset, ActorBase pActor)
+    private static bool set_item_name(ref ItemData pItemData, ItemAsset pModAsset, ItemAsset pItemAsset,
+        ActorBase pActor)
     {
         if (!string.IsNullOrWhiteSpace(pItemData.name)) return false;
         if (pModAsset.quality != ItemQuality.Legendary) return false;
-        
+
         string name = null;
         int num = 0;
         int no_found = 0;
@@ -31,22 +32,24 @@ public class ItemNamePatch : IPatch
             {
                 no_found++;
                 if (no_found > 3) return true;
-                
+
                 continue;
             }
 
-            var template = generator.GetRandomTemplate();
             ParameterGetters.GetItemParameterGetter(generator.parameter_getter)(pItemData, pItemAsset, pActor.a, para);
+            var template = generator.GetTemplate(para);
             name = template.GenerateName(para);
-            
+
             if (++num > 10)
             {
                 ItemGenerator.unique_legendary_names.Clear();
             }
+
             if (num > 12) return true;
         }
+
         pItemData.name = name;
-        
+
         return false;
     }
 }
