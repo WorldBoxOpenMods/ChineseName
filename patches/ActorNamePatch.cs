@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Chinese_Name.constants;
 using HarmonyLib;
-
 namespace Chinese_Name;
 
 public class ActorNamePatch : IPatch
@@ -13,6 +13,8 @@ public class ActorNamePatch : IPatch
             prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_actor_name))));
         harmony.Patch(AccessTools.Method(typeof(Clan), nameof(Clan.addUnit)),
             postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_actor_family_name))));
+        harmony.Patch(AccessTools.Method(typeof(ActionLibrary), nameof(ActionLibrary.turnIntoZombie)), transpiler: new HarmonyMethod(AccessTools.Method(GetType(), nameof(undead_creature_name))));
+        harmony.Patch(AccessTools.Method(typeof(ActionLibrary), nameof(ActionLibrary.turnIntoSkeleton)), transpiler: new HarmonyMethod(AccessTools.Method(GetType(), nameof(undead_creature_name))));
     }
 
     private static void set_actor_family_name(Clan __instance, Actor pActor)
@@ -48,5 +50,11 @@ public class ActorNamePatch : IPatch
         __instance.data.set(DataS.family_name, family_name);
 
         return true;
+    }
+    private static IEnumerable<CodeInstruction> undead_creature_name(IEnumerable<CodeInstruction> pIntro)
+    {
+        var codes = new List<CodeInstruction>(pIntro);
+        codes.Find(x => x.opcode == OpCodes.Ldstr && (string)x.operand == "Un").operand = "亡-";
+        return codes;
     }
 }
