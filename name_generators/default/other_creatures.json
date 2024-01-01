@@ -1,0 +1,500 @@
+[
+    {
+        "id": "sheep_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#羊#"
+            },
+            {
+                "format": "$天干地支纪年$#绵羊#"
+            }
+        ]
+    },
+    {
+        "id": "penguin_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#企鹅#"
+            }
+        ]
+    },
+    {
+        "id": "turtle_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#龟#"
+            },
+            {
+                "format": "$天干地支纪年$#海龟#"
+            }
+        ]
+    },
+    {
+        "id": "wolf_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#狼#"
+            }
+        ]
+    },
+    {
+        "id": "greg_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#格雷#"
+            }
+        ]
+    },
+    {
+        "id": "chicken_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#鸡#"
+            },
+            {
+                "format": "$天干地支纪年$#只因#"
+            },
+            {
+                "format": "$天干地支纪年$#坤#"
+            }
+        ]
+    },
+    {
+        "id": "alien_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#星人#"
+            }
+        ]
+    },
+    {
+        "id": "ufo_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#飞碟#"
+            }
+        ]
+    },
+    {
+        "id": "cold_one_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#冰魔#"
+            },
+            {
+                "format": "$天干地支纪年$#寒冰行者#"
+            },
+            {
+                "format": "$天干地支纪年$#寒冰恶魔#"
+            }
+        ]
+    },
+    {
+        "id": "bug_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#虫#"
+            },
+            {
+                "format": "$天干地支纪年$#蟲#"
+            },
+            {
+                "format": "$天干地支纪年$#漏洞#",
+                "weight": 0.1
+            }
+        ]
+    },
+    {
+        "id": "ant_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#蚂蚁#"
+            },
+            {
+                "format": "$天干地支纪年$#蚁#"
+            }
+        ]
+    },
+    {
+        "id": "demon_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#炎魔#"
+            },
+            {
+                "format": "$天干地支纪年$#恶魔#"
+            }
+        ]
+    },
+    {
+        "id": "fairy_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#天使#"
+            }
+        ]
+    },
+    {
+        "id": "crab_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#蟹#"
+            },
+            {
+                "format": "$天干地支纪年$#螃蟹#"
+            }
+        ]
+    },
+    {
+        "id": "cow_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#牛#"
+            }
+        ]
+    },
+    {
+        "id": "evil_mage_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#法师#"
+            }
+        ]
+    },
+    {
+        "id": "rhino_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#犀#"
+            },
+            {
+                "format": "$天干地支纪年$#犀牛#"
+            }
+        ]
+    },
+    {
+        "id": "monkey_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#猴#"
+            }
+        ]
+    },
+    {
+        "id": "buffalo_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#水牛#"
+            }
+        ]
+    },
+    {
+        "id": "fox_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#狐#"
+            },
+            {
+                "format": "$天干地支纪年$#狐狸#"
+            }
+        ]
+    },
+    {
+        "id": "hyena_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#鬣狗#"
+            }
+        ]
+    },
+    {
+        "id": "crocodile_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#鳄#"
+            }
+        ]
+    },
+    {
+        "id": "snake_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#蛇#"
+            }
+        ]
+    },
+    {
+        "id": "frog_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#蛙#"
+            }
+        ]
+    },
+    {
+        "id": "bioblob_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#生物质#"
+            }
+        ]
+    },
+    {
+        "id": "assimilator_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#核心#"
+            },
+            {
+                "format": "$天干地支纪年$#机器#"
+            },
+            {
+                "format": "$天干地支纪年$#科技#"
+            }
+        ]
+    },
+    {
+        "id": "lemon_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#柠檬#"
+            },
+            {
+                "format": "$天干地支纪年$#柠檬怪#"
+            }
+        ]
+    },
+    {
+        "id": "candy_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#糖果#"
+            },
+            {
+                "format": "$天干地支纪年$#甜品#"
+            }
+        ]
+    },
+    {
+        "id": "crystal_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#水晶戈仑#"
+            },
+            {
+                "format": "$天干地支纪年$#水晶傀儡#"
+            },
+            {
+                "format": "$天干地支纪年$#水晶怪#"
+            }
+        ]
+    },
+    {
+        "id": "crystal_sword_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#水晶灵剑#"
+            },
+            {
+                "format": "$天干地支纪年$#水晶剑灵#"
+            },
+            {
+                "format": "$天干地支纪年$#水晶剑魂#"
+            }
+        ]
+    },
+    {
+        "id": "fire_skull_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#火骷髅#"
+            },
+            {
+                "format": "$天干地支纪年$#火恶灵#"
+            },
+            {
+                "format": "$天干地支纪年$#邪火#"
+            }
+        ]
+    },
+    {
+        "id": "fire_elemental_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#炽火#"
+            },
+            {
+                "format": "$天干地支纪年$#烈炎#"
+            }
+        ]
+    },
+    {
+        "id": "acid_blob_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#史莱姆#"
+            },
+            {
+                "format": "$天干地支纪年$#酸液#"
+            }
+        ]
+    },
+    {
+        "id": "jumpy_skull_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#恶灵#"
+            },
+            {
+                "format": "$天干地支纪年$#骷髅头#"
+            },
+            {
+                "format": "$天干地支纪年$#头骨#"
+            }
+        ]
+    },
+    {
+        "id": "lil_pumpkin_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#南瓜#"
+            },
+            {
+                "format": "$天干地支纪年$#南瓜怪#"
+            }
+        ]
+    },
+    {
+        "id": "rat_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#鼠#"
+            }
+        ]
+    },
+    {
+        "id": "cat_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#猫#"
+            },
+            {
+                "format": "$天干地支纪年$#喵#"
+            },
+            {
+                "format": "$天干地支纪年$#猫咪#"
+            }
+        ]
+    },
+    {
+        "id": "rabbit_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#兔#"
+            },
+            {
+                "format": "$天干地支纪年$#兔叽#"
+            }
+        ]
+    },
+    {
+        "id": "piranha_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#饕餮鱼#"
+            },
+            {
+                "format": "$天干地支纪年$#食人鱼#"
+            },
+            {
+                "format": "$天干地支纪年$#恶鱼#"
+            }
+        ]
+    },
+    {
+        "id": "snowman_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#雪傀儡#"
+            },
+            {
+                "format": "$天干地支纪年$#雪人#"
+            }
+        ]
+    },
+    {
+        "id": "bear_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#熊#"
+            },
+            {
+                "format": "$天干地支纪年$#狗熊#"
+            },
+            {
+                "format": "$天干地支纪年$#大熊#"
+            }
+        ]
+    },
+    {
+        "id": "homie_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#房屋#"
+            },
+            {
+                "format": "$天干地支纪年$#建筑#"
+            }
+        ]
+    },
+    {
+        "id": "skeleton_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#骷髅#"
+            },
+            {
+                "format": "$天干地支纪年$#死灵#"
+            }
+        ]
+    },
+    {
+        "id": "living_plant_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#树妖#"
+            },
+            {
+                "format": "$天干地支纪年$#活树#"
+            },
+            {
+                "format": "$天干地支纪年$#树怪#"
+            }
+        ]
+    },
+    {
+        "id": "ghost_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#幽灵#"
+            },
+            {
+                "format": "$天干地支纪年$#幽魂#"
+            },
+            {
+                "format": "$天干地支纪年$#游魂#"
+            }
+        ]
+    },
+    {
+        "id": "default_name",
+        "templates": [
+            {
+                "format": "$天干地支纪年$#生物#"
+            },
+            {
+                "format": "$天干地支纪年$#怪#"
+            }
+        ]
+    }
+]
