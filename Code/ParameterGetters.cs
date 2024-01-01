@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Chinese_Name.constants;
 using NeoModLoader.api.attributes;
-
+using NeoModLoader.General;
 namespace Chinese_Name;
 
 public static class ParameterGetters
@@ -10,47 +10,63 @@ public static class ParameterGetters
     private static readonly Dictionary<string, Action<Actor, Dictionary<string, string>>> actor_parameter_getters =
         new()
         {
-            { "default", default_actor_parameter_getter }
+            {
+                "default", default_actor_parameter_getter
+            }
         };
 
     private static readonly Dictionary<string, Action<City, Dictionary<string, string>>> city_parameter_getters = new()
     {
-        { "default", default_city_parameter_getter }
+        {
+            "default", default_city_parameter_getter
+        }
     };
 
     private static readonly Dictionary<string, Action<Kingdom, Dictionary<string, string>>> kingdom_parameter_getters =
         new()
         {
-            { "default", default_kingdom_parameter_getter }
+            {
+                "default", default_kingdom_parameter_getter
+            }
         };
 
     private static readonly Dictionary<string, Action<Culture, Dictionary<string, string>>> culture_parameter_getters =
         new()
         {
-            { "default", default_culture_parameter_getter }
+            {
+                "default", default_culture_parameter_getter
+            }
         };
 
     private static readonly Dictionary<string, Action<Clan, Actor, Dictionary<string, string>>> clan_parameter_getters =
         new()
         {
-            { "default", default_clan_parameter_getter }
+            {
+                "default", default_clan_parameter_getter
+            }
         };
 
     private static readonly Dictionary<string, Action<Alliance, Dictionary<string, string>>>
         alliance_parameter_getters = new()
         {
-            { "default", default_alliance_parameter_getter }
+            {
+                "default", default_alliance_parameter_getter
+            }
         };
 
     private static readonly Dictionary<string, Action<War, Dictionary<string, string>>> war_parameter_getters = new()
     {
-        { "default", default_war_parameter_getter }
+        {
+            "default", default_war_parameter_getter
+        }
     };
 
     private static readonly Dictionary<string, Action<ItemData, ItemAsset, Actor, Dictionary<string, string>>>
         item_parameter_getters = new()
         {
-            { "default", default_item_parameter_getter }
+            {
+                "default", default_item_parameter_getter
+            }
         };
 
     internal static readonly List<Action<Dictionary<string, string>>> global_parameter_getters = new()
@@ -116,13 +132,22 @@ public static class ParameterGetters
     {
         pParameters["attacker"] = pWar.main_attacker.data.name;
         pParameters["defender"] = pWar.main_defender?.data.name;
+        pParameters["attacker_leader"] = pWar.data.started_by_kingdom;
+        pParameters["defender_leader"] = pWar.main_defender?.capital?.leader?.getName();
         pParameters["attacker_short"] = pWar.main_attacker.data.name[0].ToString();
         pParameters["defender_short"] = pWar.main_defender?.data.name[0].ToString();
         pParameters["defender_capital"] = pWar.main_defender?.capital?.data.name;
-        ModClass.LogInfo("war: " + pWar.getAsset().name_template);
-        ModClass.LogInfo("attacker: " + pParameters["attacker"]);
-        ModClass.LogInfo("defender: " + pParameters["defender"]);
-        ModClass.LogInfo("defender_capital: " + pParameters["defender_capital"]);
+        if (pWar.main_defender?.cities?.Count > 0)
+        {
+            if (string.IsNullOrEmpty(pParameters["defender_capital"]))
+            {
+                pParameters["defender_capital"] = pWar.main_defender.cities[0].getCityName();
+            }
+            if (string.IsNullOrEmpty(pParameters["defender_leader"]))
+            {
+                pParameters["defender_leader"] = pWar.main_defender.cities[0].leader?.getName();
+            }
+        }
     }
 
     [Hotfixable]
@@ -137,6 +162,7 @@ public static class ParameterGetters
         pParameters["month"] = AssetManager.months.getMonth(World.world.mapStats.getCurrentMonth() + 1).english_name;
         pParameters["year"] = World.world.mapStats.getCurrentYear().ToString();
         pParameters["era"] = World.world.mapStats.era_id;
+        pParameters["天干地支纪年"] = LM.Get($"天干地支-{World.world.mapStats.getCurrentYear() % 60}");
     }
 
     public static Action<Actor, Dictionary<string, string>> GetActorParameterGetter(string pName)

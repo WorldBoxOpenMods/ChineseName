@@ -9,6 +9,10 @@
             {
                 "format": "#侵略战争#",
                 "weight": 0.5
+            },
+            {
+                "format": "$天干地支纪年$#战役#",
+                "weight": 0.1
             }
         ]
     },
@@ -17,6 +21,10 @@
         "templates": [
             {
                 "format": "#战争#"
+            },
+            {
+                "format": "$天干地支纪年$#战役#",
+                "weight": 0.1
             }
         ]
     },
@@ -32,7 +40,12 @@
         "id": "war_rebellion",
         "templates": [
             {
-                "format": "#战争#"
+                "format": "$defender_capital$#起义#",
+                "weight": 5
+            },
+            {
+                "format": "$天干地支纪年$#革命#",
+                "weight": 0.1
             }
         ]
     },
