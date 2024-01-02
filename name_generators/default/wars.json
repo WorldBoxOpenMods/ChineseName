@@ -7,8 +7,8 @@
                 "weight": 5
             },
             {
-                "format": "#侵略战争#",
-                "weight": 0.5
+                "format": "$attacker$#侵#$defender_short$#战争#",
+                "weight": 5
             },
             {
                 "format": "$天干地支纪年$#战役#",
@@ -20,11 +20,7 @@
         "id": "war_spite",
         "templates": [
             {
-                "format": "#战争#"
-            },
-            {
-                "format": "$天干地支纪年$#战役#",
-                "weight": 0.1
+                "format": "$attacker$#全面战争#"
             }
         ]
     },
@@ -32,7 +28,7 @@
         "id": "war_inspire",
         "templates": [
             {
-                "format": "#战争#"
+                "format": "$attacker_short$$defender_short$#冲突#"
             }
         ]
     },
@@ -41,6 +37,10 @@
         "templates": [
             {
                 "format": "$defender_capital$#起义#",
+                "weight": 5
+            },
+            {
+                "format": "$defender_leader$#起义#",
                 "weight": 5
             },
             {
@@ -53,7 +53,10 @@
         "id": "war_whisper",
         "templates": [
             {
-                "format": "#战争#"
+                "format": "$attacker_short$$defender_short$#冲突#"
+            },
+            {
+                "format": "$attacker$#圣战#"
             }
         ]
     }
