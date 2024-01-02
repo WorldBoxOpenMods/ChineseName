@@ -1,0 +1,63 @@
+[
+    {
+        "id": "armor_name",
+        "default_template": {
+            "format": "#甲#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#甲#"
+            }
+        ]
+    },
+    {
+        "id": "boots_name",
+        "default_template": {
+            "format": "#靴#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#靴#"
+            },
+            {
+                "format": "<$material$>#鞋#"
+            },
+            {
+                "format": "<$material$>#履#"
+            }
+        ]
+    },
+    {
+        "id": "helmet_name",
+        "default_template": {
+            "format": "#盔#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#盔#"
+            }
+        ]
+    },
+    {
+        "id": "ring_name",
+        "default_template": {
+            "format": "#戒#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#戒#"
+            }
+        ]
+    },
+    {
+        "id": "amulet_name",
+        "default_template": {
+            "format": "#佩#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#佩#"
+            }
+        ]
+    }
+]

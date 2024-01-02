@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using HarmonyLib;
-
 namespace Chinese_Name;
 
 public class ItemNamePatch : IPatch
@@ -45,7 +44,11 @@ public class ItemNamePatch : IPatch
                 ItemGenerator.unique_legendary_names.Clear();
             }
 
-            if (num > 12) return true;
+            if (num > 12)
+            {
+                name = generator.default_template.GenerateName(para);
+                break;
+            }
         }
 
         pItemData.name = name;

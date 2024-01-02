@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chinese_Name.constants;
 using NeoModLoader.api.attributes;
 using NeoModLoader.General;
@@ -154,6 +155,34 @@ public static class ParameterGetters
     private static void default_item_parameter_getter(ItemData pItemData, ItemAsset pItemAsset, Actor pActor,
         Dictionary<string, string> pParameters)
     {
+        // 材质
+        pParameters["material"] = pItemData.material;
+        // 类型/对于weapon_name_city这些玩意来说可能会有用
+        pParameters["type"] = pItemData.id;
+        if (pActor == null) return;
+        // 制作者的城市名
+        pParameters["city"] = pActor.city?.getCityName();
+        // 制作者的文化名
+        pParameters["culture"] = pActor.getCulture()?.data.name;
+
+        if (pActor.kingdom == null) return;
+        // 制作者的国家名
+        pParameters["kingdom"] = pActor.kingdom.data.name;
+        if (pActor.kingdom.king != null)
+        {
+            // 制作者的君主名
+            pParameters["king"] = pActor.kingdom.king.getName();
+        }
+
+        if (!pActor.kingdom.hasEnemies()) return;
+
+        foreach (Kingdom kingdom in pActor.kingdom.getEnemiesKingdoms().Where(kingdom => kingdom.king != null))
+        {
+            // 敌国名
+            pParameters["enemy_kingdom"] = kingdom.data.name;
+            // 敌国君主名
+            pParameters["enemy_king"] = kingdom.king.getName();
+        }
     }
 
     [Hotfixable]
