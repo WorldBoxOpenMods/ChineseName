@@ -21,6 +21,9 @@
         "templates": [
             {
                 "format": "$attacker$#全面战争#"
+            },
+            {
+                "format": "$attacker$#征服战争#"
             }
         ]
     },

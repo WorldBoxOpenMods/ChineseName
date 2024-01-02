@@ -68,6 +68,73 @@
         "templates": [
             {
                 "format": "#木棍#"
+            },
+            {
+                "format": "#树枝#"
+            }
+        ]
+    },
+    {
+        "id": "flame_sword_name",
+        "templates": [
+            {
+                "format": "{烈焰之剑}"
+            }
+        ]
+    },
+    {
+        "id": "plague_doctor_staff_name",
+        "templates": [
+            {
+                "format": "{疫医杖}"
+            }
+        ]
+    },
+    {
+        "id": "necromancer_staff_name",
+        "templates": [
+            {
+                "format": "{死灵法杖}"
+            }
+        ]
+    },
+    {
+        "id": "evil_staff_name",
+        "templates": [
+            {
+                "format": "{邪恶法杖}"
+            }
+        ]
+    },
+    {
+        "id": "white_staff_name",
+        "templates": [
+            {
+                "format": "{白色法杖}"
+            }
+        ]
+    },
+    {
+        "id": "druid_staff_name",
+        "templates": [
+            {
+                "format": "{德鲁伊法杖}"
+            }
+        ]
+    },
+    {
+        "id": "shotgun_name",
+        "templates": [
+            {
+                "format": "{霰弹枪}{数字}{数字}{数字}"
+            }
+        ]
+    },
+    {
+        "id": "blaster_name",
+        "templates": [
+            {
+                "format": "{异形冲击波}{数字}{数字}{数字}"
             }
         ]
     },
@@ -79,6 +146,14 @@
         "templates": [
             {
                 "format": "<$material$>#弓#"
+            },
+            {
+                "format": "{弓前缀}#天引#",
+                "weight": 25
+            },
+            {
+                "format": "{弓前缀}#弓#",
+                "weight": 30
             }
         ]
     },
@@ -89,16 +164,98 @@
         },
         "templates": [
             {
-                "format": "<$material$>{剑-类型}",
+                "format": "{剑前缀}#剑#",
+                "weight": 15
+            },
+            {
+                "format": "{剑前缀}#斩#",
                 "weight": 10
             },
             {
-                "format": "{剑-组合前缀}{剑-类型}",
-                "weight": 1
+                "format": "{剑前缀}#刃#",
+                "weight": 15
             },
             {
-                "format": "{剑-单名}",
-                "weight": 0.1
+                "format": "{剑前缀}#之刃#",
+                "weight": 15
+            },
+            {
+                "format": "{剑名}"
+            },
+            {
+                "format": "<$material$>#剑#"
+            }
+        ]
+    },
+    {
+        "id": "hammer_name",
+        "default_template": {
+            "format": "#锤#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#锤#"
+            },
+            {
+                "format": "{锤前缀}#锤#",
+                "weight": 20
+            },
+            {
+                "format": "{锤前缀}#之怒#",
+                "weight": 15
+            },
+            {
+                "format": "{锤前缀}#之力#",
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "id": "axe_name",
+        "default_template": {
+            "format": "#斧#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#斧#"
+            },
+            {
+                "format": "{斧前缀}#斧#",
+                "weight": 15
+            },
+            {
+                "format": "{斧前缀}#之怒#",
+                "weight": 15
+            },
+            {
+                "format": "{斧前缀}#战斧#",
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "id": "spear_name",
+        "default_template": {
+            "format": "#矛#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#矛#"
+            },
+            {
+                "format": "{矛前缀}#枪#",
+                "weight": 15
+            },
+            {
+                "format": "{矛前缀}#矛#",
+                "weight": 20
+            },
+            {
+                "format": "{矛前缀}#铩#",
+                "weight": 15
+            },
+            {
+                "format": "{矛名}"
             }
         ]
     }

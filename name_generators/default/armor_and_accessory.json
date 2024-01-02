@@ -6,7 +6,22 @@
         },
         "templates": [
             {
-                "format": "<$material$>#甲#"
+                "format": "{护甲前缀}#甲#",
+                "weight": 20
+            },
+            {
+                "format": "{护甲前缀}#铠#",
+                "weight": 20
+            },
+            {
+                "format": "{护甲前缀}#甲胄#",
+                "weight": 10
+            },
+            {
+                "format": "{$material$}#甲#"
+            },
+            {
+                "format": "{$material$}#盔甲#"
             }
         ]
     },
@@ -17,13 +32,22 @@
         },
         "templates": [
             {
-                "format": "<$material$>#靴#"
+                "format": "{护甲前缀}#靴#",
+                "weight": 20
             },
             {
-                "format": "<$material$>#鞋#"
+                "format": "{护甲前缀}#鞋#",
+                "weight": 20
             },
             {
-                "format": "<$material$>#履#"
+                "format": "{护甲前缀}#步#",
+                "weight": 10
+            },
+            {
+                "format": "{$material$}#靴#"
+            },
+            {
+                "format": "{$material$}#鞋#"
             }
         ]
     },
@@ -34,7 +58,22 @@
         },
         "templates": [
             {
-                "format": "<$material$>#盔#"
+                "format": "{护甲前缀}#盔#",
+                "weight": 20
+            },
+            {
+                "format": "{护甲前缀}#冠#",
+                "weight": 20
+            },
+            {
+                "format": "{护甲前缀}#兜鍪#",
+                "weight": 10
+            },
+            {
+                "format": "{$material$}#头盔#"
+            },
+            {
+                "format": "{$material$}#冠#"
             }
         ]
     },
@@ -45,7 +84,25 @@
         },
         "templates": [
             {
-                "format": "<$material$>#戒#"
+                "format": "{饰品前缀}#戒#",
+                "weight": 20
+            },
+            {
+                "format": "{饰品前缀}#环#",
+                "weight": 15
+            },
+            {
+                "format": "{饰品前缀}#指环#",
+                "weight": 15
+            },
+            {
+                "format": "{$material$}#指环#"
+            },
+            {
+                "format": "{$material$}#戒#"
+            },
+            {
+                "format": "{$material$}#戒指#"
             }
         ]
     },
@@ -56,7 +113,26 @@
         },
         "templates": [
             {
-                "format": "<$material$>#佩#"
+                "format": "{饰品前缀}#佩链#",
+                "weight": 15
+            },
+            {
+                "format": "{饰品前缀}#护符#",
+                "weight": 15
+            },
+            {
+                "format": "{饰品前缀}#链#",
+                "weight": 10
+            },
+            {
+                "format": "{饰品前缀}#佩#",
+                "weight": 10
+            },
+            {
+                "format": "{$material$}#护符#"
+            },
+            {
+                "format": "{$material$}#项链#"
             }
         ]
     }
