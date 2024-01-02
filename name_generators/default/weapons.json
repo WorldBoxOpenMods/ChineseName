@@ -1,0 +1,105 @@
+[
+    {
+        "id": "weapon_name_city",
+        "templates": [
+            {
+                "format": "$city$#之魂#"
+            },
+            {
+                "format": "$city$#守护者#"
+            },
+            {
+                "format": "$city$#之子#"
+            }
+        ]
+    },
+    {
+        "id": "weapon_name_kingdom",
+        "templates": [
+            {
+                "format": "$kingdom$#之魂#"
+            },
+            {
+                "format": "$kingdom$#守护者#"
+            },
+            {
+                "format": "$kingdom$#之子#"
+            }
+        ]
+    },
+    {
+        "id": "weapon_name_culture",
+        "templates": [
+            {
+                "format": "$culture$#之魂#"
+            },
+            {
+                "format": "$culture$#守护者#"
+            },
+            {
+                "format": "$culture$#之子#"
+            }
+        ]
+    },
+    {
+        "id": "weapon_name_enemy_kingdom",
+        "templates": [
+            {
+                "format": "$enemy_kingdom$#之泪#"
+            },
+            {
+                "format": "$enemy_kingdom$#终结者#"
+            }
+        ]
+    },
+    {
+        "id": "weapon_name_enemy_king",
+        "templates": [
+            {
+                "format": "$enemy_king$#之泪#"
+            },
+            {
+                "format": "$enemy_king$#终结者#"
+            }
+        ]
+    },
+    {
+        "id": "stick_name",
+        "templates": [
+            {
+                "format": "#木棍#"
+            }
+        ]
+    },
+    {
+        "id": "bow_name",
+        "default_template": {
+            "format": "#弓#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>#弓#"
+            }
+        ]
+    },
+    {
+        "id": "sword_name",
+        "default_template": {
+            "format": "#剑#"
+        },
+        "templates": [
+            {
+                "format": "<$material$>{剑-类型}",
+                "weight": 10
+            },
+            {
+                "format": "{剑-组合前缀}{剑-类型}",
+                "weight": 1
+            },
+            {
+                "format": "{剑-单名}",
+                "weight": 0.1
+            }
+        ]
+    }
+]
