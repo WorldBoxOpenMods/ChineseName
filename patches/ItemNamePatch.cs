@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using NeoModLoader.api.attributes;
+
 namespace Chinese_Name;
 
 public class ItemNamePatch : IPatch
@@ -7,15 +9,24 @@ public class ItemNamePatch : IPatch
     public void Initialize()
     {
         new Harmony(nameof(set_item_name)).Patch(
-            AccessTools.Method(typeof(ItemGenerator), nameof(ItemGenerator.checkModName)),
-            prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_item_name))));
+            AccessTools.Method(typeof(ItemGenerator), nameof(ItemGenerator.generateItem)),
+            postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_item_name))));
     }
 
-    private static bool set_item_name(ref ItemData pItemData, ItemAsset pModAsset, ItemAsset pItemAsset,
+    [Hotfixable]
+    private static void set_item_name(ref ItemData __result, ItemAsset pItemAsset,
         ActorBase pActor)
     {
-        if (!string.IsNullOrWhiteSpace(pItemData.name)) return false;
-        if (pModAsset.quality != ItemQuality.Legendary) return false;
+        if (__result == null) return;
+        if (!string.IsNullOrWhiteSpace(__result.name)) return;
+        var max_quality = ItemQuality.Normal;
+        foreach (var mod in __result.modifiers)
+        {
+            var mod_asset = AssetManager.items_modifiers.get(mod);
+            if (mod_asset.quality > max_quality) max_quality = mod_asset.quality;
+        }
+
+        if (max_quality < ItemQuality.Legendary) return;
 
         string name = null;
         int num = 0;
@@ -30,12 +41,12 @@ public class ItemNamePatch : IPatch
             if (generator == null)
             {
                 no_found++;
-                if (no_found > 3) return true;
+                if (no_found > 3) return;
 
                 continue;
             }
 
-            ParameterGetters.GetItemParameterGetter(generator.parameter_getter)(pItemData, pItemAsset, pActor.a, para);
+            ParameterGetters.GetItemParameterGetter(generator.parameter_getter)(__result, pItemAsset, pActor.a, para);
             var template = generator.GetTemplate(para);
             name = template.GenerateName(para);
 
@@ -51,8 +62,6 @@ public class ItemNamePatch : IPatch
             }
         }
 
-        pItemData.name = name;
-
-        return false;
+        __result.name = name;
     }
 }
