@@ -4,6 +4,7 @@ using System.Linq;
 using Chinese_Name.constants;
 using NeoModLoader.api.attributes;
 using NeoModLoader.General;
+
 namespace Chinese_Name;
 
 public static class ParameterGetters
@@ -144,6 +145,7 @@ public static class ParameterGetters
             {
                 pParameters["defender_capital"] = pWar.main_defender.cities[0].getCityName();
             }
+
             if (string.IsNullOrEmpty(pParameters["defender_leader"]))
             {
                 pParameters["defender_leader"] = pWar.main_defender.cities[0].leader?.getName();
@@ -159,6 +161,10 @@ public static class ParameterGetters
         pParameters["material"] = pItemData.material;
         // 类型/对于weapon_name_city这些玩意来说可能会有用
         pParameters["type"] = pItemData.id;
+        // 本地名
+        var locale = pItemAsset.name_class;
+        if (LocalizedTextManager.stringExists(locale)) locale = LM.Get(locale);
+        pParameters["locale"] = locale;
         if (pActor == null) return;
         // 制作者的城市名
         pParameters["city"] = pActor.city?.getCityName();
