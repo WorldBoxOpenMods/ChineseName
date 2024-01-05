@@ -1,6 +1,9 @@
 [
     {
         "id": "weapon_name_city",
+        "default_template": {
+            "format": "$locale$"
+        },
         "templates": [
             {
                 "format": "$city$#之魂#"
@@ -10,11 +13,17 @@
             },
             {
                 "format": "$city$#之子#"
+            },
+            {
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "weapon_name_kingdom",
+        "default_template": {
+            "format": "$locale$"
+        },
         "templates": [
             {
                 "format": "$kingdom$#之魂#"
@@ -24,11 +33,17 @@
             },
             {
                 "format": "$kingdom$#之子#"
+            },
+            {
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "weapon_name_culture",
+        "default_template": {
+            "format": "$locale$"
+        },
         "templates": [
             {
                 "format": "$culture$#之魂#"
@@ -38,28 +53,77 @@
             },
             {
                 "format": "$culture$#之子#"
+            },
+            {
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "weapon_name_enemy_kingdom",
+        "default_template": {
+            "format": "$locale$"
+        },
         "templates": [
             {
                 "format": "$enemy_kingdom$#之泪#"
             },
             {
                 "format": "$enemy_kingdom$#终结者#"
+            },
+            {
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "weapon_name_enemy_king",
+        "default_template": {
+            "format": "$locale$"
+        },
         "templates": [
             {
                 "format": "$enemy_king$#之泪#"
             },
             {
                 "format": "$enemy_king$#终结者#"
+            },
+            {
+                "format": "$locale$"
+            }
+        ]
+    },
+    {
+        "id": "sword_name_king",
+        "default_template": {
+            "format": "$locale$"
+        },
+        "templates": [
+            {
+                "format": "<天子$type$名>"
+            },
+            {
+                "format": "$king$#之#<$type$后缀>"
+            },
+            {
+                "format": "$locale$"
+            }
+        ]
+    },
+    {
+        "id": "axe_name_king",
+        "default_template": {
+            "format": "$locale$"
+        },
+        "templates": [
+            {
+                "format": "<天子$type$名>"
+            },
+            {
+                "format": "$king$#之#<$type$后缀>"
+            },
+            {
+                "format": "$locale$"
             }
         ]
     },
@@ -141,121 +205,96 @@
     {
         "id": "bow_name",
         "default_template": {
-            "format": "#弓#"
+            "format": "$locale$"
         },
         "templates": [
             {
-                "format": "<$material$>#弓#"
+                "format": "<$material$的$type$前缀><$type$后缀>",
+                "weight": 50
             },
             {
-                "format": "{弓前缀}#天引#",
-                "weight": 25
+                "format": "<$material$><$type$后缀>"
             },
             {
-                "format": "{弓前缀}#弓#",
-                "weight": 30
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "sword_name",
         "default_template": {
-            "format": "#剑#"
+            "format": "$locale$"
         },
         "templates": [
             {
-                "format": "{剑前缀}#剑#",
-                "weight": 15
+                "format": "<$material$的$type$前缀><$type$后缀>",
+                "weight": 50
             },
             {
-                "format": "{剑前缀}#斩#",
-                "weight": 10
+                "format": "<$type$名>"
             },
             {
-                "format": "{剑前缀}#刃#",
-                "weight": 15
+                "format": "<$material$><$type$后缀>"
             },
             {
-                "format": "{剑前缀}#之刃#",
-                "weight": 15
-            },
-            {
-                "format": "{剑名}"
-            },
-            {
-                "format": "<$material$>#剑#"
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "hammer_name",
         "default_template": {
-            "format": "#锤#"
+            "format": "$locale$"
         },
         "templates": [
             {
-                "format": "<$material$>#锤#"
+                "format": "<$material$的$type$前缀><$type$后缀>",
+                "weight": 50
             },
             {
-                "format": "{锤前缀}#锤#",
-                "weight": 20
+                "format": "<$material$><$type$后缀>"
             },
             {
-                "format": "{锤前缀}#之怒#",
-                "weight": 15
-            },
-            {
-                "format": "{锤前缀}#之力#",
-                "weight": 15
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "axe_name",
         "default_template": {
-            "format": "#斧#"
+            "format": "$locale$"
         },
         "templates": [
             {
-                "format": "<$material$>#斧#"
+                "format": "<$material$的$type$前缀><$type$后缀>",
+                "weight": 50
             },
             {
-                "format": "{斧前缀}#斧#",
-                "weight": 15
+                "format": "<$material$><$type$后缀>"
             },
             {
-                "format": "{斧前缀}#之怒#",
-                "weight": 15
-            },
-            {
-                "format": "{斧前缀}#战斧#",
-                "weight": 15
+                "format": "$locale$"
             }
         ]
     },
     {
         "id": "spear_name",
         "default_template": {
-            "format": "#矛#"
+            "format": "$locale$"
         },
         "templates": [
             {
-                "format": "<$material$>#矛#"
+                "format": "<$material$的$type$前缀><$type$后缀>",
+                "weight": 50
             },
             {
-                "format": "{矛前缀}#枪#",
-                "weight": 15
+                "format": "<$type$名>"
             },
             {
-                "format": "{矛前缀}#矛#",
-                "weight": 20
+                "format": "<$material$><$type$后缀>"
             },
             {
-                "format": "{矛前缀}#铩#",
-                "weight": 15
-            },
-            {
-                "format": "{矛名}"
+                "format": "$locale$"
             }
         ]
     }
