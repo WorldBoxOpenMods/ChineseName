@@ -81,6 +81,11 @@ public static class ParameterGetters
     [Hotfixable]
     private static void default_actor_parameter_getter(Actor pActor, Dictionary<string, string> pParameters)
     {
+        pParameters["id"] = pActor.asset.id;
+        if (!string.IsNullOrEmpty(pActor.asset.nameLocale))
+            pParameters["locale"] = LocalizedTextManager.stringExists(pActor.asset.nameLocale)
+                ? LM.Get(pActor.asset.nameLocale)
+                : pActor.asset.nameLocale;
     }
 
     [Hotfixable]
