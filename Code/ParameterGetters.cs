@@ -167,9 +167,13 @@ public static class ParameterGetters
         // 类型/对于weapon_name_city这些玩意来说可能会有用
         pParameters["type"] = pItemData.id;
         // 本地名
-        var locale = pItemAsset.name_class;
+        var locale = "item_" + pItemAsset.id;
         if (LocalizedTextManager.stringExists(locale)) locale = LM.Get(locale);
         pParameters["locale"] = locale;
+        // 装备类别
+        locale = pItemAsset.name_class;
+        if (LocalizedTextManager.stringExists(locale)) locale = LM.Get(locale);
+        pParameters["class"] = locale;
         if (pActor == null) return;
         // 制作者的城市名
         pParameters["city"] = pActor.city?.getCityName();
