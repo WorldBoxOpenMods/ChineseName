@@ -51,6 +51,8 @@ public class CN_NameGeneratorAsset : Asset
             weights[i] = templates[i].weight;
             total_weight += weights[i];
         }
+
+        current_weights = new float[templates.Count];
     }
 
     public virtual void ClearTemplateGetter()
