@@ -488,12 +488,12 @@
     },
     {
         "id": "default_name",
+        "default_template": {
+            "format": "$天干地支纪年$#生物#"
+        },
         "templates": [
             {
-                "format": "$天干地支纪年$#生物#"
-            },
-            {
-                "format": "$天干地支纪年$#怪#"
+                "format": "$天干地支纪年$$locale$"
             }
         ]
     }
