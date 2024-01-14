@@ -1,9 +1,29 @@
 [
     {
         "id": "alliance_name",
+        "default_template": {
+            "format": "#无名联盟#"
+        },
         "templates": [
             {
-                "format": "#联盟#"
+                "format": "$k1_short$$k2_short${联盟名后缀}",
+                "weight": 5
+            },
+            {
+                "format": "$k1_capital${联盟名后缀}",
+                "weight": 5
+            },
+            {
+                "format": "$k2_capital${联盟名后缀}",
+                "weight": 5
+            },
+            {
+                "format": "$k1_short$$k2_short$#之盟#",
+                "weight": 1
+            },
+            {
+                "format": "$天干地支纪年${联盟名后缀}",
+                "weight": 0.1
             }
         ]
     }

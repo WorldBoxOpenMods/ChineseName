@@ -132,6 +132,17 @@ public static class ParameterGetters
     [Hotfixable]
     private static void default_alliance_parameter_getter(Alliance pAlliance, Dictionary<string, string> pParameters)
     {
+        var list = new List<Kingdom>(pAlliance.kingdoms_hashset);
+        pParameters["k1_short"] = list[0].data.name;
+        pParameters["k2_short"] = list[1].data.name;
+        pParameters["k1_capital"] = list[0].capital?.getCityName();
+        if (list[0].cities?.Count > 0)
+            if (string.IsNullOrEmpty(pParameters["k1_capital"]))
+                pParameters["k1_capital"] = list[0].cities[0].getCityName();
+        pParameters["k2_capital"] = list[1].capital?.getCityName();
+        if (list[1].cities?.Count > 0)
+            if (string.IsNullOrEmpty(pParameters["k2_capital"]))
+                pParameters["k2_capital"] = list[1].cities[0].getCityName();
     }
 
     [Hotfixable]
