@@ -5,10 +5,11 @@ using Chinese_Name.utils;
 
 namespace Chinese_Name;
 
-public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>  
+public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
 {
-    internal static CN_NameGeneratorLibrary Instance = new();
-    private static HashSet<string> submitted_dir = new HashSet<string>();
+    internal static CN_NameGeneratorLibrary Instance      = new();
+    private static  HashSet<string>         submitted_dir = new HashSet<string>();
+
     public override void init()
     {
         base.init();
@@ -30,6 +31,7 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
             SubmitDirectoryToLoad(dir);
         }
     }
+
     public override CN_NameGeneratorAsset get(string pID)
     {
         if (string.IsNullOrEmpty(pID)) return null;
@@ -46,15 +48,19 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
         {
             name_generator_assets_flatten.AddRange(name_generator_asset);
         }
+
         foreach (CN_NameGeneratorAsset asset in name_generator_assets_flatten)
         {
+            asset.default_template?.ReParse();
             Submit(asset);
         }
+
         submitted_dir.Add(pDirectory);
     }
+
     public static void Submit(CN_NameGeneratorAsset pAsset)
     {
-        for(int i = 0; i < pAsset.templates.Count; i++)
+        for (int i = 0; i < pAsset.templates.Count; i++)
         {
             var name_template = pAsset.templates[i];
             try
@@ -66,34 +72,35 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
                 ModClass.LogWarning($"Failed to parse name template '{name_template.raw_format}' in {pAsset.id}");
                 ModClass.LogWarning(e.Message);
                 ModClass.LogInfo($"Just skip it now.");
-                    
+
                 pAsset.templates.RemoveAt(i);
                 i--;
             }
         }
-            
-        if(pAsset.templates.Count == 0)
+
+        if (pAsset.templates.Count == 0)
         {
             ModClass.LogWarning($"No valid name template in {pAsset.id}");
             ModClass.LogInfo($"Just skip it now.");
 
             return;
         }
+
         Instance.add(pAsset);
 
-        if(!AssetManager.nameGenerator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
+        if (!AssetManager.nameGenerator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
         {
             vanilla_asset = AssetManager.nameGenerator.add(new NameGeneratorAsset()
-            {
-                id = pAsset.id
-            });
+                                                           {
+                                                               id = pAsset.id
+                                                           });
         }
 
         vanilla_asset.use_dictionary = false;
         vanilla_asset.templates = new List<string>()
-        {
-            "space"
-        };
+                                  {
+                                      "space"
+                                  };
         vanilla_asset.vowels = new string[] { "" };
     }
 }

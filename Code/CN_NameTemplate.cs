@@ -7,6 +7,7 @@ using NeoModLoader.api.attributes;
 using Newtonsoft.Json;
 
 namespace Chinese_Name;
+
 /// <summary>
 /// 单个的命名模板
 /// </summary>
@@ -15,9 +16,9 @@ public class CN_NameTemplate
 {
     private readonly List<CN_NameTemplateAtom> atoms = new();
 
-    private readonly HashSet<string> required_parameters = new();
-    private List<CN_NameTemplateAtom> atoms_before_generate = new();
-    private bool has_parsed = false;
+    private readonly HashSet<string>           required_parameters   = new();
+    private          List<CN_NameTemplateAtom> atoms_before_generate = new();
+    private          bool                      has_parsed            = false;
 
     CN_NameTemplate(string pFormat, float pWeight)
     {
@@ -33,6 +34,7 @@ public class CN_NameTemplate
     [JsonProperty("format")] public string raw_format { get; private set; }
 
     [JsonProperty("weight")] public float weight { get; private set; } = 1;
+
     /// <summary>
     /// 创建器
     /// </summary>
@@ -104,6 +106,15 @@ public class CN_NameTemplate
         return builder.ToString();
     }
 
+    internal void ReParse()
+    {
+        has_parsed = false;
+        atoms.Clear();
+        atoms_before_generate.Clear();
+        required_parameters.Clear();
+        Parse();
+    }
+
     internal void Parse()
     {
         if (has_parsed) return;
@@ -119,7 +130,7 @@ public class CN_NameTemplate
             if (!requiring_right_bracket) return true;
             for (int i = 0; i < format_key.Length; i++)
             {
-                if (i == format_key_index) continue;
+                if (i  == format_key_index) continue;
                 if (ch == format_key[i]) return false;
             }
 
@@ -140,7 +151,7 @@ public class CN_NameTemplate
             char ch = raw_format[i];
             if (!char_valid(ch))
                 throw new Exception(
-                    $"Invalid character '{ch}' at {i} in format '{raw_format}', need to be right bracket('>' or '}}').");
+                                    $"Invalid character '{ch}' at {i} in format '{raw_format}', need to be right bracket('>' or '}}').");
 
             if (requiring_right_bracket && ch is '}' or '>')
             {
@@ -347,7 +358,7 @@ public class CN_NameTemplate
         if (requiring_right_bracket)
         {
             throw new Exception(
-                $"Missing right bracket('>' or '}}') in format '{raw_format}'. (Maybe you forget to close a atom block?)");
+                                $"Missing right bracket('>' or '}}') in format '{raw_format}'. (Maybe you forget to close a atom block?)");
         }
 
         Dictionary<string, AtomNode> atom_nodes = new();
@@ -412,11 +423,11 @@ public class CN_NameTemplate
 
     private class CN_NameTemplateAtom
     {
-        public bool AllParametersRequired;
-        public string Format;
+        public bool     AllParametersRequired;
+        public string   Format;
         public string[] ParametersKey;
         public string[] ParametersValue;
-        public string Tag;
+        public string   Tag;
         public AtomType Type = AtomType.WordLibrary;
 
         [Hotfixable]
@@ -424,7 +435,7 @@ public class CN_NameTemplate
         {
             for (int i = 0; i < ParametersKey.Length; i++)
             {
-                if (!pParameters.TryGetValue(ParametersKey[i], out ParametersValue[i]) &&
+                if (!pParameters.TryGetValue(ParametersKey[i], out ParametersValue[i])                        &&
                     !ModClass.Instance.GlobalParameters.TryGetValue(ParametersKey[i], out ParametersValue[i]) &&
                     AllParametersRequired)
                 {
@@ -439,7 +450,7 @@ public class CN_NameTemplate
             catch (Exception)
             {
                 ModClass.LogError(
-                    $"Failed to format '{Format}' with parameters '{string.Join(", ", ParametersValue)}'.");
+                                  $"Failed to format '{Format}' with parameters '{string.Join(", ", ParametersValue)}'.");
                 return string.Empty;
             }
         }
@@ -448,8 +459,8 @@ public class CN_NameTemplate
     private class AtomNode
     {
         public CN_NameTemplateAtom atom;
-        public HashSet<AtomNode> depend_by = new();
-        public HashSet<AtomNode> depend_on = new();
+        public HashSet<AtomNode>   depend_by = new();
+        public HashSet<AtomNode>   depend_on = new();
 
         public AtomNode(CN_NameTemplateAtom atom)
         {
