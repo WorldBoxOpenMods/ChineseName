@@ -9,13 +9,16 @@ public class ItemNamePatch : IPatch
     public void Initialize()
     {
         new Harmony(nameof(set_item_name)).Patch(
-            AccessTools.Method(typeof(ItemGenerator), nameof(ItemGenerator.generateItem)),
-            postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_item_name))));
+                                                 AccessTools.Method(typeof(ItemGenerator),
+                                                                    nameof(ItemGenerator.generateItem)),
+                                                 postfix: new
+                                                     HarmonyMethod(AccessTools.Method(GetType(),
+                                                                       nameof(set_item_name))));
     }
 
     [Hotfixable]
     private static void set_item_name(ref ItemData __result, ItemAsset pItemAsset,
-        ActorBase pActor)
+                                      ActorBase    pActor)
     {
         if (__result == null) return;
         if (!string.IsNullOrWhiteSpace(__result.name)) return;
@@ -64,5 +67,6 @@ public class ItemNamePatch : IPatch
         }
 
         __result.name = name;
+        if (num <= 10) ItemGenerator.unique_legendary_names.Add(name);
     }
 }
