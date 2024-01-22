@@ -3,12 +3,12 @@
         "id": "human_name",
         "templates": [
             {
-                "format": "{西方名字}#·#{西方名字中缀}#·#{西方姓氏:family_name}",
-                "weight": 1
+                "format": "{百家姓:family_name}{千字文}{千字文}",
+                "weight": 4
             },
             {
-                "format": "{西方名字}#·#{西方姓氏:family_name}",
-                "weight": 4
+                "format": "{百家姓:family_name}{千字文}",
+                "weight": 1
             }
         ]
     },

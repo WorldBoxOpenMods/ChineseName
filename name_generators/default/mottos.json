@@ -19,7 +19,7 @@
         "id": "alliance_mottos",
         "templates": [
             {
-                "format": "{常见格言}"
+                "format": "{联盟格言}"
             }
         ]
     }
