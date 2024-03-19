@@ -133,16 +133,15 @@ public static class ParameterGetters
     private static void default_alliance_parameter_getter(Alliance pAlliance, Dictionary<string, string> pParameters)
     {
         var list = new List<Kingdom>(pAlliance.kingdoms_hashset);
+        if (list.Count == 1) list.Add(list[0]);
         pParameters["k1_short"] = list[0].data.name;
         pParameters["k2_short"] = list[1].data.name;
         pParameters["k1_capital"] = list[0].capital?.getCityName();
-        if (list[0].cities?.Count > 0)
-            if (string.IsNullOrEmpty(pParameters["k1_capital"]))
-                pParameters["k1_capital"] = list[0].cities[0].getCityName();
+        if (list[0].cities.Count > 0 && string.IsNullOrEmpty(pParameters["k1_capital"]))
+            pParameters["k1_capital"] = list[0].cities[0].getCityName();
         pParameters["k2_capital"] = list[1].capital?.getCityName();
-        if (list[1].cities?.Count > 0)
-            if (string.IsNullOrEmpty(pParameters["k2_capital"]))
-                pParameters["k2_capital"] = list[1].cities[0].getCityName();
+        if (list[1].cities.Count > 0 && string.IsNullOrEmpty(pParameters["k2_capital"]))
+            pParameters["k2_capital"] = list[1].cities[0].getCityName();
     }
 
     [Hotfixable]
@@ -171,7 +170,7 @@ public static class ParameterGetters
 
     [Hotfixable]
     private static void default_item_parameter_getter(ItemData pItemData, ItemAsset pItemAsset, Actor pActor,
-        Dictionary<string, string> pParameters)
+                                                      Dictionary<string, string> pParameters)
     {
         // 材质
         pParameters["material"] = pItemData.material;
@@ -314,8 +313,8 @@ public static class ParameterGetters
         war_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutItemParameterGetter(string pName,
-        Action<ItemData, ItemAsset, Actor, Dictionary<string, string>> pGetter)
+    public static void PutItemParameterGetter(string                                                         pName,
+                                              Action<ItemData, ItemAsset, Actor, Dictionary<string, string>> pGetter)
     {
         item_parameter_getters[pName] = pGetter;
     }

@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using Chinese_Name.ui;
 using NeoModLoader.api;
+using NeoModLoader.General;
+using NeoModLoader.utils;
+using UnityEngine;
 
 namespace Chinese_Name
 {
@@ -25,8 +30,7 @@ namespace Chinese_Name
 
         protected override void OnModLoad()
         {
-            WordLibraryManager.Instance.init();
-            CN_NameGeneratorLibrary.Instance.init();
+            CN_PackageLibrary.Instance.init();
 
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
             // 虽然可以直接patch getName和getNameFromTemplate, 但那样无法获取更多的参数
@@ -46,6 +50,14 @@ namespace Chinese_Name
                     }
                 }
             }
+
+            CN_PackageSelectWindow.CreateWindow(nameof(CN_PackageSelectWindow), nameof(CN_PackageSelectWindow));
+            PowerButtonCreator.CreateWindowButton(nameof(CN_PackageSelectWindow), nameof(CN_PackageSelectWindow),
+                                                  SpriteLoadUtils.LoadSingleSprite(
+                                                      Path.Combine(GetDeclaration().FolderPath,
+                                                                   GetDeclaration().IconPath)),
+                                                  PowerButtonCreator.GetTab(PowerTabNames.Main).transform,
+                                                  new Vector2(248.4f, -18));
         }
     }
 }

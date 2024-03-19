@@ -8,14 +8,16 @@ namespace Chinese_Name;
 
 public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
 {
-    internal static readonly WordLibraryManager Instance = new();
-    private static HashSet<string> submitted_dir = new HashSet<string>();
+    private static  HashSet<string>    submitted_dir = new HashSet<string>();
+    internal static WordLibraryManager Instance => CN_PackageLibrary.CurrentPackage.word_libraries;
+
     public override void init()
     {
         base.init();
         id = "WordLibraryManager";
         SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "word_libraries/default"));
     }
+
     internal void Reload()
     {
         HashSet<string> reload_dir = new HashSet<string>(submitted_dir);
@@ -25,6 +27,14 @@ public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
             SubmitDirectoryToLoad(dir);
         }
     }
+
+    public override WordLibraryAsset get(string pID)
+    {
+        return dict.TryGetValue(pID, out WordLibraryAsset asset)
+            ? asset
+            : CN_PackageLibrary.DefaultPackage.word_libraries.get(pID);
+    }
+
     /// <summary>
     /// 从指定的词库中随机获取一个词
     /// </summary>
@@ -32,37 +42,43 @@ public class WordLibraryManager : AssetLibrary<WordLibraryAsset>
     /// <returns>指定词库中随机一个词, 如果词库不存在则返回空串</returns>
     public static string GetRandomWord(string pId)
     {
-        if (Instance.dict.TryGetValue(pId, out WordLibraryAsset asset) && asset.words.Count > 0)
+        WordLibraryAsset asset = Instance.get(pId);
+        if (asset != null && asset.words.Count > 0)
         {
-            return Instance.dict[pId].GetRandom();
+            return asset.GetRandom();
         }
+
         return "";
     }
-    public static void SubmitDirectoryToLoad(string pDirectory)
+
+    public static void SubmitDirectoryToLoad(string pDirectory, string pTargetPackage = "default")
     {
         if (submitted_dir.Contains(pDirectory)) return;
         TextAsset[] text_assets = GeneralUtils.LoadAllFrom(pDirectory);
         foreach (TextAsset text_asset in text_assets)
         {
-            Instance.add(new WordLibraryAsset(text_asset.name, text_asset.text.Replace("\r", "").Split('\n').ToList()));
+            CN_PackageLibrary.Instance.get(pTargetPackage).word_libraries.add(
+                new WordLibraryAsset(text_asset.name, text_asset.text.Replace("\r", "").Split('\n').ToList()));
         }
+
         submitted_dir.Add(pDirectory);
     }
 
-    public static void Submit(string pId, List<string> pWords)
+    public static void Submit(string pId, List<string> pWords, string pTargetPackage = "default")
     {
-        Instance.add(new WordLibraryAsset(pId, pWords));
+        CN_PackageLibrary.Instance.get(pTargetPackage).word_libraries.add(new WordLibraryAsset(pId, pWords));
     }
 
-    public static void SubmitForPatch(string pId, List<string> pWords)
+    public static void SubmitForPatch(string pId, List<string> pWords, string pTargetPackage = "default")
     {
-        if (Instance.dict.ContainsKey(pId))
+        WordLibraryManager asset = CN_PackageLibrary.Instance.get(pTargetPackage).word_libraries;
+        if (asset.dict.ContainsKey(pId))
         {
-            Instance.dict[pId].words.AddRange(pWords);
+            asset.dict[pId].words.AddRange(pWords);
         }
         else
         {
-            Instance.add(new WordLibraryAsset(pId, pWords));
+            asset.add(new WordLibraryAsset(pId, pWords));
         }
     }
 }

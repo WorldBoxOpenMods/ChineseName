@@ -7,13 +7,13 @@ namespace Chinese_Name;
 
 public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
 {
-    internal static CN_NameGeneratorLibrary Instance      = new();
     private static  HashSet<string>         submitted_dir = new HashSet<string>();
+    internal static CN_NameGeneratorLibrary Instance => CN_PackageLibrary.CurrentPackage.generators;
 
     public override void init()
     {
         base.init();
-        id = "CN_NameGeneratorLibrary";
+        id = "default";
         SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "name_generators/default"));
     }
 
@@ -35,10 +35,12 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
     public override CN_NameGeneratorAsset get(string pID)
     {
         if (string.IsNullOrEmpty(pID)) return null;
-        return dict.TryGetValue(pID, out CN_NameGeneratorAsset asset) ? asset : null;
+        return dict.TryGetValue(pID, out CN_NameGeneratorAsset asset)
+            ? asset
+            : CN_PackageLibrary.DefaultPackage.generators.get(pID);
     }
 
-    public static void SubmitDirectoryToLoad(string pDirectory)
+    public static void SubmitDirectoryToLoad(string pDirectory, string pTargetPackage = "default")
     {
         if (submitted_dir.Contains(pDirectory)) return;
         List<List<CN_NameGeneratorAsset>> name_generator_assets =
@@ -52,13 +54,13 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
         foreach (CN_NameGeneratorAsset asset in name_generator_assets_flatten)
         {
             asset.default_template?.ReParse();
-            Submit(asset);
+            Submit(asset, pTargetPackage);
         }
 
         submitted_dir.Add(pDirectory);
     }
 
-    public static void Submit(CN_NameGeneratorAsset pAsset)
+    public static void Submit(CN_NameGeneratorAsset pAsset, string pTargetPackage = "default")
     {
         for (int i = 0; i < pAsset.templates.Count; i++)
         {
@@ -86,21 +88,11 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
             return;
         }
 
-        Instance.add(pAsset);
+        CN_PackageLibrary.Instance.get(pTargetPackage).generators.add(pAsset);
 
-        if (!AssetManager.nameGenerator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
+        if (pTargetPackage == Instance.id)
         {
-            vanilla_asset = AssetManager.nameGenerator.add(new NameGeneratorAsset()
-                                                           {
-                                                               id = pAsset.id
-                                                           });
+            NameGeneratorReplaceUtils.ReplaceNameGeneratorEmpty(pAsset.id);
         }
-
-        vanilla_asset.use_dictionary = false;
-        vanilla_asset.templates = new List<string>()
-                                  {
-                                      "space"
-                                  };
-        vanilla_asset.vowels = new string[] { "" };
     }
 }

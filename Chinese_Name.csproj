@@ -30,7 +30,7 @@
       <HintPath>..\..\worldbox_Data\Managed\Ionic.Zlib.CF.dll</HintPath>
     </Reference>
     <Reference Include="NeoModLoader">
-      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader_memload.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\worldbox_Data\Managed\Newtonsoft.Json.dll</HintPath>
