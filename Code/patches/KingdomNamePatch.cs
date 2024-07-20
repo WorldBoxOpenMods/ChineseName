@@ -22,7 +22,7 @@ public class KingdomNamePatch : IPatch
 
         var para = new Dictionary<string, string>();
 
-        ParameterGetters.GetKingdomParameterGetter(generator.parameter_getter)(__instance, para);
+        ParameterGetters.GetKingdomParameterGetter(generator.param_getters)(__instance, para);
 
         __instance.data.motto = generator.GenerateName(para);
         return true;
@@ -51,7 +51,7 @@ public class KingdomNamePatch : IPatch
 
             var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetKingdomParameterGetter(asset.parameter_getter)(pKingdom, para);
+            ParameterGetters.GetKingdomParameterGetter(asset.param_getters)(pKingdom, para);
 
             pKingdom.data.name = asset.GenerateName(para);
         }

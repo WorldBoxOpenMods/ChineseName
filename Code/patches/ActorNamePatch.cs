@@ -42,7 +42,7 @@ public class ActorNamePatch : IPatch
         int max_try = 10;
 
         var para = new Dictionary<string, string>();
-        ParameterGetters.GetActorParameterGetter(generator.parameter_getter)(__instance.a, para);
+        ParameterGetters.GetActorParameterGetter(generator.param_getters)(__instance.a, para);
 
         __instance.data.get(DataS.family_name, out var family_name, "");
         para[DataS.family_name_in_template] = family_name;

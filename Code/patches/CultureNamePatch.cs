@@ -28,7 +28,7 @@ public class CultureNamePatch : IPatch
 
             var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
+            ParameterGetters.GetCultureParameterGetter(asset.param_getters)(pCulture, para);
             pCulture.data.name = asset.GenerateName(para);
         }
     }

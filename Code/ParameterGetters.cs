@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using Chinese_Name.constants;
 using NeoModLoader.api.attributes;
 using NeoModLoader.General;
 
 namespace Chinese_Name;
-
+public delegate void ParameterGetter(Dictionary<string, string> param_list);
+public delegate void ParameterGetter<T>(T obj, Dictionary<string, string> param_list);
+public delegate void ParameterGetter<T1, T2>(T1 obj1, T2 obj2, Dictionary<string, string> param_list);
+public delegate void ParameterGetter<T1, T2, T3>(T1 obj1, T2 obj2, T3 obj3, Dictionary<string, string> param_list);
 public static class ParameterGetters
 {
-    private static readonly Dictionary<string, Action<Actor, Dictionary<string, string>>> actor_parameter_getters =
+    private static readonly Dictionary<string, ParameterGetter<Actor>> actor_parameter_getters =
         new()
         {
             {
@@ -17,14 +21,14 @@ public static class ParameterGetters
             }
         };
 
-    private static readonly Dictionary<string, Action<City, Dictionary<string, string>>> city_parameter_getters = new()
+    private static readonly Dictionary<string, ParameterGetter<City>> city_parameter_getters = new()
     {
         {
             "default", default_city_parameter_getter
         }
     };
 
-    private static readonly Dictionary<string, Action<Kingdom, Dictionary<string, string>>> kingdom_parameter_getters =
+    private static readonly Dictionary<string, ParameterGetter<Kingdom>> kingdom_parameter_getters =
         new()
         {
             {
@@ -32,7 +36,7 @@ public static class ParameterGetters
             }
         };
 
-    private static readonly Dictionary<string, Action<Culture, Dictionary<string, string>>> culture_parameter_getters =
+    private static readonly Dictionary<string, ParameterGetter<Culture>> culture_parameter_getters =
         new()
         {
             {
@@ -40,7 +44,7 @@ public static class ParameterGetters
             }
         };
 
-    private static readonly Dictionary<string, Action<Clan, Actor, Dictionary<string, string>>> clan_parameter_getters =
+    private static readonly Dictionary<string, ParameterGetter<Clan, Actor>> clan_parameter_getters =
         new()
         {
             {
@@ -48,7 +52,7 @@ public static class ParameterGetters
             }
         };
 
-    private static readonly Dictionary<string, Action<Alliance, Dictionary<string, string>>>
+    private static readonly Dictionary<string, ParameterGetter<Alliance>>
         alliance_parameter_getters = new()
         {
             {
@@ -56,14 +60,14 @@ public static class ParameterGetters
             }
         };
 
-    private static readonly Dictionary<string, Action<War, Dictionary<string, string>>> war_parameter_getters = new()
+    private static readonly Dictionary<string, ParameterGetter<War>> war_parameter_getters = new()
     {
         {
             "default", default_war_parameter_getter
         }
     };
 
-    private static readonly Dictionary<string, Action<ItemData, ItemAsset, Actor, Dictionary<string, string>>>
+    private static readonly Dictionary<string, ParameterGetter<ItemData, ItemAsset, Actor>>
         item_parameter_getters = new()
         {
             {
@@ -71,7 +75,7 @@ public static class ParameterGetters
             }
         };
 
-    internal static readonly List<Action<Dictionary<string, string>>> global_parameter_getters = new()
+    internal static readonly List<ParameterGetter> global_parameter_getters = new()
     {
         default_global_parameter_getter
     };
@@ -218,53 +222,94 @@ public static class ParameterGetters
         pParameters["era"] = World.world.mapStats.era_id;
         pParameters["天干地支纪年"] = LM.Get($"天干地支-{World.world.mapStats.getCurrentYear() % 60}");
     }
-
-    public static Action<Actor, Dictionary<string, string>> GetActorParameterGetter(string pName)
+    private static T GetParameterGetterFrom<T>(Dictionary<string, T> candidates, IEnumerable<string> names) where T : Delegate
+    {
+        List<T> list = new();
+        foreach (var pName in names)
+        {
+            if (!candidates.TryGetValue(pName, out var getter)) continue;
+            list.Add(getter);
+        }
+        return list.Count > 0 ? Delegate.Combine(list.ToArray()) as T : candidates["default"];
+    }
+    public static ParameterGetter<Actor> GetActorParameterGetter(string pName)
     {
         if (actor_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return actor_parameter_getters["default"];
     }
+    public static ParameterGetter<Actor> GetActorParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(actor_parameter_getters, pNames);
+    }
 
-    public static Action<City, Dictionary<string, string>> GetCityParameterGetter(string pName)
+    public static ParameterGetter<City> GetCityParameterGetter(string pName)
     {
         if (city_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return city_parameter_getters["default"];
     }
+    public static ParameterGetter<City> GetCityParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(city_parameter_getters, pNames);
+    }
 
-    public static Action<Kingdom, Dictionary<string, string>> GetKingdomParameterGetter(string pName)
+    public static ParameterGetter<Kingdom> GetKingdomParameterGetter(string pName)
     {
         if (kingdom_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return kingdom_parameter_getters["default"];
     }
+    public static ParameterGetter<Kingdom> GetKingdomParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(kingdom_parameter_getters, pNames);
+    }
 
-    public static Action<Culture, Dictionary<string, string>> GetCultureParameterGetter(string pName)
+    public static ParameterGetter<Culture> GetCultureParameterGetter(string pName)
     {
         if (culture_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return culture_parameter_getters["default"];
     }
+    public static ParameterGetter<Culture> GetCultureParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(culture_parameter_getters, pNames);
+    }
 
-    public static Action<Clan, Actor, Dictionary<string, string>> GetClanParameterGetter(string pName)
+    public static ParameterGetter<Clan, Actor> GetClanParameterGetter(string pName)
     {
         if (clan_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return clan_parameter_getters["default"];
     }
+    public static ParameterGetter<Clan, Actor> GetClanParameterGetter(IEnumerable <string> pNames)
+    {
+        return GetParameterGetterFrom(clan_parameter_getters, pNames);
+    }
 
-    public static Action<Alliance, Dictionary<string, string>> GetAllianceParameterGetter(string pName)
+    public static ParameterGetter<Alliance> GetAllianceParameterGetter(string pName)
     {
         if (alliance_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return alliance_parameter_getters["default"];
     }
+    public static ParameterGetter<Alliance> GetAllianceParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(alliance_parameter_getters, pNames);
+    }
 
-    public static Action<War, Dictionary<string, string>> GetWarParameterGetter(string pName)
+    public static ParameterGetter<War> GetWarParameterGetter(string pName)
     {
         if (war_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return war_parameter_getters["default"];
     }
+    public static ParameterGetter<War> GetWarParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(war_parameter_getters, pNames);
+    }
 
-    public static Action<ItemData, ItemAsset, Actor, Dictionary<string, string>> GetItemParameterGetter(string pName)
+    public static ParameterGetter<ItemData, ItemAsset, Actor> GetItemParameterGetter(string pName)
     {
         if (item_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return item_parameter_getters["default"];
+    }
+    public static ParameterGetter<ItemData, ItemAsset, Actor> GetItemParameterGetter(IEnumerable<string> pNames)
+    {
+        return GetParameterGetterFrom(item_parameter_getters, pNames);
     }
 
     public static T GetCustomParameterGetter<T>(string pName) where T : Delegate
@@ -278,43 +323,43 @@ public static class ParameterGetters
         return null;
     }
 
-    public static void PutActorParameterGetter(string pName, Action<Actor, Dictionary<string, string>> pGetter)
+    public static void PutActorParameterGetter(string pName, ParameterGetter<Actor> pGetter)
     {
         actor_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutCityParameterGetter(string pName, Action<City, Dictionary<string, string>> pGetter)
+    public static void PutCityParameterGetter(string pName, ParameterGetter<City> pGetter)
     {
         city_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutKingdomParameterGetter(string pName, Action<Kingdom, Dictionary<string, string>> pGetter)
+    public static void PutKingdomParameterGetter(string pName, ParameterGetter<Kingdom> pGetter)
     {
         kingdom_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutCultureParameterGetter(string pName, Action<Culture, Dictionary<string, string>> pGetter)
+    public static void PutCultureParameterGetter(string pName, ParameterGetter<Culture> pGetter)
     {
         culture_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutClanParameterGetter(string pName, Action<Clan, Actor, Dictionary<string, string>> pGetter)
+    public static void PutClanParameterGetter(string pName, ParameterGetter<Clan, Actor> pGetter)
     {
         clan_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutAllianceParameterGetter(string pName, Action<Alliance, Dictionary<string, string>> pGetter)
+    public static void PutAllianceParameterGetter(string pName, ParameterGetter<Alliance> pGetter)
     {
         alliance_parameter_getters[pName] = pGetter;
     }
 
-    public static void PutWarParameterGetter(string pName, Action<War, Dictionary<string, string>> pGetter)
+    public static void PutWarParameterGetter(string pName, ParameterGetter<War> pGetter)
     {
         war_parameter_getters[pName] = pGetter;
     }
 
     public static void PutItemParameterGetter(string                                                         pName,
-                                              Action<ItemData, ItemAsset, Actor, Dictionary<string, string>> pGetter)
+                                              ParameterGetter<ItemData, ItemAsset, Actor> pGetter)
     {
         item_parameter_getters[pName] = pGetter;
     }
@@ -330,7 +375,7 @@ public static class ParameterGetters
         getters[pName] = pGetter;
     }
 
-    public static void PutGlobalParameterGetter(Action<Dictionary<string, string>> pGetter)
+    public static void PutGlobalParameterGetter(ParameterGetter pGetter)
     {
         global_parameter_getters.Add(pGetter);
     }

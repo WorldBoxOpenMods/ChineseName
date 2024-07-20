@@ -25,7 +25,7 @@ public class WarNamePatch : IPatch
             if (generator == null) return;
 
             var para = new Dictionary<string, string>();
-            ParameterGetters.GetWarParameterGetter(generator.parameter_getter)(pWar, para);
+            ParameterGetters.GetWarParameterGetter(generator.param_getters)(pWar, para);
 
             pWar.data.name = generator.GenerateName(para);
         }

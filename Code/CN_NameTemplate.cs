@@ -151,7 +151,7 @@ public class CN_NameTemplate
             char ch = raw_format[i];
             if (!char_valid(ch))
                 throw new Exception(
-                                    $"Invalid character '{ch}' at {i} in format '{raw_format}', need to be right bracket('>' or '}}').");
+                                    $"命名格式 '{raw_format}' 第{i}位字符'{ch}'非法, 应当存在右括号('>' 或 '}}').");
 
             if (requiring_right_bracket && ch is '}' or '>')
             {
@@ -164,7 +164,7 @@ public class CN_NameTemplate
                 }
                 else if (para_list.Any(string.IsNullOrEmpty))
                 {
-                    throw new Exception($"Invalid parameters in format '{raw_format}', parameter cannot be empty.");
+                    throw new Exception($"命名格式中'{raw_format}'参数不合法, 参数不应当为空.");
                 }
 
                 atom_in_recog.ParametersKey = para_list.ToArray();
@@ -367,7 +367,7 @@ public class CN_NameTemplate
             atoms_before_generate.Add(atom);
             if (atom_nodes.ContainsKey(atom.Tag))
             {
-                throw new Exception($"Duplicate tag '{atom.Tag}' in format '{raw_format}'.");
+                throw new Exception($"命名格式'{raw_format}'中标签'{atom.Tag}'重复.");
             }
 
             required_parameters.Remove(atom.Tag);

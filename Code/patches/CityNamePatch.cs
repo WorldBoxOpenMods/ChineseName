@@ -22,7 +22,7 @@ public class CityNamePatch : IPatch
 
             var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetCityParameterGetter(asset.parameter_getter)(pCity, para);
+            ParameterGetters.GetCityParameterGetter(asset.param_getters)(pCity, para);
 
             pCity.data.name = asset.GenerateName(para);
         }

@@ -22,7 +22,7 @@ public class ClanNamePatch : IPatch
 
         var para = new Dictionary<string, string>();
 
-        ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, null, para);
+        ParameterGetters.GetClanParameterGetter(generator.param_getters)(__instance, null, para);
 
         __instance.data.motto = generator.GenerateName(para);
         return true;
@@ -46,7 +46,7 @@ public class ClanNamePatch : IPatch
 
             var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetClanParameterGetter(asset.parameter_getter)(pClan, pFounder, para);
+            ParameterGetters.GetClanParameterGetter(asset.param_getters)(pClan, pFounder, para);
 
             pClan.data.name = asset.GenerateName(para);
         }

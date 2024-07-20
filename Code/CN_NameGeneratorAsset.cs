@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace Chinese_Name;
@@ -14,12 +16,22 @@ public class CN_NameGeneratorAsset : Asset
 
     private float[] weights = null;
     [JsonProperty("parameter_getter")] public string parameter_getter { get; protected set; } = "default";
+    internal List<string> param_getters { get; private set; }
 
     [JsonProperty("default_template")]
     public CN_NameTemplate default_template { get; protected set; } = CN_NameTemplate.Create("#NO_NAME#", 1);
 
     [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; protected set; } = new();
+    internal void MergeWith(CN_NameGeneratorAsset asset)
+    {
+        if (asset == null) return;
 
+        var new_param_getters = asset.param_getters.Except(param_getters);
+        param_getters.InsertRange(0, new_param_getters);
+
+        templates.AddRange(asset.templates);
+        InitializeWeight();
+    }
     /// <summary>
     /// 按权重随机获取一个模板
     /// </summary>
@@ -77,5 +89,44 @@ public class CN_NameGeneratorAsset : Asset
         }
 
         return default_template.GenerateName(pParameters);
+    }
+    internal bool SelfCheck()
+    {
+        if (string.IsNullOrEmpty(parameter_getter))
+        {
+            ModClass.LogWarning($"No valid parameter getter in {id}");
+            ModClass.LogInfo($"It is set to default.");
+            parameter_getter = "default";
+        }
+        if (param_getters==null || param_getters.Count == 0)
+        {
+            param_getters = new List<string>() { parameter_getter };
+        }
+        for (int i = 0; i < templates.Count; i++)
+        {
+            var name_template = templates[i];
+            try
+            {
+                name_template.Parse();
+            }
+            catch (Exception e)
+            {
+                ModClass.LogWarning($"Failed to parse name template '{name_template.raw_format}' in {id}");
+                ModClass.LogWarning(e.Message);
+                ModClass.LogInfo($"Just skip it now.");
+
+                templates.RemoveAt(i);
+                i--;
+            }
+        }
+
+        if (templates.Count == 0)
+        {
+            ModClass.LogWarning($"No valid name template in {id}");
+            ModClass.LogInfo($"Just skip it now.");
+
+            return false;
+        }
+        return true;
     }
 }

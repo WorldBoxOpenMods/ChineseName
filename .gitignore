@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /中文名-v*.zip
+
+!**/[Pp]ackages/*.json
+!**/[Pp]ackages/*.txt

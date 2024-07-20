@@ -41,7 +41,7 @@ WordLibraryManager.SubmitDirectoryToLoad("path/to/your/word/library/directory");
 并且你的模组主类实现了`IMod`接口或继承了`BasicMod<T>`, 则可以使用
 
 ```csharp
-WordLibraryManager.SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "additional_resources/word_libraries"));
+WordLibraryManager.SubmitDirectoryToLoad(GeneralUtils.CombinePath(ModClass.Instance.GetDeclaration().FolderPath, "additional_resources/word_libraries"));
 ```
 
 其中`ModClass`替换成你的模组主类的类名.
@@ -193,7 +193,7 @@ CN_NameGeneratorLibrary.SubmitDirectoryToLoad("path/to/your/name/generators/dire
 并且你的模组主类实现了`IMod`接口或继承了`BasicMod<T>`, 则可以使用
 
 ```csharp
-WordLibraryManager.SubmitDirectoryToLoad(Path.Combine(ModClass.Instance.GetDeclaration().FolderPath, "additional_resources/name_generators"));
+WordLibraryManager.SubmitDirectoryToLoad(GeneralUtils.CombinePath(ModClass.Instance.GetDeclaration().FolderPath, "additional_resources/name_generators"));
 ```
 
 其中`ModClass`替换成你的模组主类的类名.

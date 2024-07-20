@@ -15,4 +15,8 @@ public class WordLibraryAsset : Asset
     {
         return words.GetRandom();
     }
+    internal void MergeWith(WordLibraryAsset other)
+    {
+        words.AddRange(other.words);
+    }
 }

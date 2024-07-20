@@ -22,7 +22,7 @@ public class AllianceNamePatch : IPatch
 
         var para = new Dictionary<string, string>();
 
-        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
+        ParameterGetters.GetAllianceParameterGetter(generator.param_getters)(__instance, para);
 
         __instance.data.motto = generator.GenerateName(para);
 
@@ -39,7 +39,7 @@ public class AllianceNamePatch : IPatch
 
             var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
+            ParameterGetters.GetAllianceParameterGetter(generator.param_getters)(pAlliance, para);
 
             pAlliance.data.name = generator.GenerateName(para);
         }

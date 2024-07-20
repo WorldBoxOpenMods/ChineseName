@@ -49,7 +49,7 @@ public class ItemNamePatch : IPatch
                 continue;
             }
 
-            ParameterGetters.GetItemParameterGetter(generator.parameter_getter)(__result, pItemAsset, pActor.a, para);
+            ParameterGetters.GetItemParameterGetter(generator.param_getters)(__result, pItemAsset, pActor.a, para);
             generator.ClearTemplateGetter();
             var template = generator.GetTemplate(para);
             name = template.GenerateName(para);
