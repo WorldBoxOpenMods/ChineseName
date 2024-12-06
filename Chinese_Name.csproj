@@ -21,7 +21,7 @@
       <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\CW_Core\Assemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>..\..\worldbox_Data\Managed\DOTween.dll</HintPath>
@@ -30,7 +30,8 @@
       <HintPath>..\..\worldbox_Data\Managed\Ionic.Zlib.CF.dll</HintPath>
     </Reference>
     <Reference Include="NeoModLoader">
-      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader_memload.dll</HintPath>
+      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader_memload.dll')">..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader_memload.dll</HintPath>
+      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader.dll')">..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\worldbox_Data\Managed\Newtonsoft.Json.dll</HintPath>
@@ -125,6 +126,10 @@
     <Reference Include="UnityEngine.UIModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assemblies\"/>
   </ItemGroup>
 
 </Project>
