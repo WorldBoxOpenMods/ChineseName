@@ -9,7 +9,9 @@ public class AllianceNamePatch : IPatch
 {
     public void Initialize()
     {
-        AllianceCreateListener.RegisterHandler(new RenameAlliance());
+        new Harmony(nameof(set_alliance_name)).Patch(
+            AccessTools.Method(typeof(WorldLog), nameof(WorldLog.logAllianceCreated)),
+            prefix: new HarmonyMethod(typeof(AllianceNamePatch), nameof(set_alliance_name)));
         new Harmony(nameof(set_alliance_motto)).Patch(AccessTools.Method(typeof(Alliance), nameof(Alliance.getMotto)),
             prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_alliance_motto))));
     }
@@ -28,20 +30,16 @@ public class AllianceNamePatch : IPatch
 
         return true;
     }
-
-    class RenameAlliance : AllianceCreateHandler
+    private static void set_alliance_name(Alliance __instance)
     {
-        public override void Handle(Alliance pAlliance, Kingdom pKingdom, Kingdom pKingdom2)
-        {
-            if (!string.IsNullOrWhiteSpace(pAlliance.data.name)) return;
-            var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
-            if (generator == null) return;
+        if (!string.IsNullOrWhiteSpace(__instance.data.name)) return;
+        var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
+        if (generator == null) return;
 
-            var para = new Dictionary<string, string>();
+        var para = new Dictionary<string, string>();
 
-            ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
+        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
 
-            pAlliance.data.name = generator.GenerateName(para);
-        }
+        __instance.data.name = generator.GenerateName(para);
     }
 }
