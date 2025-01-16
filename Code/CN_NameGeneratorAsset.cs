@@ -19,7 +19,7 @@ public class CN_NameGeneratorAsset : Asset
     public CN_NameTemplate default_template { get; protected set; } = CN_NameTemplate.Create("#NO_NAME#", 1);
 
     [JsonProperty("templates")] public List<CN_NameTemplate> templates { get; protected set; } = new();
-
+    
     /// <summary>
     /// 按权重随机获取一个模板
     /// </summary>
