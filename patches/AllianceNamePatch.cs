@@ -30,16 +30,16 @@ public class AllianceNamePatch : IPatch
 
         return true;
     }
-    private static void set_alliance_name(Alliance __instance)
+    private static void set_alliance_name(Alliance pAlliance)
     {
-        if (!string.IsNullOrWhiteSpace(__instance.data.name)) return;
+        if (!string.IsNullOrWhiteSpace(pAlliance.data.name)) return;
         var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
         if (generator == null) return;
 
         var para = new Dictionary<string, string>();
 
-        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(__instance, para);
+        ParameterGetters.GetAllianceParameterGetter(generator.parameter_getter)(pAlliance, para);
 
-        __instance.data.name = generator.GenerateName(para);
+        pAlliance.data.name = generator.GenerateName(para);
     }
 }
