@@ -9,8 +9,33 @@ using UnityEngine;
 
 namespace Chinese_Name.utils;
 
-internal class GeneralUtils
+internal static class GeneralUtils
 {
+    public static string GetNameTemplate(this Actor actor, MetaType type)
+    {
+        string tNameTemplate = null;
+        if (actor.hasCulture())
+        {
+            tNameTemplate = actor.culture.getNameTemplate(type);
+        }
+        else
+        {
+            foreach (Actor t_parent in actor.getParents())
+            {
+                if (t_parent.hasCulture())
+                {
+                    tNameTemplate = t_parent.culture.getNameTemplate(type);
+                    break;
+                }
+            }
+        }
+        if (string.IsNullOrEmpty(tNameTemplate))
+        {
+            tNameTemplate = actor.asset.getNameTemplate(type);
+        }
+
+        return tNameTemplate;
+    }
     public static List<T> DeserializeAllFromResource<T>(string pPath)
     {
         TextAsset[] text_assets = LoadAllFrom(pPath);

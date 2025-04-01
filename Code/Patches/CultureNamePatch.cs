@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Chinese_Name.utils;
+using HarmonyLib;
 using NeoModLoader.General.Event.Handlers;
 using NeoModLoader.General.Event.Listeners;
 
@@ -8,28 +10,21 @@ public class CultureNamePatch : IPatch
 {
     public void Initialize()
     {
-        CultureCreateListener.RegisterHandler(new RenameCulture());
+        //CultureCreateListener.RegisterHandler(new RenameCulture());
+        new Harmony(nameof(set_culture_name)).Patch(AccessTools.Method(typeof(Culture), nameof(Culture.createCulture)),
+            postfix: new HarmonyMethod(GetType(), nameof(set_culture_name)));
     }
 
-    class RenameCulture : CultureCreateHandler
+    private static void set_culture_name(Culture __instance, Actor pActor)
     {
-        private static readonly HashSet<string> vanilla_postfix = new()
-        {
-            "ak", "an", "ok", "on", "uk", "un"
-        };
+        string template_id = pActor.GetNameTemplate(MetaType.Culture);
+        template_id = "human_culture";
+        var generator = CN_NameGeneratorLibrary.Instance.get(template_id);
+        if (generator == null) return;
 
-        public override void Handle(Culture pCulture, Race pRace, City pCity)
-        {
-            if (!string.IsNullOrWhiteSpace(pCulture.data.name) &&
-                !vanilla_postfix.Contains(pCulture.data.name.Trim())) return;
-            string name_generator_id = pRace.name_template_culture;
-            var asset = CN_NameGeneratorLibrary.Instance.get(name_generator_id);
-            if (asset == null) return;
+        var para = new Dictionary<string, string>();
 
-            var para = new Dictionary<string, string>();
-
-            ParameterGetters.GetCultureParameterGetter(asset.parameter_getter)(pCulture, para);
-            pCulture.data.name = asset.GenerateName(para);
-        }
+        ParameterGetters.GetCultureParameterGetter(generator.parameter_getter)(__instance, para);
+        __instance.data.name = generator.GenerateName(para);
     }
 }

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "default_species",
+    "default_template": {
+      "format": "$天干地支纪年$$locale$#亚种#"
+    },
+    "templates": [
+      {
+        "format": "$天干地支纪年$$locale$#亚种#"
+      }
+    ]
+  }
+]

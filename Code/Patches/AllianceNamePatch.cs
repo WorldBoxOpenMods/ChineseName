@@ -32,7 +32,6 @@ public class AllianceNamePatch : IPatch
     }
     private static void set_alliance_name(Alliance pAlliance)
     {
-        if (!string.IsNullOrWhiteSpace(pAlliance.data.name)) return;
         var generator = CN_NameGeneratorLibrary.Instance.get("alliance_name");
         if (generator == null) return;
 

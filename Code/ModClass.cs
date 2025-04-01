@@ -28,6 +28,8 @@ namespace Chinese_Name
             WordLibraryManager.Instance.init();
             CN_NameGeneratorLibrary.Instance.init();
 
+            Config.isEditor = true;
+
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
             // 虽然可以直接patch getName和getNameFromTemplate, 但那样无法获取更多的参数
             foreach (Type type in types)

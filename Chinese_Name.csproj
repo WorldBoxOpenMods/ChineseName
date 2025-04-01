@@ -21,7 +21,7 @@
       <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\CW_Core\Assemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>..\..\worldbox_Data\Managed\DOTween.dll</HintPath>

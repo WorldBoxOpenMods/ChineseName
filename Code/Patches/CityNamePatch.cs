@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Chinese_Name.utils;
 using HarmonyLib;
 using NeoModLoader.api.attributes;
 using NeoModLoader.General.Event.Handlers;
@@ -10,20 +11,21 @@ public class CityNamePatch : IPatch
 {
     public void Initialize()
     {
-        new Harmony(nameof(set_city_name)).Patch(AccessTools.Method(typeof(WorldLog), nameof(WorldLog.logNewCity)),
-            prefix: new HarmonyMethod(typeof(CityNamePatch), nameof(set_city_name)));
+        new Harmony(nameof(set_city_name)).Patch(AccessTools.Method(typeof(City), nameof(City.generateName)),
+            postfix: new HarmonyMethod(typeof(CityNamePatch), nameof(set_city_name)));
     }
     [Hotfixable]
-    private static void set_city_name(City pCity)
+    private static void set_city_name(City __instance, Actor pActor)
     {
-        if (!string.IsNullOrWhiteSpace(pCity.data.name)) return;
-        var generator = CN_NameGeneratorLibrary.Instance.get(pCity.race.name_template_city);
+        var template_id = pActor.GetNameTemplate(MetaType.City);
+        template_id = "human_city";
+        var generator = CN_NameGeneratorLibrary.Instance.get(template_id);
         if (generator == null) return;
 
         var para = new Dictionary<string, string>();
 
-        ParameterGetters.GetCityParameterGetter(generator.parameter_getter)(pCity, para);
+        ParameterGetters.GetCityParameterGetter(generator.parameter_getter)(__instance, para);
 
-        pCity.data.name = generator.GenerateName(para);
+        __instance.data.name = generator.GenerateName(para);
     }
 }

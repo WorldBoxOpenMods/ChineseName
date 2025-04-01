@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using Chinese_Name.constants;
+using Chinese_Name.utils;
 using HarmonyLib;
+using NeoModLoader.api.attributes;
 
 namespace Chinese_Name;
 
@@ -10,34 +12,27 @@ public class ActorNamePatch : IPatch
     public void Initialize()
     {
         Harmony harmony = new Harmony(nameof(set_actor_name));
-        harmony.Patch(AccessTools.Method(typeof(ActorBase), nameof(ActorBase.getName)),
+        harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.getName)),
             prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_actor_name))));
-        harmony.Patch(AccessTools.Method(typeof(Clan), nameof(Clan.addUnit)),
-            postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_actor_family_name))));
         harmony.Patch(AccessTools.Method(typeof(ActionLibrary), nameof(ActionLibrary.turnIntoZombie)),
             transpiler: new HarmonyMethod(AccessTools.Method(GetType(), nameof(undead_creature_name))));
         harmony.Patch(AccessTools.Method(typeof(ActionLibrary), nameof(ActionLibrary.turnIntoSkeleton)),
             transpiler: new HarmonyMethod(AccessTools.Method(GetType(), nameof(undead_creature_name))));
     }
-
-    private static void set_actor_family_name(Clan __instance, Actor pActor)
-    {
-        string tmp = "";
-        foreach (Actor unit in __instance.units.Values)
-        {
-            unit.data.get(DataS.family_name, out tmp, "");
-            if (!string.IsNullOrWhiteSpace(tmp))
-            {
-                pActor.data.set(DataS.family_name, tmp);
-                return;
-            }
-        }
-    }
-
-    private static bool set_actor_name(ActorBase __instance)
+    [Hotfixable]
+    private static bool set_actor_name(Actor __instance)
     {
         if (!string.IsNullOrWhiteSpace(__instance.data.name)) return true;
-        var generator = CN_NameGeneratorLibrary.Instance.get(__instance.asset.nameTemplate);
+        var template_id = __instance.GetNameTemplate(MetaType.Unit);
+        if (__instance.asset.civ)
+        {
+            template_id = "human_name";
+        }
+        else
+        {
+            template_id = "default_name";
+        }
+        var generator = CN_NameGeneratorLibrary.Instance.get(template_id);
         if (generator == null) return true;
         int max_try = 10;
 
@@ -45,6 +40,14 @@ public class ActorNamePatch : IPatch
         ParameterGetters.GetActorParameterGetter(generator.parameter_getter)(__instance.a, para);
 
         __instance.data.get(DataS.family_name, out var family_name, "");
+        if (string.IsNullOrEmpty(family_name))
+        {
+            foreach (var parent in __instance.getParents())
+            {
+                parent.data.get(DataS.family_name, out family_name, "");
+                if (!string.IsNullOrEmpty(family_name)) break;
+            }
+        }
         para[DataS.family_name_in_template] = family_name;
 
         __instance.data.name = generator.GenerateName(para);

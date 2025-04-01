@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Chinese_Name.utils;
 using HarmonyLib;
+using NeoModLoader.api.attributes;
 using NeoModLoader.General.Event.Handlers;
 using NeoModLoader.General.Event.Listeners;
 
@@ -9,11 +11,26 @@ public class KingdomNamePatch : IPatch
 {
     public void Initialize()
     {
-        KingdomSetupListener.RegisterHandler(new RenameKingdom());
+        //KingdomSetupListener.RegisterHandler(new RenameKingdom());
+        new Harmony(nameof(set_kingdom_name)).Patch(AccessTools.Method(typeof(Kingdom), nameof(Kingdom.newCivKingdom)),
+            postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_kingdom_name))));
         new Harmony(nameof(set_kingdom_motto)).Patch(AccessTools.Method(typeof(Kingdom), nameof(Kingdom.getMotto)),
             prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_kingdom_motto))));
     }
+    [Hotfixable]
+    private static void set_kingdom_name(Kingdom __instance, Actor pActor)
+    {
+        string template_id = pActor.GetNameTemplate(MetaType.Kingdom);
+        template_id = "human_kingdom";
+        var generator = CN_NameGeneratorLibrary.Instance.get(template_id);
+        if (generator == null) return;
 
+        var para = new Dictionary<string, string>();
+
+        ParameterGetters.GetKingdomParameterGetter(generator.parameter_getter)(__instance, para);
+
+        __instance.data.name = generator.GenerateName(para);
+    }
     private static bool set_kingdom_motto(Kingdom __instance)
     {
         if (!string.IsNullOrWhiteSpace(__instance.data.motto)) return true;
@@ -27,7 +44,7 @@ public class KingdomNamePatch : IPatch
         __instance.data.motto = generator.GenerateName(para);
         return true;
     }
-
+/*
     class RenameKingdom : KingdomSetupHandler
     {
         public override void Handle(Kingdom pKingdom, bool pCiv)
@@ -55,5 +72,5 @@ public class KingdomNamePatch : IPatch
 
             pKingdom.data.name = asset.GenerateName(para);
         }
-    }
+    }*/
 }

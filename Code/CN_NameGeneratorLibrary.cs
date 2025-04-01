@@ -88,19 +88,19 @@ public class CN_NameGeneratorLibrary : AssetLibrary<CN_NameGeneratorAsset>
 
         Instance.add(pAsset);
 
-        if (!AssetManager.nameGenerator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
+        if (!AssetManager.name_generator.dict.TryGetValue(pAsset.id, out NameGeneratorAsset vanilla_asset))
         {
-            vanilla_asset = AssetManager.nameGenerator.add(new NameGeneratorAsset()
+            vanilla_asset = AssetManager.name_generator.add(new NameGeneratorAsset()
                                                            {
                                                                id = pAsset.id
                                                            });
         }
-
+/*
         vanilla_asset.use_dictionary = false;
         vanilla_asset.templates = new List<string>()
                                   {
                                       "space"
                                   };
-        vanilla_asset.vowels = new string[] { "" };
+        vanilla_asset.vowels = new string[] { "" };*/
     }
 }

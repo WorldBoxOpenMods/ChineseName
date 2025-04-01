@@ -1,9 +1,12 @@
 [
     {
         "id": "kingdom_mottos",
+        "default_template": {
+            "format": "{常见格言}"
+        },
         "templates": [
             {
-                "format": "{常见格言}"
+                "format": "<$race$种族国家格言>"
             }
         ]
     },

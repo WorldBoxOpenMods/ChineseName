@@ -1,0 +1,11 @@
+[
+  {
+    "id": "human_lang",
+    "templates": [
+      {
+        "format": "{千字文}#语#",
+        "weight": 4
+      }
+    ]
+  }
+]

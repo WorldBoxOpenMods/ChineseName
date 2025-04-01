@@ -1,0 +1,11 @@
+[
+  {
+    "id": "human_religion",
+    "templates": [
+      {
+        "format": "{百家姓}{千字文}#教#",
+        "weight": 4
+      }
+    ]
+  }
+]

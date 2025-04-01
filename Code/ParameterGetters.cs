@@ -40,6 +40,27 @@ public static class ParameterGetters
             }
         };
 
+    private static readonly Dictionary<string, Action<Language, Dictionary<string, string>>> language_parameter_getters = new()
+    {
+        {
+            "default", default_language_parameter_getter
+        }
+    };
+    private static readonly Dictionary<string, Action<Subspecies, Dictionary<string, string>>> subspecies_parameter_getters = new()
+    {
+        {
+            "default", default_subspecies_parameter_getter
+        }
+    };
+
+    private static readonly Dictionary<string, Action<Religion, Dictionary<string, string>>>
+        religion_parameter_getters = new()
+        {
+            {
+                "default", default_religion_parameter_getter
+            }
+        };
+
     private static readonly Dictionary<string, Action<Clan, Actor, Dictionary<string, string>>> clan_parameter_getters =
         new()
         {
@@ -82,10 +103,21 @@ public static class ParameterGetters
     private static void default_actor_parameter_getter(Actor pActor, Dictionary<string, string> pParameters)
     {
         pParameters["id"] = pActor.asset.id;
-        if (!string.IsNullOrEmpty(pActor.asset.nameLocale))
-            pParameters["locale"] = LocalizedTextManager.stringExists(pActor.asset.nameLocale)
-                ? LM.Get(pActor.asset.nameLocale)
-                : pActor.asset.nameLocale;
+        if (!string.IsNullOrEmpty(pActor.asset.name_locale))
+            pParameters["locale"] = LocalizedTextManager.stringExists(pActor.asset.name_locale)
+                ? LM.Get(pActor.asset.name_locale)
+                : pActor.asset.name_locale;
+    }
+    [Hotfixable]
+    private static void default_subspecies_parameter_getter(Subspecies pSubspecies, Dictionary<string, string> pParameters)
+    {
+        pParameters["id"] = pSubspecies.species_id;
+        pParameters["locale"] = AssetManager.actor_library.get(pSubspecies.species_id).getTranslatedName();
+    }
+
+    private static void default_religion_parameter_getter(Religion pReligion, Dictionary<string, string> pParameters)
+    {
+        
     }
 
     [Hotfixable]
@@ -96,25 +128,33 @@ public static class ParameterGetters
     [Hotfixable]
     private static void default_kingdom_parameter_getter(Kingdom pKingdom, Dictionary<string, string> pParameters)
     {
+        pParameters["race"] = pKingdom.data.original_actor_asset;
     }
 
     [Hotfixable]
     private static void default_culture_parameter_getter(Culture pCulture, Dictionary<string, string> pParameters)
     {
+        pParameters["race"] = pCulture.data.original_actor_asset;
+    }
+
+    private static void default_language_parameter_getter(Language pLang, Dictionary<string, string> pParameters)
+    {
+        
     }
 
     [Hotfixable]
     private static void default_clan_parameter_getter(Clan pClan, Actor pActor, Dictionary<string, string> pParameters)
     {
-        pParameters["founder_home"] = string.IsNullOrEmpty(pClan.data.founder_home)
-            ? pClan.data.founder_kingdom
-            : pClan.data.founder_home;
+        pParameters["race"] = pClan.data.original_actor_asset;
+        pParameters["founder_home"] = string.IsNullOrEmpty(pClan.data.founder_city_name)
+            ? pClan.data.founder_kingdom_name
+            : pClan.data.founder_city_name;
 
         if (pActor == null)
         {
             foreach (var unit in pClan.units)
             {
-                unit.Value.data.get(DataS.family_name, out var family_name, "");
+                unit.data.get(DataS.family_name, out var family_name, "");
                 if (!string.IsNullOrEmpty(family_name))
                 {
                     pParameters["founder_family_name"] = family_name;
@@ -135,14 +175,14 @@ public static class ParameterGetters
         var list = new List<Kingdom>(pAlliance.kingdoms_hashset);
         pParameters["k1_short"] = list[0].data.name;
         pParameters["k2_short"] = list[1].data.name;
-        pParameters["k1_capital"] = list[0].capital?.getCityName();
+        pParameters["k1_capital"] = list[0].capital?.name;
         if (list[0].cities?.Count > 0)
             if (string.IsNullOrEmpty(pParameters["k1_capital"]))
-                pParameters["k1_capital"] = list[0].cities[0].getCityName();
-        pParameters["k2_capital"] = list[1].capital?.getCityName();
+                pParameters["k1_capital"] = list[0].cities[0].name;
+        pParameters["k2_capital"] = list[1].capital?.name;
         if (list[1].cities?.Count > 0)
             if (string.IsNullOrEmpty(pParameters["k2_capital"]))
-                pParameters["k2_capital"] = list[1].cities[0].getCityName();
+                pParameters["k2_capital"] = list[1].cities[0].name;
     }
 
     [Hotfixable]
@@ -150,7 +190,7 @@ public static class ParameterGetters
     {
         pParameters["attacker"] = pWar.main_attacker.data.name;
         pParameters["defender"] = pWar.main_defender?.data.name;
-        pParameters["attacker_leader"] = pWar.data.started_by_kingdom;
+        pParameters["attacker_leader"] = pWar.data.started_by_actor_name;
         pParameters["defender_leader"] = pWar.main_defender?.capital?.leader?.getName();
         pParameters["attacker_short"] = pWar.main_attacker.data.name[0].ToString();
         pParameters["defender_short"] = pWar.main_defender?.data.name[0].ToString();
@@ -159,7 +199,7 @@ public static class ParameterGetters
         {
             if (string.IsNullOrEmpty(pParameters["defender_capital"]))
             {
-                pParameters["defender_capital"] = pWar.main_defender.cities[0].getCityName();
+                pParameters["defender_capital"] = pWar.main_defender.cities[0].name;
             }
 
             if (string.IsNullOrEmpty(pParameters["defender_leader"]))
@@ -176,9 +216,9 @@ public static class ParameterGetters
         // 材质
         pParameters["material"] = pItemData.material;
         // 类型/对于weapon_name_city这些玩意来说可能会有用
-        pParameters["type"] = pItemData.id;
+        pParameters["type"] = pItemData.asset_id;
         // 本地名
-        var locale = "item_" + pItemAsset.id;
+        var locale = pItemAsset.getLocaleID();
         if (LocalizedTextManager.stringExists(locale)) locale = LM.Get(locale);
         pParameters["locale"] = locale;
         // 装备类别
@@ -187,9 +227,9 @@ public static class ParameterGetters
         pParameters["class"] = locale;
         if (pActor == null) return;
         // 制作者的城市名
-        pParameters["city"] = pActor.city?.getCityName();
+        pParameters["city"] = pActor.city?.name;
         // 制作者的文化名
-        pParameters["culture"] = pActor.getCulture()?.data.name;
+        pParameters["culture"] = pActor.culture?.data.name;
 
         if (pActor.kingdom == null) return;
         // 制作者的国家名
@@ -214,16 +254,23 @@ public static class ParameterGetters
     [Hotfixable]
     private static void default_global_parameter_getter(Dictionary<string, string> pParameters)
     {
-        pParameters["month"] = AssetManager.months.getMonth(World.world.mapStats.getCurrentMonth() + 1).english_name;
-        pParameters["year"] = World.world.mapStats.getCurrentYear().ToString();
-        pParameters["era"] = World.world.mapStats.era_id;
-        pParameters["天干地支纪年"] = LM.Get($"天干地支-{World.world.mapStats.getCurrentYear() % 60}");
+        pParameters["month"] = AssetManager.months.getMonth(Date.getCurrentMonth()).english_name;
+        pParameters["year"] = Date.getCurrentYear().ToString();
+        World.world.era_manager.prepare();
+        pParameters["era"] = World.world.era_manager.getCurrentAge().id;
+        pParameters["天干地支纪年"] = LM.Get($"天干地支-{Date.getCurrentYear() % 60}");
     }
 
     public static Action<Actor, Dictionary<string, string>> GetActorParameterGetter(string pName)
     {
         if (actor_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return actor_parameter_getters["default"];
+    }
+
+    public static Action<Subspecies, Dictionary<string, string>> GetSubspeciesParameterGetter(string pName)
+    {
+        if (subspecies_parameter_getters.TryGetValue(pName, out var getter)) return getter;
+        return subspecies_parameter_getters["default"];
     }
 
     public static Action<City, Dictionary<string, string>> GetCityParameterGetter(string pName)
@@ -244,6 +291,16 @@ public static class ParameterGetters
         return culture_parameter_getters["default"];
     }
 
+    public static Action<Language, Dictionary<string, string>> GetLanguageParameterGetter(string pName)
+    {
+        if (language_parameter_getters.TryGetValue(pName, out var getter)) return getter;
+        return language_parameter_getters["default"];
+    }
+    public static Action<Religion, Dictionary<string, string>> GetReligionParameterGetter(string pName)
+    {
+        if (religion_parameter_getters.TryGetValue(pName, out var getter)) return getter;
+        return religion_parameter_getters["default"];
+    }
     public static Action<Clan, Actor, Dictionary<string, string>> GetClanParameterGetter(string pName)
     {
         if (clan_parameter_getters.TryGetValue(pName, out var getter)) return getter;

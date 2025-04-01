@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Chinese_Name.utils;
 using HarmonyLib;
 using NeoModLoader.General.Event.Handlers;
 using NeoModLoader.General.Event.Listeners;
@@ -9,9 +10,11 @@ public class ClanNamePatch : IPatch
 {
     public void Initialize()
     {
-        ClanCreateListener.RegisterHandler(new RenameClan());
-        new Harmony(nameof(set_clan_motto)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.getMotto)),
-            prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_clan_motto))));
+       // ClanCreateListener.RegisterHandler(new RenameClan());
+       new Harmony(nameof(set_clan_name)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.newClanInit)),
+           postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_clan_name))));
+       new Harmony(nameof(set_clan_motto)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.getMotto)),
+           prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_clan_motto))));
     }
 
     private static bool set_clan_motto(Clan __instance)
@@ -28,6 +31,20 @@ public class ClanNamePatch : IPatch
         return true;
     }
 
+    private static void set_clan_name(Clan __instance, Actor pFounder)
+    {
+        var template_id = pFounder.GetNameTemplate(MetaType.Clan);
+        template_id = "human_clan";
+        var generator = CN_NameGeneratorLibrary.Instance.get(template_id);
+        if (generator == null) return;
+
+        var para = new Dictionary<string, string>();
+
+        ParameterGetters.GetClanParameterGetter(generator.parameter_getter)(__instance, pFounder, para);
+
+        __instance.data.name = generator.GenerateName(para);
+    }
+/*
     class RenameClan : ClanCreateHandler
     {
         private static readonly HashSet<string> vanilla_postfix = new()
@@ -50,5 +67,5 @@ public class ClanNamePatch : IPatch
 
             pClan.data.name = asset.GenerateName(para);
         }
-    }
+    }*/
 }
