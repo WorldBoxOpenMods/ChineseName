@@ -1,0 +1,92 @@
+[
+  {
+    "id": "book_name_love_story",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#传记#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_bad_story",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#悲剧#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_fable",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#列传#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_warfare_manual",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#军事指挥入门到入土#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_economy_manual",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#经济调控从入门到入土#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_stewardship_manual",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#内政处理从入门到入土#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_diplomacy_manual",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#外交策略从入门到入土#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_math",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#算经#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_biology",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#进化指南#",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "book_name_history",
+    "templates": [
+      {
+        "format": "{千字文}{千字文}#史诗#",
+        "weight": 4
+      }
+    ]
+  }
+]

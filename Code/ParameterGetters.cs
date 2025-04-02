@@ -17,6 +17,17 @@ public static class ParameterGetters
             }
         };
 
+    private static readonly Dictionary<string, Action<Book, Dictionary<string, string>>> book_parameter_getters = new()
+    {
+        {
+            "default", default_book_parameter_getter
+        }
+    };
+
+    private static void default_book_parameter_getter(Book pBook, Dictionary<string, string> pParameters)
+    {
+    }
+
     private static readonly Dictionary<string, Action<City, Dictionary<string, string>>> city_parameter_getters = new()
     {
         {
@@ -311,6 +322,12 @@ public static class ParameterGetters
     {
         if (alliance_parameter_getters.TryGetValue(pName, out var getter)) return getter;
         return alliance_parameter_getters["default"];
+    }
+
+    public static Action<Book, Dictionary<string, string>> GetBookParameterGetter(string pName)
+    {
+        if (book_parameter_getters.TryGetValue(pName, out var getter)) return getter;
+        return book_parameter_getters["default"];
     }
 
     public static Action<War, Dictionary<string, string>> GetWarParameterGetter(string pName)
