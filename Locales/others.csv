@@ -1,0 +1,6 @@
+key,cz
+trait_group_family_name,姓氏
+culture_trait_FamilyNameFromMother,母姓
+culture_trait_FamilyNameFromMother_info,姓氏传承时优先使用母姓
+culture_trait_FamilyNameFromFather,父姓
+culture_trait_FamilyNameFromFather_info,姓氏传承时优先使用父姓

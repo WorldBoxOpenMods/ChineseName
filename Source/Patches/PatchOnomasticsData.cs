@@ -1,9 +1,8 @@
-using System;
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
 using HarmonyLib;
 
-namespace Chinese_Name;
+namespace Chinese_Name.Patches;
 
 internal class PatchOnomasticsData : IPatch
 {
@@ -15,7 +14,7 @@ internal class PatchOnomasticsData : IPatch
         __result = GenerateNameExtended(__instance, pSex, pCalls, pSeed, null);
         return false;
     }
-    private static string GenerateNameExtended(OnomasticsData data, ActorSex sex, int call, long? seed, Actor namer)
+    internal static string GenerateNameExtended(OnomasticsData data, ActorSex sex, int call, long? seed, Actor namer)
     {
 		if (call > 50)
 		{

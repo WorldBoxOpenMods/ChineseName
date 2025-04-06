@@ -16,7 +16,7 @@ namespace Chinese_Name;
 internal class ModClass : BasicMod<ModClass>, IReloadable
 {
     private List<ICanReload> _reloadables = new List<ICanReload>();
-
+    private List<ICanPostInit> _postinits = new List<ICanPostInit>();
     public static void LogAllException(Exception e)
     {
         LogService.LogException(e);
@@ -38,8 +38,14 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
             WordLibraryLibrary.Instance.LoadFromFile(path, Path.GetFileNameWithoutExtension(path));
         }
 
+        var init_types = new List<Type>();
         foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(t =>
                      typeof(ICanInit).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract))
+        {
+            init_types.Add(t);
+        }
+        
+        foreach (var t in InitAfterAttribute.Sort(init_types))
         {
             try
             {
@@ -49,13 +55,17 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
                 {
                     _reloadables.Add(reloadable);
                 }
+
+                if (can_init is ICanPostInit post_init)
+                {
+                    _postinits.Add(post_init);
+                }
             }
             catch (Exception e)
             {
                 LogAllException(e);
             }
         }
-        new ExtendOnomasticsLibrary().Init();
 
         foreach (var t in Assembly.GetExecutingAssembly().GetTypes()
                      .Where(t => typeof(IPatch).IsAssignableFrom(t) && !t.IsInterface))
@@ -100,6 +110,18 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
             }
 
             LM.ApplyLocale(false);
+        }
+
+        foreach (var can_post_init in _postinits)
+        {
+            try
+            {
+                can_post_init.PostInit();
+            }
+            catch (Exception e)
+            {
+                LogAllException(e);
+            }
         }
     }
     [Hotfixable]

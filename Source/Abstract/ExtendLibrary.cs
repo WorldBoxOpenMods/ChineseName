@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Chinese_Name.Abstract;
 
-public abstract class ExtendLibrary<TAsset, T> : ICanInit, ICanReload
+public abstract class ExtendLibrary<TAsset, T> : ICanInit, ICanReload, ICanPostInit
     where TAsset : Asset, new() where T : ExtendLibrary<TAsset, T>
 {
     private readonly List<TAsset>               _assets_added = new();
@@ -99,5 +99,13 @@ public abstract class ExtendLibrary<TAsset, T> : ICanInit, ICanReload
         t = cached_library.clone(new_id, from_id);
         _assets_added.Add(t);
         return t;
+    }
+
+    public void PostInit()
+    {
+        foreach (var asset in _assets_added)
+        {
+            PostInit(asset);
+        }
     }
 }
