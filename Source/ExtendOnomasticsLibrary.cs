@@ -50,6 +50,8 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     /// </summary>
     [GetOnly, AssetId(S_Onomastics.vowel_separator)]
     public static OnomasticsAsset RemoveLast { get; private set; }
+    public static OnomasticsAsset KingdomName { get; private set; }
+    public static OnomasticsAsset CityName { get; private set; }
     protected override void OnInit()
     {
         RegisterAssets();

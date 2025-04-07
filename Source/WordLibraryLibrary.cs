@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using NeoModLoader.api;
 
 namespace Chinese_Name;
 
@@ -17,5 +18,14 @@ public class WordLibraryLibrary : AssetLibrary<WordLibraryAsset>
         };
         asset.Words.AddRange(texts.Where(x => !string.IsNullOrEmpty(x)));
         add(asset);
+    }
+
+    public void LoadFromMod(IMod mod)
+    {
+        foreach (var path in Directory.GetFiles(Path.Combine(mod.GetDeclaration().FolderPath, "ChineseNamePackages"), "*.txt",
+                     SearchOption.AllDirectories))
+        {
+            LoadFromFile(path, Path.GetFileNameWithoutExtension(path));
+        }
     }
 }

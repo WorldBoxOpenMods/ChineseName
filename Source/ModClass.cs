@@ -17,6 +17,7 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
 {
     private List<ICanReload> _reloadables = new List<ICanReload>();
     private List<ICanPostInit> _postinits = new List<ICanPostInit>();
+    public Dictionary<string, string> GlobalParameters = new();
     public static void LogAllException(Exception e)
     {
         LogService.LogException(e);
@@ -28,15 +29,23 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
             e = e.InnerException;
         }
     }
+    private HashSet<IMod> _loaded_mods = new HashSet<IMod>();
+    private void Update()
+    {
+        foreach (var mod in WorldBoxMod.LoadedMods)
+        {
+            if (_loaded_mods.Contains(mod)) continue;
+            _loaded_mods.Add(mod);
+            ChineseNameGeneratorLibrary.Instance.LoadFromMod(mod);
+            WordLibraryLibrary.Instance.LoadFromMod(mod);
+        }
+    }
+
     protected override void OnModLoad()
     {
         AssetManager._instance.add(WordLibraryLibrary.Instance, "Chinese_Name.WordLibraries");
+        AssetManager._instance.add(ChineseNameGeneratorLibrary.Instance, "Chinese_Name.ChineseNameGeneratorLibrary");
 
-        foreach (var path in Directory.GetFiles(Path.Combine(GetDeclaration().FolderPath, "word_libraries"), "*.txt",
-                     SearchOption.AllDirectories))
-        {
-            WordLibraryLibrary.Instance.LoadFromFile(path, Path.GetFileNameWithoutExtension(path));
-        }
 
         var init_types = new List<Type>();
         foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(t =>
