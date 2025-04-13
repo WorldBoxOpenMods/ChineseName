@@ -45,7 +45,7 @@ public class ActorNamePatch : IPatch
             foreach (var parent in __instance.getParents())
             {
                 parent.data.get(DataS.family_name, out family_name, "");
-                if (!string.IsNullOrEmpty(family_name)) break;
+                if (!string.IsNullOrEmpty(family_name) && parent.data.sex == ActorSex.Male) break;
             }
         }
         para[DataS.family_name_in_template] = family_name;
