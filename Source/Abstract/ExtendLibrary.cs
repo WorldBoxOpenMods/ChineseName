@@ -75,7 +75,6 @@ public abstract class ExtendLibrary<TAsset, T> : ICanInit, ICanReload, ICanPostI
                 }
 
                 prop.SetValue(null, item);
-                PostInit(item);
                 ModClass.LogInfo($"({typeof(T).Name}) Initializes {item_id}");
             }
     }
