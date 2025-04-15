@@ -11,7 +11,7 @@ public class ClanNamePatch : IPatch
     public void Initialize()
     {
        // ClanCreateListener.RegisterHandler(new RenameClan());
-       new Harmony(nameof(set_clan_name)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.newClanInit)),
+       new Harmony(nameof(set_clan_name)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.newClan)),
            postfix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_clan_name))));
        new Harmony(nameof(set_clan_motto)).Patch(AccessTools.Method(typeof(Clan), nameof(Clan.getMotto)),
            prefix: new HarmonyMethod(AccessTools.Method(GetType(), nameof(set_clan_motto))));
