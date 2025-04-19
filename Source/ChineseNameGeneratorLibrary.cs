@@ -11,8 +11,9 @@ public class ChineseNameGeneratorLibrary : AssetLibrary<ChineseNameGeneratorAsse
     public static ChineseNameGeneratorLibrary Instance = new();
     public void LoadFromMod(IMod mod)
     {
-        foreach (var path in Directory.GetFiles(Path.Combine(mod.GetDeclaration().FolderPath, "ChineseNamePackages"),
-                     "*.json"))
+        var folder = Path.Combine(mod.GetDeclaration().FolderPath, "ChineseNamePackages");
+        if (!Directory.Exists(folder)) return;
+        foreach (var path in Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories))
         {
             try
             {

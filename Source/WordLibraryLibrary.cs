@@ -22,8 +22,9 @@ public class WordLibraryLibrary : AssetLibrary<WordLibraryAsset>
 
     public void LoadFromMod(IMod mod)
     {
-        foreach (var path in Directory.GetFiles(Path.Combine(mod.GetDeclaration().FolderPath, "ChineseNamePackages"), "*.txt",
-                     SearchOption.AllDirectories))
+        var folder = Path.Combine(mod.GetDeclaration().FolderPath, "ChineseNamePackages");
+        if (!Directory.Exists(folder)) return;
+        foreach (var path in Directory.GetFiles(folder, "*.txt", SearchOption.AllDirectories))
         {
             LoadFromFile(path, Path.GetFileNameWithoutExtension(path));
         }

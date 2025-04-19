@@ -23,9 +23,6 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     public static OnomasticsAsset Mirror { get; private set; }
     [GetOnly, AssetId(S_Onomastics.wild_6)]
     public static OnomasticsAsset Wild6 { get; private set; }
-    /// <summary>
-    /// TODO: 姓氏传承
-    /// </summary>
     [GetOnly, AssetId(S_Onomastics.domino)]
     public static OnomasticsAsset Domino { get; private set; }
     /// <summary>
@@ -50,7 +47,9 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     /// </summary>
     [GetOnly, AssetId(S_Onomastics.vowel_separator)]
     public static OnomasticsAsset RemoveLast { get; private set; }
+    [Ignore]
     public static OnomasticsAsset KingdomName { get; private set; }
+    [Ignore]
     public static OnomasticsAsset CityName { get; private set; }
     protected override void OnInit()
     {

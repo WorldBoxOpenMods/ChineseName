@@ -42,6 +42,7 @@ public abstract class ExtendLibrary<TAsset, T> : ICanInit, ICanReload, ICanPostI
         foreach (PropertyInfo prop in props)
             if (prop.PropertyType == typeof(TAsset))
             {
+                if (prop.GetCustomAttribute<IgnoreAttribute>() != null) continue;
                 TAsset item;
                 var item_id = $"{prefix}.{prop.Name}";
                 if (string.IsNullOrEmpty(prefix))
