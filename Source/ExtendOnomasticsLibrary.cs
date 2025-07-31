@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
+using strings;
 
 namespace Chinese_Name;
 
@@ -21,6 +23,11 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     /// </summary>
     [GetOnly, AssetId(S_Onomastics.mirror)]
     public static OnomasticsAsset Mirror { get; private set; }
+    /// <summary>
+    /// 添加空格
+    /// </summary>
+    [GetOnly, AssetId(S_Onomastics.space)]
+    public static OnomasticsAsset Space { get; private set; }
     [GetOnly, AssetId(S_Onomastics.wild_6)]
     public static OnomasticsAsset Wild6 { get; private set; }
     [GetOnly, AssetId(S_Onomastics.domino)]
@@ -144,6 +151,29 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
             }
 
             return string.Empty;
+        };
+        
+        Space.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            if (localBuilder.Length == 0)
+            {
+                if (globalBuilder.Length == 0)
+                {
+                    return " ";
+                }
+
+                if (globalBuilder[globalBuilder.Length - 1] == ' ')
+                {
+                    return String.Empty;
+                }
+
+                return " ";
+            }
+
+            if (localBuilder[localBuilder.Length - 1] == ' ') return string.Empty;
+
+            return " ";
         };
     }
 

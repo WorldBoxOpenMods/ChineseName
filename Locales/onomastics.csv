@@ -15,3 +15,4 @@ onomastics_consonant_separator_subname,左侧切片器
 onomastics_consonant_separator_info,去除当前词组的结果的左侧第一个字符
 onomastics_vowel_separator_subname,右侧切片器
 onomastics_vowel_separator_info,去除当前词组的结果的右侧第一个字符
+onomastics_space,空格

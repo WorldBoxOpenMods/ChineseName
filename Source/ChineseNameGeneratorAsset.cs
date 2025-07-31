@@ -1,16 +1,17 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Chinese_Name;
-
 public class ChineseNameGeneratorAsset : Asset
 {
-    [JsonProperty("parameter_getter")] public string parameter_getter = "default";
     [JsonProperty("default_template")]
     public ChineseNameTemplate default_template { get; protected set; } = ChineseNameTemplate.Create("#NO_NAME#", 1);
     [JsonProperty("templates")] public List<ChineseNameTemplate> templates { get; protected set; } = new();
-
+    [JsonProperty("parameter_requires")]
+    public List<string> parameter_requires = new();
     private float current_total_weight;
     private float[] current_weights = null;
     private float total_weight = 0f;
@@ -57,7 +58,11 @@ public class ChineseNameGeneratorAsset : Asset
         weights.CopyTo(current_weights, 0);
         current_total_weight = total_weight;
     }
-
+    private ChineseNameParameterGetter _param_getter;
+    public void ObtainParameters(Actor pActor, Kingdom pKingdom, Dictionary<string, string> pParameters)
+    {
+        _param_getter?.Invoke(pActor, pKingdom, pParameters);
+    }
     /// <summary>
     /// 根据参数, 尝试10次随机获取模板并生成名字
     /// </summary>
@@ -68,6 +73,8 @@ public class ChineseNameGeneratorAsset : Asset
         int max_try = 10;
         while (max_try-- > 0)
         {
+            pParameters ??= new();
+            pParameters.Clear();
             string name = GetTemplate(pParameters).GenerateName(pParameters);
             if (!string.IsNullOrEmpty(name)) return name;
         }

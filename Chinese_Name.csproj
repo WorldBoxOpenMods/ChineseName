@@ -38,6 +38,9 @@
     <Reference Include="Purchasing.Common">
       <HintPath>..\..\worldbox_Data\Managed\Purchasing.Common.dll</HintPath>
     </Reference>
+    <Reference Include="strings">
+      <HintPath>..\..\worldbox_Data\Managed\strings.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
