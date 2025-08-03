@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Chinese_Name.Abstract;
 using HarmonyLib;
+using NeoModLoader.utils;
 
 namespace Chinese_Name.Patches;
 

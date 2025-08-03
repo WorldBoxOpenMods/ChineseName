@@ -1,6 +1,7 @@
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
 using HarmonyLib;
+using NeoModLoader.services;
 
 namespace Chinese_Name.Patches;
 
@@ -16,6 +17,11 @@ internal class PatchOnomasticsData : IPatch
     }
     internal static string GenerateNameExtended(OnomasticsData data, ActorSex sex, int call, long? seed, Actor namer)
     {
+	    if (namer == null)
+	    {
+		    ModClass.LogInfo($"Generate onomastics name without namer");
+		    LogService.LogStackTraceAsInfo();
+	    }
 		if (call > 50)
 		{
 			return "无名";

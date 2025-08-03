@@ -108,6 +108,7 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
             if (string.IsNullOrEmpty(family_name))
             {
                 namer.data.set(S_DataKey.FamilyName, localBuilder.ToString());
+                ModClass.LogInfo($"Set family name {localBuilder} for {namer.data.id}");
                 return string.Empty;
             }
 

@@ -81,4 +81,9 @@ public class ChineseNameGeneratorAsset : Asset
 
         return default_template.GenerateName(pParameters);
     }
+
+    public void StoreParameters(Actor pActor, Kingdom pKingdom, Dictionary<string, string> parameters)
+    {
+        throw new NotImplementedException();
+    }
 }

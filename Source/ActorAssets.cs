@@ -11,6 +11,6 @@ public class ActorAssets : ExtendLibrary<ActorAsset, ActorAssets>
     protected override void OnInit()
     {
         RegisterAssets();
-        Human.name_template_sets = new[] { NameSets.HumanDefaultSet.id };
+        Human.name_template_sets = new[] { NameSets.DefaultEasternNameSet.id };
     }
 }
