@@ -19,8 +19,7 @@ internal class PatchOnomasticsData : IPatch
     {
 	    if (namer == null)
 	    {
-		    ModClass.LogInfo($"Generate onomastics name without namer");
-		    LogService.LogStackTraceAsInfo();
+		    //ModClass.LogInfo($"Generate onomastics name without namer");
 	    }
 		if (call > 50)
 		{

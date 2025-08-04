@@ -54,9 +54,11 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     /// </summary>
     [GetOnly, AssetId(S_Onomastics.vowel_separator)]
     public static OnomasticsAsset RemoveLast { get; private set; }
-    [Ignore]
+    [GetOnly, AssetId(S_Onomastics.vowel_duplicator)]
+    public static OnomasticsAsset NamerFamilyName { get; private set; }
+    [GetOnly, AssetId(S_Onomastics.consonant_duplicator)]
     public static OnomasticsAsset KingdomName { get; private set; }
-    [Ignore]
+    [GetOnly, AssetId(S_Onomastics.vowel_replacer)]
     public static OnomasticsAsset CityName { get; private set; }
     protected override void OnInit()
     {
@@ -118,6 +120,49 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
         Domino.affects_left = true;
         Domino.affects_left_word = true;
         Domino.affects_left_group_only = true;
+        NamerFamilyName.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            if (namer == null) return string.Empty;
+            namer.data.get(S_DataKey.FamilyName, out string family_name);
+            return family_name;
+        };
+        NamerFamilyName.affects_everything = false;
+        NamerFamilyName.affects_left = false;
+        NamerFamilyName.affects_left_group_only = false;
+        NamerFamilyName.affects_left_word = false;
+        NamerFamilyName.is_divider = false;
+        NamerFamilyName.is_immune = false;
+        NamerFamilyName.is_upper = false;
+        NamerFamilyName.is_word_divider = false;
+        KingdomName.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            if (namer?.kingdom == null) return string.Empty;
+            return namer.kingdom.name;
+        };
+        KingdomName.affects_everything = false;
+        KingdomName.affects_left = false;
+        KingdomName.affects_left_group_only = false;
+        KingdomName.affects_left_word = false;
+        KingdomName.is_divider = false;
+        KingdomName.is_immune = false;
+        KingdomName.is_upper = false;
+        KingdomName.is_word_divider = false;
+        CityName.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            if (namer?.city == null) return string.Empty;
+            return namer.city.name;
+        };
+        CityName.affects_everything = false;
+        CityName.affects_left = false;
+        CityName.affects_left_group_only = false;
+        CityName.affects_left_word = false;
+        CityName.is_divider = false;
+        CityName.is_immune = false;
+        CityName.is_upper = false;
+        CityName.is_word_divider = false;
         Repeater.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
             last_part, index, sex, parameters, namer) => last_part;
         Backspace.is_word_divider = true;

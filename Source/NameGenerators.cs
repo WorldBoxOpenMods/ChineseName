@@ -22,9 +22,9 @@ public class NameGenerators : ExtendLibrary<NameGeneratorAsset, NameGenerators>
         
         EasternCity.addOnomastic("0L|0:真实城名");
         EasternKingdom.addOnomastic("0L|0:真实国名");
-        EasternCulture.addOnomastic("0L,1|0:真实城名;1:文化");
+        EasternCulture.addOnomastic("e1|0:真实城名;1:文化");
         
-        EasternClan.addOnomastic("0L,1L,2|0:真实城名;1:百家姓;2:家");
+        EasternClan.addOnomastic("ed0|0:家");
         EasternFamily.addOnomastic("0L,1L,2|0:真实城名;1:百家姓;2:家");
         EasternLanguage.addOnomastic("0L,1|0:千字文;1:语");
         EasternReligion.addOnomastic("0L,1|0:千字文;1:教");

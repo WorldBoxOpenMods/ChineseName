@@ -84,6 +84,6 @@ public class ChineseNameGeneratorAsset : Asset
 
     public void StoreParameters(Actor pActor, Kingdom pKingdom, Dictionary<string, string> parameters)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }
