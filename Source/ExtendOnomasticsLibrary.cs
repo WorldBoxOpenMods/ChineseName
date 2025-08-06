@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
 using strings;
@@ -54,12 +55,16 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
     /// </summary>
     [GetOnly, AssetId(S_Onomastics.vowel_separator)]
     public static OnomasticsAsset RemoveLast { get; private set; }
-    [GetOnly, AssetId(S_Onomastics.vowel_duplicator)]
+    [GetOnly, AssetId(S_Onomastics.vowel_replacer)]
     public static OnomasticsAsset NamerFamilyName { get; private set; }
     [GetOnly, AssetId(S_Onomastics.consonant_duplicator)]
     public static OnomasticsAsset KingdomName { get; private set; }
-    [GetOnly, AssetId(S_Onomastics.vowel_replacer)]
+    [GetOnly, AssetId(S_Onomastics.vowel_duplicator)]
     public static OnomasticsAsset CityName { get; private set; }
+    [GetOnly, AssetId(S_Onomastics.consonant_replacer)]
+    public static OnomasticsAsset ViewFirst { get; private set; }
+    [GetOnly, AssetId(S_Onomastics.consonant_requirer)]
+    public static OnomasticsAsset ViewLast { get; private set; }
     protected override void OnInit()
     {
         RegisterAssets();
@@ -220,6 +225,41 @@ public class ExtendOnomasticsLibrary : ExtendLibrary<OnomasticsAsset, ExtendOnom
             if (localBuilder[localBuilder.Length - 1] == ' ') return string.Empty;
 
             return " ";
+        };
+        Wild6.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            string text;
+            using ListPool<string> groups = new ListPool<string>(data.groups.Count);
+            foreach (KeyValuePair<string, OnomasticsDataGroup> pair in data.groups)
+            {
+                if (!pair.Value.isEmpty() && AssetManager.onomastics_library.get(pair.Key).group_id < 6)
+                {
+                    groups.Add(pair.Key);
+                }
+            }
+            if (!groups.Any())
+            {
+                text = string.Empty;
+            }
+            else
+            {
+                text =  AssetManager.onomastics_library.get(OnomasticsLibrary.GetRandom<string>(groups)).Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate.Invoke(asset, data,
+                    localBuilder, globalBuilder,
+                    lastPart, index, sex, parameters, namer) ?? string.Empty;
+            }
+
+            return text;
+        };
+        ViewFirst.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            return localBuilder.Length > 0 ? localBuilder[0].ToString() : string.Empty;
+        };
+        ViewLast.Get<ExtendOnomasticsAsset>().ChineseNameMakerDelegate = (asset, data, localBuilder, globalBuilder,
+            lastPart, index, sex, parameters, namer) =>
+        {
+            return localBuilder.Length > 0 ? localBuilder[localBuilder.Length - 1].ToString() : string.Empty;
         };
     }
 
