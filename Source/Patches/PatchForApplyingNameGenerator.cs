@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Chinese_Name.Abstract;
+using Chinese_Name.Utils;
 using HarmonyLib;
 
 namespace Chinese_Name.Patches;
@@ -13,7 +14,15 @@ internal class PatchForApplyingNameGenerator : IPatch
         string pTemplate = null, long? pSeed = null, bool pIgnoreBlackList = false, Actor pActor = null)
     {
         NameGenerator.init();
+        if (pActor != null)
+        {
+            
+        }
         NameGeneratorAsset tAsset = AssetManager.name_generator.get(pAssetID);
+        if (tAsset == null)
+        {
+            ModClass.LogInfo("NameGeneratorAsset not found: " + pAssetID);
+        }
         NameGenerator._current_consonants = 0;
         NameGenerator._current_vowels = 0;
         string tName = NameGenerator.generateNameFromTemplate(tAsset, pActor, pActor?.kingdom, pForceLegacy, 0, pTemplate, null, false, pSeed, pSex, pIgnoreBlackList);

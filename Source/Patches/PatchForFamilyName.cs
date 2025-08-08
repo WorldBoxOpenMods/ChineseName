@@ -57,8 +57,12 @@ internal class PatchForFamilyName : IPatch
                 family_name_source = father;
             }
 
-            string selected_family_name = family_name_source == father ? father_family_name : mother_family_name;
+            bool use_father_name = family_name_source == father;
+            string selected_family_name = use_father_name ? father_family_name : mother_family_name;
+            
+            (use_father_name ? father : mother).data.get(S_DataKey.NameSet, out string name_set);
             __result.data.set(S_DataKey.FamilyName, selected_family_name);
+            __result.data.set(S_DataKey.NameSet, name_set);
         }
     }
 }

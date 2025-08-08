@@ -19,5 +19,15 @@ public class NameSets : ExtendLibrary<NameSetAsset, NameSets>
         DefaultEasternNameSet.clan = NameGenerators.EasternClan.id;
         DefaultEasternNameSet.language = NameGenerators.EasternLanguage.id;
         DefaultEasternNameSet.religion = NameGenerators.EasternReligion.id;
+        
+        
+        DefaultWesternNameSet.unit = NameGenerators.WesternUnit.id;
+        DefaultWesternNameSet.city = NameGenerators.WesternCity.id;
+        DefaultWesternNameSet.kingdom = NameGenerators.WesternKingdom.id;
+        DefaultWesternNameSet.culture = NameGenerators.WesternCulture.id;
+        DefaultWesternNameSet.family = NameGenerators.WesternFamily.id;
+        DefaultWesternNameSet.clan = NameGenerators.WesternClan.id;
+        DefaultWesternNameSet.language = NameGenerators.WesternLanguage.id;
+        DefaultWesternNameSet.religion = NameGenerators.WesternReligion.id;
     }
 }
