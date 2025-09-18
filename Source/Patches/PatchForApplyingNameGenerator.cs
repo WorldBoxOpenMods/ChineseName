@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
 using HarmonyLib;
+using UnityEngine.Pool;
 
 namespace Chinese_Name.Patches;
 
@@ -77,6 +78,7 @@ internal class PatchForApplyingNameGenerator : IPatch
             return false;
         }
 
+        return true;
         var name_generator = ChineseNameGeneratorLibrary.Instance.get(pAsset.id);
         if (name_generator == null)
         {

@@ -74,7 +74,7 @@ public abstract class ExtendTraitLibrary<TTrait, TLibrary> : ExtendLibrary<TTrai
         else
         {
             int tCount = 0;
-            if ( asset.action_death != null || asset.action_special_effect != null || asset.action_get_hit != null || asset.action_birth != null || asset.action_attack_target != null || asset.action_on_add != null || asset.action_on_remove != null || asset.action_on_load != null)
+            if ( asset.action_death != null || asset.action_special_effect != null || asset.action_get_hit != null || asset.action_birth != null || asset.action_attack_target != null || asset.action_on_augmentation_add != null || asset.action_on_augmentation_remove != null || asset.action_on_augmentation_load != null)
             {
                 tCount++;
             }
