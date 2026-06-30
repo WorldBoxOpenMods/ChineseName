@@ -24,7 +24,7 @@ internal class PatchOnomasticsData : IPatch
 	    }
 		if (call > 3)
 		{
-			return "";
+			return OnomasticsData.DEFAULT_NAME_FAILED;
 		}
 		if (sex == ActorSex.None)
 		{
@@ -63,6 +63,10 @@ internal class PatchOnomasticsData : IPatch
 			if (type > OnomasticsAssetType.Special) continue;
 			
 			string part = extend_asset.ChineseNameMakerDelegate?.Invoke(component_asset, data, local_name_builder, full_name_builder, last_part, i, sex, parameters, namer);
+			if (part == null)
+			{
+				part = component_asset.namemaker_delegate?.Invoke(component_asset, data, local_name_builder, last_part, i, sex);
+			}
 			if (component_asset.is_upper)
 			{
 				upper_exists = true;

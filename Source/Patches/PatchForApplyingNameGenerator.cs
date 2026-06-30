@@ -72,13 +72,17 @@ internal class PatchForApplyingNameGenerator : IPatch
         string[] pClassicTemplate = null, bool pTestReplacer = false, long? pSeed = null, ActorSex pSex = ActorSex.None,
         bool pIgnoreBlacklist = false)
     {
+        if (pAsset == null)
+        {
+            return true;
+        }
+
         if (pAsset.hasOnomastics() && !pForceLegacy)
         {
             __result = NameGenerator.generateNameFromOnomastics(pAsset, pOnomasticsTemplate, pActor, pSeed, pSex);
-            return false;
+            return string.IsNullOrEmpty(__result);
         }
 
-        return true;
         var name_generator = ChineseNameGeneratorLibrary.Instance.get(pAsset.id);
         if (name_generator == null)
         {
@@ -90,6 +94,6 @@ internal class PatchForApplyingNameGenerator : IPatch
         __result = name_generator.GenerateName(parameters);
         name_generator.StoreParameters(pActor, pKingdom, parameters);
         DictionaryPool<string, string>.Release(parameters);
-        return false;
+        return string.IsNullOrEmpty(__result);
     }
 }
