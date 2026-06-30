@@ -16,6 +16,9 @@ namespace Chinese_Name;
 public class ChineseNameTemplate
 {
     private          bool                      has_parsed            = false;
+    private sealed class TemplateGenerationFailedException : Exception
+    {
+    }
 
     ChineseNameTemplate(string pFormat, float pWeight)
     {
@@ -49,16 +52,27 @@ public class ChineseNameTemplate
     [Hotfixable]
     public string GenerateName(Dictionary<string, string> pParameters)
     {
-        var builder = new StringBuilder();
+        ParseNT();
+        pParameters ??= new Dictionary<string, string>();
+
+        var builder = StringBuilderPool.Rent(raw_format?.Length ?? 0);
         try
         {
             _root.ParseParamInto(builder, pParameters);
+            return builder.ToString();
+        }
+        catch (TemplateGenerationFailedException)
+        {
+            return string.Empty;
         }
         catch (MissingRequiredWordLibraryException)
         {
             return string.Empty;
         }
-        return builder.ToString();
+        finally
+        {
+            StringBuilderPool.Return(builder);
+        }
     }
 
     private TemplateNode _root = null;
@@ -96,6 +110,7 @@ public class ChineseNameTemplate
     class RawTextNode : TemplateNode
     {
         public StringBuilder TextBuilder = new();
+        public string CachedText;
 
         public override void AddChild(TemplateNode node)
         {
@@ -105,12 +120,24 @@ public class ChineseNameTemplate
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
         {
+            if (CachedText != null)
+            {
+                builder.Append(CachedText);
+                return;
+            }
+
             builder.Append(TextBuilder);
         }
 
         public override string ToString()
         {
             return $"Text[{TextBuilder.ToString()}]";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string GetText()
+        {
+            return CachedText ??= TextBuilder.ToString();
         }
     }
 
@@ -120,6 +147,8 @@ public class ChineseNameTemplate
 
         public ComplexNodeType Type;
         public List<TemplateNode> ParamChildren = new();
+        public string FixedParamId;
+        public string FixedContent;
 
         public override void AddChild(TemplateNode node)
         {
@@ -135,41 +164,46 @@ public class ChineseNameTemplate
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
         {
-            var local_builder = new StringBuilder();
-            foreach (var node in ParamChildren)
+            var param_id = FixedParamId ?? BuildNodeText(ParamChildren, parameters);
+            if (!string.IsNullOrEmpty(param_id) && parameters.TryGetValue(param_id, out var param))
             {
-                node.ParseParamInto(local_builder, parameters);
-            }
+                if (string.IsNullOrEmpty(param))
+                {
+                    throw new TemplateGenerationFailedException();
+                }
 
-            var param_id = local_builder.ToString();
-            if (parameters.TryGetValue(param_id, out var param))
-            {
                 builder.Append(param);
                 return;
             }
 
-            local_builder.Clear();
-            base.ParseParamInto(local_builder, parameters);
-            
+            var content_id = FixedContent ?? BuildNodeText(Children, parameters);
+
             string left_value = string.Empty;
             switch (Type)
             {
                 case ComplexNodeType.Parameter:
-                    if (!parameters.TryGetValue(local_builder.ToString(), out left_value))
+                    if (!parameters.TryGetValue(content_id, out left_value) || string.IsNullOrEmpty(left_value))
                     {
-                        left_value = string.Empty;
+                        throw new TemplateGenerationFailedException();
                     }
+
                     break;
                 case ComplexNodeType.RequiredWordLibrary:
-                    var library_1 = WordLibraryLibrary.Instance.get(local_builder.ToString());
+                    var library_1 = WordLibraryLibrary.Instance.get(content_id);
                     if (library_1 == null)
                     {
-                        throw new MissingRequiredWordLibraryException(local_builder.ToString());
+                        throw new MissingRequiredWordLibraryException(content_id);
                     }
+
                     left_value = library_1.GetRandom();
+                    if (string.IsNullOrEmpty(left_value))
+                    {
+                        throw new TemplateGenerationFailedException();
+                    }
+
                     break;
                 case ComplexNodeType.OptionalWordLibrary:
-                    left_value = WordLibraryLibrary.Instance.get(local_builder.ToString())?.GetRandom() ?? string.Empty;
+                    left_value = WordLibraryLibrary.Instance.get(content_id)?.GetRandom() ?? string.Empty;
                     break;
             }
 
@@ -187,6 +221,14 @@ public class ChineseNameTemplate
         }
     }
 
+    class GroupNode : TemplateNode
+    {
+        public override string ToString()
+        {
+            return $"Group[{Children.Count}]";
+        }
+    }
+
     class ForceRawTextNode : RawTextNode
     {
         public override string ToString()
@@ -200,8 +242,15 @@ public class ChineseNameTemplate
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void ParseParamInto(StringBuilder _, Dictionary<string, string> parameters)
         {
-            var builder = new StringBuilder();
-            base.ParseParamInto(builder, parameters);
+            var builder = StringBuilderPool.Rent();
+            try
+            {
+                base.ParseParamInto(builder, parameters);
+            }
+            finally
+            {
+                StringBuilderPool.Return(builder);
+            }
         }
 
         public override string ToString()
@@ -238,25 +287,36 @@ public class ChineseNameTemplate
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
         {
-            var start_index = NegStart ? -StartIndex : StartIndex;
-            var end_index = NegEnd ? -EndIndex : EndIndex;
-            var step_length = NegStep ? -StepLength : StepLength;
-            if (!StartConfigured) start_index = 0;
-            if (!EndConfigured) end_index = builder.Length;
-            if (!StepConfigured) step_length = 1;
-
-            start_index = (start_index + builder.Length) % builder.Length;
-            end_index = (end_index + builder.Length) % builder.Length;
-
-            if (end_index < start_index)
+            var old_length = builder.Length;
+            if (old_length == 0)
             {
-                end_index += builder.Length;
+                return;
             }
-            
-            int old_length = builder.Length;
-            for (int i = start_index; i < end_index; i += step_length)
+
+            var step_length = StepConfigured ? (NegStep ? -StepLength : StepLength) : 1;
+            if (step_length == 0)
             {
-                builder.Append(builder[i % old_length]);
+                builder.Clear();
+                return;
+            }
+
+            if (step_length > 0)
+            {
+                var start_index = ResolvePositiveSliceIndex(old_length, StartConfigured, NegStart, StartIndex, 0);
+                var end_index = ResolvePositiveSliceIndex(old_length, EndConfigured, NegEnd, EndIndex, old_length);
+                for (int i = start_index; i < end_index; i += step_length)
+                {
+                    builder.Append(builder[i]);
+                }
+            }
+            else
+            {
+                var start_index = ResolveNegativeSliceIndex(old_length, StartConfigured, NegStart, StartIndex, old_length - 1);
+                var end_index = ResolveNegativeSliceIndex(old_length, EndConfigured, NegEnd, EndIndex, -1);
+                for (int i = start_index; i > end_index; i += step_length)
+                {
+                    builder.Append(builder[i]);
+                }
             }
 
             builder.Remove(0, old_length);
@@ -271,13 +331,9 @@ public class ChineseNameTemplate
     internal void ParseNT()
     {
         if (has_parsed) return;
-        has_parsed = true;
+        raw_format ??= string.Empty;
 
         var atom_stack = new Stack<TemplateNode>();
-
-        var example =
-            "($prefix_library$[-2:])甲子<{动物-$type{现有国名:actor_kingdom}:prefix_library$-词库类型}#纯文本乱码)}({><#>{国名后缀}";
-        // 甲子<{动物-$type{现有国名:actor_kingdom}:prefix_library$-词库类型}#纯文本乱码)}({><#>{国名后缀}($prefix_library$[-2:])
         #region 解析为表达树
 
         var root = new TemplateNode();
@@ -290,6 +346,11 @@ public class ChineseNameTemplate
             {
                 if (ch == '#')
                 {
+                    if (atom_stack.Count == 0)
+                    {
+                        throw new InvalidCharException(ch, i, raw_format, "未匹配到对应的纯文本开始标记");
+                    }
+
                     current_node = atom_stack.Pop();
                 }
                 else
@@ -314,14 +375,11 @@ public class ChineseNameTemplate
 
                     atom_stack.Push(current_node);
                     current_node.AddChild(tmp_node);
-                    current_node = tmp_node;
-                    break;
+                     current_node = tmp_node;
+                     break;
                 case '}':
-                    if (current_node is RawTextNode)
-                    {
-                        _ = atom_stack.Pop();
-                    }
-                    current_node = atom_stack.Pop();
+                    CloseCurrentNode<ComplexNode>(atom_stack, ref current_node, ch, i, raw_format,
+                        "未匹配到对应的必填词库开始标记", node => node.Type == ComplexNodeType.RequiredWordLibrary);
                     break;
                 case '<':
                     tmp_node = new ComplexNode()
@@ -338,14 +396,11 @@ public class ChineseNameTemplate
                     current_node = tmp_node;
                     break;
                 case '>':
-                    if (current_node is RawTextNode)
-                    {
-                        _ = atom_stack.Pop();
-                    }
-                    current_node = atom_stack.Pop();
+                    CloseCurrentNode<ComplexNode>(atom_stack, ref current_node, ch, i, raw_format,
+                        "未匹配到对应的可选词库开始标记", node => node.Type == ComplexNodeType.OptionalWordLibrary);
                     break;
                 case '(':
-                    tmp_node = new TemplateNode();
+                    tmp_node = new GroupNode();
                     if (current_node is RawTextNode)
                     {
                         current_node = atom_stack.Pop();
@@ -355,11 +410,7 @@ public class ChineseNameTemplate
                     current_node = tmp_node;
                     break;
                 case ')':
-                    if (current_node is RawTextNode)
-                    {
-                        _ = atom_stack.Pop();
-                    }
-                    current_node = atom_stack.Pop();
+                    CloseCurrentNode<GroupNode>(atom_stack, ref current_node, ch, i, raw_format, "未匹配到对应的分组开始标记");
                     break;
                 case '[':
                     tmp_node = new SliceNode();
@@ -372,16 +423,18 @@ public class ChineseNameTemplate
                     current_node = tmp_node;
                     break;
                 case ']':
-                    if (current_node is RawTextNode)
-                    {
-                        _ = atom_stack.Pop();
-                    }
-                    current_node = atom_stack.Pop();
+                    CloseCurrentNode<SliceNode>(atom_stack, ref current_node, ch, i, raw_format, "未匹配到对应的切片开始标记",
+                        node =>
+                        {
+                            ValidateSliceNode(node, ch, i, raw_format);
+                            return true;
+                        });
                     break;
                 case '$':
-                    if (current_node is ComplexNode { Type: ComplexNodeType.Parameter })
+                    if (MatchesCurrentOrParent<ComplexNode>(current_node, atom_stack, node => node.Type == ComplexNodeType.Parameter))
                     {
-                        current_node = atom_stack.Pop();
+                        CloseCurrentNode<ComplexNode>(atom_stack, ref current_node, ch, i, raw_format,
+                            "未匹配到对应的参数开始标记", node => node.Type == ComplexNodeType.Parameter);
                     }
                     else
                     {
@@ -401,9 +454,10 @@ public class ChineseNameTemplate
 
                     break;
                 case '^':
-                    if (current_node is PlaceholderNode)
+                    if (MatchesCurrentOrParent<PlaceholderNode>(current_node, atom_stack))
                     {
-                        current_node = atom_stack.Pop();
+                        CloseCurrentNode<PlaceholderNode>(atom_stack, ref current_node, ch, i, raw_format,
+                            "未匹配到对应的占位开始标记");
                     }
                     else
                     {
@@ -427,6 +481,10 @@ public class ChineseNameTemplate
                     else if (current_node is SliceNode slice_node_tmp)
                     {
                         slice_node_tmp.ConfigureIndex++;
+                        if (slice_node_tmp.ConfigureIndex > 2)
+                        {
+                            throw new InvalidCharException(ch, i, raw_format, "切片操作[]最多只支持开始、结束、步长三段");
+                        }
                     }
 
                     break;
@@ -450,7 +508,7 @@ public class ChineseNameTemplate
                 default:
                     if (current_node is SliceNode slice_node)
                     {
-                        if ((ch is < '0' or > '9') && ch != '-' )
+                        if ((ch is < '0' or > '9') && ch != '-')
                         {
                             throw new InvalidCharException(ch, i, raw_format, "切片操作[]中应当只有数字或者冒号");
                         }
@@ -512,6 +570,26 @@ public class ChineseNameTemplate
             }
         }
 
+        if (current_node is ForceRawTextNode)
+        {
+            throw new FormatException($"模板\"{raw_format}\"存在未闭合的纯文本片段");
+        }
+
+        if (current_node is RawTextNode)
+        {
+            if (atom_stack.Count == 0)
+            {
+                throw new FormatException($"模板\"{raw_format}\"在解析结束时处于非法状态");
+            }
+
+            current_node = atom_stack.Pop();
+        }
+
+        if (!ReferenceEquals(current_node, root) || atom_stack.Count > 0)
+        {
+            throw new FormatException($"模板\"{raw_format}\"存在未闭合的结构");
+        }
+
         #endregion
 
         #region 合并固定文本
@@ -523,6 +601,7 @@ public class ChineseNameTemplate
             var node = atom_stack.Pop();
 
             MergeSingleNodeRawText(node);
+            PrepareSingleNode(node);
             
             foreach (var child in node.Children)
             {
@@ -541,6 +620,7 @@ public class ChineseNameTemplate
         #endregion
         
         _root = root;
+        has_parsed = true;
     }
 
     private static void MergeSingleNodeRawText(TemplateNode node)
@@ -599,6 +679,187 @@ public class ChineseNameTemplate
             complex_node.ParamChildren = new_children;
         }
     }
+
+    private static void PrepareSingleNode(TemplateNode node)
+    {
+        CacheRawText(node.Children);
+
+        if (node is not ComplexNode complex_node)
+        {
+            return;
+        }
+
+        CacheRawText(complex_node.ParamChildren);
+        complex_node.FixedContent = TryGetSingleRawText(node.Children);
+        complex_node.FixedParamId = TryGetSingleRawText(complex_node.ParamChildren);
+    }
+
+    private static void CacheRawText(List<TemplateNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is RawTextNode raw_text_node)
+            {
+                _ = raw_text_node.GetText();
+            }
+        }
+    }
+
+    private static string TryGetSingleRawText(List<TemplateNode> nodes)
+    {
+        return nodes.Count == 1 && nodes[0] is RawTextNode raw_text_node ? raw_text_node.GetText() : null;
+    }
+
+    private static string BuildNodeText(List<TemplateNode> nodes, Dictionary<string, string> parameters)
+    {
+        if (nodes.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        if (nodes.Count == 1 && nodes[0] is RawTextNode raw_text_node)
+        {
+            return raw_text_node.GetText();
+        }
+
+        var builder = StringBuilderPool.Rent();
+        try
+        {
+            foreach (var node in nodes)
+            {
+                node.ParseParamInto(builder, parameters);
+            }
+
+            return builder.ToString();
+        }
+        finally
+        {
+            StringBuilderPool.Return(builder);
+        }
+    }
+
+    private static void CloseCurrentNode<TNode>(Stack<TemplateNode> atom_stack, ref TemplateNode current_node, char ch, int index,
+        string format, string error_message, Func<TNode, bool> validator = null) where TNode : TemplateNode
+    {
+        if (current_node is RawTextNode)
+        {
+            if (atom_stack.Count == 0)
+            {
+                throw new InvalidCharException(ch, index, format, error_message);
+            }
+
+            current_node = atom_stack.Pop();
+        }
+
+        if (current_node is not TNode typed_node || validator != null && !validator(typed_node))
+        {
+            throw new InvalidCharException(ch, index, format, error_message);
+        }
+
+        if (atom_stack.Count == 0)
+        {
+            throw new InvalidCharException(ch, index, format, error_message);
+        }
+
+        current_node = atom_stack.Pop();
+    }
+
+    private static bool MatchesCurrentOrParent<TNode>(TemplateNode current_node, Stack<TemplateNode> atom_stack,
+        Func<TNode, bool> validator = null) where TNode : TemplateNode
+    {
+        if (current_node is TNode typed_node && (validator == null || validator(typed_node)))
+        {
+            return true;
+        }
+
+        if (current_node is RawTextNode && atom_stack.Count > 0 && atom_stack.Peek() is TNode parent_node &&
+            (validator == null || validator(parent_node)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void ValidateSliceNode(SliceNode node, char ch, int index, string format)
+    {
+        if (node.ConfigureIndex > 2)
+        {
+            throw new InvalidCharException(ch, index, format, "切片操作[]最多只支持开始、结束、步长三段");
+        }
+
+        if (node.StepConfigured && node.StepLength == 0)
+        {
+            throw new InvalidCharException(ch, index, format, "切片操作[]中的步长不能为0");
+        }
+    }
+
+    private static int ResolvePositiveSliceIndex(int length, bool configured, bool negative, int value, int default_value)
+    {
+        if (!configured)
+        {
+            return default_value;
+        }
+
+        var resolved = negative ? length - value : value;
+        if (resolved < 0) return 0;
+        if (resolved > length) return length;
+        return resolved;
+    }
+
+    private static int ResolveNegativeSliceIndex(int length, bool configured, bool negative, int value, int default_value)
+    {
+        if (!configured)
+        {
+            return default_value;
+        }
+
+        var resolved = negative ? length - value : value;
+        if (resolved < -1) return -1;
+        if (resolved >= length) return length - 1;
+        return resolved;
+    }
+
+    private static class StringBuilderPool
+    {
+        private const int MaxRetainedCapacity = 1024;
+        private const int MaxRetainedCount = 8;
+
+        [ThreadStatic]
+        private static Stack<StringBuilder> _cache;
+
+        public static StringBuilder Rent(int capacity = 0)
+        {
+            if (_cache is { Count: > 0 })
+            {
+                var builder = _cache.Pop();
+                if (capacity > 0)
+                {
+                    builder.EnsureCapacity(capacity);
+                }
+
+                return builder;
+            }
+
+            return capacity > 0 ? new StringBuilder(capacity) : new StringBuilder();
+        }
+
+        public static void Return(StringBuilder builder)
+        {
+            builder.Clear();
+            if (builder.Capacity > MaxRetainedCapacity)
+            {
+                builder.Capacity = MaxRetainedCapacity;
+            }
+
+            _cache ??= new Stack<StringBuilder>(4);
+            if (_cache.Count < MaxRetainedCount)
+            {
+                _cache.Push(builder);
+            }
+        }
+    }
+
     private static void CheckSingleNodeParamFixedRequired(Dictionary<string, HashSet<ComplexNode>> dict, ComplexNode check_node)
     {
         var stack = new Stack<ComplexNode>();
