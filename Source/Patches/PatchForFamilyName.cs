@@ -54,7 +54,7 @@ internal class PatchForFamilyName : IPatch
             }
             else
             {
-                family_name_source = father;
+                family_name_source = __result.culture == father_culture ? father : mother;
             }
 
             bool use_father_name = family_name_source == father;
