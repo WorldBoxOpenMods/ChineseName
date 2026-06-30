@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -5,7 +6,6 @@ using System.Reflection.Emit;
 using Chinese_Name.Abstract;
 using Chinese_Name.Utils;
 using HarmonyLib;
-using UnityEngine.Pool;
 
 namespace Chinese_Name.Patches;
 
@@ -89,11 +89,28 @@ internal class PatchForApplyingNameGenerator : IPatch
             return true;
         }
 
-        var parameters = DictionaryPool<string, string>.Get();
-        name_generator.ObtainParameters(pActor, pKingdom, parameters);
-        __result = name_generator.GenerateName(parameters);
-        name_generator.StoreParameters(pActor, pKingdom, parameters);
-        DictionaryPool<string, string>.Release(parameters);
+        var context = NameGenerationContextScope.Current?.Fork() ?? new NameGenerationContext();
+        context.Source ??= "name_generator";
+        context.VanillaAsset = pAsset;
+        context.ChineseAsset = name_generator;
+        if (pActor != null)
+        {
+            context.Actor = pActor;
+        }
+
+        if (pKingdom != null)
+        {
+            context.Kingdom = pKingdom;
+        }
+        else if (context.Kingdom == null && context.Actor != null)
+        {
+            context.Kingdom = context.Actor.kingdom;
+        }
+
+        using (NameGenerationContextScope.Push(context))
+        {
+            __result = name_generator.GenerateName(new NameParameterBag(context));
+        }
         return string.IsNullOrEmpty(__result);
     }
 }

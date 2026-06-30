@@ -50,10 +50,10 @@ public class ChineseNameTemplate
     /// 通过参数生成名字
     /// </summary>
     [Hotfixable]
-    public string GenerateName(Dictionary<string, string> pParameters)
+    public string GenerateName(NameParameterBag pParameters)
     {
         ParseNT();
-        pParameters ??= new Dictionary<string, string>();
+        pParameters ??= new NameParameterBag();
 
         var builder = StringBuilderPool.Rent(raw_format?.Length ?? 0);
         try
@@ -73,6 +73,11 @@ public class ChineseNameTemplate
         {
             StringBuilderPool.Return(builder);
         }
+    }
+
+    public string GenerateName(Dictionary<string, string> pParameters)
+    {
+        return GenerateName(new NameParameterBag(NameGenerationContextScope.Current, pParameters));
     }
 
     private TemplateNode _root = null;
@@ -98,7 +103,7 @@ public class ChineseNameTemplate
             return $"Root[{Children.Count}]";
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
+        public virtual void ParseParamInto(StringBuilder builder, NameParameterBag parameters)
         {
             foreach (var child in Children)
             {
@@ -118,7 +123,7 @@ public class ChineseNameTemplate
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
+        public override void ParseParamInto(StringBuilder builder, NameParameterBag parameters)
         {
             if (CachedText != null)
             {
@@ -162,7 +167,7 @@ public class ChineseNameTemplate
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
+        public override void ParseParamInto(StringBuilder builder, NameParameterBag parameters)
         {
             var param_id = FixedParamId ?? BuildNodeText(ParamChildren, parameters);
             if (!string.IsNullOrEmpty(param_id) && parameters.TryGetValue(param_id, out var param))
@@ -240,7 +245,7 @@ public class ChineseNameTemplate
     class PlaceholderNode : TemplateNode
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void ParseParamInto(StringBuilder _, Dictionary<string, string> parameters)
+        public override void ParseParamInto(StringBuilder _, NameParameterBag parameters)
         {
             var builder = StringBuilderPool.Rent();
             try
@@ -285,7 +290,7 @@ public class ChineseNameTemplate
             throw new NotSupportedException("Slice Node should not have children");
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void ParseParamInto(StringBuilder builder, Dictionary<string, string> parameters)
+        public override void ParseParamInto(StringBuilder builder, NameParameterBag parameters)
         {
             var old_length = builder.Length;
             if (old_length == 0)
@@ -710,7 +715,7 @@ public class ChineseNameTemplate
         return nodes.Count == 1 && nodes[0] is RawTextNode raw_text_node ? raw_text_node.GetText() : null;
     }
 
-    private static string BuildNodeText(List<TemplateNode> nodes, Dictionary<string, string> parameters)
+    private static string BuildNodeText(List<TemplateNode> nodes, NameParameterBag parameters)
     {
         if (nodes.Count == 0)
         {
