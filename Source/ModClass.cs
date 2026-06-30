@@ -36,8 +36,15 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
         {
             if (_loaded_mods.Contains(mod)) continue;
             _loaded_mods.Add(mod);
-            ChineseNameGeneratorLibrary.Instance.LoadFromMod(mod);
-            WordLibraryLibrary.Instance.LoadFromMod(mod);
+            try
+            {
+                ChineseNameGeneratorLibrary.Instance.LoadFromMod(mod);
+                WordLibraryLibrary.Instance.LoadFromMod(mod);
+            }
+            catch (Exception e)
+            {
+                LogAllException(e);
+            }
         }
     }
 
