@@ -189,13 +189,9 @@ internal sealed class EquipmentNameParameterProvider : INameParameterProvider
 
     private static string GetLocale(Item item, EquipmentAsset asset)
     {
-        if (item != null)
+        if (!string.IsNullOrEmpty(item?.data?.name))
         {
-            var itemName = item.getName(false);
-            if (!string.IsNullOrEmpty(itemName))
-            {
-                return itemName;
-            }
+            return item.data.name;
         }
 
         if (asset == null)
@@ -203,14 +199,37 @@ internal sealed class EquipmentNameParameterProvider : INameParameterProvider
             return null;
         }
 
-        ItemTools.getTooltipTitle(asset, out var name, out var material);
-        var result = material + name;
-        if (!string.IsNullOrEmpty(result))
+        if (TryGetLocalizedText(asset.getLocaleID(), out var localizedName))
         {
-            return result;
+            return localizedName;
         }
 
-        return asset.getTranslatedName();
+        return asset.equipment_subtype ?? asset.id;
+    }
+
+    private static bool TryGetLocalizedText(string key, out string value)
+    {
+        value = string.Empty;
+        if (string.IsNullOrEmpty(key))
+        {
+            return false;
+        }
+
+        try
+        {
+            if (!LocalizedTextManager.stringExists(key))
+            {
+                return false;
+            }
+
+            value = LocalizedTextManager.getText(key, null, false);
+            return !string.IsNullOrEmpty(value);
+        }
+        catch
+        {
+            value = string.Empty;
+            return false;
+        }
     }
 
     private static bool TrySet(string candidate, out string value)

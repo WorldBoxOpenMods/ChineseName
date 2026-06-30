@@ -1,4 +1,3 @@
-using System;
 using Chinese_Name.Abstract;
 using HarmonyLib;
 
@@ -6,24 +5,22 @@ namespace Chinese_Name.Patches;
 
 internal class PatchForItemNameContext : IPatch
 {
-    [HarmonyPrefix, HarmonyPatch(typeof(ItemManager), "checkModName")]
-    private static void checkModName_prefix(Item pItem, ItemModAsset pModAsset, EquipmentAsset pItemAsset, Actor pActor,
-        out IDisposable __state)
+    [HarmonyPrefix, HarmonyPatch(typeof(ItemManager), nameof(ItemManager.generateModsFor))]
+    private static void generateModsFor_prefix(Item pItem, Actor pActor)
     {
         var context = NameGenerationContextScope.Current?.Fork() ?? new NameGenerationContext();
         context.Source = "item";
         context.Actor = pActor;
         context.Kingdom = pActor?.kingdom;
         context.Item = pItem;
-        context.EquipmentAsset = pItemAsset ?? pItem?.getAsset();
-        context.ItemModAsset = pModAsset;
-        __state = NameGenerationContextScope.Push(context);
+        context.EquipmentAsset = pItem?.getAsset();
+        context.ItemModAsset = null;
+        NameGenerationContextScope.Push(context);
     }
 
-    [HarmonyFinalizer, HarmonyPatch(typeof(ItemManager), "checkModName")]
-    private static Exception checkModName_finalizer(Exception __exception, IDisposable __state)
+    [HarmonyFinalizer, HarmonyPatch(typeof(ItemManager), nameof(ItemManager.generateModsFor))]
+    private static void generateModsFor_finalizer()
     {
-        __state?.Dispose();
-        return __exception;
+        NameGenerationContextScope.PopCurrent();
     }
 }

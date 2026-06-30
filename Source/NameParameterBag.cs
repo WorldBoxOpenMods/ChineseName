@@ -10,20 +10,26 @@ public sealed class NameParameterBag
     public NameGenerationContext Context { get; }
 
     public NameParameterBag(NameGenerationContext context = null)
-        : this(context, null)
     {
+        Context = ResolveContext(context);
+        _values = new Dictionary<string, string>();
     }
 
     public NameParameterBag(NameGenerationContext context, IDictionary<string, string> values)
     {
-        Context = context ?? NameGenerationContextScope.Current ?? new NameGenerationContext();
+        Context = ResolveContext(context);
         _values = values == null ? new Dictionary<string, string>() : new Dictionary<string, string>(values);
     }
 
     private NameParameterBag(NameGenerationContext context, Dictionary<string, string> values)
     {
-        Context = context ?? NameGenerationContextScope.Current ?? new NameGenerationContext();
-        _values = new Dictionary<string, string>(values);
+        Context = ResolveContext(context);
+        _values = values == null ? new Dictionary<string, string>() : new Dictionary<string, string>(values);
+    }
+
+    private static NameGenerationContext ResolveContext(NameGenerationContext context)
+    {
+        return context ?? NameGenerationContextScope.Current ?? new NameGenerationContext();
     }
 
     public string this[string key]

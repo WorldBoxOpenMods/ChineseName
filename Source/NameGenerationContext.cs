@@ -58,6 +58,14 @@ public static class NameGenerationContextScope
         }
     }
 
+    public static void PopCurrent()
+    {
+        if (_stack is { Count: > 0 })
+        {
+            _stack.Pop();
+        }
+    }
+
     private sealed class Scope : IDisposable
     {
         private NameGenerationContext _context;
