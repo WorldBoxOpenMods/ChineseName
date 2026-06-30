@@ -6,6 +6,9 @@
     <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
     <LangVersion>12</LangVersion>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <GameManagedPath>$(MSBuildThisFileDirectory)..\..\worldbox_Data\Managed\</GameManagedPath>
+    <FrameworkPathOverride>$(GameManagedPath)</FrameworkPathOverride>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -34,6 +37,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\worldbox_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>..\..\worldbox_Data\Managed\netstandard.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Purchasing.Common">
       <HintPath>..\..\worldbox_Data\Managed\Purchasing.Common.dll</HintPath>
@@ -104,8 +111,11 @@
     <Reference Include="UnityEngine.StreamingModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.TextCoreFontEngineModule">
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreTextEngineModule">
+      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
@@ -118,9 +128,6 @@
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsNativeModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIElementsNativeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIModule.dll</HintPath>
