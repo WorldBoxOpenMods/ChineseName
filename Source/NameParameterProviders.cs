@@ -16,6 +16,7 @@ public static class NameParameterProviderRegistry
     {
         Register(new BasicNameParameterProvider());
         Register(new EquipmentNameParameterProvider());
+        Register(new SubspeciesNameParameterProvider());
     }
 
     public static void Register(INameParameterProvider provider)
@@ -205,6 +206,138 @@ internal sealed class EquipmentNameParameterProvider : INameParameterProvider
         }
 
         return asset.equipment_subtype ?? asset.id;
+    }
+
+    private static bool TryGetLocalizedText(string key, out string value)
+    {
+        value = string.Empty;
+        if (string.IsNullOrEmpty(key))
+        {
+            return false;
+        }
+
+        try
+        {
+            if (!LocalizedTextManager.stringExists(key))
+            {
+                return false;
+            }
+
+            value = LocalizedTextManager.getText(key, null, false);
+            return !string.IsNullOrEmpty(value);
+        }
+        catch
+        {
+            value = string.Empty;
+            return false;
+        }
+    }
+
+    private static bool TrySet(string candidate, out string value)
+    {
+        value = candidate;
+        return !string.IsNullOrEmpty(value);
+    }
+}
+
+internal sealed class SubspeciesNameParameterProvider : INameParameterProvider
+{
+    public bool TryProvide(string key, NameGenerationContext context, NameParameterBag parameters, out string value)
+    {
+        value = string.Empty;
+        if (context == null)
+        {
+            return false;
+        }
+
+        var actorAsset = context.ActorAsset ?? context.Subspecies?.getActorAsset();
+        var tileType = context.Tile?.Type;
+        var biomeAsset = context.BiomeAsset ?? (tileType != null && tileType.is_biome ? tileType.biome_asset : null);
+
+        switch (key)
+        {
+            case "subspecies":
+            case "subspecies_name":
+                return TrySet(context.Subspecies?.name, out value);
+            case "species":
+            case "race":
+            case "race_name":
+                return TrySet(GetSpeciesName(actorAsset), out value);
+            case "species_id":
+            case "race_id":
+                return TrySet(actorAsset?.id ?? context.Subspecies?.species_id, out value);
+            case "taxonomic_genus":
+                return TrySet(actorAsset?.name_taxonomic_genus, out value);
+            case "taxonomic_species":
+                return TrySet(actorAsset?.name_taxonomic_species, out value);
+            case "biome":
+            case "biome_name":
+            case "biome_prefix":
+                return TrySet(GetBiomeName(biomeAsset), out value);
+            case "biome_suffix":
+                return TrySet(GetBiomeSuffix(biomeAsset), out value);
+            case "biome_id":
+                return TrySet(biomeAsset?.id ?? tileType?.biome_id, out value);
+            case "biome_variant":
+                return TrySet(context.Subspecies?.data?.biome_variant ?? tileType?.biome_id, out value);
+            case "subspecies_index":
+                return TrySet(actorAsset?.countSubspecies().ToString(), out value);
+        }
+
+        return false;
+    }
+
+    private static string GetSpeciesName(ActorAsset actorAsset)
+    {
+        if (actorAsset == null)
+        {
+            return null;
+        }
+
+        if (TryGetLocalizedText($"subspecies_species_{actorAsset.id}", out var configuredName))
+        {
+            return configuredName;
+        }
+
+        if (TryGetLocalizedText(actorAsset.getLocaleID(), out var localizedName))
+        {
+            return localizedName;
+        }
+
+        return null;
+    }
+
+    private static string GetBiomeName(BiomeAsset biomeAsset)
+    {
+        if (biomeAsset == null)
+        {
+            return null;
+        }
+
+        return GetWordLibraryValue($"subspecies_biome_{biomeAsset.id}") ??
+               GetWordLibraryValue("subspecies_biome_default");
+    }
+
+    private static string GetBiomeSuffix(BiomeAsset biomeAsset)
+    {
+        if (biomeAsset == null)
+        {
+            return null;
+        }
+
+        return GetWordLibraryValue($"subspecies_biome_suffix_{biomeAsset.id}") ??
+               GetWordLibraryValue("subspecies_biome_suffix_default") ??
+               GetBiomeName(biomeAsset);
+    }
+
+    private static string GetWordLibraryValue(string libraryId)
+    {
+        if (string.IsNullOrEmpty(libraryId))
+        {
+            return null;
+        }
+
+        return WordLibraryLibrary.Instance.get(libraryId)?.GetRandom();
     }
 
     private static bool TryGetLocalizedText(string key, out string value)

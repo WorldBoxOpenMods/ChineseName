@@ -4,3 +4,7 @@ culture_trait_FamilyNameFromMother,母姓
 culture_trait_FamilyNameFromMother_info,姓氏传承时优先使用母姓
 culture_trait_FamilyNameFromFather,父姓
 culture_trait_FamilyNameFromFather_info,姓氏传承时优先使用父姓
+subspecies_species_unit_human,人族
+subspecies_species_unit_orc,兽人
+subspecies_species_unit_dwarf,矮人
+subspecies_species_unit_elf,精灵

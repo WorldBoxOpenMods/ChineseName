@@ -1,12 +1,29 @@
 [
   {
-    "id": "default_species",
+    "id": "default_subspecies",
     "default_template": {
-      "format": "$天干地支纪年$$locale$#亚种#"
+      "format": "$biome$$species$"
     },
     "templates": [
       {
-        "format": "$天干地支纪年$$locale$#亚种#"
+        "format": "$biome$$species$",
+        "weight": 10
+      },
+      {
+        "format": "$biome$$species${亚种支系后缀}",
+        "weight": 5
+      },
+      {
+        "format": "$biome${亚种生态特征}$species$",
+        "weight": 4
+      },
+      {
+        "format": "$biome$$species${亚种分化称谓}",
+        "weight": 3
+      },
+      {
+        "format": "$biome${亚种生态特征}$species${亚种支系后缀}",
+        "weight": 2
       }
     ]
   }

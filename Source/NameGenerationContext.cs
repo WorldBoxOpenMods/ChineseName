@@ -13,6 +13,10 @@ public sealed class NameGenerationContext
     public Item Item;
     public EquipmentAsset EquipmentAsset;
     public ItemModAsset ItemModAsset;
+    public Subspecies Subspecies;
+    public ActorAsset ActorAsset;
+    public WorldTile Tile;
+    public BiomeAsset BiomeAsset;
 
     public NameGenerationContext Fork()
     {
@@ -25,7 +29,11 @@ public sealed class NameGenerationContext
             Kingdom = Kingdom,
             Item = Item,
             EquipmentAsset = EquipmentAsset,
-            ItemModAsset = ItemModAsset
+            ItemModAsset = ItemModAsset,
+            Subspecies = Subspecies,
+            ActorAsset = ActorAsset,
+            Tile = Tile,
+            BiomeAsset = BiomeAsset
         };
     }
 }
