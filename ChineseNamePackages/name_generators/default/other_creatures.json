@@ -1,786 +1,1248 @@
 [
-    {
-        "id": "sheep_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#羊#"
-            },
-            {
-                "format": "$天干地支纪年$#绵羊#"
-            },
-            {
-                "format": "{天干地支}#羊#"
-            },
-            {
-                "format": "{天干地支}#绵羊#"
-            }
-        ]
+  {
+    "id": "sheep_name",
+    "templates": [
+      {
+        "format": "{sheep前缀}{sheep称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{sheep名号}",
+        "weight": 6
+      },
+      {
+        "format": "{sheep前缀}#之#{sheep称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{sheep前缀}{sheep名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "penguin_name",
+    "templates": [
+      {
+        "format": "{penguin前缀}{penguin称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{penguin名号}",
+        "weight": 6
+      },
+      {
+        "format": "{penguin前缀}#之#{penguin称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{penguin前缀}{penguin名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "turtle_name",
+    "templates": [
+      {
+        "format": "{turtle前缀}{turtle称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{turtle名号}",
+        "weight": 6
+      },
+      {
+        "format": "{turtle前缀}#之#{turtle称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{turtle前缀}{turtle名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "wolf_name",
+    "templates": [
+      {
+        "format": "{wolf前缀}{wolf称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{wolf名号}",
+        "weight": 6
+      },
+      {
+        "format": "{wolf前缀}#之#{wolf称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{wolf前缀}{wolf名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "greg_name",
+    "templates": [
+      {
+        "format": "{greg前缀}{greg称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{greg名号}",
+        "weight": 6
+      },
+      {
+        "format": "{greg前缀}#之#{greg称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{greg前缀}{greg名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "chicken_name",
+    "templates": [
+      {
+        "format": "{chicken前缀}{chicken称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{chicken名号}",
+        "weight": 6
+      },
+      {
+        "format": "{chicken前缀}#之#{chicken称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{chicken前缀}{chicken名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "alien_name",
+    "templates": [
+      {
+        "format": "{alien前缀}{alien称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{alien名号}",
+        "weight": 6
+      },
+      {
+        "format": "{alien前缀}#之#{alien称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{alien前缀}{alien名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "ufo_name",
+    "templates": [
+      {
+        "format": "{ufo前缀}{ufo称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{ufo名号}",
+        "weight": 6
+      },
+      {
+        "format": "{ufo前缀}#之#{ufo称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{ufo前缀}{ufo名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "cold_one_name",
+    "templates": [
+      {
+        "format": "{cold_one前缀}{cold_one称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{cold_one名号}",
+        "weight": 6
+      },
+      {
+        "format": "{cold_one前缀}#之#{cold_one称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{cold_one前缀}{cold_one名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "bug_name",
+    "templates": [
+      {
+        "format": "{bug前缀}{bug称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{bug名号}",
+        "weight": 6
+      },
+      {
+        "format": "{bug前缀}#之#{bug称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{bug前缀}{bug名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "ant_name",
+    "templates": [
+      {
+        "format": "{ant前缀}{ant称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{ant名号}",
+        "weight": 6
+      },
+      {
+        "format": "{ant前缀}#之#{ant称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{ant前缀}{ant名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "demon_name",
+    "templates": [
+      {
+        "format": "{demon前缀}{demon称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{demon名号}",
+        "weight": 6
+      },
+      {
+        "format": "{demon前缀}#之#{demon称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{demon前缀}{demon名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "fairy_name",
+    "templates": [
+      {
+        "format": "{fairy前缀}{fairy称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{fairy名号}",
+        "weight": 6
+      },
+      {
+        "format": "{fairy前缀}#之#{fairy称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{fairy前缀}{fairy名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "crab_name",
+    "templates": [
+      {
+        "format": "{crab前缀}{crab称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{crab名号}",
+        "weight": 6
+      },
+      {
+        "format": "{crab前缀}#之#{crab称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{crab前缀}{crab名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "cow_name",
+    "templates": [
+      {
+        "format": "{cow前缀}{cow称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{cow名号}",
+        "weight": 6
+      },
+      {
+        "format": "{cow前缀}#之#{cow称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{cow前缀}{cow名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "evil_mage_name",
+    "templates": [
+      {
+        "format": "{evil_mage前缀}{evil_mage称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{evil_mage名号}",
+        "weight": 6
+      },
+      {
+        "format": "{evil_mage前缀}#之#{evil_mage称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{evil_mage前缀}{evil_mage名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "rhino_name",
+    "templates": [
+      {
+        "format": "{rhino前缀}{rhino称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{rhino名号}",
+        "weight": 6
+      },
+      {
+        "format": "{rhino前缀}#之#{rhino称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{rhino前缀}{rhino名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "monkey_name",
+    "templates": [
+      {
+        "format": "{monkey前缀}{monkey称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{monkey名号}",
+        "weight": 6
+      },
+      {
+        "format": "{monkey前缀}#之#{monkey称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{monkey前缀}{monkey名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "buffalo_name",
+    "templates": [
+      {
+        "format": "{buffalo前缀}{buffalo称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{buffalo名号}",
+        "weight": 6
+      },
+      {
+        "format": "{buffalo前缀}#之#{buffalo称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{buffalo前缀}{buffalo名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "fox_name",
+    "templates": [
+      {
+        "format": "{fox前缀}{fox称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{fox名号}",
+        "weight": 6
+      },
+      {
+        "format": "{fox前缀}#之#{fox称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{fox前缀}{fox名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "hyena_name",
+    "templates": [
+      {
+        "format": "{hyena前缀}{hyena称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{hyena名号}",
+        "weight": 6
+      },
+      {
+        "format": "{hyena前缀}#之#{hyena称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{hyena前缀}{hyena名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "crocodile_name",
+    "templates": [
+      {
+        "format": "{crocodile前缀}{crocodile称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{crocodile名号}",
+        "weight": 6
+      },
+      {
+        "format": "{crocodile前缀}#之#{crocodile称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{crocodile前缀}{crocodile名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "snake_name",
+    "templates": [
+      {
+        "format": "{snake前缀}{snake称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{snake名号}",
+        "weight": 6
+      },
+      {
+        "format": "{snake前缀}#之#{snake称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{snake前缀}{snake名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "frog_name",
+    "templates": [
+      {
+        "format": "{frog前缀}{frog称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{frog名号}",
+        "weight": 6
+      },
+      {
+        "format": "{frog前缀}#之#{frog称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{frog前缀}{frog名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "bioblob_name",
+    "templates": [
+      {
+        "format": "{bioblob前缀}{bioblob称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{bioblob名号}",
+        "weight": 6
+      },
+      {
+        "format": "{bioblob前缀}#之#{bioblob称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{bioblob前缀}{bioblob名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "assimilator_name",
+    "templates": [
+      {
+        "format": "{assimilator前缀}{assimilator称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{assimilator名号}",
+        "weight": 6
+      },
+      {
+        "format": "{assimilator前缀}#之#{assimilator称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{assimilator前缀}{assimilator名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "lemon_name",
+    "templates": [
+      {
+        "format": "{lemon前缀}{lemon称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{lemon名号}",
+        "weight": 6
+      },
+      {
+        "format": "{lemon前缀}#之#{lemon称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{lemon前缀}{lemon名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "candy_name",
+    "templates": [
+      {
+        "format": "{candy前缀}{candy称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{candy名号}",
+        "weight": 6
+      },
+      {
+        "format": "{candy前缀}#之#{candy称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{candy前缀}{candy名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "crystal_name",
+    "templates": [
+      {
+        "format": "{crystal前缀}{crystal称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{crystal名号}",
+        "weight": 6
+      },
+      {
+        "format": "{crystal前缀}#之#{crystal称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{crystal前缀}{crystal名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "crystal_sword_name",
+    "templates": [
+      {
+        "format": "{crystal_sword前缀}{crystal_sword称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{crystal_sword名号}",
+        "weight": 6
+      },
+      {
+        "format": "{crystal_sword前缀}#之#{crystal_sword称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{crystal_sword前缀}{crystal_sword名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "fire_skull_name",
+    "templates": [
+      {
+        "format": "{fire_skull前缀}{fire_skull称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{fire_skull名号}",
+        "weight": 6
+      },
+      {
+        "format": "{fire_skull前缀}#之#{fire_skull称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{fire_skull前缀}{fire_skull名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "fire_elemental_name",
+    "templates": [
+      {
+        "format": "{fire_elemental前缀}{fire_elemental称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{fire_elemental名号}",
+        "weight": 6
+      },
+      {
+        "format": "{fire_elemental前缀}#之#{fire_elemental称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{fire_elemental前缀}{fire_elemental名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "acid_blob_name",
+    "templates": [
+      {
+        "format": "{acid_blob前缀}{acid_blob称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{acid_blob名号}",
+        "weight": 6
+      },
+      {
+        "format": "{acid_blob前缀}#之#{acid_blob称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{acid_blob前缀}{acid_blob名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "jumpy_skull_name",
+    "templates": [
+      {
+        "format": "{jumpy_skull前缀}{jumpy_skull称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{jumpy_skull名号}",
+        "weight": 6
+      },
+      {
+        "format": "{jumpy_skull前缀}#之#{jumpy_skull称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{jumpy_skull前缀}{jumpy_skull名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "lil_pumpkin_name",
+    "templates": [
+      {
+        "format": "{lil_pumpkin前缀}{lil_pumpkin称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{lil_pumpkin名号}",
+        "weight": 6
+      },
+      {
+        "format": "{lil_pumpkin前缀}#之#{lil_pumpkin称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{lil_pumpkin前缀}{lil_pumpkin名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "rat_name",
+    "templates": [
+      {
+        "format": "{rat前缀}{rat称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{rat名号}",
+        "weight": 6
+      },
+      {
+        "format": "{rat前缀}#之#{rat称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{rat前缀}{rat名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "cat_name",
+    "templates": [
+      {
+        "format": "{cat前缀}{cat称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{cat名号}",
+        "weight": 6
+      },
+      {
+        "format": "{cat前缀}#之#{cat称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{cat前缀}{cat名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "rabbit_name",
+    "templates": [
+      {
+        "format": "{rabbit前缀}{rabbit称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{rabbit名号}",
+        "weight": 6
+      },
+      {
+        "format": "{rabbit前缀}#之#{rabbit称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{rabbit前缀}{rabbit名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "piranha_name",
+    "templates": [
+      {
+        "format": "{piranha前缀}{piranha称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{piranha名号}",
+        "weight": 6
+      },
+      {
+        "format": "{piranha前缀}#之#{piranha称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{piranha前缀}{piranha名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "snowman_name",
+    "templates": [
+      {
+        "format": "{snowman前缀}{snowman称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{snowman名号}",
+        "weight": 6
+      },
+      {
+        "format": "{snowman前缀}#之#{snowman称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{snowman前缀}{snowman名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "bear_name",
+    "templates": [
+      {
+        "format": "{bear前缀}{bear称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{bear名号}",
+        "weight": 6
+      },
+      {
+        "format": "{bear前缀}#之#{bear称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{bear前缀}{bear名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "homie_name",
+    "templates": [
+      {
+        "format": "{homie前缀}{homie称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{homie名号}",
+        "weight": 6
+      },
+      {
+        "format": "{homie前缀}#之#{homie称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{homie前缀}{homie名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "skeleton_name",
+    "templates": [
+      {
+        "format": "{skeleton前缀}{skeleton称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{skeleton名号}",
+        "weight": 6
+      },
+      {
+        "format": "{skeleton前缀}#之#{skeleton称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{skeleton前缀}{skeleton名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "living_plant_name",
+    "templates": [
+      {
+        "format": "{living_plant前缀}{living_plant称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{living_plant名号}",
+        "weight": 6
+      },
+      {
+        "format": "{living_plant前缀}#之#{living_plant称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{living_plant前缀}{living_plant名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "ghost_name",
+    "templates": [
+      {
+        "format": "{ghost前缀}{ghost称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{ghost名号}",
+        "weight": 6
+      },
+      {
+        "format": "{ghost前缀}#之#{ghost称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{ghost前缀}{ghost名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "alpaca_name",
+    "templates": [
+      {
+        "format": "{alpaca前缀}{alpaca称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{alpaca名号}",
+        "weight": 6
+      },
+      {
+        "format": "{alpaca前缀}#之#{alpaca称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{alpaca前缀}{alpaca名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "armadillo_name",
+    "templates": [
+      {
+        "format": "{armadillo前缀}{armadillo称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{armadillo名号}",
+        "weight": 6
+      },
+      {
+        "format": "{armadillo前缀}#之#{armadillo称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{armadillo前缀}{armadillo名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "bandit_name",
+    "templates": [
+      {
+        "format": "{bandit前缀}{bandit称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{bandit名号}",
+        "weight": 6
+      },
+      {
+        "format": "{bandit前缀}#之#{bandit称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{bandit前缀}{bandit名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "capybara_name",
+    "templates": [
+      {
+        "format": "{capybara前缀}{capybara称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{capybara名号}",
+        "weight": 6
+      },
+      {
+        "format": "{capybara前缀}#之#{capybara称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{capybara前缀}{capybara名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "flower_name",
+    "templates": [
+      {
+        "format": "{flower前缀}{flower称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{flower名号}",
+        "weight": 6
+      },
+      {
+        "format": "{flower前缀}#之#{flower称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{flower前缀}{flower名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "garlic_name",
+    "templates": [
+      {
+        "format": "{garlic前缀}{garlic称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{garlic名号}",
+        "weight": 6
+      },
+      {
+        "format": "{garlic前缀}#之#{garlic称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{garlic前缀}{garlic名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "goat_name",
+    "templates": [
+      {
+        "format": "{goat前缀}{goat称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{goat名号}",
+        "weight": 6
+      },
+      {
+        "format": "{goat前缀}#之#{goat称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{goat前缀}{goat名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "living_house_name",
+    "templates": [
+      {
+        "format": "{living_house前缀}{living_house称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{living_house名号}",
+        "weight": 6
+      },
+      {
+        "format": "{living_house前缀}#之#{living_house称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{living_house前缀}{living_house名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "necromancer_name",
+    "templates": [
+      {
+        "format": "{necromancer前缀}{necromancer称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{necromancer名号}",
+        "weight": 6
+      },
+      {
+        "format": "{necromancer前缀}#之#{necromancer称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{necromancer前缀}{necromancer名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "angle_name",
+    "templates": [
+      {
+        "format": "{angle前缀}{angle称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{angle名号}",
+        "weight": 6
+      },
+      {
+        "format": "{angle前缀}#之#{angle称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{angle前缀}{angle名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "raccoon_name",
+    "templates": [
+      {
+        "format": "{raccoon前缀}{raccoon称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{raccoon名号}",
+        "weight": 6
+      },
+      {
+        "format": "{raccoon前缀}#之#{raccoon称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{raccoon前缀}{raccoon名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "scorpion_name",
+    "templates": [
+      {
+        "format": "{scorpion前缀}{scorpion称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{scorpion名号}",
+        "weight": 6
+      },
+      {
+        "format": "{scorpion前缀}#之#{scorpion称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{scorpion前缀}{scorpion名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "white_mage_name",
+    "templates": [
+      {
+        "format": "{white_mage前缀}{white_mage称谓}",
+        "weight": 10
+      },
+      {
+        "format": "{white_mage名号}",
+        "weight": 6
+      },
+      {
+        "format": "{white_mage前缀}#之#{white_mage称谓}",
+        "weight": 3
+      },
+      {
+        "format": "{white_mage前缀}{white_mage名号}",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "default_name",
+    "default_template": {
+      "format": "{生物通用前缀}$locale$"
     },
-    {
-        "id": "penguin_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#企鹅#"
-            }
-        ]
-    },
-    {
-        "id": "turtle_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#龟#"
-            },
-            {
-                "format": "$天干地支纪年$#海龟#"
-            },
-            {
-                "format": "{天干地支}#龟#"
-            },
-            {
-                "format": "{天干地支}#海龟#"
-            }
-        ]
-    },
-    {
-        "id": "wolf_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#狼#"
-            },
-            {
-                "format": "{天干地支}#狼#"
-            }
-        ]
-    },
-    {
-        "id": "greg_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#格雷#"
-            },
-            {
-                "format": "{天干地支}#格雷#"
-            }
-        ]
-    },
-    {
-        "id": "chicken_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#鸡#",
-                "weight": 20
-            },
-            {
-                "format": "$天干地支纪年$#只因#"
-            },
-            {
-                "format": "$天干地支纪年$#坤#"
-            },
-            {
-                "format": "{天干地支}#鸡#",
-                "weight": 20
-            },
-            {
-                "format": "{天干地支}#只因#"
-            },
-            {
-                "format": "{天干地支}#坤#"
-            }
-        ]
-    },
-    {
-        "id": "alien_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#星人#"
-            },
-            {
-                "format": "{天干地支}#星人#"
-            }
-        ]
-    },
-    {
-        "id": "ufo_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#飞碟#"
-            },
-            {
-                "format": "{天干地支}#飞碟#"
-            }
-        ]
-    },
-    {
-        "id": "cold_one_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#冰魔#"
-            },
-            {
-                "format": "$天干地支纪年$#寒冰行者#"
-            },
-            {
-                "format": "$天干地支纪年$#寒冰恶魔#"
-            },
-            {
-                "format": "{天干地支}#冰魔#"
-            },
-            {
-                "format": "{天干地支}#寒冰行者#"
-            },
-            {
-                "format": "{天干地支}#寒冰恶魔#"
-            }
-        ]
-    },
-    {
-        "id": "bug_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#虫#"
-            },
-            {
-                "format": "$天干地支纪年$#蟲#"
-            },
-            {
-                "format": "$天干地支纪年$#漏洞#",
-                "weight": 0.1
-            },
-            {
-                "format": "{天干地支}#虫#"
-            },
-            {
-                "format": "{天干地支}#蟲#"
-            }
-        ]
-    },
-    {
-        "id": "ant_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#蚂蚁#"
-            },
-            {
-                "format": "$天干地支纪年$#蚁#"
-            },
-            {
-                "format": "{天干地支}#蚂蚁#"
-            },
-            {
-                "format": "{天干地支}#蚁#"
-            }
-        ]
-    },
-    {
-        "id": "demon_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#炎魔#"
-            },
-            {
-                "format": "$天干地支纪年$#恶魔#"
-            },
-            {
-                "format": "{天干地支}#炎魔#"
-            },
-            {
-                "format": "{天干地支}#恶魔#"
-            }
-        ]
-    },
-    {
-        "id": "fairy_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#天使#"
-            },
-            {
-                "format": "{天干地支}#天使#"
-            }
-        ]
-    },
-    {
-        "id": "crab_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#蟹#"
-            },
-            {
-                "format": "$天干地支纪年$#螃蟹#"
-            },
-            {
-                "format": "{天干地支}#蟹#"
-            },
-            {
-                "format": "{天干地支}#螃蟹#"
-            }
-        ]
-    },
-    {
-        "id": "cow_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#牛#"
-            },
-            {
-                "format": "{天干地支}#牛#"
-            }
-        ]
-    },
-    {
-        "id": "evil_mage_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#法师#"
-            },
-            {
-                "format": "{天干地支}#法师#"
-            }
-        ]
-    },
-    {
-        "id": "rhino_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#犀#"
-            },
-            {
-                "format": "$天干地支纪年$#犀牛#"
-            },
-            {
-                "format": "{天干地支}#犀#"
-            },
-            {
-                "format": "{天干地支}#犀牛#"
-            }
-        ]
-    },
-    {
-        "id": "monkey_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#猴#"
-            },
-            {
-                "format": "{天干地支}#猴#"
-            },
-            {
-                "format": "{天干地支}#灵猴#"
-            }
-        ]
-    },
-    {
-        "id": "buffalo_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#水牛#"
-            },
-            {
-                "format": "{天干地支}#水牛#"
-            }
-        ]
-    },
-    {
-        "id": "fox_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#狐#"
-            },
-            {
-                "format": "$天干地支纪年$#狐狸#"
-            },
-            {
-                "format": "{天干地支}#狐#"
-            },
-            {
-                "format": "{天干地支}#狐狸#"
-            }
-        ]
-    },
-    {
-        "id": "hyena_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#鬣狗#"
-            },
-            {
-                "format": "{天干地支}#鬣狗#"
-            }
-        ]
-    },
-    {
-        "id": "crocodile_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#鳄#"
-            },
-            {
-                "format": "{天干地支}#鳄#"
-            }
-        ]
-    },
-    {
-        "id": "snake_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#蛇#"
-            },
-            {
-                "format": "{天干地支}#蛇#"
-            }
-        ]
-    },
-    {
-        "id": "frog_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#蛙#"
-            },
-            {
-                "format": "{天干地支}#蛙#"
-            }
-        ]
-    },
-    {
-        "id": "bioblob_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#生物质#"
-            },
-            {
-                "format": "{天干地支}#生物质#"
-            }
-        ]
-    },
-    {
-        "id": "assimilator_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#核心#"
-            },
-            {
-                "format": "$天干地支纪年$#机器#"
-            },
-            {
-                "format": "$天干地支纪年$#科技#"
-            },
-            {
-                "format": "{天干地支}#核心#"
-            },
-            {
-                "format": "{天干地支}#机器#"
-            },
-            {
-                "format": "{天干地支}#科技#"
-            }
-        ]
-    },
-    {
-        "id": "lemon_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#柠檬#"
-            },
-            {
-                "format": "$天干地支纪年$#柠檬怪#"
-            },
-            {
-                "format": "{天干地支}#柠檬#"
-            },
-            {
-                "format": "{天干地支}#柠檬怪#"
-            }
-        ]
-    },
-    {
-        "id": "candy_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#糖果#"
-            },
-            {
-                "format": "$天干地支纪年$#甜品#"
-            },
-            {
-                "format": "$天干地支纪年${$id$后缀}",
-                "weight": 10
-            },
-            {
-                "format": "{天干地支}#糖果#"
-            },
-            {
-                "format": "{天干地支}#甜品#"
-            },
-            {
-                "format": "{天干地支}{$id$后缀}",
-                "weight": 10
-            }
-        ]
-    },
-    {
-        "id": "crystal_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#水晶戈仑#"
-            },
-            {
-                "format": "$天干地支纪年$#水晶傀儡#"
-            },
-            {
-                "format": "$天干地支纪年$#水晶怪#"
-            },
-            {
-                "format": "{天干地支}#水晶戈仑#"
-            },
-            {
-                "format": "{天干地支}#水晶傀儡#"
-            },
-            {
-                "format": "{天干地支}#水晶怪#"
-            }
-        ]
-    },
-    {
-        "id": "crystal_sword_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#水晶灵剑#"
-            },
-            {
-                "format": "$天干地支纪年$#水晶剑灵#"
-            },
-            {
-                "format": "$天干地支纪年$#水晶剑魂#"
-            },
-            {
-                "format": "{天干地支}#水晶灵剑#"
-            },
-            {
-                "format": "{天干地支}#水晶剑灵#"
-            },
-            {
-                "format": "{天干地支}#水晶剑魂#"
-            }
-        ]
-    },
-    {
-        "id": "fire_skull_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#火骷髅#"
-            },
-            {
-                "format": "$天干地支纪年$#火恶灵#"
-            },
-            {
-                "format": "$天干地支纪年$#邪火#"
-            },
-            {
-                "format": "{天干地支}#邪火#"
-            },
-            {
-                "format": "{天干地支}#火恶灵#"
-            },
-            {
-                "format": "{天干地支}#邪火#"
-            }
-        ]
-    },
-    {
-        "id": "fire_elemental_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#炽火#"
-            },
-            {
-                "format": "$天干地支纪年$#烈炎#"
-            },
-            {
-                "format": "{天干地支}#炽火#"
-            },
-            {
-                "format": "{天干地支}#烈炎#"
-            }
-        ]
-    },
-    {
-        "id": "acid_blob_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#史莱姆#"
-            },
-            {
-                "format": "$天干地支纪年$#酸液#"
-            },
-            {
-                "format": "{天干地支}#史莱姆#"
-            },
-            {
-                "format": "{天干地支}#酸液#"
-            }
-        ]
-    },
-    {
-        "id": "jumpy_skull_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#恶灵#"
-            },
-            {
-                "format": "$天干地支纪年$#骷髅头#"
-            },
-            {
-                "format": "$天干地支纪年$#头骨#"
-            },
-            {
-                "format": "{天干地支}#恶灵#"
-            },
-            {
-                "format": "{天干地支}#骷髅头#"
-            },
-            {
-                "format": "{天干地支}#头骨#"
-            }
-        ]
-    },
-    {
-        "id": "lil_pumpkin_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#南瓜#"
-            },
-            {
-                "format": "$天干地支纪年$#南瓜怪#"
-            },
-            {
-                "format": "{天干地支}#南瓜#"
-            },
-            {
-                "format": "{天干地支}#南瓜怪#"
-            }
-        ]
-    },
-    {
-        "id": "rat_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#鼠#"
-            },
-            {
-                "format": "{天干地支}#鼠#"
-            }
-        ]
-    },
-    {
-        "id": "cat_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#猫#"
-            },
-            {
-                "format": "$天干地支纪年$#喵#"
-            },
-            {
-                "format": "$天干地支纪年$#猫咪#"
-            },
-            {
-                "format": "{天干地支}#猫#"
-            },
-            {
-                "format": "{天干地支}#喵#"
-            },
-            {
-                "format": "{天干地支}#猫咪#"
-            }
-        ]
-    },
-    {
-        "id": "rabbit_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#兔#"
-            },
-            {
-                "format": "$天干地支纪年$#兔叽#"
-            },
-            {
-                "format": "{天干地支}#兔#"
-            },
-            {
-                "format": "{天干地支}#兔叽#"
-            }
-        ]
-    },
-    {
-        "id": "piranha_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#饕餮鱼#"
-            },
-            {
-                "format": "$天干地支纪年$#食人鱼#"
-            },
-            {
-                "format": "$天干地支纪年$#恶鱼#"
-            },
-            {
-                "format": "{天干地支}#饕餮鱼#"
-            },
-            {
-                "format": "{天干地支}#食人鱼#"
-            },
-            {
-                "format": "{天干地支}#恶鱼#"
-            }
-        ]
-    },
-    {
-        "id": "snowman_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#雪傀儡#"
-            },
-            {
-                "format": "$天干地支纪年$#雪人#"
-            },
-            {
-                "format": "{天干地支}#雪傀儡#"
-            },
-            {
-                "format": "{天干地支}#雪人#"
-            }
-        ]
-    },
-    {
-        "id": "bear_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#熊#"
-            },
-            {
-                "format": "$天干地支纪年$#狗熊#"
-            },
-            {
-                "format": "$天干地支纪年$#大熊#"
-            },
-            {
-                "format": "{天干地支}#熊#"
-            },
-            {
-                "format": "{天干地支}#狗熊#"
-            },
-            {
-                "format": "{天干地支}#大熊#"
-            }
-        ]
-    },
-    {
-        "id": "homie_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#房屋#"
-            },
-            {
-                "format": "$天干地支纪年$#建筑#"
-            },
-            {
-                "format": "{天干地支}#房屋#"
-            },
-            {
-                "format": "{天干地支}#建筑#"
-            }
-        ]
-    },
-    {
-        "id": "skeleton_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#骷髅#"
-            },
-            {
-                "format": "$天干地支纪年$#死灵#"
-            },
-            {
-                "format": "{天干地支}#骷髅#"
-            },
-            {
-                "format": "{天干地支}#死灵#"
-            }
-        ]
-    },
-    {
-        "id": "living_plant_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#树妖#"
-            },
-            {
-                "format": "$天干地支纪年$#活树#"
-            },
-            {
-                "format": "$天干地支纪年$#树怪#"
-            },
-            {
-                "format": "{天干地支}#树妖#"
-            },
-            {
-                "format": "{天干地支}#活树#"
-            },
-            {
-                "format": "{天干地支}#树怪#"
-            }
-        ]
-    },
-    {
-        "id": "ghost_name",
-        "templates": [
-            {
-                "format": "$天干地支纪年$#幽灵#"
-            },
-            {
-                "format": "$天干地支纪年$#幽魂#"
-            },
-            {
-                "format": "$天干地支纪年$#游魂#"
-            },
-            {
-                "format": "{天干地支}#幽灵#"
-            },
-            {
-                "format": "{天干地支}#幽魂#"
-            },
-            {
-                "format": "{天干地支}#游魂#"
-            }
-        ]
-    },
-    {
-        "id": "default_name",
-        "default_template": {
-            "format": "$天干地支纪年$$locale$"
-        },
-        "templates": [
-            {
-                "format": "$locale$"
-            },
-            {
-                "format": "$天干地支纪年$$locale$"
-            },
-            {
-                "format": "$天干地支纪年${$id$$locale$后缀}"
-            },
-            {
-                "format": "{天干地支}$locale$",
-                "weight": 10
-            },
-            {
-                "format": "{天干地支}{$id$$locale$后缀}",
-                "weight": 10
-            },
-            {
-                "format": "{$locale$名}{$id$$locale$后缀}",
-                "weight": 200
-            }
-        ]
-    }
+    "templates": [
+      {
+        "format": "$locale$",
+        "weight": 2
+      },
+      {
+        "format": "{生物通用前缀}$locale$",
+        "weight": 8
+      },
+      {
+        "format": "$locale${生物通用称号}",
+        "weight": 6
+      },
+      {
+        "format": "{生物通用前缀}$locale${生物通用称号}",
+        "weight": 3
+      },
+      {
+        "format": "{百家姓}{千字文}$locale$",
+        "weight": 1
+      }
+    ]
+  }
 ]

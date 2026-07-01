@@ -66,10 +66,16 @@ internal sealed class BasicNameParameterProvider : INameParameterProvider
         {
             case "source":
                 return TrySet(context.Source, out value);
+            case "id":
+            case "actor_asset":
+            case "actor_asset_id":
+                return TrySet(GetActorAsset(context)?.id ?? context.VanillaAsset?.id ?? context.ChineseAsset?.id, out value);
             case "asset":
             case "asset_id":
             case "name_generator":
                 return TrySet(context.VanillaAsset?.id ?? context.ChineseAsset?.id, out value);
+            case "locale":
+                return TrySet(GetActorLocale(context), out value);
             case "unit":
             case "actor":
                 return TrySet(context.Actor?.getName(), out value);
@@ -92,6 +98,27 @@ internal sealed class BasicNameParameterProvider : INameParameterProvider
         }
 
         return false;
+    }
+
+    private static ActorAsset GetActorAsset(NameGenerationContext context)
+    {
+        return context?.ActorAsset ?? context?.Actor?.asset;
+    }
+
+    private static string GetActorLocale(NameGenerationContext context)
+    {
+        var asset = GetActorAsset(context);
+        if (asset == null)
+        {
+            return null;
+        }
+
+        if (TryGetLocalizedText(asset.getLocaleID(), out var localizedName))
+        {
+            return localizedName;
+        }
+
+        return asset.id;
     }
 
     private static string GetOwnKingName(Actor actor)
@@ -148,6 +175,31 @@ internal sealed class BasicNameParameterProvider : INameParameterProvider
         }
 
         return null;
+    }
+
+    private static bool TryGetLocalizedText(string key, out string value)
+    {
+        value = string.Empty;
+        if (string.IsNullOrEmpty(key))
+        {
+            return false;
+        }
+
+        try
+        {
+            if (!LocalizedTextManager.stringExists(key))
+            {
+                return false;
+            }
+
+            value = LocalizedTextManager.getText(key, null, false);
+            return !string.IsNullOrEmpty(value);
+        }
+        catch
+        {
+            value = string.Empty;
+            return false;
+        }
     }
 
     private static bool TrySet(string candidate, out string value)

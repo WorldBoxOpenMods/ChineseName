@@ -27,7 +27,7 @@ internal class PatchForApplyingNameGenerator : IPatch
         NameGenerator._current_consonants = 0;
         NameGenerator._current_vowels = 0;
         string tName = NameGenerator.generateNameFromTemplate(tAsset, pActor, pActor?.kingdom, pForceLegacy, 0, pTemplate, null, false, pSeed, pSex, pIgnoreBlackList);
-        if (!tAsset.hasOnomastics() && pSex == ActorSex.Female)
+        if (!ChineseNameGeneratorLibrary.Instance.has(pAssetID) && !tAsset.hasOnomastics() && pSex == ActorSex.Female)
         {
             string lastLetter = tName.Substring(tName.Length - 1, 1);
             bool tFound = false;
@@ -77,40 +77,45 @@ internal class PatchForApplyingNameGenerator : IPatch
             return true;
         }
 
+        var name_generator = ChineseNameGeneratorLibrary.Instance.get(pAsset.id);
+        if (name_generator != null)
+        {
+            var context = NameGenerationContextScope.Current?.Fork() ?? new NameGenerationContext();
+            context.Source ??= "name_generator";
+            context.VanillaAsset = pAsset;
+            context.ChineseAsset = name_generator;
+            if (pActor != null)
+            {
+                context.Actor = pActor;
+                context.ActorAsset = pActor.asset;
+            }
+
+            if (pKingdom != null)
+            {
+                context.Kingdom = pKingdom;
+            }
+            else if (context.Kingdom == null && context.Actor != null)
+            {
+                context.Kingdom = context.Actor.kingdom;
+            }
+
+            using (NameGenerationContextScope.Push(context))
+            {
+                __result = name_generator.GenerateName(new NameParameterBag(context));
+            }
+
+            if (!string.IsNullOrEmpty(__result))
+            {
+                return false;
+            }
+        }
+
         if (pAsset.hasOnomastics() && !pForceLegacy)
         {
             __result = NameGenerator.generateNameFromOnomastics(pAsset, pOnomasticsTemplate, pActor, pSeed, pSex);
             return string.IsNullOrEmpty(__result);
         }
 
-        var name_generator = ChineseNameGeneratorLibrary.Instance.get(pAsset.id);
-        if (name_generator == null)
-        {
-            return true;
-        }
-
-        var context = NameGenerationContextScope.Current?.Fork() ?? new NameGenerationContext();
-        context.Source ??= "name_generator";
-        context.VanillaAsset = pAsset;
-        context.ChineseAsset = name_generator;
-        if (pActor != null)
-        {
-            context.Actor = pActor;
-        }
-
-        if (pKingdom != null)
-        {
-            context.Kingdom = pKingdom;
-        }
-        else if (context.Kingdom == null && context.Actor != null)
-        {
-            context.Kingdom = context.Actor.kingdom;
-        }
-
-        using (NameGenerationContextScope.Push(context))
-        {
-            __result = name_generator.GenerateName(new NameParameterBag(context));
-        }
-        return string.IsNullOrEmpty(__result);
+        return true;
     }
 }
