@@ -1,66 +1,182 @@
 [
-    {
-        "id": "war_conquest",
-        "templates": [
-            {
-                "format": "$defender_capital$#保卫战#",
-                "weight": 5
-            },
-            {
-                "format": "$attacker$#侵#$defender_short$#战争#",
-                "weight": 5
-            },
-            {
-                "format": "$天干地支纪年$#战役#",
-                "weight": 0.1
-            }
-        ]
+  {
+    "id": "war_conquest",
+    "default_template": {
+      "format": "{战争意象}{征服战争称谓}"
     },
-    {
-        "id": "war_spite",
-        "templates": [
-            {
-                "format": "$attacker$#全面战争#"
-            },
-            {
-                "format": "$attacker$#征服战争#"
-            }
-        ]
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#战争#",
+        "weight": 16
+      },
+      {
+        "format": "$kingdom${征服战争称谓}",
+        "weight": 12
+      },
+      {
+        "format": "$kingdom_short$#远征#",
+        "weight": 8
+      },
+      {
+        "format": "$kingdom_capital${战争方位}{征服战争称谓}",
+        "weight": 5
+      },
+      {
+        "format": "{战争意象}#之#{征服战争称谓}",
+        "weight": 5
+      },
+      {
+        "format": "{战争形容}{征服战争称谓}",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "war_spite",
+    "default_template": {
+      "format": "{怨恨战争称谓}"
     },
-    {
-        "id": "war_inspire",
-        "templates": [
-            {
-                "format": "$attacker_short$$defender_short$#冲突#"
-            }
-        ]
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#复仇战争#",
+        "weight": 14
+      },
+      {
+        "format": "$kingdom${怨恨战争称谓}",
+        "weight": 10
+      },
+      {
+        "format": "$kingdom_short$#怒火之战#",
+        "weight": 8
+      },
+      {
+        "format": "{战争形容}{怨恨战争称谓}",
+        "weight": 5
+      },
+      {
+        "format": "{战争意象}#之#{怨恨战争称谓}",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "war_inspire",
+    "default_template": {
+      "format": "{思潮战争称谓}"
     },
-    {
-        "id": "war_rebellion",
-        "templates": [
-            {
-                "format": "$defender_capital$#起义#",
-                "weight": 5
-            },
-            {
-                "format": "$defender_leader$#起义#",
-                "weight": 5
-            },
-            {
-                "format": "$天干地支纪年$#革命#",
-                "weight": 0.1
-            }
-        ]
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#冲突#",
+        "weight": 12
+      },
+      {
+        "format": "$kingdom${思潮战争称谓}",
+        "weight": 10
+      },
+      {
+        "format": "$kingdom_short$#新旗帜#",
+        "weight": 7
+      },
+      {
+        "format": "{战争理念}{思潮战争称谓}",
+        "weight": 6
+      },
+      {
+        "format": "{起义旗号}{思潮战争称谓}",
+        "weight": 4
+      }
+    ]
+  },
+  {
+    "id": "war_rebellion",
+    "default_template": {
+      "format": "{起义旗号}{起义称谓}"
     },
-    {
-        "id": "war_whisper",
-        "templates": [
-            {
-                "format": "$attacker_short$$defender_short$#冲突#"
-            },
-            {
-                "format": "$attacker$#圣战#"
-            }
-        ]
-    }
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#起义#",
+        "weight": 12
+      },
+      {
+        "format": "$kingdom${起义称谓}",
+        "weight": 10
+      },
+      {
+        "format": "$kingdom_capital${起义称谓}",
+        "weight": 8
+      },
+      {
+        "format": "$kingdom_leader$#起义#",
+        "weight": 5
+      },
+      {
+        "format": "{起义旗号}{起义称谓}",
+        "weight": 5
+      },
+      {
+        "format": "{战争理念}#革命#",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "war_whisper",
+    "default_template": {
+      "format": "{密谋意象}{密谋战争称谓}"
+    },
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#暗战#",
+        "weight": 14
+      },
+      {
+        "format": "$kingdom${密谋战争称谓}",
+        "weight": 10
+      },
+      {
+        "format": "$kingdom_short$#暗战#",
+        "weight": 8
+      },
+      {
+        "format": "{密谋意象}{密谋战争称谓}",
+        "weight": 6
+      },
+      {
+        "format": "#无端#{密谋战争称谓}",
+        "weight": 4
+      },
+      {
+        "format": "{战争意象}#密约#",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "war_clash",
+    "default_template": {
+      "format": "{战争意象}冲突"
+    },
+    "templates": [
+      {
+        "format": "$attacker_short$$defender_short$#冲突#",
+        "weight": 14
+      },
+      {
+        "format": "$kingdom${冲突称谓}",
+        "weight": 10
+      },
+      {
+        "format": "$kingdom_short$#边境冲突#",
+        "weight": 8
+      },
+      {
+        "format": "{战争方位}{冲突称谓}",
+        "weight": 5
+      },
+      {
+        "format": "{战争意象}#之#{冲突称谓}",
+        "weight": 4
+      }
+    ]
+  }
 ]

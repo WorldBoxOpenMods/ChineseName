@@ -10,6 +10,8 @@ public sealed class NameGenerationContext
     public ChineseNameGeneratorAsset ChineseAsset;
     public Actor Actor;
     public Kingdom Kingdom;
+    public Kingdom PrimaryKingdom;
+    public Kingdom SecondaryKingdom;
     public Item Item;
     public EquipmentAsset EquipmentAsset;
     public ItemModAsset ItemModAsset;
@@ -27,6 +29,8 @@ public sealed class NameGenerationContext
             ChineseAsset = ChineseAsset,
             Actor = Actor,
             Kingdom = Kingdom,
+            PrimaryKingdom = PrimaryKingdom,
+            SecondaryKingdom = SecondaryKingdom,
             Item = Item,
             EquipmentAsset = EquipmentAsset,
             ItemModAsset = ItemModAsset,

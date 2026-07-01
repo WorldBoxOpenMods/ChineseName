@@ -15,6 +15,7 @@ public static class NameParameterProviderRegistry
     static NameParameterProviderRegistry()
     {
         Register(new BasicNameParameterProvider());
+        Register(new DiplomacyNameParameterProvider());
         Register(new EquipmentNameParameterProvider());
         Register(new SubspeciesNameParameterProvider());
     }
@@ -200,6 +201,105 @@ internal sealed class BasicNameParameterProvider : INameParameterProvider
             value = string.Empty;
             return false;
         }
+    }
+
+    private static bool TrySet(string candidate, out string value)
+    {
+        value = candidate;
+        return !string.IsNullOrEmpty(value);
+    }
+}
+
+internal sealed class DiplomacyNameParameterProvider : INameParameterProvider
+{
+    public bool TryProvide(string key, NameGenerationContext context, NameParameterBag parameters, out string value)
+    {
+        value = string.Empty;
+        if (context == null)
+        {
+            return false;
+        }
+
+        var kingdom = context.Kingdom ?? context.Actor?.kingdom ?? context.PrimaryKingdom;
+        var primary = context.PrimaryKingdom ?? kingdom;
+        var secondary = context.SecondaryKingdom;
+        switch (key)
+        {
+            case "kingdom":
+            case "kingdom_name":
+                return TrySet(kingdom?.name, out value);
+            case "k1":
+            case "k1_name":
+            case "attacker":
+            case "attacker_name":
+                return TrySet(primary?.name, out value);
+            case "k2":
+            case "k2_name":
+            case "defender":
+            case "defender_name":
+                return TrySet(secondary?.name, out value);
+            case "kingdom_short":
+                return TrySet(GetShortKingdomName(kingdom), out value);
+            case "k1_short":
+            case "attacker_short":
+                return TrySet(GetShortKingdomName(primary), out value);
+            case "k2_short":
+            case "defender_short":
+                return TrySet(GetShortKingdomName(secondary), out value);
+            case "kingdom_capital":
+                return TrySet(kingdom?.capital?.name, out value);
+            case "k1_capital":
+            case "attacker_capital":
+                return TrySet(primary?.capital?.name, out value);
+            case "k2_capital":
+            case "defender_capital":
+                return TrySet(secondary?.capital?.name, out value);
+            case "kingdom_leader":
+            case "kingdom_king":
+                return TrySet(kingdom?.king?.getName(), out value);
+            case "k1_leader":
+            case "k1_king":
+            case "attacker_leader":
+            case "attacker_king":
+                return TrySet(primary?.king?.getName(), out value);
+            case "k2_leader":
+            case "k2_king":
+            case "defender_leader":
+            case "defender_king":
+                return TrySet(secondary?.king?.getName(), out value);
+        }
+
+        return false;
+    }
+
+    private static string GetShortKingdomName(Kingdom kingdom)
+    {
+        var name = kingdom?.name;
+        if (string.IsNullOrEmpty(name))
+        {
+            return null;
+        }
+
+        foreach (var suffix in new[] { "王国", "帝国", "公国", "共和国", "联盟", "联邦", "部落", "邦", "国" })
+        {
+            if (name.EndsWith(suffix, StringComparison.Ordinal) && name.Length > suffix.Length)
+            {
+                name = name.Substring(0, name.Length - suffix.Length);
+                break;
+            }
+        }
+
+        foreach (var separator in new[] { "之", "的", "·", "-", " " })
+        {
+            var index = name.IndexOf(separator, StringComparison.Ordinal);
+            if (index > 0)
+            {
+                name = name.Substring(0, index);
+                break;
+            }
+        }
+
+        return name.Length <= 2 ? name : name.Substring(0, 1);
     }
 
     private static bool TrySet(string candidate, out string value)

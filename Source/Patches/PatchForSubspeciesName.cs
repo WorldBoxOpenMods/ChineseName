@@ -7,7 +7,7 @@ internal class PatchForSubspeciesName : IPatch
 {
     private const string GeneratorId = "default_subspecies";
 
-    [HarmonyPrefix, HarmonyPatch(typeof(Subspecies), nameof(Subspecies.generateName))]
+    [HarmonyPrefix, HarmonyPatch(typeof(Subspecies), "generateName")]
     private static bool generateName_prefix(Subspecies __instance, ActorAsset pAsset, WorldTile pTile)
     {
         var nameGenerator = ChineseNameGeneratorLibrary.Instance.get(GeneratorId);

@@ -21,10 +21,13 @@
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
+      <HintPath Condition="Exists('..\..\BepInEx\core\0Harmony.dll')">..\..\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll')">..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll</HintPath>
+      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll')">..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll</HintPath>
+      <HintPath Condition="Exists('..\Cultiway\.GameSource\AuxiliaryFiles\GameAssemblies\Assembly-CSharp.dll')">..\Cultiway\.GameSource\AuxiliaryFiles\GameAssemblies\Assembly-CSharp.dll</HintPath>
+      <HintPath Condition="Exists('..\..\worldbox_Data\Managed\Assembly-CSharp.dll')">..\..\worldbox_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>..\..\worldbox_Data\Managed\DOTween.dll</HintPath>
