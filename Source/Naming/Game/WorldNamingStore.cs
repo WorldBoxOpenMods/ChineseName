@@ -14,6 +14,7 @@ public static class WorldNamingStore
     private static NamingService _service;
     private static MapStats _map;
     private static string _packDirectory;
+    private static string _bundledPackDirectory;
     private static string _loadError;
     private static string _bundledSpeciesPack;
     private static readonly HashSet<string> DiskPacks = new(StringComparer.Ordinal);
@@ -30,6 +31,7 @@ public static class WorldNamingStore
         var species = ReadPack(Path.Combine(modFolder, "Content", "species-defaults.naming.json"));
         _service.RegisterDefaultPack(species);
         _bundledSpeciesPack = species.Id;
+        _bundledPackDirectory = Path.Combine(modFolder, "Content", "NamingPacks");
         _packDirectory = Path.Combine(UnityEngine.Application.persistentDataPath, "ChineseName", "NamingPacks");
         Directory.CreateDirectory(_packDirectory);
         foreach (var message in ReloadPacks()) LogService.LogWarning(message);
@@ -46,9 +48,29 @@ public static class WorldNamingStore
     public static IReadOnlyList<string> ReloadPacks()
     {
         var errors = new List<string>();
+        var files = ReadPacks(_bundledPackDirectory, errors);
+        foreach (var file in ReadPacks(_packDirectory, errors))
+            files[file.Key] = file.Value;
+        foreach (var id in DiskPacks) _service.UninstallPack(id);
+        DiskPacks.Clear();
+        foreach (var pack in files.Values)
+        {
+            try
+            {
+                _service.InstallPack(pack);
+                DiskPacks.Add(pack.Id);
+            }
+            catch (Exception error) { errors.Add(pack.Id + " · " + error.Message); }
+        }
+        return errors;
+    }
+
+    private static Dictionary<string, NamingPack> ReadPacks(string directory, List<string> errors)
+    {
         var files = new Dictionary<string, NamingPack>(StringComparer.Ordinal);
+        if (!Directory.Exists(directory)) return files;
         var duplicates = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var file in Directory.GetFiles(_packDirectory, "*.naming.json").OrderBy(file => file, StringComparer.Ordinal))
+        foreach (var file in Directory.GetFiles(directory, "*.naming.json").OrderBy(file => file, StringComparer.Ordinal))
         {
             try
             {
@@ -66,18 +88,7 @@ public static class WorldNamingStore
             files.Remove(id);
             errors.Add("重复的命名包 ID · " + id);
         }
-        foreach (var id in DiskPacks) _service.UninstallPack(id);
-        DiskPacks.Clear();
-        foreach (var pack in files.Values)
-        {
-            try
-            {
-                _service.InstallPack(pack);
-                DiskPacks.Add(pack.Id);
-            }
-            catch (Exception error) { errors.Add(pack.Id + " · " + error.Message); }
-        }
-        return errors;
+        return files;
     }
 
     public static string ExportCombination(string id, long? culture, long? language, WorldNaming draft = null)
