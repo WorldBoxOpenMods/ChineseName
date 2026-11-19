@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var parent = world.cultures.newCulture(founder, true);
+founder.setCulture(parent);
+var motherTongue = world.languages.newLanguage(founder, true);
+founder.joinLanguage(motherTongue);
+world.cities.buildNewCity(founder, tile.zone);
+var service = NamingApi.Current;
+var worldNaming = service.GetWorld();
+const string person = "worldbox:person";
+const string city = "worldbox:city";
+const string pool = "chinesename:given-first";
+const string cityPool = "chinesename:places";
+const string rule = person + "/sapient";
+worldNaming.Cultures[parent.id] = new CultureNaming {
+    Cards = new Dictionary<string, CardNaming> {
+        [city] = new CardNaming { Enabled = true, Pools = new Dictionary<string,string> { ["group_1"] = cityPool } }
+    },
+    Rules = new Dictionary<string, RuleEdit> { [rule] = new RuleEdit { Inheritance = SurnameOrder.Mother } }
+};
+parent.getOnomasticData(MetaType.City).loadFromShortTemplate("01|0:河;1:府");
+var basePack = service.GetPackage(service.DefaultPack);
+foreach (var otherVariant in basePack.CultureVariants.Values.Where(entry => entry.Type != person))
+{
+    string key = otherVariant.Type + "/" + otherVariant.Rule;
+    var original = basePack.Rules[otherVariant.Type].Single(entry => entry.Id == otherVariant.Rule)
+        .Parts.Single(part => part.Id == otherVariant.Part);
+    worldNaming.Cultures[parent.id].Rules[key] = new RuleEdit {
+        Fields = new Dictionary<string, PartEdit> { [otherVariant.Part] = new PartEdit { Operation = original } }
+    };
+}
+foreach (var wordPool in basePack.WordGroups.Where(pair => pair.Value.Pool != pool).GroupBy(pair => pair.Value.Pool))
+    worldNaming.Languages[motherTongue.id].Pools[wordPool.Key] = new PoolEdit { Group = basePack.Id + "/" + wordPool.First().Key };
+worldNaming.Languages[motherTongue.id].Pools[pool] = new PoolEdit { ExcludeText = new List<string> { "青" } };
+WorldNamingStore.Apply(worldNaming);
+var firstProfile = NamingJson.Write(service.GetWorld().Languages[motherTongue.id]);
+
+Check(AssetManager.plots_library.get("culture_divide").action(founder), "The original culture plot failed.");
+var branch = founder.culture;
+Check(branch != parent, "The culture plot did not switch its founder.");
+var state = service.GetWorld();
+Check(state.Cultures[branch.id].Parent == parent.id &&
+    state.Cultures[branch.id].Rules[rule].Inheritance == SurnameOrder.Mother &&
+    state.Cultures[branch.id].Cards[city].Pools["group_1"] == cityPool &&
+    state.Cultures[branch.id].Variants.ContainsKey(rule) &&
+    state.Cultures[parent.id].Variants.Count == 0, "Culture inheritance or variant selection was lost.");
+var parentRequest = new NameRequest(person, 1, parent.id, motherTongue.id,
+    new Dictionary<string,object> { ["kind"] = "sapient" });
+var variant = state.Cultures[branch.id].Variants[rule];
+var childRequest = new NameRequest(person, 1, branch.id, motherTongue.id, parentRequest.Inputs);
+int LongNames(NameRequest template) => Enumerable.Range(1, 128).Count(seed =>
+    service.Preview(new NameRequest(person, (ulong)seed, template.Culture, template.Language, template.Inputs))
+        .Parts.TryGetValue("given", out string given) && given.Length != 0);
+int originalLong = LongNames(parentRequest), branchLong = LongNames(childRequest);
+Check(originalLong != branchLong && service.Preview(childRequest).Diagnostics.Any(d => d.Contains(variant)),
+    "The culture variant did not affect actual naming probabilities.");
+Check(branch.getOnomasticData(MetaType.City).getShortTemplate() == "01|0:河;1:府", "Native cards were not inherited.");
+
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The original language plot failed.");
+var dialect = founder.language;
+state = service.GetWorld();
+var profile = state.Languages[dialect.id];
+var source = state.Languages[motherTongue.id];
+Check(dialect != motherTongue && state.LanguageParents[dialect.id] == motherTongue.id, "Missing parent language.");
+Check(NamingJson.Write(source) == firstProfile, "Divergence changed the source language.");
+var changedPool = profile.GroupPreferences.Single();
+string newGroup = changedPool.Value.Single(pair => pair.Value == .2).Key;
+Check(profile.Pools[pool].ExcludeText.Contains("青"), "The child language lost the parent's exclusions.");
+var inSameCulture = new Func<long, string[]>(language =>
+    Enumerable.Range(1, 128).Select(seed => service.Preview(new NameRequest(
+        person, (ulong)seed, parent.id, language, parentRequest.Inputs)).Text).ToArray());
+Check(!inSameCulture(motherTongue.id).SequenceEqual(inSameCulture(dialect.id)),
+    "Two languages in the same culture must produce different distributions.");
+var standalone = world.languages.newLanguage(founder, true);
+Check(!service.GetWorld().LanguageParents.ContainsKey(standalone.id), "A regular language creation was treated as a split.");
+string deterministicResult = service.Generate(new NameRequest(city, 104, branch.id, dialect.id)).Text;
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+var folder = Path.Combine(output, "lineage-save");
+Directory.CreateDirectory(folder);
+for (int frame = 0; frame < 120 && !world.units.getSimpleList().Contains(founder); frame++) await Game.NextFrame();
+world.cultures.checkLists();
+world.languages.checkLists();
+world.kingdoms.checkLists();
+world.cities.checkLists();
+var saved = SaveManager.saveWorldToDirectory(folder);
+Check(saved.cultures.Any(value => value.id == branch.id) && saved.languages.Any(value => value.id == dialect.id) &&
+    saved.kingdoms.Any(value => value.id == founder.kingdom.id), "The save fixture did not contain the split objects.");
+File.WriteAllLines(Path.Combine(folder, "expected.txt"), new[] {
+    branch.id.ToString(), parent.id.ToString(), dialect.id.ToString(), motherTongue.id.ToString(),
+    changedPool.Key, newGroup, variant, deterministicResult
+});
+return new { originalLong, branchLong, variant, poolChanged = changedPool.Key, groupChanged = newGroup, deterministicResult, folder };

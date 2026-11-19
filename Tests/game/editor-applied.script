@@ -1,0 +1,9 @@
+using System;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var culture = World.world.cultures.First();
+var rule = NamingApi.Current.GetWorld().Cultures[culture.id].Rules["worldbox:person/cultiway-eastern-human"];
+if (rule.Inheritance != SurnameOrder.Mother)
+    throw new InvalidOperationException("The clicked culture edit did not reach the active naming rules.");
+return new { culture = culture.name, inheritance = rule.Inheritance.ToString() };

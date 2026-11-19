@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var map = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/nordic-cats/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var fixture = Path.GetDirectoryName(map);
+var ids = File.ReadAllLines(Path.Combine(fixture, "ids.txt")).Select(long.Parse).ToArray();
+var samples = File.ReadAllLines(Path.Combine(fixture, "samples.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(map));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The saved cat civilization did not open.");
+
+const string nordic = "chinesename:world-nordic-set", cats = "chinesename:species-lexicon";
+var world = World.world;
+Config.paused = true;
+var culture = world.cultures.get(ids[0]);
+var founder = world.units.get(ids[1]);
+var kitten = world.units.get(ids[2]);
+var city = world.cities.get(ids[5]);
+var country = world.kingdoms.get(ids[6]);
+var cards = culture.getOnomasticData(MetaType.Unit);
+var layout = new[] { "group_3", "chinesename_as_pool", "chinesename_rule_separator", "group_1",
+    "chinesename_as_pool", "chinesename_keep_surname" };
+Check(cards.getFullTemplateData().SequenceEqual(layout) && cards.getGroupString("group_3") == "灵猫个体名" &&
+    cards.getGroupString("group_1") == "灵猫地名词根" && founder.getName() == "夜瞳·猫眼台" &&
+    samples.Contains(kitten.getName()) && city.name == "猫眼台" && country.name == "猫眼台领",
+    "The saved names or native arrangement changed.");
+
+var service = NamingApi.Current;
+var data = service.GetWorld();
+const string given = cats + ".cat.given";
+Check(data.Cultures[ids[0]].Pack == nordic && data.Cultures[ids[7]].Pack == nordic &&
+    !data.Cultures[ids[7]].Cards.ContainsKey("worldbox:person") && data.LanguageParents[ids[4]] == ids[3] &&
+    Math.Abs(data.Languages[ids[4]].GroupPreferences[given][cats + "/cat.given.habits"] - .2) < 1e-9,
+    "The style, culture isolation or language divergence did not survive.");
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat" };
+NameResult Person(long language, int seed) => service.Generate(new NameRequest("worldbox:person", (ulong)seed, culture.id, language, inputs));
+Check(Enumerable.Range(0, samples.Length).Select(seed => Person(ids[4], seed).Text).SequenceEqual(samples),
+    "Reloading changed the child language's weighted names.");
+
+string vocabulary = Path.Combine(WorldNamingStore.PackageDirectory, "test-world-styles-species-lexicon.naming.json");
+File.Move(vocabulary, vocabulary + ".disabled");
+try
+{
+    Check(WorldNamingStore.ReloadPacks().Count == 0 && Person(ids[3], 0).Text == "夜瞳·猫眼台" &&
+        founder.getName() == "夜瞳·猫眼台" && cards.getGroupString("group_3") == "灵猫个体名",
+        "Removing a legacy copy of the now-bundled vocabulary changed a name or an arrangement.");
+}
+finally
+{
+    File.Move(vocabulary + ".disabled", vocabulary);
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "The species vocabulary could not be reinstalled.");
+}
+Check(Enumerable.Range(0, samples.Length).Select(seed => Person(ids[4], seed).Text).SequenceEqual(samples),
+    "Keeping the legacy file changed the blend.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_unit").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+for (int frame = 0; frame < 10; frame++) await Game.NextFrame();
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + ids[4]).onClick.Invoke();
+for (int frame = 0; frame < 8; frame++) await Game.NextFrame();
+var preview = Regex.Replace(shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ?? "", "</?color[^>]*>", "");
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(layout) && samples.Contains(preview),
+    "The native editor could not reopen the mixed arrangement.");
+return new { founder = founder.getName(), kitten = kitten.getName(), preview, repeatableSeeds = samples.Length, map };

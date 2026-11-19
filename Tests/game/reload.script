@@ -1,0 +1,16 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/output/save/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; SmoothLoader.isLoading() && i < 1000; i++) await Game.NextFrame();
+if (SmoothLoader.isLoading()) throw new InvalidOperationException("World load did not finish.");
+var restored = World.world.units.getSimpleList().Single(actor => actor.data.name == "欧阳澄川");
+restored.data.get("chinesename.surname.v1", out string surname);
+if (surname != "欧阳" || !NamingApi.Current.GetWorld().EnabledPacks.Contains("chinesename:smoke"))
+    throw new InvalidOperationException("The save did not restore surname and pack selection.");
+return new { actor = restored.getName(), surname, save };

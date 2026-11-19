@@ -1,0 +1,248 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string marker = "chinesename_as_pool";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 8) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var options = service.GetWorld();
+string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var rows = new[] {
+    (Style: "guofeng", Species: "human", Country: "临川国", City: "澄江府",
+        Home: new[] { "之战", "会盟", "卫", "志", "与民同心", "照雪" },
+        Other: new[] { "会战", "联防约", "骁骑", "录", "厚德载物", "百炼" }),
+    (Style: "wafuu", Species: "human", Country: "山城国", City: "樱丘城",
+        Home: new[] { "合战", "诸藩盟", "番队", "手帖", "一期一会", "时雨" },
+        Other: new[] { "战役", "和议", "先阵众", "见闻录", "松风照心", "鹤纹" }),
+    (Style: "fantasy-race", Species: "elf", Country: "绿叶王庭", City: "银柳庭",
+        Home: new[] { "争夺战", "诸领协约", "卫队", "编年史", "长路共享粮", "晨辉" },
+        Other: new[] { "远征", "守望盟", "军团", "古卷", "矿灯照归路", "星铸" })
+};
+foreach (var row in rows)
+foreach (string kind in new[] { "set", "lexicon" })
+{
+    string name = row.Style + "-" + kind;
+    string file = name + ".naming.json";
+    File.Copy(Path.Combine(examples, file), Path.Combine(WorldNamingStore.PackageDirectory, "test-variant-sets-" + file), true);
+    string id = "chinesename:" + name;
+    if (!options.EnabledPacks.Contains(id)) options.EnabledPacks.Add(id);
+}
+var issues = WorldNamingStore.ReloadPacks();
+Check(issues.Count == 0, string.Join("\n", issues));
+
+var fixtures = new List<(Actor Founder, Culture Owner, Language Home, Language Other, City City, Kingdom Side, Kingdom Rival)>();
+const string rivalName = "松岭国";
+var categories = new[] { "war", "alliance", "army", "book", "motto", "item" };
+var main = service.GetPackage(service.DefaultPack);
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(rows.Length * 2).Select(group => group.First()).ToArray();
+Check(tiles.Length == rows.Length * 2, "The test map does not have six regions.");
+void Only(Language language, NamingPack pack, string pool, string term)
+{
+    if (!options.Languages.TryGetValue(language.id, out var profile))
+        options.Languages.Add(language.id, profile = new LanguageNaming());
+    var word = pack.Words.Single(value => value.Text == term && pack.Pools[pool].ContainsKey(value.Id));
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(key => key != word.Id).ToList() };
+}
+foreach (var row in rows)
+{
+    var tile = tiles[fixtures.Count * 2];
+    var peerTile = tiles[fixtures.Count * 2 + 1];
+    var founder = world.units.createNewUnit(row.Species, tile);
+    var peer = world.units.createNewUnit("human", peerTile);
+    var side = world.kingdoms.makeNewCivKingdom(founder);
+    var rival = world.kingdoms.makeNewCivKingdom(peer);
+    side.setName(row.Country); rival.setName(rivalName);
+    var culture = world.cultures.newCulture(founder, true);
+    var rivalCulture = world.cultures.newCulture(peer, true);
+    founder.setCulture(culture); side.setCulture(culture);
+    peer.setCulture(rivalCulture); rival.setCulture(rivalCulture);
+    var home = world.languages.newLanguage(founder, true);
+    var other = world.languages.newLanguage(founder, false);
+    var peerLanguage = world.languages.newLanguage(peer, true);
+    founder.joinLanguage(home); side.setLanguage(home);
+    peer.joinLanguage(peerLanguage); rival.setLanguage(peerLanguage);
+    var city = world.cities.buildNewCity(founder, tile.zone);
+    founder.joinCity(city);
+    peer.joinCity(world.cities.buildNewCity(peer, peerTile.zone));
+    city.setName(row.City); city.setLanguage(home);
+    options.Cultures[culture.id] = new CultureNaming { Pack = "chinesename:" + row.Style + "-set" };
+
+    var pack = service.GetPackage("chinesename:" + row.Style + "-lexicon");
+    string[] poolNames = { "war-ending", "alliance-ending", "army-ending", "book-ending",
+        row.Style == "fantasy-race" ? "frontier-oaths" : "saying", "artifact" };
+    for (int i = 0; i < poolNames.Length; i++)
+    {
+        string pool = pack.Id + "." + poolNames[i];
+        Only(home, pack, pool, row.Home[i]);
+        Only(other, pack, pool, row.Other[i]);
+    }
+    foreach (var (language, metal, sword) in new[] { (home, "铁", "剑"), (other, "玄铁", "长剑") })
+    {
+        Only(language, main, "chinesename:book-history", "列国");
+        Only(language, main, "chinesename:book-warfare-manual", "守城");
+        Only(language, main, "chinesename:equipment-material.iron", metal);
+        Only(language, main, "chinesename:equipment-kind.sword", sword);
+    }
+    fixtures.Add((founder, culture, home, other, city, side, rival));
+}
+WorldNamingStore.Apply(options);
+world.cultures.checkLists(); world.languages.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists(); world.units.checkLists();
+
+string[] Expected((Actor Founder, Culture Owner, Language Home, Language Other, City City, Kingdom Side, Kingdom Rival) fixture,
+    string[] terms, bool preview = false, bool dialect = false) => new[] {
+    (preview ? "临川国" : fixture.Side.name) + "—" + fixture.Rival.name + terms[0],
+    (preview ? "临川国" : fixture.Side.name) + terms[1],
+    (preview ? "澄江" : fixture.City.name) + terms[2],
+    "列国" + terms[3], terms[4], terms[5] + (dialect ? "玄铁长剑" : "铁剑")
+};
+Book WriteBook(Actor author, string topic)
+{
+    var book = world.books.newObject();
+    book.newBook(author, AssetManager.book_types.list.First(type => type.name_template == "book_name_" + topic), null, null, null, null);
+    return book;
+}
+Item MakeSword(Kingdom origin, Actor author)
+{
+    var asset = AssetManager.items.list.First(entry => entry.group_id == "sword" && entry.material == "iron");
+    var previous = asset.item_modifiers;
+    try
+    {
+        asset.item_modifiers = new[] { AssetManager.items_modifiers.list.First(mod => mod.quality == Rarity.R3_Legendary) };
+        return world.items.generateItem(asset, origin, pTries: 0, pActor: author);
+    }
+    finally { asset.item_modifiers = previous; }
+}
+var results = new List<string[]>();
+for (int i = 0; i < rows.Length; i++)
+{
+    var fixture = fixtures[i];
+    var row = rows[i];
+    var war = world.wars.newWar(fixture.Side, fixture.Rival, AssetManager.war_types_library.get("normal"));
+    var alliance = world.alliances.newAlliance(fixture.Side, fixture.Rival);
+    var army = world.armies.newArmy(fixture.Founder, fixture.City);
+    var book = WriteBook(fixture.Founder, "history");
+    var sword = MakeSword(fixture.Side, fixture.Founder);
+    var actual = new[] { war.name, alliance.name, army.name, book.name, fixture.Side.getMotto(), sword.name };
+    Check(actual.SequenceEqual(Expected(fixture, row.Home)), row.Style + " actual names: " + string.Join("，", actual));
+    sword.reforge(1);
+    Check(sword.name == actual[5], "Reforging lost the equipment's assembled name.");
+    fixture.Founder.equipment.setItem(sword, fixture.Founder);
+    var battleManual = WriteBook(fixture.Founder, "warfare_manual");
+    Check(battleManual.name == "守城" + row.Home[3], "The book name did not change with the actual topic.");
+    results.Add(actual);
+}
+
+int actions = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string point = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var center = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+        point = $" {(int)center.x} {UnityEngine.Screen.height - (int)center.y}";
+    }
+    string path = Path.Combine(exchange, ++actions + ".mouse");
+    File.WriteAllText(path + ".tmp", action + point);
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Mouse input stalled.");
+    await Frames();
+}
+var editNames = new Dictionary<string, string>();
+var saveRows = new List<string>();
+for (int i = 0; i < rows.Length; i++)
+{
+    var row = rows[i];
+    var fixture = fixtures[i];
+    world.console.Hide();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    SelectedUnit.select(fixture.Founder);
+    SelectedMetas.selected_culture = fixture.Owner;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    Check(shell?.tabs != null, "The original culture window did not open.");
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    await Frames();
+    string Preview() => Regex.Replace(shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ?? "", "</?color[^>]*>", "");
+    Button Flag(Language language) => shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + language.id);
+    async System.Threading.Tasks.Task Select(string category)
+    {
+        tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + category).toggle.click();
+        await Frames();
+    }
+    var homeNames = Expected(fixture, row.Home, preview: true);
+    var dialectNames = Expected(fixture, row.Other, preview: true, dialect: true);
+    for (int j = 0; j < categories.Length; j++)
+    {
+        string category = categories[j];
+        await Select(category);
+        Check(tab.getOnomasticsData().getFullTemplateData().Contains(marker), category + " did not open as the native arrangement.");
+        Flag(fixture.Home).onClick.Invoke();
+        await Frames();
+        Check(Preview() == homeNames[j], row.Style + "/" + category + " preview: " + Preview());
+        if (i == 0 && category == "war") await Mouse("click", Flag(fixture.Other));
+        else { Flag(fixture.Other).onClick.Invoke(); await Frames(); }
+        Check(Preview() == dialectNames[j], row.Style + "/" + category + " dialect: " + Preview());
+    }
+    await Select("book");
+    if (i == 0)
+    {
+        var button = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+            .Single(card => card.onomastics_asset.id == "group_2").button;
+        await Mouse("click", button);
+        shell.scrollRect.verticalNormalizedPosition = 0;
+        await Frames();
+        await Mouse("click", tab._editor_input.inputField);
+        GUIUtility.systemCopyBuffer = "史略";
+        await Mouse("paste");
+        await Mouse("enter");
+        shell.scrollRect.verticalNormalizedPosition = 1;
+        await Frames();
+        var pool = tab.parent_name_variation_1.GetComponentsInChildren<OnomasticsAssetButton>()
+            .Single(card => card.onomastics_asset.id == marker);
+        await Mouse("click", pool.button);
+    }
+    else
+    {
+        // Keep the built-in topic glyph and replace the suffix group with an ordinary literal.
+        char topic = AssetManager.onomastics_library.get("chinesename:book-topic").short_id;
+        char suffix = AssetManager.onomastics_library.get("group_2").short_id;
+        tab.loadTemplate($"{topic}{suffix}|{suffix}:史略");
+        await Frames();
+    }
+    Check(Preview() == "列国史略", "The modified book arrangement was not applied: " + Preview());
+    fixture.Founder.joinLanguage(fixture.Other);
+    fixture.Side.setLanguage(fixture.Other);
+    fixture.City.setLanguage(fixture.Other);
+    var newBook = WriteBook(fixture.Founder, "warfare_manual");
+    Check(newBook.name == "守城史略", "The edit did not hold for different book types.");
+    var secondWar = world.wars.newWar(fixture.Side, fixture.Rival, AssetManager.war_types_library.get("normal"));
+    Check(secondWar.name == row.Country + "—" + rivalName + row.Other[0], "The game did not use the new war vocabulary.");
+    var secondSword = MakeSword(fixture.Side, null);
+    Check(secondSword.name == row.Other[5] + "玄铁长剑", "Origin-only equipment naming ignored its language.");
+    editNames[row.Style] = newBook.name;
+    saveRows.Add(string.Join(" ", fixture.Owner.id, fixture.Founder.getID(), secondWar.id, fixture.Other.id, secondWar.name));
+}
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "variant-affairs");
+Directory.CreateDirectory(output);
+world.cities.checkLists(); world.kingdoms.checkLists(); world.wars.checkLists(); world.units.checkLists(); world.languages.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), saveRows);
+return new { results, editNames, mouseActions = actions, output };

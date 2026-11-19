@@ -1,0 +1,227 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string selector = "chinesename_as_pool", surname = "chinesename_keep_surname";
+const string separator = "chinesename_rule_separator";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 12) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var config = service.GetWorld();
+var examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var sets = new[] { "guofeng", "wafuu", "fantasy-race" };
+var packages = new Dictionary<string, NamingPack>();
+packages["chinesename:classic"] = service.GetPackage("chinesename:classic");
+foreach (string stem in sets)
+foreach (string variant in new[] { "lexicon", "set" })
+{
+    string name = stem + "-" + variant + ".naming.json";
+    string source = Path.Combine(examples, name);
+    File.Copy(source, Path.Combine(WorldNamingStore.PackageDirectory, "test-variant-sets-" + name), overwrite: true);
+    var pack = NamingJson.Read<NamingPack>(File.ReadAllText(source));
+    packages[pack.Id] = pack;
+    if (!config.EnabledPacks.Contains(pack.Id)) config.EnabledPacks.Add(pack.Id);
+}
+Check(WorldNamingStore.ReloadPacks().Count == 0, "The naming sets and vocabularies could not be installed.");
+
+var cases = new[] {
+    (Style: "guofeng", Species: "human", Words: new[] { "沈", "怀瑾", "槐安", "府", "青云", "国" },
+        Person: "沈怀瑾", City: "槐安府", State: "青云国"),
+    (Style: "wafuu", Species: "human", Words: new[] { "佐藤", "明美", "樱丘", "山城" },
+        Person: "佐藤明美", City: "樱丘城", State: "山城国"),
+    (Style: "fantasy-race", Species: "elf", Words: new[] { "洛榆薇", "绿叶", "银柳" },
+        Person: "洛榆薇·绿叶", City: "银柳庭", State: "绿叶王庭"),
+    (Style: "fantasy-race", Species: "dwarf", Words: new[] { "博格", "铜须", "铜脉" },
+        Person: "博格·铜须", City: "铜脉堡", State: "铜须王国"),
+    (Style: "fantasy-race", Species: "orc", Words: new[] { "格伦", "钢牙", "逐水" },
+        Person: "格伦·钢牙", City: "逐水寨", State: "钢牙部族"),
+    (Style: "fantasy-race", Species: "human", Words: new[] { "John", "Smith", "Greyford", "Northreach" },
+        Person: "约翰·史密斯", City: "格雷福德", State: "北境王国")
+};
+var fixtures = new List<(Actor Founder, Culture Culture, Language Language, WorldTile Tile)>();
+var categories = new[] { ("worldbox:person", MetaType.Unit), ("worldbox:city", MetaType.City), ("worldbox:kingdom", MetaType.Kingdom) };
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity()).GroupBy(tile => tile.zone)
+    .Take(cases.Length + 1).Select(zone => zone.First()).ToArray();
+Check(tiles.Length == cases.Length + 1, "The test needs seven distinct empty ground zones.");
+
+void Only(Language language, string pack, string pool, string term)
+{
+    if (!config.Languages.TryGetValue(language.id, out var profile))
+        config.Languages[language.id] = profile = new LanguageNaming();
+    var vocabulary = packages[pack];
+    string id = vocabulary.Words.Single(word => word.Text == term && vocabulary.Pools[pool].ContainsKey(word.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = vocabulary.Pools[pool].Keys.Where(key => key != id).ToList() };
+}
+foreach (var row in cases)
+{
+    var tile = tiles[fixtures.Count];
+    var founder = world.units.createNewUnit(row.Species, tile);
+    var culture = world.cultures.newCulture(founder, true);
+    founder.setCulture(culture);
+    var language = world.languages.newLanguage(founder, true);
+    founder.joinLanguage(language);
+    var style = "chinesename:" + row.Style + "-set";
+    config.Cultures[culture.id] = new CultureNaming { Pack = style };
+    string pack = row.Style == "fantasy-race" && row.Species == "human" ? "chinesename:classic" :
+        "chinesename:" + row.Style + "-lexicon";
+    var rules = categories.Select(category => packages[style].Rules[category.Item1]
+        .FirstOrDefault(rule => rule.When.TryGetValue("culture-species", out string species) && species == row.Species) ??
+        packages[style].Rules[category.Item1].Single(rule => !rule.When.ContainsKey("culture-species")));
+    var pools = rules.SelectMany(rule => rule.Parts).Where(part => part.Pool != null).Select(part => part.Pool).Distinct().ToArray();
+    Check(pools.Length == row.Words.Length, "The fixture needs a term for every selected pool.");
+    for (int i = 0; i < pools.Length; i++) Only(language, pack, pools[i], row.Words[i]);
+    founder.data.set("chinesename.surname.v1", (string)null);
+    fixtures.Add((founder, culture, language, tile));
+}
+var wafuu = fixtures[1];
+var other = world.languages.newLanguage(wafuu.Founder, false);
+const string wafuuPack = "chinesename:wafuu-lexicon";
+Only(other, wafuuPack, wafuuPack + ".surname", "秋山");
+Only(other, wafuuPack, wafuuPack + ".given", "千夏");
+Only(other, wafuuPack, wafuuPack + ".city-root", "白滨");
+Only(other, wafuuPack, wafuuPack + ".province", "相模");
+const string guofengPack = "chinesename:guofeng-lexicon";
+Only(fixtures[0].Language, guofengPack, guofengPack + ".compound-surname", "欧阳");
+WorldNamingStore.Apply(config);
+world.cultures.checkLists(); world.languages.checkLists(); world.units.checkLists();
+
+var names = new List<(string Person, string City, string State)>();
+var cities = new List<City>();
+var kingdoms = new List<Kingdom>();
+for (int i = 0; i < cases.Length; i++)
+{
+    var row = cases[i];
+    var (founder, culture, language, tile) = fixtures[i];
+    founder.generateNewName();
+    var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+    var city = world.cities.buildNewCity(founder, tile.zone);
+    founder.joinCity(city);
+    var actual = (founder.getName(), city.name, kingdom.name);
+    Check(actual == (row.Person, row.City, row.State), $"Actual names for {row.Style}/{row.Species} were {actual}.");
+    names.Add(actual); cities.Add(city); kingdoms.Add(kingdom);
+}
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+int mouseActions = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string point = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var center = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+        point = $" {(int)center.x} {UnityEngine.Screen.height - (int)center.y}";
+    }
+    string path = Path.Combine(exchange, ++mouseActions + ".mouse");
+    File.WriteAllText(path + ".tmp", action + point);
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "No mouse input for " + action);
+    await Frames();
+}
+ScrollWindow shell = null;
+OnomasticsTab tab = null;
+async System.Threading.Tasks.Task Open(int index)
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    var fixture = fixtures[index];
+    SelectedUnit.select(fixture.Founder);
+    SelectedMetas.selected_culture = fixture.Culture;
+    ScrollWindow.showWindow("culture");
+    shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    tab = shell.GetComponentInChildren<OnomasticsTab>();
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    await Frames();
+}
+async System.Threading.Tasks.Task Select(MetaType type)
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + type.ToString().ToLowerInvariant()).toggle.click();
+    await Frames();
+}
+string Display() => shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+Button Flag(Language language) => shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + language.id);
+async System.Threading.Tasks.Task EditGroup(string group, string existing, string replacement)
+{
+    var button = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Single(card => card.onomastics_asset.id == group).button;
+    if (tab._selected_editor_group?.id != group) await Mouse("click", button);
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    await Frames();
+    var input = tab._editor_input.inputField;
+    Check(input.text == existing, $"Default term in {group} was '{input.text}'.");
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = replacement;
+    await Mouse("paste");
+    Check(input.isFocused && input.text.Trim() == replacement, "The original group editor did not accept " + replacement);
+    await Mouse("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+}
+
+await Open(0);
+await Select(MetaType.Unit);
+Check(Display() == "沈怀瑾" && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(
+    new[] { "group_1", selector, surname, "group_3", selector }), "The Guofeng personal preset did not open as native glyphs.");
+await EditGroup("group_1", "国风单姓", "国风复姓");
+var first = world.units.createNewUnit("human", fixtures[0].Tile);
+first.setCulture(fixtures[0].Culture);
+first.joinLanguage(fixtures[0].Language);
+Check(first.getName() == "欧阳怀瑾", "A new person did not use the edited compound surname group.");
+Check(fixtures[0].Founder.getName() == "沈怀瑾", "Changing the surname group renamed an existing person.");
+
+await Open(1);
+await Select(MetaType.City);
+Check(Display() == "樱丘城" && tab.getOnomasticsData().getGroupString("group_1") == "和风地名主体",
+    "The Wafuu city preset did not open as the original word-group arrangement.");
+await Mouse("click", Flag(other));
+Check(Display() == "白滨城", "Changing the language flag did not update the Wafuu preview.");
+await EditGroup("group_2", "城", "町");
+Check(Display() == "白滨町", "The Wafuu preview did not retain its selected language after editing.");
+wafuu.Founder.joinLanguage(other);
+var newCity = world.cities.buildNewCity(wafuu.Founder, tiles.Last().zone);
+Check(newCity.name == "白滨町" && cities[1].name == "樱丘城", "Founding a city did not use the edited suffix and language.");
+tab.resetTemplate();
+await Frames();
+Check(Display() == "白滨城" && tab.getOnomasticsData().getGroupString("group_2") == "城", "Reset did not restore the current set.");
+await EditGroup("group_2", "城", "町");
+
+await Open(2);
+await Select(MetaType.Unit);
+Check(Display() == "洛榆薇·绿叶" && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(
+    new[] { "group_3", selector, separator, "group_1", selector, surname }), "The fantasy personal order did not reopen.");
+await Select(MetaType.Kingdom);
+Check(Display() == "绿叶王庭" && tab.getOnomasticsData().getGroupString("group_2") == "王庭", "The fantasy country preset did not reopen.");
+await EditGroup("group_2", "王庭", "领");
+var fantasy = fixtures[2];
+Check(Display() == "绿叶领" && fantasy.Founder.generateName(MetaType.Kingdom, 3) == "绿叶领" &&
+    kingdoms[2].name == "绿叶王庭", "Editing a country suffix did not affect new names alone.");
+var migrant = world.units.createNewUnit("human", fantasy.Tile);
+migrant.setCulture(fantasy.Culture);
+migrant.joinLanguage(fantasy.Language);
+Check(migrant.generateName(MetaType.Kingdom, 3) == "绿叶领" && migrant.getName() == "洛榆薇·绿叶",
+    "The same culture used different arrangements for a member of another species.");
+
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "variant-sets-save");
+Directory.CreateDirectory(folder);
+world.units.checkLists(); world.kingdoms.checkLists(); world.cities.checkLists(); world.languages.checkLists();
+var save = SaveManager.saveWorldToDirectory(folder);
+Check(save.actors_data.Any(actor => actor.id == first.getID()), "The new Guofeng person is missing from the save.");
+File.WriteAllLines(Path.Combine(folder, "expected.txt"), new[] {
+    first.getID(), fixtures[0].Culture.id, wafuu.Culture.id, wafuu.Language.id, other.id, cities[1].id, newCity.id,
+    fantasy.Founder.getID(), fantasy.Culture.id, kingdoms[2].id
+}.Select(id => id.ToString()));
+return new { original = names.Select(name => new[] { name.Person, name.City, name.State }), edited = new[] {
+    first.getName(), newCity.name, fantasy.Founder.generateName(MetaType.Kingdom, 3)
+}, mouseActions, folder };

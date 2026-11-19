@@ -1,0 +1,1694 @@
+{
+  "format": 1,
+  "id": "chinesename:real-world-lexicon",
+  "label": "地域译名词库",
+  "supplemental": true,
+  "words": [
+    {
+      "id": "chinesename:real-world-lexicon.w-c8e4360634a8844b5363",
+      "text": "居鲁士"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4c5c0ea4aae09575d4a0",
+      "text": "大流士"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-21c636ae8a4f81e52d2f",
+      "text": "薛西斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3664909477ab59a61d66",
+      "text": "阿尔塔薛西斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-54a5d2636fd487527981",
+      "text": "冈比西斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-84a885e60537c6f8e4ea",
+      "text": "巴尔迪亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-26ef8b54692525a5e4c3",
+      "text": "维什塔斯帕"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2dfefe21db4663027b66",
+      "text": "阿里亚拉姆涅斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-33fa53908f1493fd7e9e",
+      "text": "阿尔萨梅斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ba38a82d5bd22fe2294d",
+      "text": "阿托莎"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ce5536f33375f240c519",
+      "text": "阿尔泰斯托涅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-60b34f5dcbc0e07479fb",
+      "text": "帕丽萨蒂丝"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-8b218e780765ae495690",
+      "text": "斯塔蒂拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2f711c666be899bc6373",
+      "text": "阿米蒂斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c39776e2ee32f5646d50",
+      "text": "曼达妮"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-0cbf5f99290d764077bf",
+      "text": "伊里达芭玛"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6f19a97b0c50d684095e",
+      "text": "阿帕玛"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c9acb658c9f9e13d47b3",
+      "text": "阿尔忒弥西亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d0478000bac839767ac5",
+      "text": "波斯波利斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-dcd211e84c724a7284a6",
+      "text": "苏萨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-abacaddd91459f41c871",
+      "text": "埃克巴坦那"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9d22823ac6bae93c4739",
+      "text": "帕萨尔加德"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-678501fede697aec687c",
+      "text": "拉盖"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a9b6548e49d845c61077",
+      "text": "米底"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5d3ea611f7b301b8df7d",
+      "text": "帕提亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f719378c819d5b6a5519",
+      "text": "阿拉霍西亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-30844b433abdcc18cfec",
+      "text": "德兰吉亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-71eba21f17c82ea1565e",
+      "text": "萨迪斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a16af7bc1df3c3a8a0e9",
+      "text": "巴比伦"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f0d06dd18d7a23a3269b",
+      "text": "大马士革"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9b74beea2fcd13a77b54",
+      "text": "推罗"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c86e0cbbfa3601ea374c",
+      "text": "加沙"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-79a4f3d0f4347b0bb364",
+      "text": "安善"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d94e58b8d297654629ca",
+      "text": "巴克特拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-0b5d810f0bcf06dcd1dc",
+      "text": "马拉坎达"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f2940ce20a1f24b3f159",
+      "text": "希尔卡尼亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-40aff3c667269e54cf16",
+      "text": "万邦之主"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-419383a68472459e90b2",
+      "text": "高原之王"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f7bfd4dfb2b74d9c4478",
+      "text": "诸王之王"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-113c818c2a62ae8b3fcd",
+      "text": "宫廷守卫"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-0e738f9dd19b416021f2",
+      "text": "王印持有者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-deacc646ab6af446e135",
+      "text": "王道守护者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d914db0f3d5d9c679c98",
+      "text": "高原守望者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b08995e7fab8293e8bf4",
+      "text": "沙海行旅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c723ee53750c2a6b870e",
+      "text": "山口守卫"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3b228e2a831ee411eb23",
+      "text": "绿洲领主"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d7d72b4ca7f970cf2b7c",
+      "text": "东道使节"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-effc152ce74d53a59fcd",
+      "text": "火坛守护者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a694e5329b23ee89fa6e",
+      "text": "拉美西斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6263d7f32aa62e962e79",
+      "text": "阿蒙霍特普"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-592b824d1ccadeaf4a1a",
+      "text": "图特摩斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-64eda65887c471432172",
+      "text": "塞提"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-8d154e7045117fa28651",
+      "text": "美楞普塔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7edaddfaac8b16392296",
+      "text": "哈伦海布"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-df71329030a4f5197f6d",
+      "text": "塞努斯雷特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b078571daab4c090a7cd",
+      "text": "阿蒙涅姆赫特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3c8662f58270dfcdf651",
+      "text": "左塞尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a12b8fd3c8ab6acf2846",
+      "text": "胡夫"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1ecc82b50f33837536d4",
+      "text": "胡夫拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-56d666fc33c0d27e86ef",
+      "text": "门卡乌拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6b0b477f1edeab755d1b",
+      "text": "妮斐尔泰丽"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-0657cd9c07e9a1cb04ff",
+      "text": "泰伊"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4dfb986dc4c15ec50ec9",
+      "text": "妮斐尔提提"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-125830ce49460a02b9c7",
+      "text": "梅莉塔蒙"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a6d6a6c30cfbcba41ff1",
+      "text": "赫努特美伊特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-37c39b6d7e3dca7c6f66",
+      "text": "哈特谢普苏特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7881a1898ac35ecec31b",
+      "text": "索贝克涅弗鲁"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9424120692f370c230e2",
+      "text": "伊西斯诺弗蕾特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7baa06c3ef3eb7a0df80",
+      "text": "阿赫摩丝"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9815227b416a6a67ad7f",
+      "text": "伊姆霍特普"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f609071bdd7eaa903714",
+      "text": "底比斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b491940e18ebeb4b2090",
+      "text": "卢克索"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-fb394300be04e77fd6b4",
+      "text": "阿拜多斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-8be1ab4c5f5d59a13f89",
+      "text": "丹德拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3c9525a61938889d7073",
+      "text": "艾德富"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-62cd47a3fdce1746e061",
+      "text": "科姆翁布"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d7f1b36fb0d72cd317e7",
+      "text": "埃斯纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-60b398e0307743781d15",
+      "text": "伊拉康波利斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-70cf15297d5a74574a36",
+      "text": "伊利芬丁岛"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5df251ed500f30e872ef",
+      "text": "阿斯旺"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9aab048952869e673137",
+      "text": "孟菲斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-48baade71eebca59ba1d",
+      "text": "赫利奥波利斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6898f4a163db17ca17fc",
+      "text": "萨卡拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b720f3643813bfed422a",
+      "text": "吉萨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-dc1858a68f64c35aa87f",
+      "text": "布托"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-564356ae37f0687b5fac",
+      "text": "塔尼斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-327ce5b42d1d68b876da",
+      "text": "布巴斯提斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1d0e58f44f56c81ac74b",
+      "text": "塞易斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-bc79b80735b53cebb648",
+      "text": "纳乌克拉提斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-59b321495929632a5d63",
+      "text": "亚历山大港"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-203a808a414321eada8e",
+      "text": "日轮之子"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-70c22291cfb466af8d2b",
+      "text": "两地之主"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a7ea158e5920d10bc5f2",
+      "text": "神庙守护者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ad62ce636008c8b5e5ec",
+      "text": "持秤者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-0d6b6c271779f62e563f",
+      "text": "圣舟引路人"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b4d1a88e5c10c9513013",
+      "text": "河谷大祭司"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d4eb17f451807610bd81",
+      "text": "大河之子"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-96c691af2a2696ea83a7",
+      "text": "北岸领主"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b1ef973b6aae0ac87adc",
+      "text": "南田总管"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1304bda967faf36ca77d",
+      "text": "河口守卫"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9842270beaca8d7ab155",
+      "text": "莲池记事官"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-50f93d46c2e4ddba1bfd",
+      "text": "风帆领航者"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c0ed8ad300698bed9d2d",
+      "text": "盖乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6d643300774b7e612a22",
+      "text": "卢基乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-81019dea79588f718fbd",
+      "text": "马尔库斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-e5c1c6853f66a37f308e",
+      "text": "普布利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2014f2d81fc14c50b2ed",
+      "text": "提图斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b2c5be8263590b91124a",
+      "text": "昆图斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2471732614cebe15692b",
+      "text": "提比略"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d39d0860a3c59d645ea8",
+      "text": "德基穆斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-510d909fda74811b9546",
+      "text": "塞克斯图斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3e9033d75fe9cd872196",
+      "text": "阿庇乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-533598867548c89dcd72",
+      "text": "奥卢斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1c0689bfc2112c4f2c62",
+      "text": "格奈乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a974f77e6e8c6cf62e33",
+      "text": "尤利娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c818beea971c1828aaf4",
+      "text": "莉维娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f24260a8f95a0627a2b5",
+      "text": "克劳狄娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9c3751485b14d42e497a",
+      "text": "科尔涅利娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2f4eb4fcd65b6116f0f9",
+      "text": "波尔基娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-db1310a69bf3164d59e1",
+      "text": "弗拉维娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c4e2f32634dc75e427c5",
+      "text": "塞尔维莉娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-de486b54616e2ed95651",
+      "text": "图莉娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2885c4e3bbe0a02a3efd",
+      "text": "安东尼娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b4a9c8fa9fb1f7c7760d",
+      "text": "瓦莱莉娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-abd7300613029eaf29c2",
+      "text": "奥克塔维娅"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9389ad4de7dd035b3367",
+      "text": "尤利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-84812405a80b2b22b340",
+      "text": "科尔涅利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-e96218f71e210c6e8f1a",
+      "text": "克劳狄乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3f8162455a9d1b23c026",
+      "text": "法比乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a68893601e837ca2faac",
+      "text": "瓦莱里乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-afa7e337c8000e7f3ac8",
+      "text": "埃米利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-eda166fe83272b5fbf63",
+      "text": "曼利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1cc668da5e92e8fe55be",
+      "text": "弗拉米尼乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2fac7f34193565163fab",
+      "text": "弗拉维乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f76d1461cadcb8ed46ad",
+      "text": "奥雷里乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-bc3ee3cef3dc485d7289",
+      "text": "乌尔皮乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-59843afe4e4d72cab81c",
+      "text": "埃利乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-09948fd1513a388122a4",
+      "text": "安东尼乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d443c9c9206bda88c278",
+      "text": "塞普蒂米乌斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-e40dde6eb5710da39067",
+      "text": "塞维鲁斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-fbce0740d8f4ba369981",
+      "text": "马克里努斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3b54664e8163d36a7d1b",
+      "text": "罗马"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d069543758ec55e97452",
+      "text": "奥斯提亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-801f529278f3e68a1d45",
+      "text": "提布尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-bd31685cf3337baf88cf",
+      "text": "亚里米努姆"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-170db9684ca0abe87e28",
+      "text": "拉文纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-cc403e0f0c2cddacda34",
+      "text": "维罗纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-adf95bcf0622982811cc",
+      "text": "庞贝"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3f054d2717b366bb8e34",
+      "text": "卡普阿"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b83bd891b237748d6026",
+      "text": "梅迪奥拉努姆"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7fe3e3a4d4398c044275",
+      "text": "尼亚波利斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2f85510e394bae5524c5",
+      "text": "卢格杜努姆"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-bc22448b1819a60a4087",
+      "text": "卢泰西亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f9b18aa61fa0cca8f2ce",
+      "text": "隆迪尼乌姆"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-34762d3781533dddd1bc",
+      "text": "埃博拉库姆"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9ee08650d1e246b47ba5",
+      "text": "科洛尼亚"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c92ae0e9d769379918bb",
+      "text": "塔拉科"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5eff234ab114eea4de8c",
+      "text": "戈尔蒂纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a7d2967a4aad0dd25eaf",
+      "text": "格萨略"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-1dd91d7301401a6bb3fd",
+      "text": "奥古斯塔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ed3ad621d233b811a9ab",
+      "text": "塞拉戈萨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b3c5e50460780eae3913",
+      "text": "巴特尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-fb0c82de5324c0cf886e",
+      "text": "铁木真"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-53198896b134426e732c",
+      "text": "孛儿帖"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f4f86b98786aeceb95a5",
+      "text": "也速该"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7e87cbda57cdbe42d67e",
+      "text": "合撒儿"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-823b63001ed5e38d003f",
+      "text": "木华黎"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4f21109658c4e1f0c68d",
+      "text": "速不台"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-73f426f44972f59da914",
+      "text": "哲别"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-8f178906d55307c68d5d",
+      "text": "旭烈兀"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c77f69369c73cc26f330",
+      "text": "拔都"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-fc2347a08a2267e2555e",
+      "text": "贵由"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-219ebe08da695e419e77",
+      "text": "蒙哥"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-8b91d7a034e184916fab",
+      "text": "察合台"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d5eacbd9e43f26aeb6c4",
+      "text": "达日"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-60b077557ab4c67adfae",
+      "text": "阿拉坦"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4bd6733529285a3780c6",
+      "text": "巴雅尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f314b89e9c3293b54932",
+      "text": "额尔德尼"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9c3a8734f080be7ded48",
+      "text": "其其格"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-de00b916475433bdf8c0",
+      "text": "哈斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-58ab1d5edf7b1a3077f0",
+      "text": "萨仁"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3999ce0b9ebb3fa6ebf2",
+      "text": "乌云"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-81b4aea149b551d9bd5c",
+      "text": "达瓦"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c04cf4d3bbbd940b2fcb",
+      "text": "苏和"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d3ddd590ef6e37f8b7c6",
+      "text": "苏日勒和克"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-3d69a793df99e8b6bec3",
+      "text": "岱森达日"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-e0b7b0726e6f05e5db13",
+      "text": "斡难"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-278bfb9a5f94aee1a150",
+      "text": "克鲁伦"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-e2962978e4328a30f2bf",
+      "text": "土拉"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-08600e1fd6acb8821b25",
+      "text": "额尔古纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-c8aff6bdf66fc5090f83",
+      "text": "鄂尔浑"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9d69d40bbd222586dc53",
+      "text": "色楞格"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-57960bc497979b8e184d",
+      "text": "伊犁"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5e16c17464b03ae094b9",
+      "text": "车尔臣"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d8de1163598f0cd430cd",
+      "text": "乌伦古"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-55ef3d968e8dd7771403",
+      "text": "肯特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f742502b24124a15025f",
+      "text": "阿尔泰"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a371daa4fafe2524c657",
+      "text": "乌兰山"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f67a0ab0486a4627194a",
+      "text": "锡林"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-50fa7c9a91bd106e535f",
+      "text": "大兴安岭"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5700550db95558da858c",
+      "text": "天山"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d712c1f1e0fab02eb17c",
+      "text": "阿拉善"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f642ddd658d058965de9",
+      "text": "呼伦贝尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-11eb773b2e36ea8f1255",
+      "text": "漠北"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d1566afa505af0f03b91",
+      "text": "国"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-d7a0f485da8d4db015ea",
+      "text": "汗国"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-2e12080d01a504fb0f3a",
+      "text": "部盟"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b23aed657bd878b0ac5a",
+      "text": "王庭"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7506d7e4f22bf8815b48",
+      "text": "大帐"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-89b24facdfdd437fcc36",
+      "text": "部落"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b8003d4ad0d611f65d09",
+      "text": "部族"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4268ed6b63514698a5c1",
+      "text": "牧地"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-41cebf64ddf64c651772",
+      "text": "朴次茅斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b39c87fc10e39fde04bd",
+      "text": "布里斯托"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a742872630b87d21c3df",
+      "text": "多佛"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-afe98fb09f6abac09328",
+      "text": "赫尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f2ea06523ecd91f0cb88",
+      "text": "纽卡斯尔"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a6dad24da73044888329",
+      "text": "惠特比"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-37f1695b24d8af912a33",
+      "text": "彭赞斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6d705ed4a19325301a04",
+      "text": "福尔茅斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-23dd00c9d50e8109f573",
+      "text": "约克"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-36a95fd1edfd9dbfa9f5",
+      "text": "巴斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-a292e6ecdf02b52a3ba9",
+      "text": "温彻斯特"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-006e13fabb63bcd95193",
+      "text": "斯特灵"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-b2bf0ae3df28b5a8a839",
+      "text": "剑桥"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-eb0e2bc1625c556b6e6e",
+      "text": "牛津"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9d9a139190720891ee9d",
+      "text": "德比"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-97e4ba115a43a890c0cf",
+      "text": "华威"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-f172214de59ce1fab76d",
+      "text": "赫里福德"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5226334775056d2888b2",
+      "text": "萨利斯伯里"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-55312f17d1e7ef086e2f",
+      "text": "维也纳"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-87590ca9c7e222df4e27",
+      "text": "布拉格"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7198e14684a728570150",
+      "text": "林茨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-64dd8cd3b280b85bd00e",
+      "text": "雷根斯堡"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-bf5c0b29f59474663dbe",
+      "text": "美因茨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ecc3c363d73aceea370f",
+      "text": "科布伦茨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-6ab1ebe04f5b6020d83c",
+      "text": "布达"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-7ec908ddca76a774a35d",
+      "text": "佩斯"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-5265bb16c61e8362f8c9",
+      "text": "布拉迪斯拉发"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-4dec7e7de427b616feb9",
+      "text": "因斯布鲁克"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-73a5c3abece4363a310b",
+      "text": "萨尔茨堡"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-45724f4dbceb3c7f81f2",
+      "text": "格拉茨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-28d968a36a1f8e922167",
+      "text": "克拉科夫"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-9ddd266a892b5dcaa040",
+      "text": "布尔诺"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-ddde0204dc1553d0ab83",
+      "text": "奥洛穆茨"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-53c6698256360b3a70aa",
+      "text": "波普拉德"
+    },
+    {
+      "id": "chinesename:real-world-lexicon.w-baa0af004ff321de7ffe",
+      "text": "克卢日"
+    }
+  ],
+  "pools": {
+    "chinesename:real-world-lexicon.persian-given": {
+      "chinesename:real-world-lexicon.w-c8e4360634a8844b5363": 1,
+      "chinesename:real-world-lexicon.w-4c5c0ea4aae09575d4a0": 1,
+      "chinesename:real-world-lexicon.w-21c636ae8a4f81e52d2f": 1,
+      "chinesename:real-world-lexicon.w-3664909477ab59a61d66": 1,
+      "chinesename:real-world-lexicon.w-54a5d2636fd487527981": 1,
+      "chinesename:real-world-lexicon.w-84a885e60537c6f8e4ea": 1,
+      "chinesename:real-world-lexicon.w-26ef8b54692525a5e4c3": 1,
+      "chinesename:real-world-lexicon.w-2dfefe21db4663027b66": 1,
+      "chinesename:real-world-lexicon.w-33fa53908f1493fd7e9e": 1,
+      "chinesename:real-world-lexicon.w-ba38a82d5bd22fe2294d": 1,
+      "chinesename:real-world-lexicon.w-ce5536f33375f240c519": 1,
+      "chinesename:real-world-lexicon.w-60b34f5dcbc0e07479fb": 1,
+      "chinesename:real-world-lexicon.w-8b218e780765ae495690": 1,
+      "chinesename:real-world-lexicon.w-2f711c666be899bc6373": 1,
+      "chinesename:real-world-lexicon.w-c39776e2ee32f5646d50": 1,
+      "chinesename:real-world-lexicon.w-0cbf5f99290d764077bf": 1,
+      "chinesename:real-world-lexicon.w-6f19a97b0c50d684095e": 1,
+      "chinesename:real-world-lexicon.w-c9acb658c9f9e13d47b3": 1
+    },
+    "chinesename:real-world-lexicon.persian-places": {
+      "chinesename:real-world-lexicon.w-d0478000bac839767ac5": 1,
+      "chinesename:real-world-lexicon.w-dcd211e84c724a7284a6": 1,
+      "chinesename:real-world-lexicon.w-abacaddd91459f41c871": 1,
+      "chinesename:real-world-lexicon.w-9d22823ac6bae93c4739": 1,
+      "chinesename:real-world-lexicon.w-678501fede697aec687c": 1,
+      "chinesename:real-world-lexicon.w-a9b6548e49d845c61077": 1,
+      "chinesename:real-world-lexicon.w-5d3ea611f7b301b8df7d": 1,
+      "chinesename:real-world-lexicon.w-f719378c819d5b6a5519": 1,
+      "chinesename:real-world-lexicon.w-30844b433abdcc18cfec": 1,
+      "chinesename:real-world-lexicon.w-71eba21f17c82ea1565e": 1,
+      "chinesename:real-world-lexicon.w-a16af7bc1df3c3a8a0e9": 1,
+      "chinesename:real-world-lexicon.w-f0d06dd18d7a23a3269b": 1,
+      "chinesename:real-world-lexicon.w-9b74beea2fcd13a77b54": 1,
+      "chinesename:real-world-lexicon.w-c86e0cbbfa3601ea374c": 1,
+      "chinesename:real-world-lexicon.w-79a4f3d0f4347b0bb364": 1,
+      "chinesename:real-world-lexicon.w-d94e58b8d297654629ca": 1,
+      "chinesename:real-world-lexicon.w-0b5d810f0bcf06dcd1dc": 1,
+      "chinesename:real-world-lexicon.w-f2940ce20a1f24b3f159": 1
+    },
+    "chinesename:real-world-lexicon.persian-epithets": {
+      "chinesename:real-world-lexicon.w-40aff3c667269e54cf16": 1,
+      "chinesename:real-world-lexicon.w-419383a68472459e90b2": 1,
+      "chinesename:real-world-lexicon.w-f7bfd4dfb2b74d9c4478": 1,
+      "chinesename:real-world-lexicon.w-113c818c2a62ae8b3fcd": 1,
+      "chinesename:real-world-lexicon.w-0e738f9dd19b416021f2": 1,
+      "chinesename:real-world-lexicon.w-deacc646ab6af446e135": 1,
+      "chinesename:real-world-lexicon.w-d914db0f3d5d9c679c98": 1,
+      "chinesename:real-world-lexicon.w-b08995e7fab8293e8bf4": 1,
+      "chinesename:real-world-lexicon.w-c723ee53750c2a6b870e": 1,
+      "chinesename:real-world-lexicon.w-3b228e2a831ee411eb23": 1,
+      "chinesename:real-world-lexicon.w-d7d72b4ca7f970cf2b7c": 1,
+      "chinesename:real-world-lexicon.w-effc152ce74d53a59fcd": 1
+    },
+    "chinesename:real-world-lexicon.egyptian-given": {
+      "chinesename:real-world-lexicon.w-a694e5329b23ee89fa6e": 1,
+      "chinesename:real-world-lexicon.w-6263d7f32aa62e962e79": 1,
+      "chinesename:real-world-lexicon.w-592b824d1ccadeaf4a1a": 1,
+      "chinesename:real-world-lexicon.w-64eda65887c471432172": 1,
+      "chinesename:real-world-lexicon.w-8d154e7045117fa28651": 1,
+      "chinesename:real-world-lexicon.w-7edaddfaac8b16392296": 1,
+      "chinesename:real-world-lexicon.w-df71329030a4f5197f6d": 1,
+      "chinesename:real-world-lexicon.w-b078571daab4c090a7cd": 1,
+      "chinesename:real-world-lexicon.w-3c8662f58270dfcdf651": 1,
+      "chinesename:real-world-lexicon.w-a12b8fd3c8ab6acf2846": 1,
+      "chinesename:real-world-lexicon.w-1ecc82b50f33837536d4": 1,
+      "chinesename:real-world-lexicon.w-56d666fc33c0d27e86ef": 1,
+      "chinesename:real-world-lexicon.w-6b0b477f1edeab755d1b": 1,
+      "chinesename:real-world-lexicon.w-0657cd9c07e9a1cb04ff": 1,
+      "chinesename:real-world-lexicon.w-4dfb986dc4c15ec50ec9": 1,
+      "chinesename:real-world-lexicon.w-125830ce49460a02b9c7": 1,
+      "chinesename:real-world-lexicon.w-a6d6a6c30cfbcba41ff1": 1,
+      "chinesename:real-world-lexicon.w-37c39b6d7e3dca7c6f66": 1,
+      "chinesename:real-world-lexicon.w-7881a1898ac35ecec31b": 1,
+      "chinesename:real-world-lexicon.w-9424120692f370c230e2": 1,
+      "chinesename:real-world-lexicon.w-7baa06c3ef3eb7a0df80": 1,
+      "chinesename:real-world-lexicon.w-9815227b416a6a67ad7f": 1
+    },
+    "chinesename:real-world-lexicon.egyptian-places": {
+      "chinesename:real-world-lexicon.w-f609071bdd7eaa903714": 1,
+      "chinesename:real-world-lexicon.w-b491940e18ebeb4b2090": 1,
+      "chinesename:real-world-lexicon.w-fb394300be04e77fd6b4": 1,
+      "chinesename:real-world-lexicon.w-8be1ab4c5f5d59a13f89": 1,
+      "chinesename:real-world-lexicon.w-3c9525a61938889d7073": 1,
+      "chinesename:real-world-lexicon.w-62cd47a3fdce1746e061": 1,
+      "chinesename:real-world-lexicon.w-d7f1b36fb0d72cd317e7": 1,
+      "chinesename:real-world-lexicon.w-60b398e0307743781d15": 1,
+      "chinesename:real-world-lexicon.w-70cf15297d5a74574a36": 1,
+      "chinesename:real-world-lexicon.w-5df251ed500f30e872ef": 1,
+      "chinesename:real-world-lexicon.w-9aab048952869e673137": 1,
+      "chinesename:real-world-lexicon.w-48baade71eebca59ba1d": 1,
+      "chinesename:real-world-lexicon.w-6898f4a163db17ca17fc": 1,
+      "chinesename:real-world-lexicon.w-b720f3643813bfed422a": 1,
+      "chinesename:real-world-lexicon.w-dc1858a68f64c35aa87f": 1,
+      "chinesename:real-world-lexicon.w-564356ae37f0687b5fac": 1,
+      "chinesename:real-world-lexicon.w-327ce5b42d1d68b876da": 1,
+      "chinesename:real-world-lexicon.w-1d0e58f44f56c81ac74b": 1,
+      "chinesename:real-world-lexicon.w-bc79b80735b53cebb648": 1,
+      "chinesename:real-world-lexicon.w-59b321495929632a5d63": 1
+    },
+    "chinesename:real-world-lexicon.egyptian-epithets": {
+      "chinesename:real-world-lexicon.w-203a808a414321eada8e": 1,
+      "chinesename:real-world-lexicon.w-70c22291cfb466af8d2b": 1,
+      "chinesename:real-world-lexicon.w-a7ea158e5920d10bc5f2": 1,
+      "chinesename:real-world-lexicon.w-ad62ce636008c8b5e5ec": 1,
+      "chinesename:real-world-lexicon.w-0d6b6c271779f62e563f": 1,
+      "chinesename:real-world-lexicon.w-b4d1a88e5c10c9513013": 1,
+      "chinesename:real-world-lexicon.w-d4eb17f451807610bd81": 1,
+      "chinesename:real-world-lexicon.w-96c691af2a2696ea83a7": 1,
+      "chinesename:real-world-lexicon.w-b1ef973b6aae0ac87adc": 1,
+      "chinesename:real-world-lexicon.w-1304bda967faf36ca77d": 1,
+      "chinesename:real-world-lexicon.w-9842270beaca8d7ab155": 1,
+      "chinesename:real-world-lexicon.w-50f93d46c2e4ddba1bfd": 1
+    },
+    "chinesename:real-world-lexicon.latin-given": {
+      "chinesename:real-world-lexicon.w-c0ed8ad300698bed9d2d": 1,
+      "chinesename:real-world-lexicon.w-6d643300774b7e612a22": 1,
+      "chinesename:real-world-lexicon.w-81019dea79588f718fbd": 1,
+      "chinesename:real-world-lexicon.w-e5c1c6853f66a37f308e": 1,
+      "chinesename:real-world-lexicon.w-2014f2d81fc14c50b2ed": 1,
+      "chinesename:real-world-lexicon.w-b2c5be8263590b91124a": 1,
+      "chinesename:real-world-lexicon.w-2471732614cebe15692b": 1,
+      "chinesename:real-world-lexicon.w-d39d0860a3c59d645ea8": 1,
+      "chinesename:real-world-lexicon.w-510d909fda74811b9546": 1,
+      "chinesename:real-world-lexicon.w-3e9033d75fe9cd872196": 1,
+      "chinesename:real-world-lexicon.w-533598867548c89dcd72": 1,
+      "chinesename:real-world-lexicon.w-1c0689bfc2112c4f2c62": 1,
+      "chinesename:real-world-lexicon.w-a974f77e6e8c6cf62e33": 1,
+      "chinesename:real-world-lexicon.w-c818beea971c1828aaf4": 1,
+      "chinesename:real-world-lexicon.w-f24260a8f95a0627a2b5": 1,
+      "chinesename:real-world-lexicon.w-9c3751485b14d42e497a": 1,
+      "chinesename:real-world-lexicon.w-2f4eb4fcd65b6116f0f9": 1,
+      "chinesename:real-world-lexicon.w-db1310a69bf3164d59e1": 1,
+      "chinesename:real-world-lexicon.w-c4e2f32634dc75e427c5": 1,
+      "chinesename:real-world-lexicon.w-de486b54616e2ed95651": 1,
+      "chinesename:real-world-lexicon.w-2885c4e3bbe0a02a3efd": 1,
+      "chinesename:real-world-lexicon.w-b4a9c8fa9fb1f7c7760d": 1,
+      "chinesename:real-world-lexicon.w-abd7300613029eaf29c2": 1
+    },
+    "chinesename:real-world-lexicon.latin-house": {
+      "chinesename:real-world-lexicon.w-9389ad4de7dd035b3367": 1,
+      "chinesename:real-world-lexicon.w-84812405a80b2b22b340": 1,
+      "chinesename:real-world-lexicon.w-e96218f71e210c6e8f1a": 1,
+      "chinesename:real-world-lexicon.w-3f8162455a9d1b23c026": 1,
+      "chinesename:real-world-lexicon.w-a68893601e837ca2faac": 1,
+      "chinesename:real-world-lexicon.w-afa7e337c8000e7f3ac8": 1,
+      "chinesename:real-world-lexicon.w-eda166fe83272b5fbf63": 1,
+      "chinesename:real-world-lexicon.w-1cc668da5e92e8fe55be": 1,
+      "chinesename:real-world-lexicon.w-2fac7f34193565163fab": 1,
+      "chinesename:real-world-lexicon.w-f76d1461cadcb8ed46ad": 1,
+      "chinesename:real-world-lexicon.w-bc3ee3cef3dc485d7289": 1,
+      "chinesename:real-world-lexicon.w-59843afe4e4d72cab81c": 1,
+      "chinesename:real-world-lexicon.w-09948fd1513a388122a4": 1,
+      "chinesename:real-world-lexicon.w-d443c9c9206bda88c278": 1,
+      "chinesename:real-world-lexicon.w-e40dde6eb5710da39067": 1,
+      "chinesename:real-world-lexicon.w-fbce0740d8f4ba369981": 1
+    },
+    "chinesename:real-world-lexicon.latin-places": {
+      "chinesename:real-world-lexicon.w-3b54664e8163d36a7d1b": 1,
+      "chinesename:real-world-lexicon.w-d069543758ec55e97452": 1,
+      "chinesename:real-world-lexicon.w-801f529278f3e68a1d45": 1,
+      "chinesename:real-world-lexicon.w-bd31685cf3337baf88cf": 1,
+      "chinesename:real-world-lexicon.w-170db9684ca0abe87e28": 1,
+      "chinesename:real-world-lexicon.w-cc403e0f0c2cddacda34": 1,
+      "chinesename:real-world-lexicon.w-adf95bcf0622982811cc": 1,
+      "chinesename:real-world-lexicon.w-3f054d2717b366bb8e34": 1,
+      "chinesename:real-world-lexicon.w-b83bd891b237748d6026": 1,
+      "chinesename:real-world-lexicon.w-7fe3e3a4d4398c044275": 1,
+      "chinesename:real-world-lexicon.w-2f85510e394bae5524c5": 1,
+      "chinesename:real-world-lexicon.w-bc22448b1819a60a4087": 1,
+      "chinesename:real-world-lexicon.w-f9b18aa61fa0cca8f2ce": 1,
+      "chinesename:real-world-lexicon.w-34762d3781533dddd1bc": 1,
+      "chinesename:real-world-lexicon.w-9ee08650d1e246b47ba5": 1,
+      "chinesename:real-world-lexicon.w-c92ae0e9d769379918bb": 1,
+      "chinesename:real-world-lexicon.w-5eff234ab114eea4de8c": 1,
+      "chinesename:real-world-lexicon.w-a7d2967a4aad0dd25eaf": 1,
+      "chinesename:real-world-lexicon.w-1dd91d7301401a6bb3fd": 1,
+      "chinesename:real-world-lexicon.w-ed3ad621d233b811a9ab": 1
+    },
+    "chinesename:real-world-lexicon.steppe-given": {
+      "chinesename:real-world-lexicon.w-b3c5e50460780eae3913": 1,
+      "chinesename:real-world-lexicon.w-fb0c82de5324c0cf886e": 1,
+      "chinesename:real-world-lexicon.w-53198896b134426e732c": 1,
+      "chinesename:real-world-lexicon.w-f4f86b98786aeceb95a5": 1,
+      "chinesename:real-world-lexicon.w-7e87cbda57cdbe42d67e": 1,
+      "chinesename:real-world-lexicon.w-823b63001ed5e38d003f": 1,
+      "chinesename:real-world-lexicon.w-4f21109658c4e1f0c68d": 1,
+      "chinesename:real-world-lexicon.w-73f426f44972f59da914": 1,
+      "chinesename:real-world-lexicon.w-8f178906d55307c68d5d": 1,
+      "chinesename:real-world-lexicon.w-c77f69369c73cc26f330": 1,
+      "chinesename:real-world-lexicon.w-fc2347a08a2267e2555e": 1,
+      "chinesename:real-world-lexicon.w-219ebe08da695e419e77": 1,
+      "chinesename:real-world-lexicon.w-8b91d7a034e184916fab": 1,
+      "chinesename:real-world-lexicon.w-d5eacbd9e43f26aeb6c4": 1,
+      "chinesename:real-world-lexicon.w-60b077557ab4c67adfae": 1,
+      "chinesename:real-world-lexicon.w-4bd6733529285a3780c6": 1,
+      "chinesename:real-world-lexicon.w-f314b89e9c3293b54932": 1,
+      "chinesename:real-world-lexicon.w-9c3a8734f080be7ded48": 1,
+      "chinesename:real-world-lexicon.w-de00b916475433bdf8c0": 1,
+      "chinesename:real-world-lexicon.w-58ab1d5edf7b1a3077f0": 1,
+      "chinesename:real-world-lexicon.w-3999ce0b9ebb3fa6ebf2": 1,
+      "chinesename:real-world-lexicon.w-81b4aea149b551d9bd5c": 1,
+      "chinesename:real-world-lexicon.w-c04cf4d3bbbd940b2fcb": 1,
+      "chinesename:real-world-lexicon.w-d3ddd590ef6e37f8b7c6": 1,
+      "chinesename:real-world-lexicon.w-3d69a793df99e8b6bec3": 1
+    },
+    "chinesename:real-world-lexicon.steppe-places": {
+      "chinesename:real-world-lexicon.w-e0b7b0726e6f05e5db13": 1,
+      "chinesename:real-world-lexicon.w-278bfb9a5f94aee1a150": 1,
+      "chinesename:real-world-lexicon.w-e2962978e4328a30f2bf": 1,
+      "chinesename:real-world-lexicon.w-08600e1fd6acb8821b25": 1,
+      "chinesename:real-world-lexicon.w-c8aff6bdf66fc5090f83": 1,
+      "chinesename:real-world-lexicon.w-9d69d40bbd222586dc53": 1,
+      "chinesename:real-world-lexicon.w-57960bc497979b8e184d": 1,
+      "chinesename:real-world-lexicon.w-5e16c17464b03ae094b9": 1,
+      "chinesename:real-world-lexicon.w-d8de1163598f0cd430cd": 1,
+      "chinesename:real-world-lexicon.w-55ef3d968e8dd7771403": 1,
+      "chinesename:real-world-lexicon.w-f742502b24124a15025f": 1,
+      "chinesename:real-world-lexicon.w-a371daa4fafe2524c657": 1,
+      "chinesename:real-world-lexicon.w-f67a0ab0486a4627194a": 1,
+      "chinesename:real-world-lexicon.w-50fa7c9a91bd106e535f": 1,
+      "chinesename:real-world-lexicon.w-5700550db95558da858c": 1,
+      "chinesename:real-world-lexicon.w-d712c1f1e0fab02eb17c": 1,
+      "chinesename:real-world-lexicon.w-f642ddd658d058965de9": 1,
+      "chinesename:real-world-lexicon.w-11eb773b2e36ea8f1255": 1
+    },
+    "chinesename:real-world-lexicon.steppe-ending": {
+      "chinesename:real-world-lexicon.w-d1566afa505af0f03b91": 1,
+      "chinesename:real-world-lexicon.w-d7a0f485da8d4db015ea": 1,
+      "chinesename:real-world-lexicon.w-2e12080d01a504fb0f3a": 1,
+      "chinesename:real-world-lexicon.w-b23aed657bd878b0ac5a": 1,
+      "chinesename:real-world-lexicon.w-7506d7e4f22bf8815b48": 1,
+      "chinesename:real-world-lexicon.w-89b24facdfdd437fcc36": 1,
+      "chinesename:real-world-lexicon.w-b8003d4ad0d611f65d09": 1,
+      "chinesename:real-world-lexicon.w-4268ed6b63514698a5c1": 1
+    },
+    "chinesename:real-world-lexicon.british-places": {
+      "chinesename:real-world-lexicon.w-41cebf64ddf64c651772": 1,
+      "chinesename:real-world-lexicon.w-b39c87fc10e39fde04bd": 1,
+      "chinesename:real-world-lexicon.w-a742872630b87d21c3df": 1,
+      "chinesename:real-world-lexicon.w-afe98fb09f6abac09328": 1,
+      "chinesename:real-world-lexicon.w-f2ea06523ecd91f0cb88": 1,
+      "chinesename:real-world-lexicon.w-a6dad24da73044888329": 1,
+      "chinesename:real-world-lexicon.w-37f1695b24d8af912a33": 1,
+      "chinesename:real-world-lexicon.w-6d705ed4a19325301a04": 1,
+      "chinesename:real-world-lexicon.w-23dd00c9d50e8109f573": 1,
+      "chinesename:real-world-lexicon.w-36a95fd1edfd9dbfa9f5": 1,
+      "chinesename:real-world-lexicon.w-a292e6ecdf02b52a3ba9": 1,
+      "chinesename:real-world-lexicon.w-006e13fabb63bcd95193": 1,
+      "chinesename:real-world-lexicon.w-b2bf0ae3df28b5a8a839": 1,
+      "chinesename:real-world-lexicon.w-eb0e2bc1625c556b6e6e": 1,
+      "chinesename:real-world-lexicon.w-9d9a139190720891ee9d": 1,
+      "chinesename:real-world-lexicon.w-97e4ba115a43a890c0cf": 1,
+      "chinesename:real-world-lexicon.w-f172214de59ce1fab76d": 1,
+      "chinesename:real-world-lexicon.w-5226334775056d2888b2": 1
+    },
+    "chinesename:real-world-lexicon.central-europe-places": {
+      "chinesename:real-world-lexicon.w-55312f17d1e7ef086e2f": 1,
+      "chinesename:real-world-lexicon.w-87590ca9c7e222df4e27": 1,
+      "chinesename:real-world-lexicon.w-7198e14684a728570150": 1,
+      "chinesename:real-world-lexicon.w-64dd8cd3b280b85bd00e": 1,
+      "chinesename:real-world-lexicon.w-bf5c0b29f59474663dbe": 1,
+      "chinesename:real-world-lexicon.w-ecc3c363d73aceea370f": 1,
+      "chinesename:real-world-lexicon.w-6ab1ebe04f5b6020d83c": 1,
+      "chinesename:real-world-lexicon.w-7ec908ddca76a774a35d": 1,
+      "chinesename:real-world-lexicon.w-5265bb16c61e8362f8c9": 1,
+      "chinesename:real-world-lexicon.w-4dec7e7de427b616feb9": 1,
+      "chinesename:real-world-lexicon.w-73a5c3abece4363a310b": 1,
+      "chinesename:real-world-lexicon.w-45724f4dbceb3c7f81f2": 1,
+      "chinesename:real-world-lexicon.w-28d968a36a1f8e922167": 1,
+      "chinesename:real-world-lexicon.w-9ddd266a892b5dcaa040": 1,
+      "chinesename:real-world-lexicon.w-ddde0204dc1553d0ab83": 1,
+      "chinesename:real-world-lexicon.w-53c6698256360b3a70aa": 1,
+      "chinesename:real-world-lexicon.w-baa0af004ff321de7ffe": 1
+    }
+  },
+  "poolLabels": {
+    "chinesename:real-world-lexicon.persian-given": "古波斯人名",
+    "chinesename:real-world-lexicon.persian-places": "古波斯地名",
+    "chinesename:real-world-lexicon.persian-epithets": "古波斯称号",
+    "chinesename:real-world-lexicon.egyptian-given": "古埃及人名",
+    "chinesename:real-world-lexicon.egyptian-places": "古埃及地名",
+    "chinesename:real-world-lexicon.egyptian-epithets": "古埃及称号",
+    "chinesename:real-world-lexicon.latin-given": "拉丁人名",
+    "chinesename:real-world-lexicon.latin-house": "拉丁族名",
+    "chinesename:real-world-lexicon.latin-places": "拉丁地名",
+    "chinesename:real-world-lexicon.steppe-given": "草原人名",
+    "chinesename:real-world-lexicon.steppe-places": "草原地名",
+    "chinesename:real-world-lexicon.steppe-ending": "草原国号后缀",
+    "chinesename:real-world-lexicon.british-places": "不列颠地名",
+    "chinesename:real-world-lexicon.central-europe-places": "中欧地名"
+  },
+  "poolAliases": {
+    "古波斯人名": "chinesename:real-world-lexicon.persian-given",
+    "古波斯地名": "chinesename:real-world-lexicon.persian-places",
+    "古波斯称号": "chinesename:real-world-lexicon.persian-epithets",
+    "古埃及人名": "chinesename:real-world-lexicon.egyptian-given",
+    "古埃及地名": "chinesename:real-world-lexicon.egyptian-places",
+    "古埃及称号": "chinesename:real-world-lexicon.egyptian-epithets",
+    "拉丁人名": "chinesename:real-world-lexicon.latin-given",
+    "拉丁族名": "chinesename:real-world-lexicon.latin-house",
+    "拉丁地名": "chinesename:real-world-lexicon.latin-places",
+    "草原人名": "chinesename:real-world-lexicon.steppe-given",
+    "草原地名": "chinesename:real-world-lexicon.steppe-places",
+    "草原国号后缀": "chinesename:real-world-lexicon.steppe-ending",
+    "不列颠地名": "chinesename:real-world-lexicon.british-places",
+    "中欧地名": "chinesename:real-world-lexicon.central-europe-places"
+  },
+  "wordGroups": {
+    "persian-given.royal": {
+      "pool": "chinesename:real-world-lexicon.persian-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-c8e4360634a8844b5363",
+        "chinesename:real-world-lexicon.w-4c5c0ea4aae09575d4a0",
+        "chinesename:real-world-lexicon.w-21c636ae8a4f81e52d2f",
+        "chinesename:real-world-lexicon.w-3664909477ab59a61d66",
+        "chinesename:real-world-lexicon.w-54a5d2636fd487527981",
+        "chinesename:real-world-lexicon.w-84a885e60537c6f8e4ea",
+        "chinesename:real-world-lexicon.w-26ef8b54692525a5e4c3",
+        "chinesename:real-world-lexicon.w-2dfefe21db4663027b66",
+        "chinesename:real-world-lexicon.w-33fa53908f1493fd7e9e"
+      ]
+    },
+    "persian-given.court": {
+      "pool": "chinesename:real-world-lexicon.persian-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-ba38a82d5bd22fe2294d",
+        "chinesename:real-world-lexicon.w-ce5536f33375f240c519",
+        "chinesename:real-world-lexicon.w-60b34f5dcbc0e07479fb",
+        "chinesename:real-world-lexicon.w-8b218e780765ae495690",
+        "chinesename:real-world-lexicon.w-2f711c666be899bc6373",
+        "chinesename:real-world-lexicon.w-c39776e2ee32f5646d50",
+        "chinesename:real-world-lexicon.w-0cbf5f99290d764077bf",
+        "chinesename:real-world-lexicon.w-6f19a97b0c50d684095e",
+        "chinesename:real-world-lexicon.w-c9acb658c9f9e13d47b3"
+      ]
+    },
+    "persian-places.plateau": {
+      "pool": "chinesename:real-world-lexicon.persian-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-d0478000bac839767ac5",
+        "chinesename:real-world-lexicon.w-dcd211e84c724a7284a6",
+        "chinesename:real-world-lexicon.w-abacaddd91459f41c871",
+        "chinesename:real-world-lexicon.w-9d22823ac6bae93c4739",
+        "chinesename:real-world-lexicon.w-678501fede697aec687c",
+        "chinesename:real-world-lexicon.w-a9b6548e49d845c61077",
+        "chinesename:real-world-lexicon.w-5d3ea611f7b301b8df7d",
+        "chinesename:real-world-lexicon.w-f719378c819d5b6a5519",
+        "chinesename:real-world-lexicon.w-30844b433abdcc18cfec"
+      ]
+    },
+    "persian-places.trade": {
+      "pool": "chinesename:real-world-lexicon.persian-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-71eba21f17c82ea1565e",
+        "chinesename:real-world-lexicon.w-a16af7bc1df3c3a8a0e9",
+        "chinesename:real-world-lexicon.w-f0d06dd18d7a23a3269b",
+        "chinesename:real-world-lexicon.w-9b74beea2fcd13a77b54",
+        "chinesename:real-world-lexicon.w-c86e0cbbfa3601ea374c",
+        "chinesename:real-world-lexicon.w-79a4f3d0f4347b0bb364",
+        "chinesename:real-world-lexicon.w-d94e58b8d297654629ca",
+        "chinesename:real-world-lexicon.w-0b5d810f0bcf06dcd1dc",
+        "chinesename:real-world-lexicon.w-f2940ce20a1f24b3f159"
+      ]
+    },
+    "persian-epithets.court": {
+      "pool": "chinesename:real-world-lexicon.persian-epithets",
+      "words": [
+        "chinesename:real-world-lexicon.w-40aff3c667269e54cf16",
+        "chinesename:real-world-lexicon.w-419383a68472459e90b2",
+        "chinesename:real-world-lexicon.w-f7bfd4dfb2b74d9c4478",
+        "chinesename:real-world-lexicon.w-113c818c2a62ae8b3fcd",
+        "chinesename:real-world-lexicon.w-0e738f9dd19b416021f2",
+        "chinesename:real-world-lexicon.w-deacc646ab6af446e135"
+      ]
+    },
+    "persian-epithets.land": {
+      "pool": "chinesename:real-world-lexicon.persian-epithets",
+      "words": [
+        "chinesename:real-world-lexicon.w-d914db0f3d5d9c679c98",
+        "chinesename:real-world-lexicon.w-b08995e7fab8293e8bf4",
+        "chinesename:real-world-lexicon.w-c723ee53750c2a6b870e",
+        "chinesename:real-world-lexicon.w-3b228e2a831ee411eb23",
+        "chinesename:real-world-lexicon.w-d7d72b4ca7f970cf2b7c",
+        "chinesename:real-world-lexicon.w-effc152ce74d53a59fcd"
+      ]
+    },
+    "egyptian-given.royal": {
+      "pool": "chinesename:real-world-lexicon.egyptian-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-a694e5329b23ee89fa6e",
+        "chinesename:real-world-lexicon.w-6263d7f32aa62e962e79",
+        "chinesename:real-world-lexicon.w-592b824d1ccadeaf4a1a",
+        "chinesename:real-world-lexicon.w-64eda65887c471432172",
+        "chinesename:real-world-lexicon.w-8d154e7045117fa28651",
+        "chinesename:real-world-lexicon.w-7edaddfaac8b16392296",
+        "chinesename:real-world-lexicon.w-df71329030a4f5197f6d",
+        "chinesename:real-world-lexicon.w-b078571daab4c090a7cd",
+        "chinesename:real-world-lexicon.w-3c8662f58270dfcdf651",
+        "chinesename:real-world-lexicon.w-a12b8fd3c8ab6acf2846",
+        "chinesename:real-world-lexicon.w-1ecc82b50f33837536d4",
+        "chinesename:real-world-lexicon.w-56d666fc33c0d27e86ef"
+      ]
+    },
+    "egyptian-given.court": {
+      "pool": "chinesename:real-world-lexicon.egyptian-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-6b0b477f1edeab755d1b",
+        "chinesename:real-world-lexicon.w-0657cd9c07e9a1cb04ff",
+        "chinesename:real-world-lexicon.w-4dfb986dc4c15ec50ec9",
+        "chinesename:real-world-lexicon.w-125830ce49460a02b9c7",
+        "chinesename:real-world-lexicon.w-a6d6a6c30cfbcba41ff1",
+        "chinesename:real-world-lexicon.w-37c39b6d7e3dca7c6f66",
+        "chinesename:real-world-lexicon.w-7881a1898ac35ecec31b",
+        "chinesename:real-world-lexicon.w-9424120692f370c230e2",
+        "chinesename:real-world-lexicon.w-7baa06c3ef3eb7a0df80",
+        "chinesename:real-world-lexicon.w-9815227b416a6a67ad7f"
+      ]
+    },
+    "egyptian-places.upper": {
+      "pool": "chinesename:real-world-lexicon.egyptian-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-f609071bdd7eaa903714",
+        "chinesename:real-world-lexicon.w-b491940e18ebeb4b2090",
+        "chinesename:real-world-lexicon.w-fb394300be04e77fd6b4",
+        "chinesename:real-world-lexicon.w-8be1ab4c5f5d59a13f89",
+        "chinesename:real-world-lexicon.w-3c9525a61938889d7073",
+        "chinesename:real-world-lexicon.w-62cd47a3fdce1746e061",
+        "chinesename:real-world-lexicon.w-d7f1b36fb0d72cd317e7",
+        "chinesename:real-world-lexicon.w-60b398e0307743781d15",
+        "chinesename:real-world-lexicon.w-70cf15297d5a74574a36",
+        "chinesename:real-world-lexicon.w-5df251ed500f30e872ef"
+      ]
+    },
+    "egyptian-places.lower": {
+      "pool": "chinesename:real-world-lexicon.egyptian-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-9aab048952869e673137",
+        "chinesename:real-world-lexicon.w-48baade71eebca59ba1d",
+        "chinesename:real-world-lexicon.w-6898f4a163db17ca17fc",
+        "chinesename:real-world-lexicon.w-b720f3643813bfed422a",
+        "chinesename:real-world-lexicon.w-dc1858a68f64c35aa87f",
+        "chinesename:real-world-lexicon.w-564356ae37f0687b5fac",
+        "chinesename:real-world-lexicon.w-327ce5b42d1d68b876da",
+        "chinesename:real-world-lexicon.w-1d0e58f44f56c81ac74b",
+        "chinesename:real-world-lexicon.w-bc79b80735b53cebb648",
+        "chinesename:real-world-lexicon.w-59b321495929632a5d63"
+      ]
+    },
+    "egyptian-epithets.temple": {
+      "pool": "chinesename:real-world-lexicon.egyptian-epithets",
+      "words": [
+        "chinesename:real-world-lexicon.w-203a808a414321eada8e",
+        "chinesename:real-world-lexicon.w-70c22291cfb466af8d2b",
+        "chinesename:real-world-lexicon.w-a7ea158e5920d10bc5f2",
+        "chinesename:real-world-lexicon.w-ad62ce636008c8b5e5ec",
+        "chinesename:real-world-lexicon.w-0d6b6c271779f62e563f",
+        "chinesename:real-world-lexicon.w-b4d1a88e5c10c9513013"
+      ]
+    },
+    "egyptian-epithets.river": {
+      "pool": "chinesename:real-world-lexicon.egyptian-epithets",
+      "words": [
+        "chinesename:real-world-lexicon.w-d4eb17f451807610bd81",
+        "chinesename:real-world-lexicon.w-96c691af2a2696ea83a7",
+        "chinesename:real-world-lexicon.w-b1ef973b6aae0ac87adc",
+        "chinesename:real-world-lexicon.w-1304bda967faf36ca77d",
+        "chinesename:real-world-lexicon.w-9842270beaca8d7ab155",
+        "chinesename:real-world-lexicon.w-50f93d46c2e4ddba1bfd"
+      ]
+    },
+    "latin-given.male": {
+      "pool": "chinesename:real-world-lexicon.latin-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-c0ed8ad300698bed9d2d",
+        "chinesename:real-world-lexicon.w-6d643300774b7e612a22",
+        "chinesename:real-world-lexicon.w-81019dea79588f718fbd",
+        "chinesename:real-world-lexicon.w-e5c1c6853f66a37f308e",
+        "chinesename:real-world-lexicon.w-2014f2d81fc14c50b2ed",
+        "chinesename:real-world-lexicon.w-b2c5be8263590b91124a",
+        "chinesename:real-world-lexicon.w-2471732614cebe15692b",
+        "chinesename:real-world-lexicon.w-d39d0860a3c59d645ea8",
+        "chinesename:real-world-lexicon.w-510d909fda74811b9546",
+        "chinesename:real-world-lexicon.w-3e9033d75fe9cd872196",
+        "chinesename:real-world-lexicon.w-533598867548c89dcd72",
+        "chinesename:real-world-lexicon.w-1c0689bfc2112c4f2c62"
+      ]
+    },
+    "latin-given.female": {
+      "pool": "chinesename:real-world-lexicon.latin-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-a974f77e6e8c6cf62e33",
+        "chinesename:real-world-lexicon.w-c818beea971c1828aaf4",
+        "chinesename:real-world-lexicon.w-f24260a8f95a0627a2b5",
+        "chinesename:real-world-lexicon.w-9c3751485b14d42e497a",
+        "chinesename:real-world-lexicon.w-2f4eb4fcd65b6116f0f9",
+        "chinesename:real-world-lexicon.w-db1310a69bf3164d59e1",
+        "chinesename:real-world-lexicon.w-c4e2f32634dc75e427c5",
+        "chinesename:real-world-lexicon.w-de486b54616e2ed95651",
+        "chinesename:real-world-lexicon.w-2885c4e3bbe0a02a3efd",
+        "chinesename:real-world-lexicon.w-b4a9c8fa9fb1f7c7760d",
+        "chinesename:real-world-lexicon.w-abd7300613029eaf29c2"
+      ]
+    },
+    "latin-house.republic": {
+      "pool": "chinesename:real-world-lexicon.latin-house",
+      "words": [
+        "chinesename:real-world-lexicon.w-9389ad4de7dd035b3367",
+        "chinesename:real-world-lexicon.w-84812405a80b2b22b340",
+        "chinesename:real-world-lexicon.w-e96218f71e210c6e8f1a",
+        "chinesename:real-world-lexicon.w-3f8162455a9d1b23c026",
+        "chinesename:real-world-lexicon.w-a68893601e837ca2faac",
+        "chinesename:real-world-lexicon.w-afa7e337c8000e7f3ac8",
+        "chinesename:real-world-lexicon.w-eda166fe83272b5fbf63",
+        "chinesename:real-world-lexicon.w-1cc668da5e92e8fe55be"
+      ]
+    },
+    "latin-house.imperial": {
+      "pool": "chinesename:real-world-lexicon.latin-house",
+      "words": [
+        "chinesename:real-world-lexicon.w-2fac7f34193565163fab",
+        "chinesename:real-world-lexicon.w-f76d1461cadcb8ed46ad",
+        "chinesename:real-world-lexicon.w-bc3ee3cef3dc485d7289",
+        "chinesename:real-world-lexicon.w-59843afe4e4d72cab81c",
+        "chinesename:real-world-lexicon.w-09948fd1513a388122a4",
+        "chinesename:real-world-lexicon.w-d443c9c9206bda88c278",
+        "chinesename:real-world-lexicon.w-e40dde6eb5710da39067",
+        "chinesename:real-world-lexicon.w-fbce0740d8f4ba369981"
+      ]
+    },
+    "latin-places.italy": {
+      "pool": "chinesename:real-world-lexicon.latin-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-3b54664e8163d36a7d1b",
+        "chinesename:real-world-lexicon.w-d069543758ec55e97452",
+        "chinesename:real-world-lexicon.w-801f529278f3e68a1d45",
+        "chinesename:real-world-lexicon.w-bd31685cf3337baf88cf",
+        "chinesename:real-world-lexicon.w-170db9684ca0abe87e28",
+        "chinesename:real-world-lexicon.w-cc403e0f0c2cddacda34",
+        "chinesename:real-world-lexicon.w-adf95bcf0622982811cc",
+        "chinesename:real-world-lexicon.w-3f054d2717b366bb8e34",
+        "chinesename:real-world-lexicon.w-b83bd891b237748d6026",
+        "chinesename:real-world-lexicon.w-7fe3e3a4d4398c044275"
+      ]
+    },
+    "latin-places.province": {
+      "pool": "chinesename:real-world-lexicon.latin-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-2f85510e394bae5524c5",
+        "chinesename:real-world-lexicon.w-bc22448b1819a60a4087",
+        "chinesename:real-world-lexicon.w-f9b18aa61fa0cca8f2ce",
+        "chinesename:real-world-lexicon.w-34762d3781533dddd1bc",
+        "chinesename:real-world-lexicon.w-9ee08650d1e246b47ba5",
+        "chinesename:real-world-lexicon.w-c92ae0e9d769379918bb",
+        "chinesename:real-world-lexicon.w-5eff234ab114eea4de8c",
+        "chinesename:real-world-lexicon.w-a7d2967a4aad0dd25eaf",
+        "chinesename:real-world-lexicon.w-1dd91d7301401a6bb3fd",
+        "chinesename:real-world-lexicon.w-ed3ad621d233b811a9ab"
+      ]
+    },
+    "steppe-given.steppe": {
+      "pool": "chinesename:real-world-lexicon.steppe-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-b3c5e50460780eae3913",
+        "chinesename:real-world-lexicon.w-fb0c82de5324c0cf886e",
+        "chinesename:real-world-lexicon.w-53198896b134426e732c",
+        "chinesename:real-world-lexicon.w-f4f86b98786aeceb95a5",
+        "chinesename:real-world-lexicon.w-7e87cbda57cdbe42d67e",
+        "chinesename:real-world-lexicon.w-823b63001ed5e38d003f",
+        "chinesename:real-world-lexicon.w-4f21109658c4e1f0c68d",
+        "chinesename:real-world-lexicon.w-73f426f44972f59da914",
+        "chinesename:real-world-lexicon.w-8f178906d55307c68d5d",
+        "chinesename:real-world-lexicon.w-c77f69369c73cc26f330",
+        "chinesename:real-world-lexicon.w-fc2347a08a2267e2555e",
+        "chinesename:real-world-lexicon.w-219ebe08da695e419e77",
+        "chinesename:real-world-lexicon.w-8b91d7a034e184916fab"
+      ]
+    },
+    "steppe-given.later": {
+      "pool": "chinesename:real-world-lexicon.steppe-given",
+      "words": [
+        "chinesename:real-world-lexicon.w-d5eacbd9e43f26aeb6c4",
+        "chinesename:real-world-lexicon.w-60b077557ab4c67adfae",
+        "chinesename:real-world-lexicon.w-4bd6733529285a3780c6",
+        "chinesename:real-world-lexicon.w-f314b89e9c3293b54932",
+        "chinesename:real-world-lexicon.w-9c3a8734f080be7ded48",
+        "chinesename:real-world-lexicon.w-de00b916475433bdf8c0",
+        "chinesename:real-world-lexicon.w-58ab1d5edf7b1a3077f0",
+        "chinesename:real-world-lexicon.w-3999ce0b9ebb3fa6ebf2",
+        "chinesename:real-world-lexicon.w-81b4aea149b551d9bd5c",
+        "chinesename:real-world-lexicon.w-c04cf4d3bbbd940b2fcb",
+        "chinesename:real-world-lexicon.w-d3ddd590ef6e37f8b7c6",
+        "chinesename:real-world-lexicon.w-3d69a793df99e8b6bec3"
+      ]
+    },
+    "steppe-places.rivers": {
+      "pool": "chinesename:real-world-lexicon.steppe-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-e0b7b0726e6f05e5db13",
+        "chinesename:real-world-lexicon.w-278bfb9a5f94aee1a150",
+        "chinesename:real-world-lexicon.w-e2962978e4328a30f2bf",
+        "chinesename:real-world-lexicon.w-08600e1fd6acb8821b25",
+        "chinesename:real-world-lexicon.w-c8aff6bdf66fc5090f83",
+        "chinesename:real-world-lexicon.w-9d69d40bbd222586dc53",
+        "chinesename:real-world-lexicon.w-57960bc497979b8e184d",
+        "chinesename:real-world-lexicon.w-5e16c17464b03ae094b9",
+        "chinesename:real-world-lexicon.w-d8de1163598f0cd430cd"
+      ]
+    },
+    "steppe-places.mountains": {
+      "pool": "chinesename:real-world-lexicon.steppe-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-55ef3d968e8dd7771403",
+        "chinesename:real-world-lexicon.w-f742502b24124a15025f",
+        "chinesename:real-world-lexicon.w-a371daa4fafe2524c657",
+        "chinesename:real-world-lexicon.w-f67a0ab0486a4627194a",
+        "chinesename:real-world-lexicon.w-50fa7c9a91bd106e535f",
+        "chinesename:real-world-lexicon.w-5700550db95558da858c",
+        "chinesename:real-world-lexicon.w-d712c1f1e0fab02eb17c",
+        "chinesename:real-world-lexicon.w-f642ddd658d058965de9",
+        "chinesename:real-world-lexicon.w-11eb773b2e36ea8f1255"
+      ]
+    },
+    "steppe-ending.polity": {
+      "pool": "chinesename:real-world-lexicon.steppe-ending",
+      "words": [
+        "chinesename:real-world-lexicon.w-d1566afa505af0f03b91",
+        "chinesename:real-world-lexicon.w-d7a0f485da8d4db015ea",
+        "chinesename:real-world-lexicon.w-2e12080d01a504fb0f3a",
+        "chinesename:real-world-lexicon.w-b23aed657bd878b0ac5a"
+      ]
+    },
+    "steppe-ending.camp": {
+      "pool": "chinesename:real-world-lexicon.steppe-ending",
+      "words": [
+        "chinesename:real-world-lexicon.w-7506d7e4f22bf8815b48",
+        "chinesename:real-world-lexicon.w-89b24facdfdd437fcc36",
+        "chinesename:real-world-lexicon.w-b8003d4ad0d611f65d09",
+        "chinesename:real-world-lexicon.w-4268ed6b63514698a5c1"
+      ]
+    },
+    "british-places.coast": {
+      "pool": "chinesename:real-world-lexicon.british-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-41cebf64ddf64c651772",
+        "chinesename:real-world-lexicon.w-b39c87fc10e39fde04bd",
+        "chinesename:real-world-lexicon.w-a742872630b87d21c3df",
+        "chinesename:real-world-lexicon.w-afe98fb09f6abac09328",
+        "chinesename:real-world-lexicon.w-f2ea06523ecd91f0cb88",
+        "chinesename:real-world-lexicon.w-a6dad24da73044888329",
+        "chinesename:real-world-lexicon.w-37f1695b24d8af912a33",
+        "chinesename:real-world-lexicon.w-6d705ed4a19325301a04"
+      ]
+    },
+    "british-places.inland": {
+      "pool": "chinesename:real-world-lexicon.british-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-23dd00c9d50e8109f573",
+        "chinesename:real-world-lexicon.w-36a95fd1edfd9dbfa9f5",
+        "chinesename:real-world-lexicon.w-a292e6ecdf02b52a3ba9",
+        "chinesename:real-world-lexicon.w-006e13fabb63bcd95193",
+        "chinesename:real-world-lexicon.w-b2bf0ae3df28b5a8a839",
+        "chinesename:real-world-lexicon.w-eb0e2bc1625c556b6e6e",
+        "chinesename:real-world-lexicon.w-9d9a139190720891ee9d",
+        "chinesename:real-world-lexicon.w-97e4ba115a43a890c0cf",
+        "chinesename:real-world-lexicon.w-f172214de59ce1fab76d",
+        "chinesename:real-world-lexicon.w-5226334775056d2888b2"
+      ]
+    },
+    "central-europe-places.river": {
+      "pool": "chinesename:real-world-lexicon.central-europe-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-55312f17d1e7ef086e2f",
+        "chinesename:real-world-lexicon.w-87590ca9c7e222df4e27",
+        "chinesename:real-world-lexicon.w-7198e14684a728570150",
+        "chinesename:real-world-lexicon.w-64dd8cd3b280b85bd00e",
+        "chinesename:real-world-lexicon.w-bf5c0b29f59474663dbe",
+        "chinesename:real-world-lexicon.w-ecc3c363d73aceea370f",
+        "chinesename:real-world-lexicon.w-6ab1ebe04f5b6020d83c",
+        "chinesename:real-world-lexicon.w-7ec908ddca76a774a35d",
+        "chinesename:real-world-lexicon.w-5265bb16c61e8362f8c9"
+      ]
+    },
+    "central-europe-places.mountain": {
+      "pool": "chinesename:real-world-lexicon.central-europe-places",
+      "words": [
+        "chinesename:real-world-lexicon.w-4dec7e7de427b616feb9",
+        "chinesename:real-world-lexicon.w-73a5c3abece4363a310b",
+        "chinesename:real-world-lexicon.w-45724f4dbceb3c7f81f2",
+        "chinesename:real-world-lexicon.w-28d968a36a1f8e922167",
+        "chinesename:real-world-lexicon.w-9ddd266a892b5dcaa040",
+        "chinesename:real-world-lexicon.w-ddde0204dc1553d0ab83",
+        "chinesename:real-world-lexicon.w-53c6698256360b3a70aa",
+        "chinesename:real-world-lexicon.w-baa0af004ff321de7ffe"
+      ]
+    }
+  }
+}

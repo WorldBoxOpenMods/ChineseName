@@ -1,0 +1,244 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string cityType = "worldbox:city", warType = "worldbox:war";
+const string riverPool = "chinesename:river-places", coastPool = "chinesename:coastal-places", frontierPool = "chinesename:frontier-places";
+const string asPool = "chinesename_as_pool", attacker = "chinesename_war_attacker", defender = "chinesename_war_defender";
+const string warName = "临川国—松岭国之战";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var distant = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null &&
+    Math.Abs(cell.x - tile.x) + Math.Abs(cell.y - tile.y) > 40);
+var founder = world.units.createNewUnit("human", tile);
+var rival = world.units.createNewUnit("human", distant);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var rivalKingdom = world.kingdoms.makeNewCivKingdom(rival);
+var culture = world.cultures.newCulture(founder, true);
+var rivalCulture = world.cultures.newCulture(rival, true);
+founder.setCulture(culture);
+rival.setCulture(rivalCulture);
+kingdom.setCulture(culture);
+rivalKingdom.setCulture(rivalCulture);
+kingdom.setName("临川国");
+rivalKingdom.setName("松岭国");
+var parent = world.languages.newLanguage(founder, true);
+var other = world.languages.newLanguage(rival, true);
+founder.joinLanguage(parent);
+rival.joinLanguage(other);
+kingdom.setLanguage(parent);
+rivalKingdom.setLanguage(other);
+world.units.checkLists();
+world.kingdoms.checkLists();
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var pack = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+LanguageNaming Profile(Language language)
+{
+    if (!config.Languages.TryGetValue(language.id, out var value)) config.Languages[language.id] = value = new LanguageNaming();
+    return value;
+}
+string WordId(string pool, string text) => pack.Words.Single(word => word.Text == text && pack.Pools[pool].ContainsKey(word.Id)).Id;
+PoolEdit Only(string pool, string text)
+{
+    string selected = WordId(pool, text);
+    return new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(id => id != selected).ToList() };
+}
+var profile = Profile(parent);
+foreach (var groups in pack.WordGroups.GroupBy(entry => entry.Value.Pool).Where(group => group.Key != coastPool))
+    profile.Pools[groups.Key] = new PoolEdit { Group = pack.Id + "/" + groups.First().Key };
+profile.Pools[riverPool] = Only(riverPool, "澄江");
+profile.Pools[frontierPool] = Only(frontierPool, "朔原");
+profile.Groups[coastPool] = pack.Id + "/coastal-bays";
+profile.Pools[coastPool] = new PoolEdit {
+    ExcludeText = new List<string> { "白湾" },
+    Bias = new Dictionary<string, double> { [WordId(coastPool, "东湾")] = 1.6 }
+};
+Profile(other).Pools[riverPool] = Only(riverPool, "临川");
+WorldNamingStore.Apply(config);
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+
+var exchange = "__EXCHANGE__";
+int seq = 0;
+string Position(Component component)
+{
+    var rect = (RectTransform)component.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+}
+async System.Threading.Tasks.Task Mouse(string action, Component target = null, Component destination = null)
+{
+    string path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + (target == null ? "" : Position(target)) + (destination == null ? "" : Position(destination)));
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action);
+    await Frames();
+}
+T Find<T>(string name) where T : Component => shell.GetComponentsInChildren<T>().Single(item => item.name == name);
+OnomasticsAssetButton Card(Transform parentTransform, string id) =>
+    parentTransform.GetComponentsInChildren<OnomasticsAssetButton>().Single(item => item.onomastics_asset.id == id);
+Button Palette(string id) => Card(tab.parent_asset_specials, id).button;
+Button Placed(string id) => Card(tab.parent_name_variation_1, id).button;
+Button Group(string id) => Card(tab.parent_asset_groups, id).button;
+async System.Threading.Tasks.Task Select(string id)
+{
+    var category = tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + id);
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames(6);
+    await Mouse("click", (RectTransform)category.transform);
+}
+async System.Threading.Tasks.Task Words(string id, string value)
+{
+    if (tab._selected_editor_group?.id != id) await Mouse("click", Group(id));
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    await Frames(8);
+    var input = tab._editor_input.inputField;
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = value;
+    await Mouse("paste");
+    Check(input.isFocused && input.text.Trim() == value, $"Expected '{value}' in {id}, got '{input.text}' (focused={input.isFocused}).");
+    await Mouse("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames(8);
+}
+async System.Threading.Tasks.Task CheckPreview(string expected)
+{
+    await Mouse("move", Find<Text>("PreviewName"));
+    string preview = Find<Text>("PreviewName").text;
+    Check(preview == expected, "Expected " + expected + " but previewed " + preview);
+}
+
+await Select("city");
+Check(!tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Any(item => item.onomastics_asset.id is attacker or defender), "The war glyphs appeared in the city palette.");
+await Words("group_1", "江河地名");
+await Mouse("click", Palette(asPool));
+await Words("group_2", "府");
+await Mouse("click", Group("group_2"));
+await CheckPreview("澄江府");
+var city = world.cities.buildNewCity(founder, tile.zone);
+var rivalCity = world.cities.buildNewCity(rival, distant.zone);
+founder.joinCity(city);
+rival.joinCity(rivalCity);
+world.cities.checkLists();
+Check(city.name == "澄江府", "Real city founding produced " + city.name);
+await Mouse("click", Find<Button>("PreviewLanguage." + other.id));
+await CheckPreview("临川府");
+await Mouse("click", Find<Button>("PreviewLanguage." + parent.id));
+await CheckPreview("澄江府");
+
+await Words("group_1", "江河地名 港口地名 关塞地名");
+NameResult[] DrawCities(Language language) => Enumerable.Range(1, 384).Select(seed =>
+    service.Generate(new NameRequest(cityType, (ulong)seed, culture.id, language.id))).ToArray();
+var before = DrawCities(parent);
+Check(before.All(result => result.Success && result.Text.EndsWith("府") && result.Text != "白湾府") &&
+      before.Select(result => result.Sources["name"].Reference).ToHashSet().SetEquals(new[] { riverPool, coastPool, frontierPool }) &&
+      before.Any(result => result.Text == "东湾府") && before.Any(result => result.Text == "朔原府"),
+      "The city arrangement did not draw from the three named pools.");
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The original language split did not run.");
+var child = founder.language;
+world.languages.checkLists();
+var split = service.GetWorld();
+var childProfile = split.Languages[child.id];
+Check(split.LanguageParents[child.id] == parent.id && founder.culture == culture &&
+      NamingJson.Write(childProfile.Pools) == NamingJson.Write(profile.Pools), "Language divergence lost inherited edits.");
+var preferences = childProfile.GroupPreferences.Single();
+Check(preferences.Key == coastPool && Math.Abs(preferences.Value[pack.Id + "/coastal-bays"] - .8) < 1e-9 &&
+      Math.Abs(preferences.Value[pack.Id + "/coastal-islands"] - .2) < 1e-9, "The split did not shift just the coastal vocabulary.");
+var after = DrawCities(child);
+Check(before.Select(result => result.Text).ToHashSet().SetEquals(after.Select(result => result.Text)) &&
+      !before.Select(result => result.Text).SequenceEqual(after.Select(result => result.Text)) &&
+      after.All(result => result.Text.EndsWith("府") && result.Text != "白湾府") &&
+      city.name == "澄江府", "The child language did not vary its choices within the edited city arrangement.");
+Check(founder.generateName(MetaType.City, 139).EndsWith("府"), "The original naming entry lost the player's suffix.");
+kingdom.setLanguage(child);
+
+await Select("war");
+Check(Card(tab.parent_asset_specials, attacker).image.sprite != null &&
+      Card(tab.parent_asset_specials, defender).image.sprite != null, "A war glyph has no icon.");
+await Mouse("click", Palette(attacker));
+await Mouse("click", Palette(defender));
+await Mouse("click", Placed("group_1"));
+await Mouse("click", Placed("group_2"));
+await Mouse("click", Palette("hyphen"));
+await Mouse("drag", Placed("hyphen"), Placed(defender));
+await Words("group_2", "之战");
+await Mouse("click", Group("group_2"));
+await CheckPreview("临川国-松岭国之战");
+await Mouse("click", Placed("hyphen"));
+await Words("group_3", "—");
+await Mouse("click", Group("group_3"));
+await Mouse("drag", Placed("group_3"), Placed(defender));
+await CheckPreview(warName);
+
+var warOrder = new[] { attacker, "group_3", defender, "group_2" };
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(warOrder), "The arranged cards did not match the preview.");
+var worldConfig = service.GetWorld();
+var warCards = worldConfig.Cultures[culture.id].Cards[warType];
+Check(warCards.Template == tab.getOnomasticsData().getShortTemplate() && warCards.DraftTemplate == null,
+    "The war arrangement was not applied.");
+var ab = new Dictionary<string, object> { ["kind"] = "normal", ["origin"] = kingdom.name, ["attacker"] = kingdom.name };
+var missing = service.Generate(new NameRequest(warType, 0, culture.id, child.id, ab));
+Check(missing.Success && missing.Diagnostics.Any(issue => issue.EndsWith("/defender")) && !missing.Text.Contains("—"),
+    "A missing participant did not fall back to the original war rule.");
+ab["defender"] = rivalKingdom.name;
+var named = service.Generate(new NameRequest(warType, 0, culture.id, child.id, ab));
+Check(named.Text == warName && named.Sources["attacker"].Reference == "attacker" &&
+      named.Sources["defender"].Reference == "defender", "The war glyphs did not use the two independent input fields.");
+ab["attacker"] = "McCloud";
+ab["defender"] = "aRk";
+Check(service.Generate(new NameRequest(warType, 0, culture.id, child.id, ab)).Text == "McCloud—aRk之战",
+    "The war glyphs changed the spelling of an input country.");
+
+string output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+string screenshot = Path.Combine(output, "war-participant-glyphs.png");
+ScreenCapture.CaptureScreenshot(screenshot);
+var war = world.wars.newWar(kingdom, rivalKingdom, AssetManager.war_types_library.get("normal"));
+var rebellion = world.wars.newWar(rivalKingdom, kingdom, AssetManager.war_types_library.get("rebellion"));
+Check(war.name == warName && rebellion.name == "松岭国—临川国之战",
+    "Actual war naming lost the ordered participants or the naming culture.");
+
+await Select("city");
+string cityTemplate = tab.getOnomasticsData().getShortTemplate();
+tab.loadTemplate(warCards.Template);
+await Frames();
+Check(tab.getOnomasticsData().getShortTemplate() == cityTemplate, "Import accepted war glyphs in the city arrangement.");
+
+var folder = Path.Combine(output, "city-war-glyphs-save");
+Directory.CreateDirectory(folder);
+world.units.checkLists(); world.languages.checkLists(); world.cultures.checkLists(); world.kingdoms.checkLists();
+world.cities.checkLists(); world.wars.checkLists();
+var saved = SaveManager.saveWorldToDirectory(folder);
+Check(saved.actors_data.Any(actor => actor.id == founder.getID()), "The saved map did not contain the founder.");
+File.WriteAllLines(Path.Combine(folder, "expected.txt"), new[] {
+    culture.id, parent.id, child.id, founder.getID(), city.id, kingdom.id, rivalKingdom.id, war.id, rebellion.id
+}.Select(id => id.ToString()));
+return new { city = city.name, war = war.name, rebellion = rebellion.name, coastalPreference = preferences.Value,
+    cityTemplate, warTemplate = warCards.Template, mouseEvents = seq, screenshot, folder };

@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+
+const string atlas = "chinesename:world-styles-lexicon", cats = "chinesename:species-lexicon";
+const string nordic = "chinesename:world-nordic-set", person = "worldbox:person";
+const string given = cats + ".cat.given", place = cats + ".cat.place", surnameKey = "chinesename.surname.v1";
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+async System.Threading.Tasks.Task Frames(int count = 10) { for (int frame = 0; frame < count; frame++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.isGoodForNewCity());
+var founder = world.units.createNewUnit("civ_cat", tile);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var parentLanguage = world.languages.newLanguage(founder, true);
+founder.joinLanguage(parentLanguage);
+founder.data.sex = ActorSex.Male;
+var mother = world.units.createNewUnit("civ_cat", tile);
+mother.setCulture(culture);
+mother.joinLanguage(parentLanguage);
+mother.data.sex = ActorSex.Female;
+var peer = world.units.createNewUnit("human", tile);
+var peerCulture = world.cultures.newCulture(peer, true);
+peer.setCulture(peerCulture);
+peer.joinLanguage(parentLanguage);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+
+var settings = service.GetWorld();
+string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var files = Directory.GetFiles(examples, "world-*-set.naming.json")
+    .Concat(Directory.GetFiles(examples, "*-lexicon.naming.json")).ToArray();
+foreach (string path in files)
+{
+    string file = Path.GetFileName(path);
+    File.Copy(path, Path.Combine(WorldNamingStore.PackageDirectory, "blend-" + file), true);
+    string id = "chinesename:" + file.Replace(".naming.json", "");
+    if (!settings.EnabledPacks.Contains(id)) settings.EnabledPacks.Add(id);
+}
+var issues = WorldNamingStore.ReloadPacks();
+Check(issues.Count == 0, string.Join("\n", issues));
+Check(settings.EnabledPacks.Count(id => id.StartsWith("chinesename:world-") && id.EndsWith("-set")) == 38 &&
+      settings.EnabledPacks.Contains(atlas), "The isolation run did not enable the complete regional atlas.");
+settings.Cultures[culture.id] = new CultureNaming { Pack = nordic };
+settings.Cultures[peerCulture.id] = new CultureNaming { Pack = nordic };
+var vocabulary = service.GetPackage(cats);
+string WordId(string text) => vocabulary.Words.Single(word => word.Text == text).Id;
+if (!settings.Languages.TryGetValue(parentLanguage.id, out var language))
+    settings.Languages[parentLanguage.id] = language = new LanguageNaming();
+language.Groups[given] = cats + "/cat.given.marks";
+language.Groups[place] = cats + "/cat.place.homeland";
+language.Pools[given] = new PoolEdit {
+    ExcludeText = new List<string> { "白袜" }, Bias = new Dictionary<string, double> { [WordId("夜瞳")] = 1.6 }
+};
+language.Pools[place] = new PoolEdit {
+    ExcludeIds = new List<string> { WordId("暖庭") }, Bias = new Dictionary<string, double> { [WordId("猫眼台")] = 1.4 }
+};
+WorldNamingStore.Apply(settings);
+founder.data.set(surnameKey, (string)null);
+mother.data.set(surnameKey, (string)null);
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+Check(shell?.tabs != null, "The original culture window did not open.");
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+await Frames();
+char Code(string glyph) => AssetManager.onomastics_library.get(glyph).short_id;
+char pick = Code("chinesename_as_pool"), separator = Code("chinesename_rule_separator"), inherit = Code("chinesename_keep_surname");
+async System.Threading.Tasks.Task Edit(string target, string template)
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + target).toggle.click();
+    await Frames();
+    tab.loadTemplate(template);
+    await Frames();
+    Check(tab.getOnomasticsData().getShortTemplate() == template, "The original editor did not receive " + target);
+}
+await Edit("unit", $"2{pick}{separator}0{pick}{inherit}|0:灵猫地名词根;2:灵猫个体名");
+await Edit("city", $"0{pick}1|0:灵猫地名词根;1:湾");
+await Edit("kingdom", $"0{pick}1|0:灵猫地名词根;1:领");
+var applied = service.GetWorld();
+Check(applied.Cultures[culture.id].Cards.Count == 3, "The three original categories did not commit their edits.");
+var personCards = culture.getOnomasticData(MetaType.Unit).getShortTemplate();
+founder.generateNewName();
+mother.generateNewName();
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var city = world.cities.buildNewCity(founder, tile.zone);
+founder.joinCity(city);
+mother.joinCity(city);
+founder.data.get(surnameKey, out string inherited);
+Check(!string.IsNullOrEmpty(inherited) && founder.getName().EndsWith("·" + inherited) && city.name.EndsWith("湾") && kingdom.name.EndsWith("领"),
+    "The real world did not use the Nordic/creature blend.");
+
+var cultureInputs = new Dictionary<string, object> {
+    ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat"
+};
+var selected = service.GetPackage(nordic);
+var live = new HashSet<string> { given, place };
+bool UsesLivePool(string pool) => live.Contains(pool) ||
+    selected.Rules.Where(rule => !new[] { person, "worldbox:city", "worldbox:kingdom" }.Contains(rule.Key))
+        .SelectMany(rule => rule.Value).SelectMany(rule => rule.Parts).Any(part => part.FallbackPool == pool ||
+            (part.PoolInput == null ? part.Pool == pool : pool.StartsWith(
+                part.Pool.EndsWith("-") ? part.Pool : part.Pool + ".", StringComparison.Ordinal)));
+var used = new List<string>();
+var kittens = new List<string>();
+var lineage = new List<long> { parentLanguage.id };
+for (int generation = 1; generation <= 3; generation++)
+{
+    var before = service.GetWorld().Languages[founder.language.id];
+    long parent = founder.language.id;
+    Check(AssetManager.plots_library.get("language_divergence").action(founder), "The original language split failed.");
+    var child = founder.language;
+    world.languages.checkLists();
+    var afterWorld = service.GetWorld();
+    var after = afterWorld.Languages[child.id];
+    var shifted = after.GroupPreferences.Where(pair => !before.GroupPreferences.TryGetValue(pair.Key, out var old) ||
+        NamingJson.Write(old) != NamingJson.Write(pair.Value)).ToArray();
+    Check(shifted.Length == 1 && UsesLivePool(shifted[0].Key), "A split targeted an unrelated installed vocabulary.");
+    string pool = shifted[0].Key;
+    foreach (var old in before.GroupPreferences.Where(pair => pair.Key != pool))
+        Check(NamingJson.Write(old.Value) == NamingJson.Write(after.GroupPreferences[old.Key]), "A different pool drifted.");
+    var incoming = before.GroupPreferences.TryGetValue(pool, out var former) ? former :
+        before.Groups.TryGetValue(pool, out string group) ? new Dictionary<string, double> { [group] = 1 } :
+        new Dictionary<string, double>();
+    var delta = shifted[0].Value.Sum(pair => Math.Max(0,
+        pair.Value - (incoming.TryGetValue(pair.Key, out double share) ? share * .8 : 0)));
+    Check(Math.Abs(delta - .2) < 1e-9 && afterWorld.LanguageParents[child.id] == parent &&
+        NamingJson.Write(before.Pools) == NamingJson.Write(after.Pools), "A hand edit, generation link, or shift size changed.");
+
+    var kitten = BabyMaker.makeBaby(founder, mother, ActorSex.Female, pTile: tile);
+    kitten.setCulture(culture);
+    kitten.joinLanguage(child);
+    kitten.data.get(surnameKey, out string surname);
+    string name = kitten.getName();
+    Check(surname == inherited && name.EndsWith("·" + inherited) && !name.StartsWith("白袜") &&
+        culture.getOnomasticData(MetaType.Unit).getShortTemplate() == personCards, "The new speaker lost her inherited style.");
+    var result = service.Generate(new NameRequest(person, (ulong)generation, culture.id, child.id, cultureInputs));
+    Check(result.Sources["given"].Reference == given && result.Sources["surname"].Reference == place,
+        "Actual generation left the blended pools.");
+    lineage.Add(child.id);
+    used.Add(pool);
+    kittens.Add(name);
+}
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "nordic-cats-generations");
+Directory.CreateDirectory(output);
+world.units.checkContainer(); world.cities.checkLists(); world.kingdoms.checkLists(); world.languages.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"),
+    new[] { culture.id.ToString(), founder.getID().ToString(), city.id.ToString(), string.Join(" ", lineage) });
+return new { generations = lineage.Count - 1, selectedPools = used, kittens, founder = founder.getName(), city = city.name, output };

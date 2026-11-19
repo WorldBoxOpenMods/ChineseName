@@ -1,0 +1,73 @@
+label = "宗祧编年词库"
+
+[pools.hall]
+label = "宗祧堂号"
+[pools.hall.groups]
+virtue = "敦仁 崇礼 敬承 守成 和敬 继德 永叙 承晖 归善 思诚 绍礼 昭德 洽和 持正"
+place = "松庭 兰室 桂坞 冬青 听雨 溪亭 白石 遥山 月榭 清泉 杏园 归舟 青竹 槐门"
+
+[pools.hall-ending]
+label = "宗祧堂号后缀"
+[pools.hall-ending.groups]
+lecture = "堂 书屋 书院 讲舍"
+lineage = "祠 宗祠 家庙 祖厅"
+
+[pools.branch]
+label = "宗族支房称谓"
+[pools.branch.groups]
+descent = "长房 二房 三房 继房 旁支 远支"
+place = "东房 西房 南支 北支 山房 溪支 槐房 梅支"
+
+[pools.generation]
+label = "宗族字辈"
+[pools.generation.groups]
+legacy = "承 继 昭 绍 敬 崇 维 教 延 广 启 元"
+conduct = "恭 允 恒 仁 义 修 诚 志 嘉 良 和 信"
+
+[pools.era]
+label = "编年年号"
+[pools.era.groups]
+peace = "永和 太宁 元嘉 景明 咸宁 元和 嘉平 承安 永宁 建安 长乐 太平 安祐"
+renewal = "承元 新历 绍明 元启 景祐 启元 居正 载宁 弘初 晏开 复昌 开泰 龙兴"
+
+[pools.temple]
+label = "宗祧庙号"
+[pools.temple.groups]
+founding = "太祖 高祖 世祖 始祖 烈祖 肇祖"
+inheritance = "太宗 世宗 高宗 睿宗 仁宗 宣宗 明宗 章宗 成宗 德宗"
+
+[pools.posthumous]
+label = "宗祧谥号"
+[pools.posthumous.groups]
+civil = "文 明 成 仁 孝 忠 恭 景 敬 穆 惠 德"
+martial = "武 烈 昭 毅 威 壮 刚 庄 宣 定 章 桓"
+
+[pools.chronicle-topic]
+label = "编年史书主题"
+[pools.chronicle-topic.groups]
+dynastic = "太祖实录 新朝初纪 列国 封疆 王室世次 开府 承统 改元 边事 诸藩 诸侯世家"
+local = "州郡 山川 河渠 田亩 乡里 舟运 节令 郡望 乡俗 关津 营造 岁时"
+
+[pools.chronicle-ending]
+label = "编年题名后缀"
+[pools.chronicle-ending.groups]
+annals = "纪 史录 编年 通鉴 纪年志 实录"
+records = "志 记 札记 图志 图经 总录"
+
+[pools.genealogy]
+label = "谱牒后缀"
+[pools.genealogy.groups]
+primary = "族谱 宗谱 家谱 世谱 系谱"
+secondary = "支谱 续谱 合谱 家传 谱纪"
+
+[pools.fief]
+label = "封邑主体"
+[pools.fief.groups]
+river = "南浦 东津 清沅 桂水 兰皋 春渡 栖潮 沧江 白涛 长溪"
+inland = "北原 雁门 长垣 井陉 华阳 河西 岁岭 安边 归塞 玉关"
+
+[pools.title]
+label = "宗祧封爵称谓"
+[pools.title.groups]
+rank = "王 公 侯 伯 子 男"
+honor = "君 主 节度 留守 都护 国尉"

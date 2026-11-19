@@ -1,0 +1,29 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/output/onomastics-save/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; SmoothLoader.isLoading() && i < 1000; i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The map did not finish loading.");
+var world = World.world;
+var culture = world.cultures.get(long.Parse(expected[0]));
+var language = world.languages.get(long.Parse(expected[1]));
+var otherLanguage = long.Parse(expected[2]);
+var child = world.units.get(long.Parse(expected[3]));
+var city = world.cities.get(long.Parse(expected[6]));
+Check(child.getName() == "欧阳" + expected[4] && city.name == expected[4] + "府", "Existing names changed on reload.");
+Check(culture.getOnomasticData(MetaType.Unit).getShortTemplate() == expected[7], "Unit cards did not round trip.");
+Check(culture.getOnomasticData(MetaType.City).getShortTemplate() == expected[8], "City cards did not round trip.");
+var newcomer = world.units.createNewUnit("human", world.tiles_list.First(t => t.Type.ground));
+newcomer.setCulture(culture);
+newcomer.joinLanguage(language);
+string generated = newcomer.getName();
+string secondCity = NamingApi.Current.Generate(new NameRequest("worldbox:city", 0, culture.id, otherLanguage)).Text;
+Check(generated == "赵" + expected[4] && secondCity == expected[5] + "府", "New names after reload did not use restored cards and language pools.");
+return new { oldPerson = child.getName(), oldCity = city.name, generated, secondCity, save };

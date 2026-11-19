@@ -1,0 +1,85 @@
+label = "地域译名词库"
+
+[pools.persian-given]
+label = "古波斯人名"
+[pools.persian-given.groups]
+royal = "居鲁士 大流士 薛西斯 阿尔塔薛西斯 冈比西斯 巴尔迪亚 维什塔斯帕 阿里亚拉姆涅斯 阿尔萨梅斯"
+court = "阿托莎 阿尔泰斯托涅 帕丽萨蒂丝 斯塔蒂拉 阿米蒂斯 曼达妮 伊里达芭玛 阿帕玛 阿尔忒弥西亚"
+
+[pools.persian-places]
+label = "古波斯地名"
+[pools.persian-places.groups]
+plateau = "波斯波利斯 苏萨 埃克巴坦那 帕萨尔加德 拉盖 米底 帕提亚 阿拉霍西亚 德兰吉亚"
+trade = "萨迪斯 巴比伦 大马士革 推罗 加沙 安善 巴克特拉 马拉坎达 希尔卡尼亚"
+
+[pools.persian-epithets]
+label = "古波斯称号"
+[pools.persian-epithets.groups]
+court = "万邦之主 高原之王 诸王之王 宫廷守卫 王印持有者 王道守护者"
+land = "高原守望者 沙海行旅 山口守卫 绿洲领主 东道使节 火坛守护者"
+
+[pools.egyptian-given]
+label = "古埃及人名"
+[pools.egyptian-given.groups]
+royal = "拉美西斯 阿蒙霍特普 图特摩斯 塞提 美楞普塔 哈伦海布 塞努斯雷特 阿蒙涅姆赫特 左塞尔 胡夫 胡夫拉 门卡乌拉"
+court = "妮斐尔泰丽 泰伊 妮斐尔提提 梅莉塔蒙 赫努特美伊特 哈特谢普苏特 索贝克涅弗鲁 伊西斯诺弗蕾特 阿赫摩丝 伊姆霍特普"
+
+[pools.egyptian-places]
+label = "古埃及地名"
+[pools.egyptian-places.groups]
+upper = "底比斯 卢克索 阿拜多斯 丹德拉 艾德富 科姆翁布 埃斯纳 伊拉康波利斯 伊利芬丁岛 阿斯旺"
+lower = "孟菲斯 赫利奥波利斯 萨卡拉 吉萨 布托 塔尼斯 布巴斯提斯 塞易斯 纳乌克拉提斯 亚历山大港"
+
+[pools.egyptian-epithets]
+label = "古埃及称号"
+[pools.egyptian-epithets.groups]
+temple = "日轮之子 两地之主 神庙守护者 持秤者 圣舟引路人 河谷大祭司"
+river = "大河之子 北岸领主 南田总管 河口守卫 莲池记事官 风帆领航者"
+
+[pools.latin-given]
+label = "拉丁人名"
+[pools.latin-given.groups]
+male = "盖乌斯 卢基乌斯 马尔库斯 普布利乌斯 提图斯 昆图斯 提比略 德基穆斯 塞克斯图斯 阿庇乌斯 奥卢斯 格奈乌斯"
+female = "尤利娅 莉维娅 克劳狄娅 科尔涅利娅 波尔基娅 弗拉维娅 塞尔维莉娅 图莉娅 安东尼娅 瓦莱莉娅 奥克塔维娅"
+
+[pools.latin-house]
+label = "拉丁族名"
+[pools.latin-house.groups]
+republic = "尤利乌斯 科尔涅利乌斯 克劳狄乌斯 法比乌斯 瓦莱里乌斯 埃米利乌斯 曼利乌斯 弗拉米尼乌斯"
+imperial = "弗拉维乌斯 奥雷里乌斯 乌尔皮乌斯 埃利乌斯 安东尼乌斯 塞普蒂米乌斯 塞维鲁斯 马克里努斯"
+
+[pools.latin-places]
+label = "拉丁地名"
+[pools.latin-places.groups]
+italy = "罗马 奥斯提亚 提布尔 亚里米努姆 拉文纳 维罗纳 庞贝 卡普阿 梅迪奥拉努姆 尼亚波利斯"
+province = "卢格杜努姆 卢泰西亚 隆迪尼乌姆 埃博拉库姆 科洛尼亚 塔拉科 戈尔蒂纳 格萨略 奥古斯塔 塞拉戈萨"
+
+[pools.steppe-given]
+label = "草原人名"
+[pools.steppe-given.groups]
+steppe = "巴特尔 铁木真 孛儿帖 也速该 合撒儿 木华黎 速不台 哲别 旭烈兀 拔都 贵由 蒙哥 察合台"
+later = "达日 阿拉坦 巴雅尔 额尔德尼 其其格 哈斯 萨仁 乌云 达瓦 苏和 苏日勒和克 岱森达日"
+
+[pools.steppe-places]
+label = "草原地名"
+[pools.steppe-places.groups]
+rivers = "斡难 克鲁伦 土拉 额尔古纳 鄂尔浑 色楞格 伊犁 车尔臣 乌伦古"
+mountains = "肯特 阿尔泰 乌兰山 锡林 大兴安岭 天山 阿拉善 呼伦贝尔 漠北"
+
+[pools.steppe-ending]
+label = "草原国号后缀"
+[pools.steppe-ending.groups]
+polity = "国 汗国 部盟 王庭"
+camp = "大帐 部落 部族 牧地"
+
+[pools.british-places]
+label = "不列颠地名"
+[pools.british-places.groups]
+coast = "朴次茅斯 布里斯托 多佛 赫尔 纽卡斯尔 惠特比 彭赞斯 福尔茅斯"
+inland = "约克 巴斯 温彻斯特 斯特灵 剑桥 牛津 德比 华威 赫里福德 萨利斯伯里"
+
+[pools.central-europe-places]
+label = "中欧地名"
+[pools.central-europe-places.groups]
+river = "维也纳 布拉格 林茨 雷根斯堡 美因茨 科布伦茨 布达 佩斯 布拉迪斯拉发"
+mountain = "因斯布鲁克 萨尔茨堡 格拉茨 克拉科夫 布尔诺 奥洛穆茨 波普拉德 克卢日"

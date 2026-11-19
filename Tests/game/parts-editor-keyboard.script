@@ -1,0 +1,54 @@
+using System;
+using System.IO;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Chinese_Name.Naming.Game;
+
+void Check(bool pass, string message) { if (!pass) throw new InvalidOperationException(message); }
+var shell = ScrollWindow.getCurrentWindow();
+Check(shell?.screen_id == "culture", "Open the original culture page first.");
+Check(shell.GetComponentInChildren<NamingWindow.OnomasticsEditor>() != null, "The embedded onomastics editor is missing.");
+int sequence = 0;
+async System.Threading.Tasks.Task Key(string action)
+{
+    string path = Path.Combine("__EXCHANGE__", ++sequence + ".mouse");
+    File.WriteAllText(path + ".tmp", action);
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action);
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+}
+var events = EventSystem.current;
+string Focused() => events.currentSelectedGameObject?.name;
+void Submit() => ExecuteEvents.Execute(events.currentSelectedGameObject, new BaseEventData(events), ExecuteEvents.submitHandler);
+var first = shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage.Default");
+first.Select();
+await Key("tab");
+Check(Focused()?.StartsWith("PreviewLanguage.", StringComparison.Ordinal) == true && Focused() != first.name,
+    "Tab did not advance to another preview language.");
+await Key("shift-tab");
+Check(Focused() == first.name, "Shift+Tab did not return to the first preview language.");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+Check(tab.parent_asset_specials.gameObject.activeInHierarchy && !tab.parent_asset_editor_group.gameObject.activeInHierarchy, "The native word group opened by itself.");
+var group = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>().Single(item => item.onomastics_asset.id == "group_2");
+group.button.Select(); Submit();
+await Game.NextFrame(); await Game.NextFrame();
+Check(Focused() == group.button.name, "Focus was lost opening the word group.");
+var field = tab._editor_input.inputField;
+Check(field.isActiveAndEnabled, "Missing the native word group input.");
+field.Select(); field.ActivateInputField();
+await Game.NextFrame();
+Check(field.isFocused, "Text field did not focus.");
+string baseline = field.text;
+field.ProcessEvent(new Event { type = EventType.KeyDown, character = 'z', keyCode = KeyCode.Z });
+Check(field.text.Contains("z") || field.text.Contains("Z"), "Key event did not enter the character.");
+field.ProcessEvent(Event.KeyboardEvent("escape"));
+// ProcessEvent forwards only the key; the normal UI event loop deactivates the field when it finishes.
+field.DeactivateInputField();
+Check(field.text == baseline && field.wasCanceled, "Escape did not cancel the edit.");
+await Key("tab");
+Check(events.currentSelectedGameObject != null && Focused() != field.name, "Tab did not leave the text field.");
+return new { tab = true, reverseTab = true, submit = true, textAndCancel = true, selected = Focused() };

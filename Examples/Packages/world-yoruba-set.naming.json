@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "id": "chinesename:world-yoruba-set",
+  "label": "约鲁巴风格",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:world-styles-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:world-styles-lexicon.yoruba.given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:world-styles-lexicon.yoruba.surname"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.yoruba.city"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.yoruba.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "邦"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.yoruba.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.yoruba.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "约鲁巴语"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:world-styles-lexicon.yoruba.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.yoruba.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.africa.creed"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.africa.war-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:world-styles-lexicon.yoruba.realm"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.africa.alliance-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:world-styles-lexicon.yoruba.city"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.africa.army-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.africa.book-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.africa.motto"
+          }
+        ]
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "world-yoruba-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.africa.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      }
+    ]
+  }
+}

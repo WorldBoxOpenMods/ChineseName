@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const string type = "worldbox:city", pool = "verification:port-roots", alias = "渡口地名";
+const string river = "verification:port-river", ferry = "verification:port-ferry";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var runId = Guid.NewGuid().ToString("N");
+var donorId = "verification:port-source-" + runId;
+var baseId = "verification:port-export-" + runId;
+var editId = "verification:port-edits-" + runId;
+var service = NamingApi.Current;
+var donor = new NamingPack {
+    Format = 1, Id = donorId, Supplemental = true,
+    Words = new List<Word> { new Word { Id = river, Text = "芦浦" }, new Word { Id = ferry, Text = "横津" } },
+    Pools = new Dictionary<string, Dictionary<string, double>> { [pool] = new() { [river] = 1, [ferry] = 1 } },
+    PoolAliases = new Dictionary<string, string> { [alias] = pool },
+    PoolLabels = new Dictionary<string, string> { [pool] = "渡口地名" },
+    WordGroups = new Dictionary<string, WordGroup> {
+        ["waterfront"] = new WordGroup { Pool = pool, Words = new List<string> { river } },
+        ["crossing"] = new WordGroup { Pool = pool, Words = new List<string> { ferry } }
+    }
+};
+void Rescan() { var errors = WorldNamingStore.ReloadPacks(); Check(errors.Count == 0, string.Join(" / ", errors)); }
+string donorPath = WorldNamingStore.Export(donor);
+Rescan();
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+var state = service.GetWorld();
+state.EnabledPacks.Add(donorId);
+state.Cultures[culture.id] = new CultureNaming { Cards = new Dictionary<string, CardNaming> {
+    [type] = new CardNaming { Enabled = true, SourceRule = "places", ExplicitSeparators = true,
+        Roles = new Dictionary<string, string> { ["group_1"] = "name" } }
+}};
+char glyph = AssetManager.onomastics_library.get("chinesename_as_pool").short_id;
+culture.getOnomasticData(MetaType.City).loadFromShortTemplate($"0{glyph}1|0:{alias};1:府");
+WorldNamingStore.Apply(state);
+NameResult Generate(ulong seed) => service.Generate(new NameRequest(type, seed, culture.id, language.id));
+string[] Samples() => Enumerable.Range(1, 64).Select(seed => Generate((ulong)seed).Text).ToArray();
+var original = Samples();
+Check(new HashSet<string>(original).SetEquals(new[] { "芦浦府", "横津府" }), "The installed donor pool did not generate.");
+var town = world.cities.buildNewCity(founder, tile.zone);
+string heldName = town.name;
+
+string basePath = WorldNamingStore.ExportCombination(baseId, culture.id, null);
+var exported = NamingJson.Read<NamingPack>(File.ReadAllText(basePath));
+Check(exported.PoolAliases[alias] == pool && exported.Pools[pool].Count == 2 &&
+    exported.WordGroups["waterfront"].Words.SequenceEqual(new[] { river }) &&
+    exported.WordGroups["crossing"].Words.SequenceEqual(new[] { ferry }) && exported.PoolLabels[pool] == alias,
+    "The base export dropped alias-only content or group definitions.");
+string exports = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "package-word-group-save");
+Directory.CreateDirectory(exports);
+File.Move(donorPath, Path.Combine(exports, Path.GetFileName(donorPath)));
+Rescan();
+Check(!service.Packages.Contains(donorId), "The old provider is still installed.");
+
+state = service.GetWorld();
+state.EnabledPacks.Remove(donorId);
+state.EnabledPacks.Add(baseId);
+state.Languages[language.id].Pack = baseId;
+WorldNamingStore.Apply(state);
+Check(new HashSet<string>(Samples()).SetEquals(original), "Fresh import of the base did not provide the alias or its words.");
+
+var draft = service.GetWorld();
+draft.Languages[language.id].Pools[pool] = new PoolEdit { Group = baseId + "/waterfront" };
+var editPath = WorldNamingStore.ExportEdits(editId, null, language.id, draft);
+Rescan();
+state = service.GetWorld();
+state.EnabledPacks.Add(editId);
+WorldNamingStore.Apply(state);
+Check(Samples().All(name => name == "芦浦府") && town.name == heldName, "The imported edit did not limit the group or it renamed a city.");
+state = service.GetWorld();
+state.Languages[language.id].Pools[pool] = new PoolEdit { Group = baseId + "/crossing" };
+WorldNamingStore.Apply(state);
+Check(Samples().All(name => name == "横津府"), "The player's newer group edit did not take precedence over the pack.");
+state = service.GetWorld();
+state.Languages[language.id].Pools.Remove(pool);
+WorldNamingStore.Apply(state);
+
+string movedBase = Path.Combine(exports, Path.GetFileName(basePath));
+string movedEdits = Path.Combine(exports, Path.GetFileName(editPath));
+File.Move(basePath, movedBase);
+File.Move(editPath, movedEdits);
+Rescan();
+var paused = service.GetWorld();
+var missing = Generate(1);
+Check(missing.Success && missing.Diagnostics.Contains("中文规则回退") && town.name == heldName &&
+    paused.EnabledPacks.Contains(baseId) && paused.EnabledPacks.Contains(editId) && paused.Languages[language.id].Pack == baseId,
+    "Uninstalling the packs did not recover through the default or discarded saved references.");
+File.Move(movedBase, basePath);
+File.Move(movedEdits, editPath);
+Rescan();
+Check(Samples().All(name => name == "芦浦府") && !service.Packages.Contains(donorId), "Reinstalling did not restore the exported group.");
+
+for (int frame = 0; frame < 120 && !world.units.getSimpleList().Contains(founder); frame++) await Game.NextFrame();
+world.units.checkLists(); world.languages.checkLists(); world.cultures.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists();
+var saved = SaveManager.saveWorldToDirectory(exports);
+Check(saved.actors_data.Any(actor => actor.id == founder.getID()), "The speaking founder was not in the saved world.");
+File.WriteAllLines(Path.Combine(exports, "expected.txt"), new[] {
+    culture.id.ToString(), language.id.ToString(), town.id.ToString(), heldName, baseId, editId, donorId, "芦浦府"
+});
+return new { sourceAfterImport = service.Packages.Contains(donorId), alias, group = baseId + "/waterfront",
+    savedCity = heldName, fallback = missing.Text, restored = Generate(1).Text, save = exports };

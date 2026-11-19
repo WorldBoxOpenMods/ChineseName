@@ -1,0 +1,1052 @@
+{
+  "format": 1,
+  "id": "chinesename:fantasy-race-set",
+  "label": "西幻",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:fantasy-race-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:western-given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:western-surname"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:fantasy-race-lexicon.elf-person"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:fantasy-race-lexicon.elf-house"
+          }
+        ],
+        "when": {
+          "kind": "sapient",
+          "culture-species": "elf"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-person"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-house"
+          }
+        ],
+        "when": {
+          "kind": "sapient",
+          "culture-species": "dwarf"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:fantasy-race-lexicon.orc-person"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:fantasy-race-lexicon.orc-house"
+          }
+        ],
+        "when": {
+          "kind": "sapient",
+          "culture-species": "orc"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-city-places"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.elf-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "庭"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "堡"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.orc-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "寨"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-kingdom-countries"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.elf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "王庭"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "王国"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.orc-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "部族"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-culture"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.elf-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.orc-place"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-language"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.elf-language"
+          },
+          {
+            "id": "suffix",
+            "literal": "语"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-language"
+          },
+          {
+            "id": "suffix",
+            "literal": "语"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.orc-language"
+          },
+          {
+            "id": "suffix",
+            "literal": "语"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:western-surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.elf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.dwarf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.orc-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-clan"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.elf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.dwarf-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.orc-house"
+          },
+          {
+            "id": "suffix",
+            "literal": "部族"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.war-ending"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.war-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.war-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.war-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:western-kingdom-countries"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.alliance-ending"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.elf-house"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.alliance-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.dwarf-house"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.alliance-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.orc-house"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.alliance-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:western-city-places"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.army-ending"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.elf-place"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.army-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.dwarf-place"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.army-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:fantasy-race-lexicon.orc-place"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.army-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.book-ending"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.book-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.book-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:fantasy-race-lexicon.book-ending"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-motto"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.frontier-oaths"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.frontier-oaths"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.frontier-oaths"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "fantasy-race-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      },
+      {
+        "id": "fantasy-race-set.elf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ],
+        "when": {
+          "culture-species": "elf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.dwarf",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ],
+        "when": {
+          "culture-species": "dwarf"
+        }
+      },
+      {
+        "id": "fantasy-race-set.orc",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:fantasy-race-lexicon.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ],
+        "when": {
+          "culture-species": "orc"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "id": "chinesename:world-french-set",
+  "label": "法语风格",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:world-styles-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:world-styles-lexicon.french.given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:world-styles-lexicon.french.surname"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.french.city"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.french.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "公国"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.french.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.french.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "法语"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:world-styles-lexicon.french.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.french.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.europe.creed"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.europe.war-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:world-styles-lexicon.french.realm"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.europe.alliance-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:world-styles-lexicon.french.city"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.europe.army-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.europe.book-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.europe.motto"
+          }
+        ]
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "world-french-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.europe.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      }
+    ]
+  }
+}

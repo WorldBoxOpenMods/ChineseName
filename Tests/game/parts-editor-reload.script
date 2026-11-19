@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+void Check(bool pass, string message) { if (!pass) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/output/person-glyph-save/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "World load did not finish.");
+var world = World.world;
+Check(world.units.get(ids[6])?.getName() == "欧阳青", "Inherited surname changed on load.");
+Check(world.units.get(ids[7])?.getName() == "约翰·史密斯", "Translated name changed on load.");
+const string person = "worldbox:person";
+var service = NamingApi.Current;
+var culture = world.cultures.get(ids[1]);
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" };
+var original = service.Generate(new NameRequest(person, 14, ids[1], ids[4], inputs, writing: NameWriting.Original));
+var translated = service.Generate(new NameRequest(person, 14, ids[1], ids[4], inputs));
+Check(translated.Text == "约翰·史密斯" && original.Text == "John Smith", "Writing or name order was lost.");
+var child = world.units.get(ids[6]);
+var inherited = service.Generate(new NameRequest(person, 14, ids[0], ids[3], inputs,
+    new Dictionary<string, string> { ["surname"] = "欧阳" }));
+Check(inherited.Text == "欧阳岚" && inherited.Sources["surname"].Kind == "inherited", "Post-load naming lost the inherited surname.");
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(world.units.get(ids[7]));
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Find(toggle => toggle.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 120 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+Check(tab.parent_asset_specials.gameObject.activeInHierarchy &&
+    tab.getOnomasticsData().getFullTemplateData().SequenceEqual(new[] { "group_3", "chinesename_rule_separator", "group_1", "chinesename_keep_surname" }),
+    "The displayed arrangement changed on reload.");
+return new { existing = new[] { child.getName(), world.units.get(ids[7]).getName() }, translated = translated.Text, original = original.Text, inherited = inherited.Text };

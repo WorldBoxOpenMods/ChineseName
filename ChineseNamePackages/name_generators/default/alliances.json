@@ -1,0 +1,50 @@
+[
+  {
+    "id": "alliance_name",
+    "default_template": {
+      "format": "{联盟理念}{联盟名后缀}"
+    },
+    "templates": [
+      {
+        "format": "$k1_short$$k2_short${联盟名后缀}",
+        "weight": 18
+      },
+      {
+        "format": "$k1_short$$k2_short$#之盟#",
+        "weight": 10
+      },
+      {
+        "format": "$k1_capital$$k2_capital$#公约#",
+        "weight": 5
+      },
+      {
+        "format": "{联盟理念}{联盟名后缀}",
+        "weight": 8
+      },
+      {
+        "format": "{联盟象征}{联盟名后缀}",
+        "weight": 7
+      },
+      {
+        "format": "{联盟形容}{联盟组织}",
+        "weight": 8
+      },
+      {
+        "format": "{联盟理念}#之盟#",
+        "weight": 7
+      },
+      {
+        "format": "{联盟象征}#公约#",
+        "weight": 5
+      },
+      {
+        "format": "{联盟名号}",
+        "weight": 4
+      },
+      {
+        "format": "{真实国名}{联盟名后缀}",
+        "weight": 1
+      }
+    ]
+  }
+]

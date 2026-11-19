@@ -1,0 +1,57 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/society-onomastics-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the map.");
+
+var world = World.world;
+world.console.Hide();
+var culture = world.cultures.get(ids[0]);
+var kingdom = world.kingdoms.get(ids[3]);
+var rival = world.kingdoms.get(ids[4]);
+var war = world.wars.get(ids[5]);
+Check(kingdom?.name == "云津国" && rival?.name == "松岭国" && war?.name == "云松旧战", "Existing names changed or did not load.");
+var order = new[] { "group_1", "chinesename_as_pool", "group_2" };
+var data = culture.getOnomasticData(MetaType.Kingdom);
+Check(data.getFullTemplateData().SequenceEqual(order) && data.getGroupString("group_1") == "国号主体",
+    "Country naming did not retain the native arrangement.");
+var service = NamingApi.Current;
+string Generate(string type, long from, long language) => service.Generate(new NameRequest("worldbox:" + type, 0, from, language)).Text;
+Check(Generate("kingdom", culture.id, ids[1]) == kingdom.name && Generate("kingdom", culture.id, ids[2]) == rival.name,
+    "Country naming did not restore both language settings.");
+Check(Generate("family", culture.id, ids[1]) == "松庭一门" && Generate("clan", culture.id, ids[1]) == "白鹿氏族" &&
+      Generate("culture", culture.id, ids[1]) == "河洛之风" && Generate("language", culture.id, ids[1]) == "江渚语" &&
+      Generate("religion", culture.id, ids[1]) == "观星教", "A social naming arrangement did not survive.");
+
+var founder = world.units.get(ids[6]);
+var child = world.cultures.newCulture(founder, false);
+child.cloneAndEvolveOnomastics(culture);
+world.cultures.checkLists();
+Check(child.getOnomasticData(MetaType.Kingdom).getGroupString("group_1") == "国号主体" &&
+      Generate("kingdom", child.id, ids[1]) == kingdom.name, "Culture divergence did not keep the country pool selector.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_kingdom").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + ids[2]).onClick.Invoke();
+for (int i = 0; i < 10; i++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+Check(preview == rival.name && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(order),
+    "Reopening the native editor produced " + preview);
+return new { save, preview, kingdom = kingdom.name, rival = rival.name, manualWar = war.name, childCulture = child.name };

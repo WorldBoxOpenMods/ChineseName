@@ -1,0 +1,162 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+
+const string speciesPack = "chinesename:species-lexicon", atlas = "chinesename:world-styles-lexicon";
+const string nordic = "chinesename:world-nordic-set", cityType = "worldbox:city";
+const string catPlaces = speciesPack + ".cat.place", surnameKey = "chinesename.surname.v1";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var fresh = service.GetWorld();
+Check(fresh.EnabledPacks.Count == 0 && fresh.CulturePack == null &&
+    service.Packages.ToHashSet().SetEquals(new[] { service.DefaultPack, speciesPack }),
+    "The test needs the two bundled packages and a world without custom selections.");
+var pack = service.GetPackage(speciesPack);
+Dictionary<string, object> Inputs(ActorAsset asset) => new()
+{
+    ["species"] = asset.id, ["culture-species"] = asset.id,
+    ["kind"] = asset.is_boat ? "boat" : asset.civ ? "sapient" : "creature"
+};
+bool Themed(NameResult value) => value.Success &&
+    value.Sources.Values.Any(source => source.Reference?.StartsWith(speciesPack + ".", StringComparison.Ordinal) == true);
+var civilizations = AssetManager.actor_library.list.Where(asset => asset.civ && !asset.id.StartsWith("$")).ToArray();
+Check(civilizations.Length >= 39, "Expected the original playable species.");
+foreach (var asset in civilizations)
+foreach (var type in new[] { "person", "city", "kingdom", "culture", "language", "family", "clan", "religion", "motto" })
+{
+    var value = service.Generate(new NameRequest("worldbox:" + type, 17, inputs: Inputs(asset)));
+    Check(value.Success && Themed(value) == (asset.id != "human"),
+        asset.id + " has an unexpected default for " + type + " · " + value.Text);
+}
+foreach (var id in new[] { "cat", "dragon", "boat_fishing" })
+    Check(Themed(service.Generate(new NameRequest("worldbox:person", 17, inputs: Inputs(AssetManager.actor_library.get(id))))),
+        "An individual without a civilization missed its themed words: " + id);
+
+var rows = new (string Asset, string Theme, string City, string Realm)[]
+{
+    ("human", null, null, null), ("elf", "elf", "庭", "王庭"), ("dwarf", "dwarf", "堡", "王国"),
+    ("orc", "orc", "寨", "部族"), ("civ_cat", "cat", "庭", "领"),
+    ("civ_crystal_golem", "crystal", "关", "晶庭")
+};
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(rows.Length + 1).Select(group => group.First()).ToArray();
+Check(tiles.Length == rows.Length + 1, "The world has too few suitable zones.");
+var cases = new List<(Actor Actor, Culture Culture, Language Language, City City, Kingdom Kingdom)>();
+HashSet<string> PoolTerms(string pool, NamingPack words) => words.Words.Where(word => words.Pools[pool].ContainsKey(word.Id))
+    .Select(word => word.Chinese ?? word.Text).ToHashSet();
+foreach (var row in rows)
+{
+    var tile = tiles[cases.Count];
+    var actor = world.units.createNewUnit(row.Asset, tile);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    var language = world.languages.newLanguage(actor, true);
+    actor.joinLanguage(language);
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    var city = world.cities.buildNewCity(actor, tile.zone);
+    actor.joinCity(city);
+    actor.data.set(surnameKey, (string)null);
+    actor.generateNewName();
+    if (row.Theme == null)
+    {
+        var classic = service.GetPackage(service.DefaultPack);
+        Check(PoolTerms("chinesename:places", classic).Contains(city.name) &&
+            PoolTerms("chinesename:countries", classic).Contains(kingdom.name), "Human civilization lost its bundled defaults.");
+    }
+    else
+    {
+        var places = PoolTerms(speciesPack + "." + row.Theme + ".place", pack);
+        var people = PoolTerms(speciesPack + "." + row.Theme + ".given", pack);
+        Check(places.Any(root => people.Any(given => actor.getName() == root + given)) &&
+            places.Any(root => city.name == root + row.City) && places.Any(root => kingdom.name == root + row.Realm),
+            row.Asset + " did not actually get its expected styled names: " + string.Join("，", actor.getName(), city.name, kingdom.name));
+    }
+    cases.Add((actor, culture, language, city, kingdom));
+}
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+world.kingdoms.checkLists(); world.cities.checkLists();
+Check(service.GetWorld().Cultures.Count == 0, "The default names were bound as manual world preferences.");
+var cat = cases[4];
+string oldCity = cat.City.name, oldKingdom = cat.Kingdom.name;
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+SelectedUnit.select(cat.Actor);
+SelectedMetas.selected_culture = cat.Culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var cards = tab.getOnomasticsData();
+Check(cards.getGroupString("group_1") == "灵猫地名词根" && cards.getGroupString("group_2") == "庭",
+    "The contextual defaults did not appear in the original naming editor.");
+char suffix = AssetManager.onomastics_library.get("group_2").short_id;
+tab.loadTemplate(cards.getShortTemplate().Replace(suffix + ":庭", suffix + ":港"));
+await Frames();
+var edited = service.GetWorld();
+Check(edited.Cultures[cat.Culture.id].Cards[cityType].Enabled && cat.Actor.generateName(MetaType.City, 7).EndsWith("港"),
+    "Editing the default words did not take effect in actual naming.");
+
+string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+foreach (string id in new[] { atlas, nordic, speciesPack })
+{
+    string file = id.Split(':')[1] + ".naming.json";
+    File.Copy(Path.Combine(examples, file), Path.Combine(WorldNamingStore.PackageDirectory, "species-defaults-test-" + file), true);
+}
+Check(WorldNamingStore.ReloadPacks().Count == 0, "Scanning a legacy copy of the built-in vocabulary should be harmless.");
+var second = world.units.createNewUnit("civ_cat", tiles.Last());
+var other = world.cultures.newCulture(second, true);
+second.setCulture(other);
+second.joinLanguage(cat.Language);
+edited = service.GetWorld();
+edited.EnabledPacks.Add(nordic);
+edited.EnabledPacks.Add(atlas);
+edited.Cultures[other.id] = new CultureNaming { Pack = nordic };
+var nordicPlace = service.GetPackage(atlas);
+string expected = "乌普萨拉";
+string nordicPool = atlas + ".nordic.city";
+var allowed = nordicPlace.Words.Single(word => word.Text == "Uppsala" && nordicPlace.Pools[nordicPool].ContainsKey(word.Id));
+var languageProfile = edited.Languages[cat.Language.id];
+languageProfile.Pools[nordicPool] = new PoolEdit
+{
+    ExcludeIds = nordicPlace.Pools[nordicPool].Keys.Where(id => id != allowed.Id).ToList()
+};
+var catRoots = PoolTerms(catPlaces, pack);
+string selectedRoot = "猫眼台";
+languageProfile.Pools[catPlaces] = new PoolEdit
+{
+    ExcludeText = catRoots.Where(word => word != selectedRoot).ToList()
+};
+WorldNamingStore.Apply(edited);
+Check(second.generateName(MetaType.City, 7) == expected && cat.Actor.generateName(MetaType.City, 7) == selectedRoot + "港" &&
+    cat.City.name == oldCity && cat.Kingdom.name == oldKingdom, "An override ignored a player edit, language or saved name.");
+
+string folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "species-defaults-save");
+Directory.CreateDirectory(folder);
+var samples = cases.Select(entry => new { species = entry.Actor.asset.id, person = entry.Actor.getName(),
+    city = entry.City.name, kingdom = entry.Kingdom.name }).ToArray();
+long catId = cat.Actor.getID(), otherId = second.getID(), cityId = cat.City.id, dwarfId = cases[2].Actor.getID();
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+world = World.world;
+Check(!SmoothLoader.isLoading() && world.units.get(catId)?.generateName(MetaType.City, 7) == "猫眼台港" &&
+    world.units.get(otherId)?.generateName(MetaType.City, 7) == expected &&
+    world.units.get(dwarfId)?.generateName(MetaType.City, 7).EndsWith("堡") == true && world.cities.get(cityId)?.name == oldCity,
+    "The reloaded map lost an automatic style, override or existing name.");
+return new { civilizations = civilizations.Length, samples, editedCatCity = "猫眼台港", nordicCatCity = expected, folder };

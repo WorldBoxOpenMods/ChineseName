@@ -1,0 +1,234 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool pass, string message) { if (!pass) throw new InvalidOperationException(message); }
+var world = World.world;
+world.console.Hide();
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.city == null).ToArray();
+var tile = tiles[0];
+var remote = tiles.First(other => Math.Abs(other.x - tile.x) + Math.Abs(other.y - tile.y) > 40);
+var father = world.units.createNewUnit("human", tile);
+var mother = world.units.createNewUnit("human", tile);
+var westerner = world.units.createNewUnit("human", remote);
+var otherHan = world.units.createNewUnit("human", tile);
+var otherWest = world.units.createNewUnit("human", remote);
+world.kingdoms.makeNewCivKingdom(father);
+world.kingdoms.makeNewCivKingdom(westerner);
+var culture = world.cultures.newCulture(father, true);
+var westernCulture = world.cultures.newCulture(westerner, true);
+var origin = world.languages.newLanguage(father, true);
+var compare = world.languages.newLanguage(father, false);
+var english = world.languages.newLanguage(westerner, true);
+var french = world.languages.newLanguage(westerner, false);
+culture.setName("华风文化"); westernCulture.setName("英语命名风格");
+origin.setName("中原话"); compare.setName("河谷话"); english.setName("英语"); french.setName("法语");
+father.setCulture(culture); mother.setCulture(culture); westerner.setCulture(westernCulture);
+father.joinLanguage(origin); mother.joinLanguage(origin); westerner.joinLanguage(english);
+otherHan.setCulture(culture); otherHan.joinLanguage(compare);
+otherWest.setCulture(westernCulture); otherWest.joinLanguage(french);
+father.data.sex = ActorSex.Male; mother.data.sex = ActorSex.Female;
+mother.joinLanguage(compare);
+const string person = "worldbox:person";
+var service = NamingApi.Current;
+var builtIn = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+void Restrict(Language language, string pool, string wanted)
+{
+    var key = "chinesename:" + pool;
+    if (!config.Languages.TryGetValue(language.id, out var profile)) config.Languages[language.id] = profile = new LanguageNaming();
+    var selected = builtIn.Words.Single(word => builtIn.Pools[key].ContainsKey(word.Id) && word.Text == wanted).Id;
+    profile.Pools[key] = new PoolEdit { ExcludeIds = builtIn.Pools[key].Keys.Where(id => id != selected).ToList() };
+}
+Restrict(origin, "given-first", "青"); Restrict(compare, "given-first", "岚");
+Restrict(origin, "surname", "欧阳"); Restrict(compare, "surname", "林");
+Restrict(origin, "place-root", "澄江"); Restrict(compare, "place-root", "栖岭");
+Restrict(english, "western-given", "John"); Restrict(english, "western-surname", "Smith");
+Restrict(french, "western-given", "Jean"); Restrict(french, "western-surname", "Martin");
+config.Cultures[westernCulture.id] = new CultureNaming { Presets = new Dictionary<string, string> { [person] = "western" },
+    Rules = new Dictionary<string, RuleEdit> { [person + "/western"] = new RuleEdit { Inheritance = SurnameOrder.New } } };
+config.Cultures[culture.id] = new CultureNaming { Rules = new Dictionary<string, RuleEdit> {
+    [person + "/sapient"] = new RuleEdit { Fields = new Dictionary<string, PartEdit> {
+        ["given"] = new PartEdit { Optional = true, Chance = 0 }
+    }}
+}};
+WorldNamingStore.Apply(config);
+// The original game names culture founders during culture creation. Create a new, unnamed member to verify the first draw.
+var founder = world.units.createNewUnit("human", tile);
+founder.setCulture(culture); founder.joinLanguage(origin);
+founder.data.sex = ActorSex.Male;
+founder.data.get("chinesename.surname.v1", out string initialSurname);
+Check(initialSurname == null, "Founder should start with no saved surname.");
+Check(founder.getName() == "欧阳青", "The first surname was not drawn from the language's surname pool.");
+founder.data.get("chinesename.surname.v1", out string storedSurname);
+Check(storedSurname == "欧阳", "The founder's complete surname was not saved.");
+
+
+for (int i = 0; i < 120 && (!world.units.getSimpleList().Contains(founder) || !world.units.getSimpleList().Contains(mother)); i++)
+    await Game.NextFrame();
+world.cultures.updateDirtyUnits();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+Button Category(string name) => tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_" + name).toggle.GetComponent<Button>();
+if (tab._name_set_type != MetaType.Unit) Category("unit").onClick.Invoke();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+world.console.Hide();
+var exchange = "__EXCHANGE__";
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+T Find<T>(string name) where T : Selectable => shell.GetComponentsInChildren<T>().SingleOrDefault(item => item.name == name);
+OnomasticsAssetButton Glyph(string id, bool palette) =>
+    (palette ? tab.parent_asset_specials : tab.parent_name_variation_1).GetComponentsInChildren<OnomasticsAssetButton>()
+    .SingleOrDefault(button => button.onomastics_asset?.id == id);
+string Preview()
+{
+    var line = shell.transform.FindRecursive("PreviewName");
+    Check(line != null && line.GetComponent<Selectable>() == null, "Missing read-only preview.");
+    return line.GetComponent<Text>().text;
+}
+string Position(Selectable btn)
+{
+    var rect = (RectTransform)btn.transform;
+    var p = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)p.x} {UnityEngine.Screen.height - (int)p.y}";
+}
+int seq = 0;
+async System.Threading.Tasks.Task Send(string action, Selectable control = null, Selectable other = null)
+{
+    var point = control == null ? "" : Position(control);
+    if (other != null) point += Position(other);
+    string path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + point);
+    File.Move(path + ".tmp", path);
+    var t = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < t) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action + point);
+    for (int i = 0; i < 14; i++) await Game.NextFrame();
+}
+async System.Threading.Tasks.Task Choose(string label)
+{
+    var language = world.languages.Single(item => item.name == label);
+    var flag = Find<Button>("PreviewLanguage." + language.id);
+    Check(flag != null, "Missing language flag " + label);
+    if (flag.image.sprite != SpriteTextureLoader.getSprite("ui/tab_button_sort_selected")) await Send("click", flag);
+}
+void Layout(params string[] expected) => Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(expected),
+    "Wrong layout: " + string.Join(", ", tab.getOnomasticsData().getFullTemplateData()));
+const string surname = "group_1", first = "group_2", given = "group_3", keep = "chinesename_keep_surname";
+const string separator = "chinesename_rule_separator";
+Check(Glyph(keep, true) != null && Glyph("hyphen", true) != null && Glyph("chinesename_city_suffix", true) == null,
+    "The creature palette has the wrong glyphs.");
+Check(Find<Button>("ToggleGlyphs") == null, "There is still a separate vanilla mode.");
+Layout(surname, keep, first);
+await Choose("中原话");
+Check(Preview() == "欧阳青", "Expected 欧阳青 but got " + Preview());
+Check(!tab.parent_asset_editor_group.gameObject.activeInHierarchy, "The native editor opened by itself.");
+var request = new NameRequest(person, 0, culture.id, compare.id, new Dictionary<string, object>{{"kind","sapient"},{"species","human"}},
+    new Dictionary<string, string> { ["surname"] = "欧阳" });
+await Choose("河谷话");
+Check(Preview() == "欧阳岚", "Language change altered the wrong part: " + Preview());
+shell.scrollRect.verticalNormalizedPosition = 1;
+for (int i = 0; i < 20; i++) await Game.NextFrame();
+var candidate = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>().Single(x => x.onomastics_asset.id == surname);
+await Send("click", candidate.button);
+var words = tab._editor_input.inputField;
+shell.scrollRect.verticalNormalizedPosition = 0;
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+await Send("click", words);
+GUIUtility.systemCopyBuffer = "林";
+await Send("paste");
+await Send("enter");
+Check(tab.getOnomasticsData().getGroupString(surname) == "林", "The native surname group was not edited.");
+var newMember = world.units.createNewUnit("human", tile);
+newMember.setCulture(culture); newMember.joinLanguage(origin);
+Check(newMember.getName() == "林青", "A member without a surname did not use the new candidates.");
+var child = BabyMaker.makeBaby(founder, mother, ActorSex.Male, pTile: tile);
+child.setCulture(culture); child.joinLanguage(origin);
+Check(child.getName() == "欧阳青", "A real birth did not keep the complete inherited surname.");
+var han = service.Generate(request);
+Check(han.Text == Preview() && han.Sources["surname"].Group == surname, "Generation and preview diverged.");
+// A separator detaches the marker. An invalid draft must leave the last valid layout active.
+string Short(params string[] ids) => string.Concat(ids.Select(id => AssetManager.onomastics_library.get(id).short_id));
+tab.loadTemplate(Short(surname, "space", keep, first) + "|0:林");
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+Check(shell.transform.FindRecursive("PreviewName") == null && service.Generate(request).Text == "欧阳岚",
+    "A detached marker replaced the last valid arrangement.");
+tab.loadTemplate(Short(keep, surname, first) + "|0:林");
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+Check(shell.transform.FindRecursive("PreviewName") == null && service.Generate(request).Text == "欧阳岚",
+    "A marker without a left neighbor replaced the last valid arrangement.");
+tab.loadTemplate(Short(surname, keep, first, keep) + "|0:林");
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+Check(shell.transform.FindRecursive("PreviewName") == null && service.Generate(request).Text == "欧阳岚",
+    "A second marker replaced the last valid arrangement.");
+tab.loadTemplate(Short(surname, keep, surname, first) + "|0:林");
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+Check(Preview() == "欧阳林岚" && service.Generate(request).Text == "欧阳林岚",
+    "The marker affected more than the adjacent occurrence of a reused word group.");
+tab.loadTemplate(Short(surname, keep, first) + "|0:林");
+for (int i = 0; i < 15; i++) await Game.NextFrame();
+Check(Preview() == "欧阳岚", "Could not restore the original layout.");
+
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(westerner);
+SelectedMetas.selected_culture = westernCulture;
+ScrollWindow.showWindow("culture");
+shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+tab = shell.GetComponentInChildren<OnomasticsTab>();
+if (tab._name_set_type != MetaType.Unit) Category("unit").onClick.Invoke();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+await Choose("英语");
+Layout(given, separator, surname, keep);
+Check(Preview() == "约翰·史密斯", "Wrong English translation order: " + Preview());
+var req = new NameRequest(person, 0, westernCulture.id, english.id, new Dictionary<string, object>{{"kind","sapient"},{"species","human"}});
+var translated = service.Generate(req);
+Check(translated.Text == Preview() && translated.Sources["given"].Group == given && translated.Sources["surname"].Group == surname,
+    "Translated spelling did not come from the displayed glyphs.");
+var original = service.Generate(new NameRequest(person, 0, westernCulture.id, english.id, req.Inputs, writing: NameWriting.Original));
+Check(original.Text == "John Smith", "English writing lost its native space.");
+await Choose("法语");
+Check(Preview() == "让·马丁", "Language did not affect a western name: " + Preview());
+await Choose("英语");
+Check(!tab.parent_asset_editor_group.gameObject.activeInHierarchy, "Preview unexpectedly opened the word group.");
+shell.scrollRect.verticalNormalizedPosition = 1;
+for (int i = 0; i < 20; i++) await Game.NextFrame();
+// Add a vanilla glyph to a layout whose separator formerly existed only in the pack.
+await Send("click", Glyph("hyphen", true).button);
+await Send("drag", Glyph("hyphen", false).button, Glyph(surname, false).button);
+Layout(given, separator, "hyphen", surname, keep);
+Check(Preview() == "约翰·-史密斯", "Inserting a glyph replaced the pre-existing separator: " + Preview());
+await Send("click", Glyph("hyphen", false).button);
+Layout(given, separator, surname, keep);
+Check(Preview() == "约翰·史密斯", "Native removal did not restore the translated preview.");
+Check(service.Generate(req).Text == Preview(), "Removing the vanilla glyph did not take effect.");
+var named = world.units.createNewUnit("human", remote);
+named.setCulture(westernCulture); named.joinLanguage(english);
+Check(named.getName() == Preview(), "A living actor did not get the displayed name.");
+for (int i = 0; i < 120 && (!world.units.getSimpleList().Contains(child) || !world.units.getSimpleList().Contains(named)); i++)
+    await Game.NextFrame();
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists(); world.kingdoms.checkLists();
+var save = Path.Combine(output, "person-glyph-save");
+Directory.CreateDirectory(save);
+SaveManager.saveWorldToDirectory(save);
+File.WriteAllLines(Path.Combine(save, "expected.txt"),
+    new[]{ culture.id, westernCulture.id, origin.id, compare.id, english.id, french.id, child.getID(), named.getID() }.Select(id => id.ToString()));
+Tooltip.hideTooltip();
+shell.scrollRect.verticalNormalizedPosition = 1;
+for (int i = 0; i < 20; i++) await Game.NextFrame();
+var shot = Path.Combine(output, "person-glyph-arrangement.png");
+ScreenCapture.CaptureScreenshot(shot);
+for (int i = 0; i < 30 && !File.Exists(shot); i++) await Game.NextFrame();
+return new { child = child.getName(), western = named.getName(), english = original.Text, mouseEvents = seq, save, shot };

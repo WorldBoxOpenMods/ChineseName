@@ -1,0 +1,156 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string speciesPack = "chinesename:species-lexicon";
+const string given = speciesPack + ".cat.given", place = speciesPack + ".cat.place";
+const string surnameKey = "chinesename.surname.v1";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int frame = 0; frame < count; frame++) await Game.NextFrame();
+}
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var source = Directory.EnumerateFiles(output.Parent.Parent.FullName, "expected.txt", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/nordic-cats-export/expected.txt", StringComparison.Ordinal))
+    .OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(source);
+string packId = expected[0];
+var service = NamingApi.Current;
+var fresh = service.GetWorld();
+Check(fresh.Cultures.Count == 0 && fresh.EnabledPacks.Count == 0 &&
+    WorldNamingStore.ReloadPacks().Count == 0 && service.Packages.ToHashSet().SetEquals(new[] { service.DefaultPack, speciesPack, packId }),
+    "A fresh world should only have its bundled packs and the import.");
+
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.isGoodForNewCity());
+var far = world.tiles_list.First(cell => cell.Type.ground && cell.zone.isGoodForNewCity() &&
+    Math.Abs(cell.x - tile.x) + Math.Abs(cell.y - tile.y) > 26);
+var founder = world.units.createNewUnit("civ_cat", tile);
+var mother = world.units.createNewUnit("civ_cat", tile);
+founder.data.sex = ActorSex.Male;
+mother.data.sex = ActorSex.Female;
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+mother.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+mother.joinLanguage(language);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+var settings = service.GetWorld();
+settings.EnabledPacks.Add(packId);
+settings.Cultures[culture.id] = new CultureNaming { Pack = packId };
+WorldNamingStore.Apply(settings);
+
+founder.data.set(surnameKey, (string)null);
+mother.data.set(surnameKey, (string)null);
+founder.generateNewName();
+mother.generateNewName();
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var city = world.cities.buildNewCity(founder, tile.zone);
+founder.joinCity(city);
+mother.joinCity(city);
+world.kingdoms.checkLists(); world.cities.checkLists();
+var pack = service.GetPackage(packId);
+HashSet<string> Terms(string pool) => pack.Words.Where(word => pack.Pools[pool].ContainsKey(word.Id))
+    .Select(word => word.Chinese ?? word.Text).ToHashSet();
+var names = Terms(given);
+var places = Terms(place);
+var context = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat" };
+Check(Enumerable.Range(0, 128).Select(seed => service.Generate(new NameRequest("worldbox:person", (ulong)seed,
+        culture.id, language.id, context)).Text.Split('·')).All(parts =>
+        parts.Length == 2 && names.Contains(parts[0]) && places.Contains(parts[1])),
+    "The bundled species words restored exclusions baked into the export.");
+string[] personParts = founder.getName().Split('·');
+Check(personParts.Length == 2 && names.Contains(personParts[0]) && places.Contains(personParts[1]) &&
+    places.Any(root => city.name == root + "湾") && places.Any(root => kingdom.name == root + "领"),
+    "Imported native names did not use the saved arrangement and bundled words.");
+var baby = BabyMaker.makeBaby(founder, mother, ActorSex.Female, pTile: tile);
+baby.data.get(surnameKey, out string inherited);
+Check(inherited == personParts[1] && baby.getName().EndsWith("·" + inherited),
+    "The imported arrangement did not inherit the father's surname.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+await Frames();
+
+var exchange = "__EXCHANGE__";
+int seq = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component target = null)
+{
+    string coords = "";
+    if (target != null)
+    {
+        var rect = (RectTransform)target.transform;
+        var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+            rect.TransformPoint(rect.rect.center));
+        coords = $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+    }
+    string path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + coords);
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action);
+    await Frames();
+}
+var categories = new[] { "unit", "kingdom", "city" };
+var templates = new[] { expected[2], expected[4], expected[3] };
+for (int index = 0; index < categories.Length; index++)
+{
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames(6);
+    var category = tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + categories[index]);
+    await Mouse("click", category);
+    Check(tab.getOnomasticsData().getShortTemplate() == templates[index], "The native editor changed " + categories[index]);
+}
+var oldCityName = city.name;
+var suffix = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(item => item.onomastics_asset.id == "group_2").button;
+if (tab._selected_editor_group?.id != "group_2") await Mouse("click", suffix);
+shell.scrollRect.verticalNormalizedPosition = 0;
+await Frames(8);
+var input = tab._editor_input.inputField;
+await Mouse("click", input);
+GUIUtility.systemCopyBuffer = "港";
+await Mouse("paste");
+Check(input.isFocused && input.text.Trim() == "港", "The imported word group could not accept edits.");
+await Mouse("enter");
+shell.scrollRect.verticalNormalizedPosition = 1;
+await Frames(8);
+var edited = tab.getOnomasticsData().getShortTemplate();
+Check(edited == expected[3].Replace(";1:湾", ";1:港") &&
+    service.GetWorld().Cultures[culture.id].Cards["worldbox:city"].Enabled, "The native editor did not apply changes.");
+await Mouse("move", shell.GetComponentsInChildren<Text>().First(item => item.name == "PreviewName"));
+var preview = shell.GetComponentsInChildren<Text>().First(item => item.name == "PreviewName").text;
+Check(places.Any(root => preview == root + "港"), "The edited preview ignored the imported vocabulary.");
+var newCity = world.cities.buildNewCity(founder, far.zone);
+Check(places.Any(root => newCity.name == root + "港") && city.name == oldCityName,
+    "The next city did not use the saved edit or the first city was renamed.");
+
+string repeatedPath = WorldNamingStore.ExportCombination("verification:reexport-" + Guid.NewGuid().ToString("N"),
+    culture.id, language.id);
+var repeated = NamingJson.Read<NamingPack>(File.ReadAllText(repeatedPath));
+Check(repeated.Rules["worldbox:city"].Any(rule => rule.NativeCards?.Template == edited) &&
+    repeated.Rules["worldbox:person"].Any(rule => rule.NativeCards?.Template == expected[2]) &&
+    repeated.PoolAliases["灵猫个体名"] == given && repeated.PoolAliases["灵猫地名词根"] == place,
+    "A second export dropped the new edit or a vocabulary used by an untouched arrangement.");
+string screenshot = Path.Combine(output.FullName, "imported-native-cats.png");
+ScreenCapture.CaptureScreenshot(screenshot);
+await Frames();
+return new { founder = founder.getName(), kitten = baby.getName(), firstCity = oldCityName, secondCity = newCity.name,
+    kingdom = kingdom.name, preview, mouseEvents = seq, repeatedPath, screenshot };

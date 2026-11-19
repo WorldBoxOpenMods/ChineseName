@@ -1,0 +1,189 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 10)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var otherTile = world.tiles_list.First(t => t.Type.ground && Math.Abs(t.x - tile.x) + Math.Abs(t.y - tile.y) > 40);
+var founder = world.units.createNewUnit("human", tile);
+var neighbour = world.units.createNewUnit("human", otherTile);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+neighbour.setCulture(culture);
+var river = world.languages.newLanguage(founder, true);
+river.setName("江语");
+founder.joinLanguage(river);
+var hill = world.languages.newLanguage(neighbour, false);
+hill.setName("岭语");
+neighbour.joinLanguage(hill);
+world.languages.checkLists();
+world.cultures.checkLists();
+
+var service = NamingApi.Current;
+var pack = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+void Restrict(Language language, string pool, string text)
+{
+    var word = pack.Words.Single(w => w.Text == text && pack.Pools[pool].ContainsKey(w.Id));
+    if (!config.Languages.TryGetValue(language.id, out var profile))
+        config.Languages[language.id] = profile = new LanguageNaming();
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(id => id != word.Id).ToList() };
+}
+Restrict(river, "chinesename:country-root", "云津");
+Restrict(hill, "chinesename:country-root", "松岭");
+Restrict(river, "chinesename:war-conquest", "征伐");
+Restrict(hill, "chinesename:war-conquest", "攻防战");
+Restrict(hill, "chinesename:war-uprising", "起事");
+WorldNamingStore.Apply(config);
+
+world.console.Hide();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var expectedTabs = NameSetAsset.getTypes().Select(type => "tab_onomastics_" + type.ToString().ToLowerInvariant()).ToArray();
+var tabs = tab._tab_groups._toggles.Where(item => item.gameObject.activeInHierarchy && expectedTabs.Contains(item.name)).ToArray();
+Check(tabs.Length == 8 && tabs.All(item => item.toggle.icon.sprite != null), "The culture tab is missing native category icons.");
+var screen = (UnityEngine.Screen.width, UnityEngine.Screen.height, UnityEngine.Screen.fullScreenMode);
+foreach (var (width, height) in new[] { (1280, 720), (960, 540) })
+{
+    UnityEngine.Screen.SetResolution(width, height, FullScreenMode.Windowed);
+    for (int i = 0; i < 60 && (UnityEngine.Screen.width != width || UnityEngine.Screen.height != height); i++) await Game.NextFrame();
+    await Frames();
+    Check(UnityEngine.Screen.width == width && UnityEngine.Screen.height == height, "Could not resize the isolated game.");
+    var viewport = shell.transform_viewport;
+    var bounds = tabs.Select(item => RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, item.transform)).ToArray();
+    Check(bounds.All(rect => rect.min.x >= viewport.rect.xMin - 1 && rect.max.x <= viewport.rect.xMax + 1) &&
+        bounds.Zip(bounds.Skip(1), (left, right) => left.max.x <= right.min.x + 1 || left.min.y >= right.max.y - 1)
+            .All(separate => separate),
+        "Native category icons overlap or extend beyond the scroll viewport at " + width + "×" + height + ": " +
+        string.Join(", ", bounds.Select(rect => rect.min.x + ".." + rect.max.x)));
+}
+UnityEngine.Screen.SetResolution(screen.width, screen.height, screen.fullScreenMode);
+await Frames();
+
+async System.Threading.Tasks.Task Select(MetaType type)
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + type.ToString().ToLowerInvariant()).toggle.click();
+    await Frames();
+    Check(tab._name_set_type == type, "Failed to open " + type);
+}
+string Preview()
+{
+    var preview = shell.transform.FindRecursive("PreviewName");
+    Check(preview != null && preview.GetComponent<Selectable>() == null, "Missing read-only preview.");
+    return preview.GetComponent<Text>().text;
+}
+
+await Select(MetaType.Kingdom);
+var countryPool = pack.Pools["chinesename:countries"];
+Check(pack.Words.Any(word => countryPool.ContainsKey(word.Id) && word.Text == Preview()), "The default preview was not a country name.");
+var marker = AssetManager.onomastics_library.get("chinesename_as_pool");
+var hyphen = AssetManager.onomastics_library.get("hyphen");
+Check(new[] { marker, hyphen }.All(asset => tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Any(button => button.onomastics_asset == asset)), "The pool selector and hyphen must share the original palette.");
+tab.loadTemplate($"0{marker.short_id}1|0:国号主体;1:国");
+await Frames();
+shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + river.id).onClick.Invoke();
+await Frames();
+Check(Preview() == "云津国", "River language preview produced " + Preview());
+shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + hill.id).onClick.Invoke();
+await Frames();
+Check(Preview() == "松岭国", "Hill language preview produced " + Preview());
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var rival = world.kingdoms.makeNewCivKingdom(neighbour);
+Check(kingdom.name == "云津国" && rival.name == "松岭国", "Founding gave " + kingdom.name + ", " + rival.name);
+var hillPreview = Preview();
+kingdom.setCulture(culture);
+kingdom.setLanguage(river);
+rival.setCulture(culture);
+rival.setLanguage(hill);
+var city = world.cities.buildNewCity(founder, tile.zone);
+var otherCity = world.cities.buildNewCity(neighbour, otherTile.zone);
+founder.joinCity(city);
+neighbour.joinCity(otherCity);
+
+foreach (var (type, label, create) in new (MetaType, string, Func<string>)[]
+{
+    (MetaType.Family, "松庭一门", () => world.families.newFamily(founder, tile, null).name),
+    (MetaType.Clan, "白鹿氏族", () => world.clans.newClan(founder, true).name),
+    (MetaType.Culture, "河洛之风", () => world.cultures.newCulture(founder, false).name),
+    (MetaType.Language, "江渚语", () => world.languages.newLanguage(founder, false).name),
+    (MetaType.Religion, "观星教", () => world.religions.newReligion(founder, true).name),
+})
+{
+    await Select(type);
+    tab.loadTemplate("0|0:" + label);
+    await Frames();
+    Check(Preview() == label, type + " preview produced " + Preview());
+    string actual = create();
+    Check(actual == label, type + " creation produced " + actual);
+}
+
+var normal = AssetManager.war_types_library.get("normal");
+var rebellion = AssetManager.war_types_library.get("rebellion");
+var conquest = world.wars.newWar(kingdom, rival, normal);
+var reverse = world.wars.newWar(rival, kingdom, normal);
+var uprising = world.wars.newWar(kingdom, rival, rebellion);
+var automaticWars = new[] { conquest.name, reverse.name, uprising.name };
+Check(conquest.name == "云津国征伐" && reverse.name == "松岭国攻防战" && uprising.name == "松岭国起事",
+    "Actual war names were " + string.Join(", ", automaticWars));
+conquest.data.custom_name = true;
+conquest.setName("云松旧战");
+
+var extension = new NamingPack { Format = 1, Id = "tests:war-participants", Supplemental = true, Priority = 1000 };
+extension.Rules["worldbox:war"] = new List<Rule> {
+    new Rule { Id = "participants", Priority = 1000, Parts = new() {
+        new Part { Id = "first", Input = "attacker" }, new Part { Id = "separator", Literal = "与" },
+        new Part { Id = "second", Input = "defender" }, new Part { Id = "suffix", Literal = "之战" }
+    }}
+};
+var initial = service.GetWorld();
+var extended = service.GetWorld();
+service.InstallPack(extension);
+try
+{
+    extended.EnabledPacks.Add(extension.Id);
+    WorldNamingStore.Apply(extended);
+    var war = world.wars.newWar(kingdom, rival, normal);
+    Check(war.name == "云津国与松岭国之战", "The naming pack did not receive both sides of the war: " + war.name);
+}
+finally
+{
+    WorldNamingStore.Apply(initial);
+    service.UninstallPack(extension.Id);
+}
+
+var book = world.books.newObject();
+var history = AssetManager.book_types.list.First(type => type.name_template == "book_name_history");
+book.newBook(founder, history, null, null, null, null);
+Check(book.name.EndsWith("纪"), "A history book was named " + book.name);
+
+var savedFolder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "society-onomastics-save");
+Directory.CreateDirectory(savedFolder);
+for (int i = 0; i < 120 && !world.units.getSimpleList().Contains(founder); i++) await Game.NextFrame();
+world.units.checkLists(); world.languages.checkLists(); world.cultures.checkLists(); world.cities.checkLists();
+world.kingdoms.checkLists(); world.wars.checkLists();
+var saved = SaveManager.saveWorldToDirectory(savedFolder);
+Check(saved.actors_data.Any(actor => actor.id == founder.getID()), "The saved map is missing the founder.");
+File.WriteAllLines(Path.Combine(savedFolder, "expected.txt"), new[] {
+    culture.id, river.id, hill.id, kingdom.id, rival.id, conquest.id, founder.getID()
+}.Select(id => id.ToString()));
+return new { categories = tabs.Select(item => item.name).ToArray(), hillPreview,
+    countries = new[] { kingdom.name, rival.name }, wars = automaticWars,
+    book = book.name, savedFolder };

@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+async System.Threading.Tasks.Task<string> Load(string folder)
+{
+    string path = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+        .Where(name => name.EndsWith("/" + folder + "/map.wbox")).OrderBy(name => name, StringComparer.Ordinal).Last();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(path));
+    for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "Timed out loading " + folder);
+    Config.paused = true;
+    return Path.GetDirectoryName(path);
+}
+long[] Ids(string path) => File.ReadAllLines(Path.Combine(path, "expected.txt")).Select(long.Parse).ToArray();
+
+string styleFolder = await Load("naming-sets-save");
+var ids = Ids(styleFolder);
+var service = NamingApi.Current;
+const string style = "chinesename:western-localized";
+var request = new NameRequest("worldbox:person", 0, ids[1], ids[2],
+    new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" });
+Check(!service.Packages.Contains(style) && service.GetWorld().CulturePack == style &&
+      service.Generate(request).Text == File.ReadAllText(Path.Combine(styleFolder, "fallback.txt")),
+      "Loading without the western set did not preserve the binding and fallback.");
+var source = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages",
+    "western-localized.naming.json");
+var path = Path.Combine(WorldNamingStore.PackageDirectory, "test-western-localized.naming.json");
+File.Copy(source, path);
+string reinstalled = null;
+try
+{
+    Check(WorldNamingStore.ReloadPacks().Count == 0 && service.Packages.Contains(style), "The removed set could not be reinstalled.");
+    reinstalled = service.Generate(request).Text;
+    Check(reinstalled == "约翰·史密斯" && World.world.units.get(ids[0]).getName() == "旧名",
+        "Reinstalling did not restore the style and player edits.");
+}
+finally
+{
+    File.Delete(path);
+    WorldNamingStore.ReloadPacks();
+}
+return new { reinstalled, savedName = World.world.units.get(ids[0]).getName(), styleFolder };

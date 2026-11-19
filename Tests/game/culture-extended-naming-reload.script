@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/culture-extra-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the map.");
+
+var world = World.world;
+var parent = world.cultures.get(ids[0]);
+var other = world.cultures.get(ids[1]);
+var founder = world.units.get(ids[3]);
+var kingdom = world.kingdoms.get(ids[4]);
+var war = world.wars.get(ids[5]);
+Check(war?.name == "江门云津国征伐" && kingdom?.getMotto() == "守望同舟", "The existing names changed after loading.");
+
+var child = world.cultures.newCulture(founder, false);
+child.cloneAndEvolveOnomastics(parent);
+world.cultures.checkLists();
+var service = NamingApi.Current;
+var config = service.GetWorld();
+var expected = new[] {
+    (Id: "war", Template: "201|2:江门", Kind: "normal", Name: "江门云津国征伐"),
+    (Id: "alliance", Template: "0|0:两川同盟", Kind: "", Name: "两川同盟"),
+    (Id: "army", Template: "01|0:青岩", Kind: "", Name: "青岩卫"),
+    (Id: "book", Template: "01|0:同舟", Kind: "book_name_warfare_manual", Name: "同舟略"),
+    (Id: "motto", Template: "0|0:守望同舟", Kind: "alliance", Name: "守望同舟"),
+    (Id: "item", Template: "0|0:青炉", Kind: "reforge", Name: "青炉"),
+};
+NameResult Generate(long culture, string id, string kind) =>
+    service.Generate(new NameRequest("worldbox:" + id, 0, culture, ids[2],
+        new Dictionary<string, object> { ["kind"] = kind, ["origin"] = "云津国" }));
+foreach (var entry in expected)
+{
+    foreach (var culture in new[] { parent, child })
+    {
+        Check(config.Cultures[culture.id].Cards["worldbox:" + entry.Id].Template == entry.Template &&
+            Generate(culture.id, entry.Id, entry.Kind).Text == entry.Name,
+            entry.Id + " was lost on reload or culture divergence.");
+    }
+    Check(Generate(other.id, entry.Id, entry.Kind).Text != entry.Name, entry.Id + " leaked into another culture.");
+}
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = parent;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_war").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+Check(preview == "江门临川国征伐" && tab.getOnomasticsData().getShortTemplate() == expected[0].Template,
+    "Reopening the war editor produced " + preview);
+tab.resetTemplate();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+Check(Generate(parent.id, "war", "normal").Text == "云津国征伐" &&
+      Generate(child.id, "war", "normal").Text == "江门云津国征伐" &&
+      war.name == "江门云津国征伐", "Reset changed another culture or an existing name.");
+return new { save, preview, restored = expected.Select(entry => entry.Id).ToArray(), child = child.name, previousWar = war.name };

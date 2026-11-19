@@ -1,0 +1,202 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Core.SkillLibV3.Utils;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int n = 12) { for (int i = 0; i < n; i++) await Game.NextFrame(); }
+const string spell = "cultiway:spell";
+const string element = "cultiway:spell-element", form = "cultiway:spell-form";
+const string material = "chinesename:equipment-material", equipment = "chinesename:equipment-kind";
+string Short(params string[] ids) => string.Concat(ids.Select(id => AssetManager.onomastics_library.get(id).short_id));
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var far = world.tiles_list.First(t => t.Type.ground && t.zone.city == null && Math.Abs(t.x - tile.x) + Math.Abs(t.y - tile.y) > 40);
+var founder = world.units.createNewUnit("human", tile);
+var peer = world.units.createNewUnit("human", far);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var otherKingdom = world.kingdoms.makeNewCivKingdom(peer);
+kingdom.setName("临川国");
+otherKingdom.setName("松岭国");
+var culture = world.cultures.newCulture(founder, true);
+var otherCulture = world.cultures.newCulture(peer, true);
+founder.setCulture(culture); peer.setCulture(otherCulture);
+kingdom.setCulture(culture); otherKingdom.setCulture(otherCulture);
+var common = world.languages.newLanguage(founder, true);
+var dialect = world.languages.newLanguage(peer, true);
+founder.joinLanguage(common); peer.joinLanguage(dialect);
+kingdom.setLanguage(common); otherKingdom.setLanguage(dialect);
+var city = world.cities.buildNewCity(founder, tile.zone);
+var otherCity = world.cities.buildNewCity(peer, far.zone);
+founder.joinCity(city); peer.joinCity(otherCity);
+city.setName("澄江"); otherCity.setName("松岭");
+founder.data.set("chinesename.surname.v1", "欧阳");
+world.units.checkLists(); world.kingdoms.checkLists(); world.cities.checkLists();
+world.cultures.checkLists(); world.languages.checkLists();
+
+var service = NamingApi.Current;
+var choices = service.GetWorld();
+var basePack = service.GetPackage(service.DefaultPack);
+var spellPack = service.GetPackage("cultiway:spell-defaults");
+void Only(Language language, NamingPack pack, string pool, string text)
+{
+    if (!choices.Languages.TryGetValue(language.id, out var profile)) choices.Languages[language.id] = profile = new LanguageNaming();
+    var id = pack.Words.Single(word => word.Text == text && pack.Pools[pool].ContainsKey(word.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(word => word != id).ToList() };
+}
+Only(common, basePack, material + ".iron", "铁"); Only(dialect, basePack, material + ".iron", "玄铁");
+Only(common, basePack, equipment + ".sword", "剑"); Only(dialect, basePack, equipment + ".sword", "长剑");
+Only(common, basePack, equipment + ".ring", "戒");
+Only(common, basePack, "chinesename:book-history", "列国");
+Only(common, basePack, "chinesename:book-warfare-manual", "守城");
+Only(common, spellPack, element + ".semantic.element.fire", "炎");
+Only(dialect, spellPack, element + ".semantic.element.fire", "火");
+Only(common, spellPack, form + ".semantic.form.ball", "珠");
+Only(dialect, spellPack, form + ".semantic.form.ball", "丸");
+WorldNamingStore.Apply(choices);
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+
+var exchange = "__EXCHANGE__";
+int seq = 0;
+string Position(Component control)
+{
+    var rect = (RectTransform)control.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+}
+async System.Threading.Tasks.Task Mouse(string action, Component control, Component destination = null)
+{
+    var file = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(file + ".tmp", action + Position(control) + (destination == null ? "" : Position(destination)));
+    File.Move(file + ".tmp", file);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(file + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(file + ".done"), "Timed out sending " + action);
+    await Frames();
+}
+OnomasticsAssetButton FindCard(Transform parent, string id) =>
+    parent.GetComponentsInChildren<OnomasticsAssetButton>().Single(card => card.onomastics_asset.id == id);
+Button InPalette(string id)
+{
+    var card = FindCard(tab.parent_asset_specials, id);
+    Check(card.image.sprite != null && card.transform.parent == tab.parent_asset_specials, "Missing native icon for " + id);
+    return card.button;
+}
+Button Placed(string id) => FindCard(tab.parent_name_variation_1, id).button;
+Text Preview() => shell.transform.FindRecursive("PreviewName").GetComponent<Text>();
+async System.Threading.Tasks.Task Select(string category)
+{
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+    var toggle = tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + category);
+    await Mouse("click", (RectTransform)toggle.transform);
+}
+async System.Threading.Tasks.Task Flag(Language language)
+{
+    await Mouse("click", shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + language.id));
+}
+async System.Threading.Tasks.Task Edit(string template)
+{
+    tab.loadTemplate(template);
+    await Frames();
+}
+
+await Select("item");
+await Flag(common);
+await Edit(Short(material, "group_3") + "|2:铭");
+await Mouse("click", InPalette(equipment));
+await Mouse("drag", Placed(equipment), Placed("group_3"));
+await Mouse("move", Preview());
+Check(Preview().text == "铁剑铭", "Equipment preview produced " + Preview().text);
+await Flag(dialect);
+Check(Preview().text == "玄铁长剑铭", "Equipment glyphs did not take language vocabulary: " + Preview().text);
+await Flag(common);
+
+Item MakeLegendary(string kind)
+{
+    var asset = AssetManager.items.list.First(candidate => candidate.group_id == kind && candidate.material == "iron");
+    var previous = asset.item_modifiers;
+    try
+    {
+        asset.item_modifiers = new[] { AssetManager.items_modifiers.list.First(mod => mod.quality == Rarity.R3_Legendary) };
+        return world.items.generateItem(asset, kingdom, pTries: 0, pActor: founder);
+    }
+    finally { asset.item_modifiers = previous; }
+}
+var sword = MakeLegendary("sword");
+var ring = MakeLegendary("ring");
+Check(sword.name == "铁剑铭" && ring.name == "铁戒铭", "Legendary naming lost equipment kind or material: " + sword.name + ", " + ring.name);
+sword.reforge(1); ring.reforge(1);
+Check(sword.name == "铁剑铭" && ring.name == "铁戒铭", "Reforging lost the actual equipment kind.");
+founder.equipment.setItem(sword, founder);
+founder.equipment.setItem(ring, founder);
+var screenshot = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "equipment-glyphs.png");
+ScreenCapture.CaptureScreenshot(screenshot);
+await Frames();
+
+await Select("mod_" + spell);
+await Flag(common);
+await Edit(Short(element) + "|");
+await Mouse("click", InPalette(form));
+await Mouse("move", Preview());
+Check(Preview().text == "炎珠", "The actual spell parts missed the preview: " + Preview().text);
+string Fireball() => new SkillContainerBuilder(Cultiway.Content.SkillEntities.Fireball).UseAnimation(0)
+    .Build(SkillContainerBuildMode.RuleOnly, founder).Name.value;
+Check(Fireball() == "炎珠", "The real Fireball ignored the specialized glyphs.");
+await Flag(dialect);
+founder.joinLanguage(dialect);
+Check(Preview().text == "火丸" && Fireball() == "火丸", "A different language did not produce 火丸.");
+founder.joinLanguage(common);
+
+await Select("book");
+await Flag(common);
+await Edit(Short("chinesename:book-topic", "group_3") + "|2:篇");
+string WriteBook(string topic)
+{
+    var book = world.books.newObject();
+    var type = AssetManager.book_types.list.First(entry => entry.name_template == "book_name_" + topic);
+    book.newBook(founder, type, null, null, null, null);
+    return book.name;
+}
+Check(Preview().text == "列国篇" && WriteBook("history") == "列国篇" && WriteBook("warfare_manual") == "守城篇",
+    "Book topics did not distinguish history and military books.");
+
+await Select("army");
+await Edit(Short("chinesename:station-city", "group_3") + "|2:卫");
+var army = world.armies.newArmy(founder, city);
+Check(army.name == "澄江卫", "The army ignored its actual station: " + army.name);
+await Select("alliance");
+await Edit(Short("chinesename:founding-kingdom", "group_3") + "|2:同盟");
+var alliance = world.alliances.newAlliance(kingdom, otherKingdom);
+Check(alliance.name == "临川国同盟", "The alliance ignored its founder: " + alliance.name);
+await Select("family");
+await Edit(Short("chinesename:founder-surname", "group_3") + "|2:堂");
+var family = world.families.newFamily(founder, tile, null);
+Check(family.name == "欧阳堂", "The family lost its founder's full surname: " + family.name);
+
+var applied = service.GetWorld().Cultures[culture.id];
+Check(applied.Cards[spell].Enabled && applied.Cards["worldbox:item"].Enabled, "The two main arrangements were not applied.");
+var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "context-glyphs-save");
+Directory.CreateDirectory(output);
+world.units.checkLists(); world.families.checkLists(); world.armies.checkLists(); world.alliances.checkLists(); world.items.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { culture.id, founder.getID(), common.id,
+    dialect.id, city.id, kingdom.id, army.id, alliance.id, family.id, sword.id, ring.id }.Select(id => id.ToString()));
+return new { equipment = new[] { sword.name, ring.name }, fireball = Fireball(), army = army.name,
+    alliance = alliance.name, family = family.name, mouseActions = seq, screenshot, output };

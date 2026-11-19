@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var father = world.units.createNewUnit("human", tile);
+var mother = world.units.createNewUnit("human", tile);
+var kingdom = world.kingdoms.makeNewCivKingdom(father);
+var culture = world.cultures.newCulture(father, true);
+var language = world.languages.newLanguage(father, true);
+father.setCulture(culture);
+mother.setCulture(culture);
+father.joinLanguage(language);
+mother.joinLanguage(language);
+father.data.sex = ActorSex.Male;
+mother.data.sex = ActorSex.Female;
+father.data.set("chinesename.surname.v1", "欧阳");
+mother.data.set("chinesename.surname.v1", "李");
+var previousName = father.getName();
+string pool = "chinesename:given-first";
+var service = NamingApi.Current;
+var basePack = service.GetPackage(service.DefaultPack);
+var poolIds = basePack.Pools[pool].Keys.ToArray();
+var firstWord = basePack.Words.First(word => poolIds.Contains(word.Id));
+var secondWord = basePack.Words.First(word => poolIds.Contains(word.Id) && word.Text != firstWord.Text);
+var otherLanguage = world.languages.newLanguage(father, false);
+world.cultures.checkLists();
+world.languages.checkLists();
+var config = service.GetWorld();
+foreach (var entry in new[] { (language.id, firstWord), (otherLanguage.id, secondWord) })
+    config.Languages[entry.Item1] = new LanguageNaming { Pools = new Dictionary<string, PoolEdit> {
+        [pool] = new PoolEdit { ExcludeIds = poolIds.Where(id => id != entry.Item2.Id).ToList() }
+    } };
+WorldNamingStore.Apply(config);
+
+SelectedMetas.selected_culture = culture;
+SelectedUnit.select(father);
+world.console.Hide();
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+async System.Threading.Tasks.Task Redraw()
+{
+    for (int frame = 0; frame < 120 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+}
+char Code(string glyph) => AssetManager.onomastics_library.get(glyph).short_id;
+char selectPool = Code("chinesename_as_pool");
+string alias = pool.Replace(':', '/');
+string unitTemplate = $"0{Code("chinesename_keep_surname")}1{selectPool}|0:赵;1:{alias}";
+string cityTemplate = $"0{selectPool}1|0:{alias};1:府";
+await Redraw();
+async System.Threading.Tasks.Task Edit(MetaType meta, string type, string template, NameRequest request, string expected)
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + meta.ToString().ToLowerInvariant()).toggle.click();
+    await Redraw();
+    string live = culture.getOnomasticData(meta).getShortTemplate();
+    var draft = service.GetWorld();
+    if (!draft.Cultures.TryGetValue(culture.id, out var settings)) draft.Cultures[culture.id] = settings = new CultureNaming();
+    settings.Cards[type] = new CardNaming { Enabled = true, ExplicitSeparators = true, DraftTemplate = template };
+    Check(service.Preview(request, draft).Text == expected, "Draft preview did not use the founder's language.");
+    Check(culture.getOnomasticData(meta).getShortTemplate() == live, "Preview changed the culture cards.");
+    tab.loadTemplate(template);
+    await Redraw();
+    Check(tab.getOnomasticsData().getShortTemplate() == template &&
+        culture.getOnomasticData(meta).getShortTemplate() == template, "The native editor did not save the arrangement.");
+    var preview = shell.GetComponentsInChildren<Text>().Single(label => label.name == "PreviewName");
+    Check(preview.text == expected, "The native preview returned " + preview.text + " instead of " + expected);
+    Check(service.GetWorld().Cultures[culture.id].Cards[type].DraftTemplate == null, "Applied rules duplicated native card text.");
+}
+await Edit(MetaType.Unit, "worldbox:person", unitTemplate,
+    new NameRequest("worldbox:person", 12, culture.id, language.id, new Dictionary<string, object> { ["kind"] = "sapient" },
+        new Dictionary<string, string> { ["surname"] = "欧阳" }), "欧阳" + firstWord.Text);
+await Edit(MetaType.City, "worldbox:city", cityTemplate,
+    new NameRequest("worldbox:city", 12, culture.id, language.id), firstWord.Text + "府");
+var child = BabyMaker.makeBaby(father, mother, ActorSex.Male, pTile: tile);
+child.setCulture(culture);
+child.joinLanguage(language);
+string person = child.getName();
+var city = world.cities.buildNewCity(father, tile.zone);
+string RequestCity(long languageId) => service.Preview(new NameRequest("worldbox:city", 12, culture.id, languageId)).Text;
+var rng = UnityEngine.Random.state;
+var math = Randy.rand.state;
+var system = Randy.rnd;
+Check(RequestCity(language.id) == firstWord.Text + "府" && RequestCity(otherLanguage.id) == secondWord.Text + "府",
+    "Two languages did not receive their own pool results.");
+Check(UnityEngine.Random.state.Equals(rng) && Randy.rand.state == math && ReferenceEquals(Randy.rnd, system),
+    "Preview touched the live random state.");
+Check(person == "欧阳" + firstWord.Text && city.name == firstWord.Text + "府", $"Generated {person}, {city.name}.");
+Check(father.getName() == previousName, "Applying card rules renamed an existing unit.");
+world.units.checkContainer();
+world.cities.checkLists();
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+var folder = Path.Combine(output, "onomastics-save");
+Directory.CreateDirectory(folder);
+SaveManager.saveWorldToDirectory(folder);
+File.WriteAllLines(Path.Combine(folder, "expected.txt"), new[] {
+    culture.id.ToString(), language.id.ToString(), otherLanguage.id.ToString(), child.getID().ToString(),
+    firstWord.Text, secondWord.Text, city.id.ToString(), unitTemplate, cityTemplate
+});
+var screenshot = Path.Combine(output, "onomastics.png");
+ScreenCapture.CaptureScreenshot(screenshot);
+for (int i = 0; i < 120 && !File.Exists(screenshot); i++) await Game.NextFrame();
+return new { person, city = city.name, previousName, other = RequestCity(otherLanguage.id), folder, screenshot };

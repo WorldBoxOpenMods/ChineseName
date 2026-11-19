@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string type = "worldbox:city";
+const string root = "group_1", suffixCard = "group_2";
+var exchange = "__EXCHANGE__";
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+var world = World.world;
+world.console.Hide();
+void Check(bool ok, string message) { if (!ok) throw new Exception(message); }
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+culture.setName("澄江文化");
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+language.setName("中原话");
+founder.joinLanguage(language);
+var service = NamingApi.Current;
+var config = service.GetWorld();
+var pack = service.GetPackage(service.DefaultPack);
+const string riverPool = "chinesename:river-places", hillPool = "chinesename:hill-places";
+var other = world.languages.newLanguage(founder, false);
+other.setName("山岭话");
+world.languages.checkLists();
+void Restrict(Language target, string pool, string text)
+{
+    var word = pack.Words.Single(w => w.Text == text && pack.Pools[pool].ContainsKey(w.Id));
+    if (!config.Languages.TryGetValue(target.id, out var profile))
+        config.Languages[target.id] = profile = new LanguageNaming();
+    profile.Pools[pool] = new PoolEdit {
+        ExcludeIds = pack.Pools[pool].Keys.Where(id => id != word.Id).ToList()
+    };
+}
+Restrict(language, riverPool, "澄江");
+Restrict(language, hillPool, "栖岭");
+Restrict(other, riverPool, "临川");
+Restrict(other, hillPool, "白岳");
+WorldNamingStore.Apply(config);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+world.console.Hide();
+T Find<T>(string name) where T : Selectable => shell.GetComponentsInChildren<T>().SingleOrDefault(item => item.name == name);
+OnomasticsAssetButton Glyph(string id, bool palette) =>
+    (palette ? tab.parent_asset_specials : tab.parent_name_variation_1).GetComponentsInChildren<OnomasticsAssetButton>()
+    .SingleOrDefault(button => button.onomastics_asset?.id == id);
+string Preview()
+{
+    var line = shell.transform.FindRecursive("PreviewName");
+    Check(line != null && line.GetComponent<Selectable>() == null, "Missing read-only preview.");
+    return line.GetComponent<Text>().text;
+}
+string Position(Selectable btn)
+{
+    var rect = (RectTransform)btn.transform;
+    var p = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)p.x} {UnityEngine.Screen.height - (int)p.y}";
+}
+int seq = 0;
+async System.Threading.Tasks.Task Send(string action, Selectable control = null, Selectable other = null)
+{
+    var point = control == null ? "" : Position(control);
+    if (other != null) point += Position(other);
+    string path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + point);
+    File.Move(path + ".tmp", path);
+    var t = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < t) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action + point);
+    for (int i = 0; i < 14; i++) await Game.NextFrame();
+}
+OnomasticsAssetButton Group(string id) => tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(button => button.onomastics_asset.id == id);
+var field = tab._editor_input.inputField;
+async System.Threading.Tasks.Task Words(string id, string words)
+{
+    if (tab._selected_editor_group?.id != id) await Send("click", Group(id).button);
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    for (int i = 0; i < 10; i++) await Game.NextFrame();
+    await Send("click", field);
+    GUIUtility.systemCopyBuffer = words;
+    await Send("paste");
+    Check(field.text.Trim() == words && field.isFocused, "The native input did not accept " + words);
+    await Send("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    for (int i = 0; i < 10; i++) await Game.NextFrame();
+}
+const string marker = "chinesename_as_pool";
+Check(Glyph(marker, true) != null && Glyph("hyphen", true) != null, "Pool selector and vanilla hyphen must share the palette.");
+Check(!tab.parent_asset_editor_group.gameObject.activeInHierarchy, "The editor opened without selecting a stock group.");
+await Words(root, "江河地名");
+await Send("click", Glyph(marker, true).button);
+await Words(suffixCard, "府");
+await Send("click", Group(suffixCard).button);
+Check(Preview() == "澄江府", "Pool selector preview produced " + Preview());
+var city = world.cities.buildNewCity(founder, tile.zone);
+Check(city.name == "澄江府", "City founding produced " + city.name);
+
+await Send("click", Find<Button>("PreviewLanguage." + other.id));
+for (int i = 0; i < 10; i++) await Game.NextFrame();
+Check(Preview() == "临川府", "Changing language produced " + Preview());
+founder.joinLanguage(other);
+Check(founder.culture == culture && founder.generateName(MetaType.City, 13) == "临川府",
+    "City generation did not use its founder's language.");
+founder.joinLanguage(language);
+
+await Words(root, "江河地名 山岭地名");
+var samples = Enumerable.Range(0, 64).Select(seed =>
+    service.Generate(new NameRequest(type, (ulong)seed, culture.id, language.id))).ToArray();
+Check(samples.Select(result => result.Text).ToHashSet().SetEquals(new[] { "澄江府", "栖岭府" }) &&
+    samples.Select(result => result.Sources["name"].Reference).ToHashSet().SetEquals(new[] { riverPool, hillPool }),
+    "The same native group did not choose two different pools.");
+
+await Words(root, "江河地名 未登记");
+Check(Preview() == "临川府" && shell.GetComponentsInChildren<Text>().Any(text => text.text.Contains("「未登记」未登记")),
+    "A usable alias should still work with an unknown alias, and explain the missing alias.");
+await Words(root, "未登记");
+Check(shell.GetComponentsInChildren<Text>().Any(text => text.text == "草稿无法预览") &&
+    shell.GetComponentsInChildren<Text>().Any(text => text.text.Contains("「未登记」未登记")),
+    "The native preview did not explain a completely unavailable selector.");
+await Words(root, "江河地名");
+
+await Send("click", Glyph("hyphen", true).button);
+await Send("drag", Glyph("hyphen", false).button, Glyph(suffixCard, false).button);
+var order = culture.getOnomasticData(MetaType.City).getFullTemplateData();
+Check(order.SequenceEqual(new[] { root, marker, "hyphen", suffixCard }), "Drag gave " + string.Join(", ", order));
+Check(Preview() == "临川-府" &&
+    service.Generate(new NameRequest(type, 0, culture.id, language.id)).Text == "澄江-府", "Native hyphen no longer mixes with the marker.");
+await Send("click", Glyph(marker, false).button);
+Check(Preview() == "江河地名-府", "Removing the marker did not restore literal drawing: " + Preview());
+Check(shell.transform.FindRecursive("PreviewName").GetComponent<Selectable>() == null &&
+    Find<Button>("ApplyRule") == null && shell.transform.FindRecursive("ChineseName.PartEditor") == null,
+    "The preview must be read-only and use the original word-group editor.");
+return new { city = city.name, switchedLanguage = "临川府", pools = samples.Select(result => result.Text).Distinct().ToArray(),
+    mixed = "临川-府", removed = Preview(), mouseEvents = seq };

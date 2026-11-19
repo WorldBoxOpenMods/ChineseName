@@ -1,0 +1,179 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string type = "worldbox:city", packId = "chinesename:wafuu-lexicon";
+const string root = packId + ".city-root", selector = "chinesename_as_pool";
+const string exchange = "__EXCHANGE__";
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+async System.Threading.Tasks.Task Frames(int count = 12) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(actor);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+var home = world.languages.newLanguage(actor, true);
+var shore = world.languages.newLanguage(actor, false);
+actor.joinLanguage(home);
+world.units.checkLists(); world.kingdoms.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+var service = NamingApi.Current;
+string CityName(Language language, ulong seed = 0) => service.Generate(new NameRequest(type, seed, culture.id, language.id)).Text;
+string original = CityName(home);
+
+string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var packs = Directory.GetFiles(examples, "*-lexicon.naming.json").OrderBy(file => file).Select(file =>
+    (Path: file, Pack: NamingJson.Read<NamingPack>(File.ReadAllText(file)))).ToArray();
+Check(packs.Length == 6, "Expected six data packs in the isolated snapshot.");
+string PackagePath(string file) => Path.Combine(WorldNamingStore.PackageDirectory, "test-variant-" + Path.GetFileName(file));
+foreach (var item in packs) File.Copy(item.Path, PackagePath(item.Path), overwrite: true);
+var errors = WorldNamingStore.ReloadPacks();
+Check(errors.Count == 0, string.Join(" / ", errors));
+var config = service.GetWorld();
+foreach (var item in packs)
+    if (!config.EnabledPacks.Contains(item.Pack.Id)) config.EnabledPacks.Add(item.Pack.Id);
+var wafuu = packs.Single(item => item.Pack.Id == packId);
+string Id(string text) => wafuu.Pack.Words.Single(word => word.Text == text).Id;
+void Only(Language language, string word)
+{
+    if (!config.Languages.TryGetValue(language.id, out var profile))
+        config.Languages[language.id] = profile = new LanguageNaming();
+    profile.Pools[root] = new PoolEdit { ExcludeIds = wafuu.Pack.Pools[root].Keys.Where(key => key != Id(word)).ToList() };
+}
+Only(home, "樱丘"); Only(shore, "白滨");
+WorldNamingStore.Apply(config);
+Check(CityName(home) == original, "Installing vocabulary changed an unedited city's rule.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+
+int mouseActions = 0;
+string Position(Component control)
+{
+    var rect = (RectTransform)control.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+}
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string file = Path.Combine(exchange, ++mouseActions + ".mouse");
+    File.WriteAllText(file + ".tmp", action + (control == null ? "" : Position(control)));
+    File.Move(file + ".tmp", file);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(file + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(file + ".done"), "Timed out sending " + action);
+    await Frames();
+}
+Button Group(string id) => tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(card => card.onomastics_asset.id == id).button;
+Text Preview() => shell.transform.FindRecursive("PreviewName").GetComponent<Text>();
+Button Flag(Language language) => shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + language.id);
+async System.Threading.Tasks.Task Words(string id, string value)
+{
+    if (tab._selected_editor_group?.id != id) await Mouse("click", Group(id));
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    await Frames();
+    var input = tab._editor_input.inputField;
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = value;
+    await Mouse("paste");
+    Check(input.isFocused && input.text.Trim() == value, $"The word group did not accept {value}: {input.text}");
+    await Mouse("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+}
+
+await Words("group_1", "和风地名主体");
+await Mouse("click", tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(card => card.onomastics_asset.id == selector).button);
+await Words("group_2", "城");
+await Mouse("click", Group("group_2"));
+await Mouse("move", Preview());
+Check(Preview().text == "樱丘城", "The mounted pool did not produce 樱丘城.");
+await Mouse("click", Flag(shore));
+Check(Preview().text == "白滨城", "Switching the language did not select 白滨城.");
+await Mouse("click", Flag(home));
+var city = world.cities.buildNewCity(actor, tile.zone);
+actor.joinCity(city);
+world.cities.checkLists();
+Check(city.name == "樱丘城", "The actual city did not use the selected pool.");
+string originalArrangement = tab.getOnomasticsData().getShortTemplate();
+char marker = AssetManager.onomastics_library.get(selector).short_id;
+
+var sampleAliases = new[] { "乡邑地名", "精灵地名主体", "编年史书主题", "古波斯地名", "刃器名号" };
+var previews = new List<string>();
+foreach (string alias in sampleAliases)
+{
+    var match = packs.Single(item => item.Pack.PoolAliases.ContainsKey(alias)).Pack;
+    string pool = match.PoolAliases[alias];
+    string token = pool.Replace(':', '/');
+    tab.loadTemplate($"0{marker}|0:{token}");
+    await Frames();
+    var result = service.Generate(new NameRequest(type, 0, culture.id, home.id));
+    Check(result.Success && result.Sources.Values.Any(source => source.Reference == pool) && Preview().text == result.Text,
+        "The qualified token did not take from the selected pool: " + alias);
+    previews.Add(Preview().text);
+}
+tab.loadTemplate(originalArrangement);
+await Frames();
+Check(Preview().text == "樱丘城", "The original alias arrangement did not restore.");
+
+File.Delete(PackagePath(wafuu.Path));
+Check(WorldNamingStore.ReloadPacks().Count == 0 && CityName(home) == original && city.name == "樱丘城",
+    "Removing the word pack did not fall back while retaining the existing name.");
+Check(culture.getOnomasticData(MetaType.City).getShortTemplate() == originalArrangement,
+    "Removing the pack discarded the stored alias.");
+File.Copy(wafuu.Path, PackagePath(wafuu.Path));
+Check(WorldNamingStore.ReloadPacks().Count == 0 && CityName(home) == "樱丘城",
+    "Putting the pack back did not restore the name arrangement.");
+
+var evolution = service.GetWorld();
+var parent = evolution.Languages[home.id];
+foreach (var pack in packs.Select(item => item.Pack).Append(service.GetPackage(service.DefaultPack)))
+foreach (var group in pack.WordGroups.Where(pair => pair.Value.Pool != root).GroupBy(pair => pair.Value.Pool))
+    parent.Pools[group.Key] = new PoolEdit { Group = pack.Id + "/" + group.First().Key };
+parent.Groups[root] = packId + "/city-root.hill";
+parent.Pools[root] = new PoolEdit {
+    ExcludeText = new List<string> { "星原" },
+    Bias = new Dictionary<string, double> { [Id("樱丘")] = 1.6 }
+};
+WorldNamingStore.Apply(evolution);
+string[] Sample(Language language) => Enumerable.Range(0, 256).Select(seed => CityName(language, (ulong)seed)).ToArray();
+var before = Sample(home);
+Check(AssetManager.plots_library.get("language_divergence").action(actor), "The original language split did not run.");
+var child = actor.language;
+world.languages.checkLists();
+var state = service.GetWorld();
+var after = Sample(child);
+var childProfile = state.Languages[child.id];
+var shift = childProfile.GroupPreferences.Single();
+Check(state.LanguageParents[child.id] == home.id && shift.Key == root &&
+      Math.Abs(shift.Value[packId + "/city-root.water"] - .2) < 1e-9 &&
+      NamingJson.Write(childProfile.Pools[root]) == NamingJson.Write(parent.Pools[root]) &&
+      !before.SequenceEqual(after) && after.All(name => name.EndsWith("城") && name != "星原城"),
+    "The new pool did not inherit its edits and undergo an isolated preference change.");
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "variant-lexicons-save");
+Directory.CreateDirectory(output);
+world.units.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists(); world.languages.checkLists();
+var saved = SaveManager.saveWorldToDirectory(output);
+Check(saved.actors_data.Any(entry => entry.id == actor.getID()), "The actor must exist in the save.");
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { actor.getID(), culture.id, city.id, home.id, child.id }.Select(id => id.ToString()));
+File.WriteAllLines(Path.Combine(output, "preview-names.txt"), after);
+return new { city = city.name, shore = "白滨城", previews, mouseActions, shift = shift.Value, output };

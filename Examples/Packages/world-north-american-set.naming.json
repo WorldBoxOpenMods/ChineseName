@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "id": "chinesename:world-north-american-set",
+  "label": "北美英语",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:world-styles-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:world-styles-lexicon.north-american.given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:world-styles-lexicon.north-american.surname"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.north-american.city"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.north-american.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "联邦"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.north-american.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.north-american.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "北美英语"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:world-styles-lexicon.north-american.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.north-american.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.americas.creed"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.americas.war-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:world-styles-lexicon.north-american.realm"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.americas.alliance-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:world-styles-lexicon.north-american.city"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.americas.army-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.americas.book-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.americas.motto"
+          }
+        ]
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "world-north-american-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.americas.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      }
+    ]
+  }
+}

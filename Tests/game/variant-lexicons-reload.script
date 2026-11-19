@@ -1,0 +1,61 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/variant-lexicons-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+string evidence = Path.GetDirectoryName(save);
+var ids = File.ReadAllLines(Path.Combine(evidence, "expected.txt")).Select(long.Parse).ToArray();
+var expected = File.ReadAllLines(Path.Combine(evidence, "preview-names.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out reloading the isolated save.");
+
+const string pack = "chinesename:wafuu-lexicon";
+const string pool = pack + ".city-root";
+var world = World.world;
+Config.paused = true;
+var actor = world.units.get(ids[0]);
+var culture = world.cultures.get(ids[1]);
+var city = world.cities.get(ids[2]);
+var cards = culture.getOnomasticData(MetaType.City);
+var order = new[] { "group_1", "chinesename_as_pool", "group_2" };
+Check(city?.name == "樱丘城" && actor?.language?.id == ids[4], "The saved name or the founder's language changed.");
+Check(cards.getFullTemplateData().SequenceEqual(order) && cards.getGroupString("group_1") == "和风地名主体" &&
+      cards.getGroupString("group_2") == "城", "The alias, glyph or hand-written suffix was lost.");
+
+var service = NamingApi.Current;
+var state = service.GetWorld();
+var parent = state.Languages[ids[3]];
+var child = state.Languages[ids[4]];
+var preferences = child.GroupPreferences[pool];
+Check(state.EnabledPacks.Contains(pack) && state.LanguageParents[ids[4]] == ids[3] &&
+      Math.Abs(preferences[pack + "/city-root.hill"] - .8) < 1e-9 &&
+      Math.Abs(preferences[pack + "/city-root.water"] - .2) < 1e-9 &&
+      NamingJson.Write(child.Pools[pool]) == NamingJson.Write(parent.Pools[pool]),
+    "The pack preference, language parent or manual edits were lost.");
+var names = Enumerable.Range(0, expected.Length).Select(seed =>
+    service.Generate(new NameRequest("worldbox:city", (ulong)seed, culture.id, actor.language.id)).Text).ToArray();
+Check(names.SequenceEqual(expected), "New names after restart did not match the saved language preferences.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_city").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + actor.language.id).onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(order) && names.Contains(preview),
+    "The original editor did not reopen the saved cards or language preview.");
+return new { existing = city.name, preview, matchingSeeds = names.Length, preferences, save };

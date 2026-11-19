@@ -1,0 +1,172 @@
+using System;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+const string type = "worldbox:city", placePool = "chinesename:places", givenPool = "chinesename:given-first";
+const string root = "group_1", suffix = "group_2";
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var river = world.languages.newLanguage(founder, true);
+river.setName("江河话" + river.id);
+var hill = world.languages.newLanguage(founder, false);
+hill.setName("山岭话" + hill.id);
+founder.joinLanguage(river);
+world.languages.checkLists();
+var service = NamingApi.Current;
+var pack = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+var sourceProfile = new LanguageNaming();
+sourceProfile.Groups[placePool] = pack.Id + "/river-places";
+foreach (var poolGroup in pack.WordGroups.Where(pair => pair.Value.Pool != placePool).GroupBy(pair => pair.Value.Pool))
+    sourceProfile.Pools[poolGroup.Key] = new PoolEdit { Group = pack.Id + "/" + poolGroup.First().Key };
+config.Languages[river.id] = sourceProfile;
+var otherProfile = new LanguageNaming();
+otherProfile.Groups[placePool] = pack.Id + "/hill-places";
+config.Languages[hill.id] = otherProfile;
+// Pin one candidate per language so preview and independently seeded founding agree.
+void KeepOnly(LanguageNaming profile, string word, string pool = placePool)
+{
+    var id = pack.Words.Single(w => w.Text == word && pack.Pools[pool].ContainsKey(w.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(key => key != id).ToList() };
+}
+KeepOnly(sourceProfile, "海西");
+KeepOnly(otherProfile, "太原");
+WorldNamingStore.Apply(config);
+
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+void Words(string group, string text)
+{
+    var button = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Single(item => item.onomastics_asset.id == group);
+    tab.openGroup(button);
+    tab._editor_input.inputField.text = text;
+    tab._editor_input.inputField.onEndEdit.Invoke(text);
+    if (!tab.getOnomasticsData().getFullTemplateData().Contains(group))
+        tab.clickAssetButton(button);
+}
+string LiveWords(Culture owner, string group) => owner.getOnomasticData(MetaType.City).getGroupString(group);
+string Preview() => shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+async System.Threading.Tasks.Task<string> PreviewIn(Language language)
+{
+    shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + language.id).onClick.Invoke();
+    for (int i = 0; i < 4; i++) await Game.NextFrame();
+    return Preview();
+}
+NameResult Generate(Culture owner, Language language, ulong seed) =>
+    service.Generate(new NameRequest(type, seed, owner.id, language.id));
+Check(tab.getOnomasticsData().isGroupEmpty(root), "The default bound group had stored words.");
+Words(suffix, "府");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+Check(LiveWords(culture, suffix) == "府", "The native word input did not apply the entered suffix.");
+string first = await PreviewIn(river);
+string second = await PreviewIn(hill);
+Check(first == "海西府" && second == "太原府", $"Preview language comparison produced {first}, {second}.");
+var cityRiver = world.cities.buildNewCity(founder, tile.zone);
+founder.joinLanguage(hill);
+Check(founder.culture == culture, "Switching the founder's language changed culture.");
+var secondZone = world.tiles_list.First(t => t.Type.ground && t.zone.city == null).zone;
+var cityHill = world.cities.buildNewCity(founder, secondZone);
+Check(cityRiver.name == first && cityHill.name == second,
+    $"Real city founding produced {cityRiver.name}, {cityHill.name}.");
+
+Words(suffix, "府 州 agafasa afakasa");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string manualWords = LiveWords(culture, suffix);
+Check(culture.getOnomasticData(MetaType.City).isGroupEmpty(root) &&
+    manualWords.Split(' ').ToHashSet().SetEquals(new[] { "府", "州", "agafasa", "afakasa" }),
+    "The original input did not commit the mixed-script suffixes: " + manualWords);
+config = service.GetWorld();
+config.Languages[river.id].Pools.Remove(placePool);
+WorldNamingStore.Apply(config);
+
+founder.joinLanguage(river);
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The original language plot failed.");
+var dialect = founder.language;
+var state = service.GetWorld();
+Check(founder.culture == culture && dialect != river && state.LanguageParents[dialect.id] == river.id,
+    "The language plot did not split in the same culture.");
+Check(state.Languages[river.id].Groups[placePool] == pack.Id + "/river-places" &&
+    state.Languages[dialect.id].GroupPreferences[placePool][pack.Id + "/hill-places"] == .2 &&
+    state.Languages[dialect.id].Pools[givenPool].Group == pack.Id + "/clear-given-names",
+    "The child language did not change its place preference or lost the pinned given-name group.");
+var pairs = Enumerable.Range(1, 128).Select(seed => (Parent: Generate(culture, river, (ulong)seed),
+    Child: Generate(culture, dialect, (ulong)seed))).ToArray();
+Check(pairs.All(pair => pair.Parent.Success && pair.Child.Success &&
+    pair.Parent.Parts[suffix] == pair.Child.Parts[suffix] && manualWords.Split(' ').Contains(pair.Child.Parts[suffix])) &&
+    pairs.Any(pair => pair.Parent.Parts["name"] != pair.Child.Parts["name"]) && LiveWords(culture, suffix) == manualWords,
+    "Language divergence did not change pool draws independently of manually entered words.");
+var different = pairs.First(pair => pair.Parent.Parts["name"] != pair.Child.Parts["name"]);
+
+Check(AssetManager.plots_library.get("culture_divide").action(founder), "The original culture plot failed.");
+var branch = founder.culture;
+string branchWords = LiveWords(branch, suffix);
+Check(branch != culture && founder.language == dialect && LiveWords(culture, suffix) == manualWords &&
+    branch.getOnomasticData(MetaType.City).getFullTemplateData().SequenceEqual(new[] { root, suffix }) &&
+    branch.getOnomasticData(MetaType.City).isGroupEmpty(root) &&
+    branchWords.Split(' ').Where(word => word.Any(letter => letter > 127)).ToHashSet().SetEquals(new[] { "府", "州" }),
+    "The original culture plot did not copy the arrangement and retain the Chinese suffix words.");
+Check(Enumerable.Range(1, 32).Select(seed => Generate(branch, dialect, (ulong)seed)).All(
+    result => result.Success && branchWords.Split(' ').Contains(result.Parts[suffix])),
+    "The derived culture did not generate from its own copied words.");
+
+Words(suffix, "府");
+Words(root, "澄江");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string manualFirst = await PreviewIn(river);
+string manualSecond = await PreviewIn(hill);
+Check(manualFirst == "澄江府" && manualSecond == manualFirst &&
+    Generate(culture, river, 1).Text == manualFirst && Generate(culture, hill, 1).Text == manualFirst,
+    $"Manual text failed to override the language pool: {manualFirst}, {manualSecond}.");
+Check(LiveWords(branch, suffix) == branchWords, "Editing the parent after the split also edited the child.");
+Words(root, "");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string restored = Preview();
+Check(string.IsNullOrEmpty(LiveWords(culture, root)) && restored == second &&
+    Generate(culture, hill, 1).Text == second, "Clearing the bound group did not restore language-specific words.");
+Check(cityRiver.name == first && cityHill.name == second, "Changing words renamed an existing city.");
+
+config = service.GetWorld();
+KeepOnly(config.Languages[river.id], "青", givenPool);
+KeepOnly(config.Languages[hill.id], "怀", givenPool);
+WorldNamingStore.Apply(config);
+tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+Words("group_1", "欧阳");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string personRiver = await PreviewIn(river);
+string personHill = await PreviewIn(hill);
+string NewPerson(Language language)
+{
+    var actor = world.units.createNewUnit("human", tile);
+    actor.setCulture(culture);
+    actor.joinLanguage(language);
+    return actor.getName();
+}
+string unitRiver = NewPerson(river);
+string unitHill = NewPerson(hill);
+Check(personRiver?.StartsWith("欧阳青") == true && personHill?.StartsWith("欧阳怀") == true &&
+    unitRiver.StartsWith("欧阳青") && unitHill.StartsWith("欧阳怀"),
+    $"Person name groups gave previews {personRiver}, {personHill} and new units {unitRiver}, {unitHill}.");
+
+return new {
+    preview = new[] { first, second }, founded = new[] { cityRiver.name, cityHill.name }, manual = new[] { manualFirst, manualSecond },
+    languageDivergence = new { before = different.Parent.Text, after = different.Child.Text, sharedWords = manualWords },
+    cultureDivergence = new { before = manualWords, after = branchWords },
+    restored,
+    person = new { preview = new[] { personRiver, personHill }, created = new[] { unitRiver, unitHill } }
+};
