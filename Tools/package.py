@@ -26,14 +26,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     build(args.output / "ChineseName.zip", "ChineseName", ROOT,
-          ("Source", "Content", "GameResources", "mod.json", "icon.png", "LICENSE", "README.md",
+          ("Source", "Content", "Locales", "GameResources", "mod.json", "icon.png", "LICENSE", "README.md",
            "Doc/screenshots", "Doc/命名框架重构/实现与验证.md", "Examples/Packages", "Tools/import_legacy_pack.py"))
     build(args.output / "SpellNamesExample.zip", "SpellNamesExample", ROOT / "Examples/SpellNames",
           ("Source", "Content", "mod.json"))
-    lexicons = tuple(path.relative_to(ROOT) for path in sorted((ROOT / "Examples/Packages").glob("*-lexicon.naming.json")))
-    naming_sets = tuple(path.relative_to(ROOT) for path in sorted((ROOT / "Examples/Packages").glob("*-set.naming.json")))
-    if lexicons:
+    packs = sorted((ROOT / "Examples/Packages").glob("*.naming.json"))
+    if packs:
         build(args.output / "LexiconVariants.zip", "ChineseNameLexicons", ROOT,
-              (*lexicons, *naming_sets, "Examples/Packages/README.md", "LICENSE"))
-    for pack in sorted((ROOT / "Examples/Packages").glob("*.naming.json")):
+              (*(pack.relative_to(ROOT) for pack in packs), "Examples/Packages/README.md", "LICENSE"))
+    for pack in packs:
         copyfile(pack, args.output / pack.name)
