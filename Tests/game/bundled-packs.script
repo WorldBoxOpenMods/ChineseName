@@ -51,8 +51,8 @@ WorldNamingStore.Apply(draft);
 world.kingdoms.makeNewCivKingdom(founder);
 var city = world.cities.buildNewCity(founder, tile.zone);
 Check(city.name == "乌普萨拉", "An enabled pack from the bundle was not used for new names.");
-long founderId = founder.getID();
 long cityId = city.id;
+var request = new NameRequest("worldbox:city", 23, culture.id, language.id);
 
 var overridePack = service.GetPackage(atlas);
 overridePack.Label = "玩家的地域词库";
@@ -87,11 +87,12 @@ Check(migrated.EnabledPacks.ToHashSet().SetEquals(ids.Where(id => id != builtin)
     "An existing world did not enable the bundle on first load.");
 Check(NamingJson.Write(migrated.Cultures) == NamingJson.Write(draft.Cultures) &&
     NamingJson.Write(migrated.Languages) == NamingJson.Write(draft.Languages), "Initializing defaults overwrote saved edits.");
+Check(NamingApi.Current.Generate(request).Text == "乌普萨拉", "The restored naming rules did not use the bundled style.");
 
 migrated.EnabledPacks.Remove(nordic);
 WorldNamingStore.Apply(migrated);
-string nextName = world.units.get(founderId).generateName(MetaType.City, 23);
-Check(nextName != "乌普萨拉", "Turning off the style did not change subsequent names.");
+var future = NamingApi.Current.Generate(request);
+Check(future.Success && future.Text != "乌普萨拉", "Turning off the style did not change subsequent names.");
 string updatedSave = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "updated-bundled-world");
 SaveManager.saveWorldToDirectory(updatedSave);
 SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(updatedSave, "map.wbox")));
@@ -100,6 +101,6 @@ Check(!SmoothLoader.isLoading(), "The updated world did not finish loading.");
 Config.paused = true;
 var updated = NamingApi.Current.GetWorld();
 Check(updated.EnabledPacks.ToHashSet().SetEquals(ids.Where(id => id != builtin && id != nordic)) &&
-    world.units.get(founderId).generateName(MetaType.City, 23) == nextName && world.cities.get(cityId).name == "乌普萨拉",
+    NamingApi.Current.Generate(request).Text == future.Text && world.cities.get(cityId)?.name == "乌普萨拉",
     "Reloading did not preserve the disabled style and the existing city name.");
-return new { available = files.Length, enabledByDefault = ids.Length - 1, city = "乌普萨拉", disabledStyle = nordic, nextName };
+return new { available = files.Length, enabledByDefault = ids.Length - 1, city = "乌普萨拉", disabledStyle = nordic, nextName = future.Text };
