@@ -1,0 +1,96 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string nordic = "chinesename:world-nordic-set";
+const string atlas = "chinesename:world-styles-lexicon";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task WaitForWindow()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 8; i++) await Game.NextFrame();
+}
+KeyValueField Row(string name) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<KeyValueField>()
+    .Single(row => row.name == name);
+void Click(string name) => Row(name).value.GetComponent<Button>().onClick.Invoke();
+
+var world = World.world;
+var prev = world.map_stats;
+world.generateNewMap();
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && world.map_stats != prev, "A fresh map is required.");
+Config.paused = true;
+world.console.Hide();
+var pack = NamingApi.Current.GetPackage(atlas);
+Check(pack != null && NamingApi.Current.GetWorld().EnabledPacks.Contains(nordic), "Install the integrated bundle first.");
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(2).Select(group => group.First()).ToArray();
+var cats = tiles.Select(tile =>
+{
+    var actor = world.units.createNewUnit("civ_cat", tile);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    return actor;
+}).ToArray();
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+
+var founder = cats[0];
+var cultureId = founder.culture.id;
+var otherId = cats[1].culture.id;
+string Name(Actor actor) => actor.generateName(MetaType.City, 23);
+string original = Name(founder), other = Name(cats[1]);
+Check(original.EndsWith("庭") && other.EndsWith("庭"), "The two cat cultures must start with the species style.");
+
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = founder.culture;
+ScrollWindow.showWindow("culture");
+await WaitForWindow();
+ScrollWindow.getCurrentWindow().tabs.showTab("Onomastics");
+await WaitForWindow();
+var tab = ScrollWindow.getCurrentWindow().GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+await WaitForWindow();
+Check(Row("CultureNamingStyle").value.text.StartsWith("随物种") &&
+    tab.getOnomasticsData().getGroupString("group_1") == "灵猫地名词根",
+    "The original editor did not show the active species style.");
+Click("CultureNamingStyle");
+var search = ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>().Single(entry => entry.name == "CultureStyleSearch");
+search.inputField.text = "北欧";
+await WaitForWindow();
+Click("CultureStyle." + nordic);
+await WaitForWindow();
+string switched = Name(founder);
+Check(NamingApi.Current.GetWorld().Cultures[cultureId].Pack == nordic &&
+    switched != original && Name(cats[1]) == other &&
+    tab.getOnomasticsData().getGroupString("group_1") == "北欧风格城市名",
+    "The picked style did not update the cards and future names in just one culture.");
+
+world.kingdoms.makeNewCivKingdom(founder);
+var city = world.cities.buildNewCity(founder, tiles[0].zone);
+world.cities.checkLists(); world.kingdoms.checkLists();
+long cityId = city.id;
+string cityName = city.name;
+ScrollWindow.showWindow("world_info");
+await WaitForWindow();
+ScrollWindow.getCurrentWindow().tabs.showTab("chinesename_packs");
+await WaitForWindow();
+search = ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>().Single(entry => entry.name == "PackageSearch");
+search.inputField.text = "北欧";
+await WaitForWindow();
+Check(Row("NamingPack." + nordic).value.text == "已启用", "The enabled status was missing from the original world window.");
+Click("NamingPack." + nordic);
+await WaitForWindow();
+Check(Row("NamingPack." + nordic).value.text == "已关闭" && Name(founder) == original, "Turning off the bundle did not restore species naming.");
+Click("RescanPackages");
+await WaitForWindow();
+Check(Row("PackageStatus").name_text.text == "命名包列表已刷新" && search.inputField.text == "北欧" &&
+    Row("NamingPack." + nordic).value.text == "已关闭" && Name(founder) == original,
+    "Refreshing the package directory did not preserve the search and the world's disabled package.");
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "native-pack-style");
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { cultureId.ToString(), otherId.ToString(), cityId.ToString(), cityName });
+return new { original, switched, other, cityName, output };

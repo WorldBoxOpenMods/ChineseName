@@ -58,31 +58,6 @@ internal static class NativeNamingTab
             template != original);
     }
 
-    private static (MapStats Map, Culture Culture, string Type)? _opening;
-
-    internal static void OpenCulture(Culture culture, string type)
-    {
-        if (!NativeOnomastics.Supports(type)) return;
-        _opening = (World.world.map_stats, culture, type);
-        OpenWhenReady();
-    }
-
-    internal static void OpenWhenReady()
-    {
-        if (!_opening.HasValue || ScrollWindow.isAnimationActive()) return;
-        var request = _opening.Value;
-        _opening = null;
-        if (SmoothLoader.isLoading() || !ReferenceEquals(request.Map, World.world?.map_stats) || !request.Culture.isAlive()) return;
-        SelectedMetas.selected_culture = request.Culture;
-        ScrollWindow.showWindow("culture");
-        var window = ScrollWindow.getCurrentWindow();
-        window.tabs.showTab("Onomastics");
-        var tab = window.GetComponentInChildren<OnomasticsTab>();
-        if (tab == null) return;
-        string category = Category(request.Type);
-        tab._tab_groups._toggles.Find(toggle => toggle.name == category)?.toggle.click();
-    }
-
     private static string Category(string type)
     {
         if (NativeOnomastics.Meta(type) is MetaType meta) return "tab_onomastics_" + meta.ToString().ToLowerInvariant();
@@ -229,10 +204,10 @@ internal static class NativeNamingTab
     internal static class ReadDraft
     {
         private static void Prefix(OnomasticsTab __instance) =>
-            __instance.GetComponent<NamingWindow.OnomasticsEditor>()?.BeforeNativeLoad();
+            __instance.GetComponent<OnomasticsEditor>()?.BeforeNativeLoad();
 
         private static void Postfix(OnomasticsTab __instance) =>
-            __instance.GetComponent<NamingWindow.OnomasticsEditor>()?.AfterNativeLoad();
+            __instance.GetComponent<OnomasticsEditor>()?.AfterNativeLoad();
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) =>
             IndependentNames.ReplaceCall(instructions, AccessTools.Method(typeof(Culture), nameof(Culture.getOnomasticData)),
@@ -244,8 +219,8 @@ internal static class NativeNamingTab
     {
         private static void Postfix(OnomasticsTab __instance)
         {
-            var editor = __instance.GetComponent<NamingWindow.OnomasticsEditor>() ??
-                __instance.gameObject.AddComponent<NamingWindow.OnomasticsEditor>();
+            var editor = __instance.GetComponent<OnomasticsEditor>() ??
+                __instance.gameObject.AddComponent<OnomasticsEditor>();
             editor.Attach(__instance);
         }
     }
@@ -265,7 +240,7 @@ internal static class NativeNamingTab
     {
         private static bool Prefix(OnomasticsNameGenerator __instance) =>
             __instance is not OnomasticsTab tab || CurrentType(tab) == null ||
-            tab.GetComponent<NamingWindow.OnomasticsEditor>() == null;
+            tab.GetComponent<OnomasticsEditor>() == null;
     }
 
     [HarmonyPatch(typeof(OnomasticsTab), nameof(OnomasticsTab.resetNameGenerationTextBox))]
@@ -273,7 +248,7 @@ internal static class NativeNamingTab
     {
         private static void Postfix(OnomasticsTab __instance)
         {
-            var editor = __instance.GetComponent<NamingWindow.OnomasticsEditor>();
+            var editor = __instance.GetComponent<OnomasticsEditor>();
             editor?.NativeChanged();
         }
     }
@@ -288,7 +263,7 @@ internal static class NativeNamingTab
         }
 
         private static void Postfix(OnomasticsTab __instance, int __state) =>
-            __instance.GetComponent<NamingWindow.OnomasticsEditor>()?.PaletteClicked(__state);
+            __instance.GetComponent<OnomasticsEditor>()?.PaletteClicked(__state);
     }
 
     [HarmonyPatch(typeof(OnomasticsTab), nameof(OnomasticsTab.loadTemplate))]
@@ -313,8 +288,9 @@ internal static class NativeNamingTab
     {
         private static void Postfix(NameInput __instance, char pAddedChar, ref char __result)
         {
-            // A written pool ID uses "/" in place of the ":" reserved by the native save format.
-            if ((pAddedChar is '—' or '/' or '-' or '.' or >= '0' and <= '9') &&
+            // A cancelled field restores the original spelling, including the casing of a pool reference.
+            if ((pAddedChar is '—' or '/' or '-' or '.' or >= '0' and <= '9' ||
+                 __instance.inputField.wasCanceled && char.IsLetter(pAddedChar)) &&
                 __instance.GetComponentInParent<OnomasticsTab>() is { } tab && CurrentType(tab) != null)
                 __result = pAddedChar;
         }
@@ -324,7 +300,7 @@ internal static class NativeNamingTab
     internal static class ResetGlyphs
     {
         private static bool Prefix(OnomasticsTab __instance) =>
-            __instance.GetComponent<NamingWindow.OnomasticsEditor>()?.ResetArrangement() != true;
+            __instance.GetComponent<OnomasticsEditor>()?.ResetArrangement() != true;
     }
 
     [HarmonyPatch(typeof(OnomasticsTab), nameof(OnomasticsTab.openFirstGroup))]

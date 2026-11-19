@@ -363,7 +363,7 @@ internal static partial class Configuration
         };
     }
 
-    private static Dictionary<string, NamingPack> ResolveDependencies(IReadOnlyDictionary<string, NamingPack> packs,
+    internal static Dictionary<string, NamingPack> ResolveDependencies(IReadOnlyDictionary<string, NamingPack> packs,
         WorldNaming world, string defaultPack, IEnumerable<string> modDefaults, List<string> diagnostics)
     {
         var active = new Dictionary<string, NamingPack>(StringComparer.Ordinal);

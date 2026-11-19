@@ -18,7 +18,6 @@
     <Reference Include="Newtonsoft.Json" HintPath="$(GameManagedPath)/Newtonsoft.Json.dll" />
     <Reference Include="netstandard" HintPath="$(GameManagedPath)/netstandard.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManagedPath)/UnityEngine.CoreModule.dll" />
-    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(GameManagedPath)/UnityEngine.IMGUIModule.dll" />
     <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameManagedPath)/UnityEngine.InputLegacyModule.dll" />
     <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameManagedPath)/UnityEngine.TextRenderingModule.dll" />
     <Reference Include="UnityEngine.UI" HintPath="$(GameManagedPath)/UnityEngine.UI.dll" />

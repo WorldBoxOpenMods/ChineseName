@@ -9,7 +9,7 @@ using Chinese_Name.Naming.Game;
 void Check(bool pass, string message) { if (!pass) throw new InvalidOperationException(message); }
 var shell = ScrollWindow.getCurrentWindow();
 Check(shell?.screen_id == "culture", "Open the original culture page first.");
-Check(shell.GetComponentInChildren<NamingWindow.OnomasticsEditor>() != null, "The embedded onomastics editor is missing.");
+Check(shell.GetComponentInChildren<OnomasticsEditor>() != null, "The embedded onomastics editor is missing.");
 int sequence = 0;
 async System.Threading.Tasks.Task Key(string action)
 {
@@ -43,12 +43,15 @@ field.Select(); field.ActivateInputField();
 await Game.NextFrame();
 Check(field.isFocused, "Text field did not focus.");
 string baseline = field.text;
-field.ProcessEvent(new Event { type = EventType.KeyDown, character = 'z', keyCode = KeyCode.Z });
-Check(field.text.Contains("z") || field.text.Contains("Z"), "Key event did not enter the character.");
-field.ProcessEvent(Event.KeyboardEvent("escape"));
-// ProcessEvent forwards only the key; the normal UI event loop deactivates the field when it finishes.
-field.DeactivateInputField();
+await Key("key z");
+Check(field.text != baseline && (field.text.Contains("z") || field.text.Contains("Z")), "Key event did not enter the character.");
+await Key("key Escape");
 Check(field.text == baseline && field.wasCanceled, "Escape did not cancel the edit.");
+Check(ScrollWindow.isCurrentWindow("culture"), "Cancelling the word edit closed the culture window.");
+// The native input relinquishes focus on Escape. Re-enter it before testing forward navigation.
+field.Select(); field.ActivateInputField();
+await Game.NextFrame();
+Check(field.isFocused, "The native field did not regain focus.");
 await Key("tab");
 Check(events.currentSelectedGameObject != null && Focused() != field.name, "Tab did not leave the text field.");
 return new { tab = true, reverseTab = true, submit = true, textAndCancel = true, selected = Focused() };

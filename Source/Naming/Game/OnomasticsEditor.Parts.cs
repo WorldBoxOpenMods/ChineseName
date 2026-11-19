@@ -4,10 +4,9 @@ using System.Linq;
 
 namespace Chinese_Name.Naming.Game;
 
-public sealed partial class NamingWindow
+public sealed partial class OnomasticsEditor
 {
     private readonly Dictionary<(long Culture, string Type), PartsPage> _partEditor = new();
-    private static readonly char[] TermSeparators = { '、', '，', ',', '\n' };
 
     private sealed class PartsPage
     {
@@ -30,7 +29,10 @@ public sealed partial class NamingWindow
         var key = (culture.id, type.Id);
         if (_partEditor.TryGetValue(key, out var page)) return page;
         var selected = SelectedUnit.unit;
-        page = new PartsPage { ReferenceLanguage = _language };
+        var language = type.Id == NativeOnomastics.City && SelectedMetas.selected_city is { } city && city.culture == culture
+            ? city.language : selected?.culture == culture ? selected.language : null;
+        page = new PartsPage { ReferenceLanguage = language?.id ??
+            culture.units.FirstOrDefault(actor => actor.language != null)?.language.id };
         var example = selected?.culture == culture && selected.isSapient() ? selected : culture.units.FirstOrDefault(actor => actor.isSapient());
         page.Samples["species"] = example?.asset.id ?? culture.data.original_actor_asset ?? "human";
         if (type.Fields.ContainsKey(VanillaNames.CultureSpecies) && culture.data.original_actor_asset is string origin)
@@ -64,8 +66,6 @@ public sealed partial class NamingWindow
     }
 
     private static string RuleKey(NameType type, Rule rule) => type.Id + "/" + rule.Id;
-    private static List<string> SplitTerms(string value) => (value ?? "").Split(TermSeparators)
-        .Select(word => word.Trim()).Where(word => word.Length > 0).Distinct(StringComparer.Ordinal).ToList();
 
     private static bool UsesCards(CardNaming choice, Rule rule) =>
         choice?.Enabled == true && rule != null && (choice.SourceRule == null || choice.SourceRule == rule.Id);

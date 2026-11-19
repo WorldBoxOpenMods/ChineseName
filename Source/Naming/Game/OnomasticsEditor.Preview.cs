@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Chinese_Name.Naming.Game;
 
-public sealed partial class NamingWindow
+public sealed partial class OnomasticsEditor
 {
     private (long Culture, string Type)? _displayedParts;
     private const int PreviewDraws = 41;
@@ -78,7 +78,7 @@ public sealed partial class NamingWindow
         string key = RuleKey(type, rule);
         if (draft.Rules.TryGetValue(key, out var edit)) settings.Rules[key] = NamingJson.Copy(edit);
         else settings.Rules.Remove(key);
-        settings.Pack = draft.Pack ?? settings.Pack;
+        settings.Pack = draft.Pack;
         if (choice != null)
             settings.Cards[type.Id] = NamingJson.Copy(choice);
         else settings.Cards.Remove(type.Id);

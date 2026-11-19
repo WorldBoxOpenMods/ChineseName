@@ -1,0 +1,27 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+const string nordic = "chinesename:world-nordic-set";
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/native-pack-style/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Config.paused = true;
+var state = NamingApi.Current.GetWorld();
+if (SmoothLoader.isLoading() || state.EnabledPacks.Contains(nordic) || state.Cultures[long.Parse(expected[0])].Pack != nordic ||
+    state.Cultures.TryGetValue(long.Parse(expected[1]), out var other) && other.Pack != null ||
+    World.world.cities.get(long.Parse(expected[2]))?.name != expected[3])
+    throw new InvalidOperationException("Reloading lost the world package state, the local style or the existing city name.");
+
+ScrollWindow.showWindow("world_info");
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("chinesename_packs");
+await Game.NextFrame();
+var row = shell.GetComponentsInChildren<KeyValueField>().Single(value => value.name == "NamingPack." + nordic);
+if (row.value.text != "已关闭") throw new InvalidOperationException("The native window failed to reflect the saved choice.");
+return new { city = expected[3], packageStatus = row.value.text };

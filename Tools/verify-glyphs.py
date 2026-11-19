@@ -56,6 +56,8 @@ def main():
                         events = ["key", "--clearmodifiers", "ctrl+a", "ctrl+v"]
                     elif action == "enter":
                         events = ["key", "Return"]
+                    elif action == "key":
+                        events = ["keydown", *coords, "sleep", ".13", "keyup", *coords]
                     elif action == "tab":
                         events = ["keydown", "Tab", "sleep", ".12", "keyup", "Tab"]
                     elif action == "shift-tab":
