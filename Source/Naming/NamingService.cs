@@ -26,6 +26,8 @@ public sealed class NamingService
     public NamingPack GetPackage(string id) => _packs.TryGetValue(id, out var pack) ? NamingJson.Copy(pack) : null;
     internal NamingPack DescribePackage(string id) => _packs.TryGetValue(id, out var pack) ? pack : null;
     internal bool IsModDefault(string id) => _modDefaults.Contains(id);
+    internal Dictionary<string, NamingPack> ActivePacks(WorldNaming world) =>
+        Configuration.ResolveDependencies(_packs, world, _defaultPack, _modDefaults, new List<string>());
     internal IReadOnlyDictionary<string, (string Icon, string Description)> CultureOnomastics => _cultureOnomastics;
 
     public void RegisterType(NameType type, NamingPack defaults = null)

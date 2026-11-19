@@ -3,7 +3,9 @@ using System.IO;
 using Chinese_Name.Naming.Game;
 using UnityEngine;
 
-NamingWindow.Open();
+ScrollWindow.showWindow("world_info");
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+ScrollWindow.getCurrentWindow().tabs.showTab("chinesename_packs");
 await Game.NextFrame();
 await Game.NextFrame();
 var screenshot = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"),

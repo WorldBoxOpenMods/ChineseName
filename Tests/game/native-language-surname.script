@@ -1,0 +1,89 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+const string pool = "chinesename:species-lexicon.cat.place";
+const string surnameKey = "chinesename.surname.v1";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    for (int frame = 0; frame < 6; frame++) await Game.NextFrame();
+}
+KeyValueField Row(string name) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<KeyValueField>()
+    .Single(row => row.name == name);
+void Click(string name) => Row(name).value.GetComponent<Button>().onClick.Invoke();
+void ClickSurnameButton(string name) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>()
+    .Single(button => button.name == name).onClick.Invoke();
+NameInput Field(string name) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>()
+    .Single(field => field.name == name);
+
+var world = World.world;
+Config.paused = true;
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+await Frames();
+var tile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.isGoodForNewCity());
+var actor = world.units.createNewUnit("civ_cat", tile);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+var language = world.languages.newLanguage(actor, true);
+actor.joinLanguage(language);
+world.kingdoms.makeNewCivKingdom(actor);
+var city = world.cities.buildNewCity(actor, tile.zone);
+actor.joinCity(city);
+actor.generateNewName();
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+world.cities.checkLists(); world.kingdoms.checkLists();
+string oldCity = city.name;
+var pack = NamingApi.Current.GetPackage("chinesename:species-lexicon");
+var wordId = pack.Words.Single(word => word.Text == "猫眼台" && pack.Pools[pool].ContainsKey(word.Id)).Id;
+
+SelectedMetas.selected_language = language;
+ScrollWindow.showWindow("language");
+await Frames();
+ScrollWindow.getCurrentWindow().tabs.showTab("chinesename_lexicons");
+await Frames();
+Field("LexiconSearch").inputField.text = "灵猫地名词根";
+await Frames();
+Click("LexiconPool." + pool);
+await Frames();
+Field("LexiconSearch").inputField.text = "猫眼台";
+await Frames();
+Click("LexiconWord." + wordId);
+Click("IncreaseWord." + wordId);
+await Frames();
+Check(NamingApi.Current.GetWorld().Languages[language.id].Pools[pool].Bias[wordId] == 2, "The native language page did not apply the weight.");
+Click("ExcludeWord." + wordId);
+await Frames();
+Check(Row("RestoreWord." + wordId).value.text == "恢复" &&
+    Enumerable.Range(0, 40).All(seed => !actor.generateName(MetaType.City, seed).Contains("猫眼台")),
+    "The native language page did not exclude the word from generation.");
+Click("RestoreWord." + wordId);
+await Frames();
+Check(!NamingApi.Current.GetWorld().Languages[language.id].Pools[pool].ExcludeIds.Contains(wordId),
+    "Restoring a word did not remove its exclusion.");
+Click("LexiconWord." + wordId);
+Click("ExcludeWord." + wordId);
+await Frames();
+
+SelectedUnit.select(actor);
+ScrollWindow.showWindow("unit");
+await Frames();
+ScrollWindow.getCurrentWindow().tabs.showTab(ScrollWindow.getCurrentWindow().tabs.tab_default);
+await Frames();
+ClickSurnameButton("EditSurname");
+Field("SurnameInput").inputField.text = "欧阳";
+ClickSurnameButton("ApplySurname");
+await Frames();
+actor.data.get(surnameKey, out string surname);
+Check(surname == "欧阳" && actor.getName().Contains("欧阳") &&
+    ScrollWindow.getCurrentWindow().GetComponentInChildren<UnitWindow>().name_input.inputField.text == actor.getName(),
+    "The original creature window did not display the updated surname and full name.");
+Check(city.name == oldCity, "Editing language words renamed an existing city.");
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "native-language-surname");
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { actor.getID().ToString(), language.id.ToString(), wordId, actor.getName() });
+return new { city = oldCity, surname, actor = actor.getName(), excluded = wordId, output };

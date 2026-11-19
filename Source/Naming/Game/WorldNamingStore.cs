@@ -213,6 +213,44 @@ public static class WorldNamingStore
         if (edit(draft)) Apply(draft);
     }
 
+    internal static void ApplyPackageSelection(WorldNaming world)
+    {
+        Apply(world);
+        if (!HasSavedDraft()) return;
+        var draft = GetSavedDraft();
+        draft.EnabledPacks = world.EnabledPacks;
+        draft.PackPriorities = world.PackPriorities;
+        SaveDraft(draft);
+    }
+
+    internal static void ApplyCultureStyle(long culture, string pack)
+    {
+        var world = NamingApi.Current.GetWorld();
+        if (!world.Cultures.TryGetValue(culture, out var settings))
+            world.Cultures[culture] = settings = new CultureNaming();
+        settings.Pack = pack;
+        Apply(world);
+        if (!HasSavedDraft()) return;
+        var draft = GetSavedDraft();
+        if (!draft.Cultures.TryGetValue(culture, out settings))
+            draft.Cultures[culture] = settings = new CultureNaming();
+        settings.Pack = pack;
+        SaveDraft(draft);
+    }
+
+    internal static void ApplyLanguageSettings(long language, Action<LanguageNaming> edit)
+    {
+        var world = NamingApi.Current.GetWorld();
+        if (!world.Languages.TryGetValue(language, out var settings))
+            world.Languages[language] = settings = new LanguageNaming();
+        edit(settings);
+        Apply(world);
+        if (!HasSavedDraft()) return;
+        var draft = GetSavedDraft();
+        draft.Languages[language] = settings;
+        SaveDraft(draft);
+    }
+
     private static void Sync()
     {
         var map = World.world?.map_stats;

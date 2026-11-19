@@ -1,0 +1,21 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+const string pool = "chinesename:species-lexicon.cat.place";
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/native-language-surname/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Config.paused = true;
+var actor = World.world.units.get(long.Parse(expected[0]));
+var edit = NamingApi.Current.GetWorld().Languages[long.Parse(expected[1])].Pools[pool];
+string surname = null;
+actor?.data.get("chinesename.surname.v1", out surname);
+if (SmoothLoader.isLoading() || actor?.getName() != expected[3] || surname != "欧阳" ||
+    !edit.ExcludeIds.Contains(expected[2]) || edit.Bias[expected[2]] != 2)
+    throw new InvalidOperationException("Loading lost the surname or the per-language word edits.");
+return new { surname, actor = actor.getName(), excluded = expected[2] };

@@ -23,13 +23,13 @@ internal sealed class ModClass : BasicMod<ModClass>
             typeof(IndependentNames.UndeadNames),
             typeof(IndependentNames.KingdomMotto), typeof(IndependentNames.ClanMotto), typeof(IndependentNames.AllianceMotto),
             typeof(NamingLineage.CultureSplit), typeof(NamingLineage.NewLanguage), typeof(NamingLineage.RenameSkeletonSubspecies),
-            typeof(NamingLineage.UpliftName), typeof(NamingWindow.EditorPointer), typeof(NamingWindow.EditorKeyboard),
+            typeof(NamingLineage.UpliftName), typeof(NativeSurnameEditor.Attach), typeof(OnomasticsEditor.Keyboard),
             typeof(NativeOnomastics.DrawGroup), typeof(NativeOnomastics.BeginArrangementDraw), typeof(NativeNamingTab.ReadDraft), typeof(NativeNamingTab.AttachEditor),
             typeof(NativeNamingTab.DraftPreview), typeof(NativeNamingTab.InvalidatePreview), typeof(NativeNamingTab.CloseWordEditorOnLoad), typeof(NativeNamingTab.WordGroupSelection),
             typeof(NativeNamingTab.BoundGroups), typeof(NativeNamingTab.GlyphPalette), typeof(NativeNamingTab.Categories),
             typeof(NativeNamingTab.ResetGlyphs), typeof(NativeNamingTab.GlyphImport), typeof(NativeNamingTab.PreparePooledGlyph),
             typeof(NativeNamingTab.WordGroupCharacters),
-            typeof(NamingWindow.OnomasticsEditor.PalettePosition)
+            typeof(OnomasticsEditor.PalettePosition)
         };
         foreach (var patch in patches)
         {
@@ -46,6 +46,6 @@ internal sealed class ModClass : BasicMod<ModClass>
     {
         base.PostInit();
         NamingLineage.ConnectLanguageSplit();
-        NamingWindow.Register(gameObject);
+        NativeNamingSettings.Register();
     }
 }
