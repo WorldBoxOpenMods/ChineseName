@@ -7,8 +7,15 @@ using Chinese_Name.Naming.Game;
 using UnityEngine;
 
 const string nordic = "chinesename:world-nordic-set", atlas = "chinesename:world-styles-lexicon";
+const string builtin = "chinesename:species-lexicon";
 const string cityPool = atlas + ".nordic.city";
 void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+var world = World.world;
+var previousMap = world.map_stats;
+world.generateNewMap();
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && !ReferenceEquals(world.map_stats, previousMap), "The game did not generate a new world.");
+
 var service = NamingApi.Current;
 string bundled = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Content", "NamingPacks");
 var files = Directory.GetFiles(bundled, "*.naming.json");
@@ -17,9 +24,10 @@ Check(files.Length == 52 && ids.All(service.Packages.Contains)
     && Directory.GetFiles(WorldNamingStore.PackageDirectory, "*.naming.json").Length == 0,
     "The integrated mod did not discover all packages directly from its contents.");
 var draft = service.GetWorld();
-Check(draft.EnabledPacks.Count == 0, "An optional pack was activated in the new world.");
+Check(draft.EnabledPacks.ToHashSet().SetEquals(ids.Where(id => id != builtin)),
+    "The new world did not automatically enable every bundled pack.");
+Check(draft.CulturePack == null && draft.LanguagePack == null, "Enabling the bundle selected a world-wide style.");
 
-var world = World.world;
 Config.paused = true;
 var tile = world.tiles_list.First(item => item.Type.ground && item.zone.isGoodForNewCity());
 var founder = world.units.createNewUnit("human", tile);
@@ -33,7 +41,6 @@ world.languages.checkLists();
 var vocabulary = service.GetPackage(atlas);
 var member = vocabulary.Words.Single(word => word.Text == "Uppsala" && vocabulary.Pools[cityPool].ContainsKey(word.Id));
 draft = service.GetWorld();
-draft.EnabledPacks.AddRange(new[] { atlas, nordic });
 draft.Cultures[culture.id] = new CultureNaming { Pack = nordic };
 if (!draft.Languages.TryGetValue(language.id, out var profile)) draft.Languages[language.id] = profile = new LanguageNaming();
 profile.Pools[cityPool] = new PoolEdit
@@ -44,6 +51,8 @@ WorldNamingStore.Apply(draft);
 world.kingdoms.makeNewCivKingdom(founder);
 var city = world.cities.buildNewCity(founder, tile.zone);
 Check(city.name == "乌普萨拉", "An enabled pack from the bundle was not used for new names.");
+long founderId = founder.getID();
+long cityId = city.id;
 
 var overridePack = service.GetPackage(atlas);
 overridePack.Label = "玩家的地域词库";
@@ -59,4 +68,38 @@ finally
 }
 Check(WorldNamingStore.ReloadPacks().Count == 0 && service.GetPackage(atlas).Label == vocabulary.Label &&
     founder.generateName(MetaType.City, 23) == "乌普萨拉", "Rescanning without the player's copy did not restore the bundled pack.");
-return new { available = files.Length, city = city.name, playerCopyPriority = true, bundledFallback = true };
+
+// Save the same world in the pre-default format, with its custom edits and an explicit base pack.
+var oldSettings = new WorldNaming
+{
+    EnabledPacks = new List<string> { nordic }, Cultures = draft.Cultures, Languages = draft.Languages
+};
+world.map_stats.custom_data.set("chinesename.rules.v1", NamingJson.Write(oldSettings));
+world.units.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists();
+string save = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "prior-bundled-world");
+SaveManager.saveWorldToDirectory(save);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(save, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The previous world did not finish loading.");
+Config.paused = true;
+var migrated = NamingApi.Current.GetWorld();
+Check(migrated.EnabledPacks.ToHashSet().SetEquals(ids.Where(id => id != builtin)),
+    "An existing world did not enable the bundle on first load.");
+Check(NamingJson.Write(migrated.Cultures) == NamingJson.Write(draft.Cultures) &&
+    NamingJson.Write(migrated.Languages) == NamingJson.Write(draft.Languages), "Initializing defaults overwrote saved edits.");
+
+migrated.EnabledPacks.Remove(nordic);
+WorldNamingStore.Apply(migrated);
+string nextName = world.units.get(founderId).generateName(MetaType.City, 23);
+Check(nextName != "乌普萨拉", "Turning off the style did not change subsequent names.");
+string updatedSave = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "updated-bundled-world");
+SaveManager.saveWorldToDirectory(updatedSave);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(updatedSave, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The updated world did not finish loading.");
+Config.paused = true;
+var updated = NamingApi.Current.GetWorld();
+Check(updated.EnabledPacks.ToHashSet().SetEquals(ids.Where(id => id != builtin && id != nordic)) &&
+    world.units.get(founderId).generateName(MetaType.City, 23) == nextName && world.cities.get(cityId).name == "乌普萨拉",
+    "Reloading did not preserve the disabled style and the existing city name.");
+return new { available = files.Length, enabledByDefault = ids.Length - 1, city = "乌普萨拉", disabledStyle = nordic, nextName };

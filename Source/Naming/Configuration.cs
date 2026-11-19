@@ -47,6 +47,8 @@ public sealed class WorldNaming
     public string CulturePack { get; set; }
     public string LanguagePack { get; set; }
     public List<string> EnabledPacks { get; set; } = new();
+    [JsonProperty]
+    internal List<string> InitializedBundledPacks { get; set; }
     public Dictionary<string, int> PackPriorities { get; set; } = new();
     public Dictionary<long, CultureNaming> Cultures { get; set; } = new();
     public Dictionary<long, LanguageNaming> Languages { get; set; } = new();

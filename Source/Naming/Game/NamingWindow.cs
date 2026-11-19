@@ -701,6 +701,13 @@ public sealed partial class NamingWindow : MonoBehaviour
             }
         }
         WorldNamingStore.Apply(current);
+        if (_section == 2 && WorldNamingStore.HasSavedDraft())
+        {
+            var saved = WorldNamingStore.GetSavedDraft();
+            saved.EnabledPacks = current.EnabledPacks;
+            saved.PackPriorities = current.PackPriorities;
+            WorldNamingStore.SaveDraft(saved);
+        }
         _message = "已应用。设置随世界存档保存。";
     }
 

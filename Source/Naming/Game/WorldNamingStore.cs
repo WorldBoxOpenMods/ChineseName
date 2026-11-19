@@ -18,6 +18,7 @@ public static class WorldNamingStore
     private static string _loadError;
     private static string _bundledSpeciesPack;
     private static readonly HashSet<string> DiskPacks = new(StringComparer.Ordinal);
+    private static readonly HashSet<string> BundledPacks = new(StringComparer.Ordinal);
 
     public static string PackageDirectory => _packDirectory;
 
@@ -48,17 +49,20 @@ public static class WorldNamingStore
     public static IReadOnlyList<string> ReloadPacks()
     {
         var errors = new List<string>();
-        var files = ReadPacks(_bundledPackDirectory, errors);
+        var bundled = ReadPacks(_bundledPackDirectory, errors);
+        var files = new Dictionary<string, NamingPack>(bundled, StringComparer.Ordinal);
         foreach (var file in ReadPacks(_packDirectory, errors))
             files[file.Key] = file.Value;
         foreach (var id in DiskPacks) _service.UninstallPack(id);
         DiskPacks.Clear();
+        BundledPacks.Clear();
         foreach (var pack in files.Values)
         {
             try
             {
                 _service.InstallPack(pack);
                 DiskPacks.Add(pack.Id);
+                if (bundled.ContainsKey(pack.Id)) BundledPacks.Add(pack.Id);
             }
             catch (Exception error) { errors.Add(pack.Id + " · " + error.Message); }
         }
@@ -89,6 +93,17 @@ public static class WorldNamingStore
             errors.Add("重复的命名包 ID · " + id);
         }
         return files;
+    }
+
+    private static bool EnableNewBundledPacks(WorldNaming world)
+    {
+        // Remember which bundled defaults this world has seen, including packs it later turns off.
+        var seen = world.InitializedBundledPacks ?? new List<string>();
+        var added = BundledPacks.Except(seen, StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal).ToArray();
+        if (added.Length == 0) return false;
+        world.InitializedBundledPacks = seen.Concat(added).ToList();
+        world.EnabledPacks.AddRange(added.Except(world.EnabledPacks, StringComparer.Ordinal));
+        return true;
     }
 
     public static string ExportCombination(string id, long? culture, long? language, WorldNaming draft = null)
@@ -151,7 +166,9 @@ public static class WorldNamingStore
         try
         {
             var saved = NamingJson.Read<WorldNaming>(json);
-            return saved?.Format == 1 ? saved : _service.GetWorld();
+            if (saved?.Format != 1) return _service.GetWorld();
+            EnableNewBundledPacks(saved);
+            return saved;
         }
         catch (Exception error)
         {
@@ -182,10 +199,10 @@ public static class WorldNamingStore
         Sync();
         if (_map == null) throw new InvalidOperationException("No world is active.");
         if (_loadError != null) throw new InvalidOperationException(_loadError);
+        draft.InitializedBundledPacks = _service.ActiveWorld.InitializedBundledPacks;
         string json = NamingJson.Write(draft);
         _service.SetWorld(draft);
-        _map.custom_data ??= new SaveCustomData();
-        _map.custom_data.set(SaveKey, json);
+        Save(_map, json);
     }
 
     internal static void Update(Func<WorldNaming, bool> edit)
@@ -212,7 +229,10 @@ public static class WorldNamingStore
             map?.custom_data?.get(SaveKey, out json);
             if (json != null)
             {
-                _service.SetWorld(NamingJson.Read<WorldNaming>(json));
+                var saved = NamingJson.Read<WorldNaming>(json);
+                bool changed = saved?.Format == 1 && EnableNewBundledPacks(saved);
+                _service.SetWorld(saved);
+                if (changed) Save(map, NamingJson.Write(saved));
                 return;
             }
         }
@@ -221,7 +241,16 @@ public static class WorldNamingStore
             _loadError = "Unable to load the saved naming configuration: " + error.Message;
             LogService.LogWarning(_loadError);
         }
-        _service.SetWorld(new WorldNaming { UseSavedVanillaCards = map != null && _loadError == null });
+        var settings = new WorldNaming { UseSavedVanillaCards = map != null && _loadError == null };
+        bool initialized = map != null && EnableNewBundledPacks(settings);
+        _service.SetWorld(settings);
+        if (initialized && _loadError == null) Save(map, NamingJson.Write(settings));
+    }
+
+    private static void Save(MapStats map, string json)
+    {
+        map.custom_data ??= new SaveCustomData();
+        map.custom_data.set(SaveKey, json);
     }
 
     [HarmonyPatch(typeof(MapStats), nameof(MapStats.initNewWorld))]
@@ -231,13 +260,11 @@ public static class WorldNamingStore
         {
             _map = __instance;
             _loadError = null;
-            _service.SetWorld(new WorldNaming());
+            var settings = new WorldNaming();
+            EnableNewBundledPacks(settings);
+            _service.SetWorld(settings);
         }
 
-        private static void Postfix(MapStats __instance)
-        {
-            __instance.custom_data ??= new SaveCustomData();
-            __instance.custom_data.set(SaveKey, NamingJson.Write(_service.ActiveWorld));
-        }
+        private static void Postfix(MapStats __instance) => Save(__instance, NamingJson.Write(_service.ActiveWorld));
     }
 }
