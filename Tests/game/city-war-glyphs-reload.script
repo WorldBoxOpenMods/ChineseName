@@ -1,0 +1,80 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/city-war-glyphs-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the map.");
+
+const string warType = "worldbox:war";
+const string coastPool = "chinesename:coastal-places";
+const string warName = "临川国—松岭国之战";
+var world = World.world;
+Config.paused = true;
+var culture = world.cultures.get(ids[0]);
+var founder = world.units.get(ids[3]);
+var city = world.cities.get(ids[4]);
+var kingdom = world.kingdoms.get(ids[5]);
+var rival = world.kingdoms.get(ids[6]);
+var war = world.wars.get(ids[7]);
+var rebellion = world.wars.get(ids[8]);
+Check(city?.name == "澄江府" && kingdom?.name == "临川国" && rival?.name == "松岭国" &&
+      war?.name == warName && rebellion?.name == "松岭国—临川国之战", "A saved name changed after restarting WorldBox.");
+
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+var parent = settings.Languages[ids[1]];
+var child = settings.Languages[ids[2]];
+var preference = child.GroupPreferences.Single();
+Check(settings.LanguageParents[ids[2]] == ids[1] && founder.language.id == ids[2] &&
+      preference.Key == coastPool && Math.Abs(preference.Value[service.DefaultPack + "/coastal-islands"] - .2) < 1e-9 &&
+      NamingJson.Write(child.Pools) == NamingJson.Write(parent.Pools), "The language preferences or inherited edits were lost.");
+var cityOrder = new[] { "group_1", "chinesename_as_pool", "group_2" };
+var warOrder = new[] { "chinesename_war_attacker", "group_3", "chinesename_war_defender", "group_2" };
+var cityCards = culture.getOnomasticData(MetaType.City);
+Check(cityCards.getFullTemplateData().SequenceEqual(cityOrder) && cityCards.getGroupString("group_2") == "府" &&
+      cityCards.getGroupString("group_1").Split(' ').ToHashSet().SetEquals(new[] { "江河地名", "港口地名", "关塞地名" }),
+      "The literal suffix or the aliases could not be loaded.");
+var freshNames = Enumerable.Range(0, 128).Select(seed => founder.generateName(MetaType.City, seed)).ToHashSet();
+Check(freshNames.All(name => name.EndsWith("府") && name != "白湾府") && freshNames.Contains("澄江府") &&
+      freshNames.Contains("朔原府"), "City naming after loading no longer used the saved settings.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+async System.Threading.Tasks.Task Select(string id)
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + id).toggle.click();
+    await Frames();
+}
+await Select("city");
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + founder.language.id).onClick.Invoke();
+await Frames();
+var cityPreview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
+Check(cityPreview.EndsWith("府") && cityPreview != "白湾府", "The loaded city preview lost its suffix or exclusions.");
+await Select("war");
+var warPreview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
+Check(warPreview == warName && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(warOrder) &&
+      tab.getOnomasticsData().getShortTemplate() == settings.Cultures[culture.id].Cards[warType].Template,
+      "The saved war glyphs did not reopen in the native editor.");
+var freshWar = world.wars.newWar(kingdom, rival, AssetManager.war_types_library.get("normal"));
+Check(freshWar.name == warName, "New war naming after loading lost its participants.");
+return new { city = city.name, war = war.name, rebellion = rebellion.name, cityPreview, warPreview,
+    coastalPreference = preference.Value, freshNames = freshNames.Count, freshWar = freshWar.name, save };

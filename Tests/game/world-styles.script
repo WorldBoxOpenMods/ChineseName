@@ -1,0 +1,255 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string worldWords = "chinesename:world-styles-lexicon", speciesWords = "chinesename:species-lexicon";
+const string speciesSet = "chinesename:species-set";
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+async System.Threading.Tasks.Task Frames(int count = 8) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var options = service.GetWorld();
+var examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var regional = new[] { "british", "korean", "arabic", "hindustani", "ethiopian", "andean", "maori" };
+var files = regional.Select(region => "world-" + region + "-set")
+    .Concat(new[] { "world-styles-lexicon", "species-lexicon", "species-set" });
+foreach (string filename in files)
+{
+    string file = filename + ".naming.json";
+    File.Copy(Path.Combine(examples, file), Path.Combine(WorldNamingStore.PackageDirectory, "test-world-styles-" + file), true);
+    string id = "chinesename:" + filename;
+    if (!options.EnabledPacks.Contains(id)) options.EnabledPacks.Add(id);
+}
+var issues = WorldNamingStore.ReloadPacks();
+Check(issues.Count == 0, string.Join("\n", issues));
+options.CulturePack = speciesSet;
+WorldNamingStore.Apply(options);
+var assets = AssetManager.actor_library.list.Where(asset => !asset.id.StartsWith("$", StringComparison.Ordinal)).ToArray();
+Check(assets.Length >= 300 && assets.Count(asset => asset.civ) >= 39, "The verification must use the full game registry.");
+bool SpeciesResult(NameResult value) => value.Success &&
+    value.Sources.Values.Any(source => source.Reference?.StartsWith(speciesWords + ".", StringComparison.Ordinal) == true);
+foreach (var asset in assets)
+{
+    var context = new Dictionary<string, object> {
+        ["kind"] = asset.is_boat ? "boat" : asset.civ ? "sapient" : "creature",
+        ["species"] = asset.id, ["culture-species"] = asset.id
+    };
+    Check(SpeciesResult(service.Generate(new NameRequest("worldbox:person", 13, inputs: context))),
+        "The game asset lacked a themed individual name: " + asset.id);
+    if (asset.civ)
+        foreach (string type in new[] { "city", "kingdom", "culture", "language", "family", "clan", "religion" })
+            Check(SpeciesResult(service.Generate(new NameRequest("worldbox:" + type, 13, inputs: context))),
+                "The civilization asset lacked themed " + type + " names: " + asset.id);
+    if (!asset.is_boat)
+    {
+        context["kind"] = "biome_grass";
+        Check(SpeciesResult(service.Generate(new NameRequest("worldbox:subspecies", 13, inputs: context))),
+            "The game asset lacked a themed subspecies name: " + asset.id);
+    }
+}
+
+var rows = new[] {
+    (Region: "british", Species: "human", Given: "John", Surname: "Smith", Place: "Oxford", Realm: "Wessex",
+        Name: "约翰·史密斯", City: "牛津", Country: "威塞克斯公国", Original: "John Smith"),
+    (Region: "korean", Species: "human", Given: "민준", Surname: "김", Place: "경주", Realm: "신라",
+        Name: "金敏俊", City: "庆州", Country: "新罗国", Original: "김민준"),
+    (Region: "arabic", Species: "human", Given: "ليلى", Surname: "الخطيب", Place: "دمشق", Realm: "نجد",
+        Name: "莱拉·哈提卜", City: "大马士革", Country: "内志国", Original: "ليلى الخطيب"),
+    (Region: "hindustani", Species: "human", Given: "Arjun", Surname: "Sharma", Place: "Varanasi", Realm: "Magadha",
+        Name: "阿琼·夏尔马", City: "瓦拉纳西", Country: "摩揭陀国", Original: "Arjun Sharma"),
+    (Region: "ethiopian", Species: "human", Given: "Dawit", Surname: (string)null, Place: "Axum", Realm: "Shewa",
+        Name: "达维特", City: "阿克苏姆", Country: "绍阿王国", Original: "Dawit"),
+    (Region: "andean", Species: "human", Given: "Killa", Surname: (string)null, Place: "Qusqu", Realm: "Chinchaysuyu",
+        Name: "基利亚", City: "库斯科", Country: "钦察苏尤联邦", Original: "Killa"),
+    (Region: "maori", Species: "human", Given: "Moana", Surname: (string)null, Place: "Rotorua", Realm: "Taranaki",
+        Name: "莫阿娜", City: "罗托鲁瓦", Country: "塔拉纳基群岛邦", Original: "Moana"),
+    (Region: "cat", Species: "civ_cat", Given: "夜瞳", Surname: (string)null, Place: "猫眼台", Realm: (string)null,
+        Name: "猫眼台夜瞳", City: "猫眼台庭", Country: "猫眼台领", Original: "猫眼台夜瞳"),
+    (Region: "crystal", Species: "civ_crystal_golem", Given: "晶刃", Surname: (string)null, Place: "棱镜庭", Realm: (string)null,
+        Name: "棱镜庭晶刃", City: "棱镜庭关", Country: "棱镜庭晶庭", Original: "棱镜庭晶刃")
+};
+var atlases = new Dictionary<string, NamingPack> {
+    [worldWords] = service.GetPackage(worldWords), [speciesWords] = service.GetPackage(speciesWords)
+};
+var fixtures = new List<(Actor Actor, Culture Culture, Language Language, WorldTile Tile)>();
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(rows.Length).Select(group => group.First()).ToArray();
+Check(tiles.Length == rows.Length, "The game needs enough empty zones for the naming fixtures.");
+void Only(Language language, string packId, string slot, string word)
+{
+    if (!options.Languages.TryGetValue(language.id, out var profile))
+        options.Languages[language.id] = profile = new LanguageNaming();
+    var pack = atlases[packId];
+    string id = packId + "." + slot;
+    string member = pack.Words.Single(value => value.Text == word && pack.Pools[id].ContainsKey(value.Id)).Id;
+    profile.Pools[id] = new PoolEdit { ExcludeIds = pack.Pools[id].Keys.Where(key => key != member).ToList() };
+}
+options = service.GetWorld();
+foreach (var row in rows)
+{
+    var tile = tiles[fixtures.Count];
+    var actor = world.units.createNewUnit(row.Species, tile);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    var language = world.languages.newLanguage(actor, true);
+    actor.joinLanguage(language);
+    actor.data.set("chinesename.surname.v1", (string)null);
+    bool creature = row.Species != "human";
+    options.Cultures[culture.id] = new CultureNaming { Pack = creature ? speciesSet : "chinesename:world-" + row.Region + "-set" };
+    string pack = creature ? speciesWords : worldWords;
+    Only(language, pack, row.Region + ".given", row.Given);
+    Only(language, pack, row.Region + (creature ? ".place" : ".city"), row.Place);
+    if (row.Surname != null) Only(language, pack, row.Region + ".surname", row.Surname);
+    if (row.Realm != null) Only(language, pack, row.Region + ".realm", row.Realm);
+    fixtures.Add((actor, culture, language, tile));
+}
+var korea = fixtures[1];
+var alternate = world.languages.newLanguage(korea.Actor, false);
+Only(alternate, worldWords, "korean.given", "도윤");
+Only(alternate, worldWords, "korean.surname", "김");
+Only(alternate, worldWords, "korean.realm", "백제");
+var cat = fixtures[7];
+var woodland = world.languages.newLanguage(cat.Actor, false);
+Only(woodland, speciesWords, "cat.given", "月爪");
+Only(woodland, speciesWords, "cat.place", "谧檐");
+WorldNamingStore.Apply(options);
+world.cultures.checkLists(); world.languages.checkLists(); world.units.checkLists();
+var countries = new List<Kingdom>();
+var names = new List<string[]>();
+for (int i = 0; i < rows.Length; i++)
+{
+    var expected = rows[i];
+    var fixture = fixtures[i];
+    fixture.Actor.generateNewName();
+    var kingdom = world.kingdoms.makeNewCivKingdom(fixture.Actor);
+    var city = world.cities.buildNewCity(fixture.Actor, fixture.Tile.zone);
+    fixture.Actor.joinCity(city);
+    string[] result = { fixture.Actor.getName(), city.name, kingdom.name };
+    Check(result.SequenceEqual(new[] { expected.Name, expected.City, expected.Country }),
+        expected.Region + " generated " + string.Join("，", result));
+    var input = new Dictionary<string, object> { ["kind"] = "sapient", ["culture-species"] = expected.Species };
+    var original = service.Generate(new NameRequest("worldbox:person", 0, fixture.Culture.id,
+        fixture.Language.id, input, writing: NameWriting.Original));
+    Check(original.Text == expected.Original && original.Diagnostics.Contains("原版命名学"),
+        expected.Region + " original spelling: " + original.Text + " • " + string.Join(" / ", original.Diagnostics));
+    countries.Add(kingdom);
+    names.Add(result);
+}
+
+int actions = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string point = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var center = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+        point = $" {(int)center.x} {UnityEngine.Screen.height - (int)center.y}";
+    }
+    string path = Path.Combine(exchange, ++actions + ".mouse");
+    File.WriteAllText(path + ".tmp", action + point);
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Mouse input did not complete: " + action);
+    await Frames();
+}
+ScrollWindow shell = null;
+OnomasticsTab tab = null;
+async System.Threading.Tasks.Task Open(Actor actor, Culture culture, string category)
+{
+    world.console.Hide();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    SelectedUnit.select(actor);
+    SelectedMetas.selected_culture = culture;
+    ScrollWindow.showWindow("culture");
+    shell = ScrollWindow.getCurrentWindow();
+    Check(shell?.tabs != null, "The native culture window did not open.");
+    shell.tabs.showTab("Onomastics");
+    tab = shell.GetComponentInChildren<OnomasticsTab>();
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + category).toggle.click();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    await Frames();
+}
+string Preview() => Regex.Replace(shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ?? "", "</?color[^>]*>", "");
+Button Flag(Language language) => shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + language.id);
+async System.Threading.Tasks.Task Choose(Language language)
+{
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+    var flag = Flag(language);
+    var scroll = flag.GetComponentInParent<ScrollRect>();
+    if (scroll != null && scroll.name == "PreviewLanguageScroll")
+    {
+        var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(scroll.viewport, flag.transform);
+        float shift = bounds.min.x < scroll.viewport.rect.xMin ? bounds.min.x - scroll.viewport.rect.xMin :
+            Mathf.Max(0, bounds.max.x - scroll.viewport.rect.xMax);
+        float overflow = scroll.content.rect.width - scroll.viewport.rect.width;
+        if (overflow > 0)
+            scroll.horizontalNormalizedPosition = Mathf.Clamp01(scroll.horizontalNormalizedPosition + shift / overflow);
+        await Frames();
+    }
+    await Mouse("click", Flag(language));
+}
+
+await Open(korea.Actor, korea.Culture, "kingdom");
+Check(Preview() == "新罗国", "The native preview lost the original region's word groups: " + Preview());
+await Choose(alternate);
+Check(Preview() == "百济国", "The alternative language preview was " + Preview());
+var group = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(card => card.onomastics_asset.id == "group_2").button;
+await Mouse("click", group);
+shell.scrollRect.verticalNormalizedPosition = 0;
+await Frames();
+var inputField = tab._editor_input.inputField;
+Check(inputField.text == "国", "The word group did not expose the normal suffix.");
+await Mouse("click", inputField);
+GUIUtility.systemCopyBuffer = "邦";
+await Mouse("paste");
+await Mouse("enter");
+shell.scrollRect.verticalNormalizedPosition = 1;
+await Frames();
+Check(Preview() == "百济邦", "The original editor did not update the localized arrangement.");
+korea.Actor.joinLanguage(alternate);
+Check(korea.Actor.generateName(MetaType.Kingdom, 7) == "百济邦" && countries[1].name == "新罗国",
+    "The actual naming path lost the edit or renamed an old country.");
+
+await Open(cat.Actor, cat.Culture, "city");
+Check(Preview() == "猫眼台庭" && tab.getOnomasticsData().getGroupString("group_1") == "灵猫地名词根",
+    "The civilization's species pool did not appear as a native word group.");
+await Choose(woodland);
+Check(Preview() == "谧檐庭", "The species pool did not follow the chosen language.");
+char suffix = AssetManager.onomastics_library.get("group_2").short_id;
+tab.loadTemplate(tab.getOnomasticsData().getShortTemplate().Replace(suffix + ":庭", suffix + ":市"));
+await Frames();
+cat.Actor.joinLanguage(woodland);
+Check(Preview() == "谧檐市" && cat.Actor.generateName(MetaType.City, 7) == "谧檐市", "The species arrangement did not retain the edit.");
+
+var stranger = world.units.createNewUnit("cat", cat.Tile);
+var alias = service.Generate(new NameRequest("worldbox:person", 0, inputs: new Dictionary<string, object> {
+    ["kind"] = "creature", ["species"] = "cat"
+}));
+Check(atlases[speciesWords].Words.Any(word => word.Text == stranger.getName() &&
+    atlases[speciesWords].Pools[speciesWords + ".cat.given"].ContainsKey(word.Id)) && SpeciesResult(alias),
+    "A wild cat did not pull from the actual species pool.");
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "world-styles-save");
+Directory.CreateDirectory(output);
+world.units.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists(); world.languages.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] {
+    korea.Actor.getID(), korea.Culture.id, alternate.id, countries[1].id,
+    cat.Actor.getID(), cat.Culture.id, woodland.id
+}.Select(id => id.ToString()));
+return new { worldAssets = assets.Length, civilizations = assets.Count(asset => asset.civ),
+    subtypes = assets.Count(asset => !asset.is_boat), examples = names, edited = new[] { "百济邦", "谧檐市" }, mouseActions = actions, output };

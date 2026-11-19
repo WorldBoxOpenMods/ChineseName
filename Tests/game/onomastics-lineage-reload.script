@@ -1,0 +1,23 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/output/lineage-save/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; SmoothLoader.isLoading() && frame < 1000; frame++) await Game.NextFrame();
+if (SmoothLoader.isLoading()) throw new InvalidOperationException("The world did not finish loading.");
+long branch = long.Parse(expected[0]), parent = long.Parse(expected[1]);
+long dialect = long.Parse(expected[2]), source = long.Parse(expected[3]);
+var service = NamingApi.Current;
+var state = service.GetWorld();
+var result = service.Generate(new NameRequest("worldbox:city", 104, branch, dialect));
+if (state.Cultures[branch].Parent != parent ||
+    state.Cultures[branch].Variants["worldbox:person/sapient"] != expected[6] ||
+    state.LanguageParents[dialect] != source || state.Languages[dialect].GroupPreferences[expected[4]][expected[5]] != .2 ||
+    !result.Success || result.Text != expected[7])
+    throw new InvalidOperationException("Reload changed the saved cultural or language divergence.");
+return new { branch, dialect, retainedName = result.Text, group = expected[5], variant = expected[6], save };

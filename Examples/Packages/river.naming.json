@@ -1,0 +1,20 @@
+{
+  "format": 1,
+  "id": "example:river-names",
+  "label": "江河用字",
+  "supplemental": true,
+  "priority": 20,
+  "requires": { "chinesename:classic": 1 },
+  "languageBases": ["chinesename:classic"],
+  "words": [
+    { "id": "example:river-bend", "text": "汀" },
+    { "id": "example:clear-water", "text": "潋" }
+  ],
+  "poolPatches": [
+    {
+      "pool": "chinesename:given-last",
+      "operation": "Append",
+      "words": { "example:river-bend": 3, "example:clear-water": 2 }
+    }
+  ]
+}

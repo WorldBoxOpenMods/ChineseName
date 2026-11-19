@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string person = "worldbox:person";
+const string surnamePool = "chinesename:surname", givenPool = "chinesename:given-first", places = "chinesename:places";
+const string marker = "chinesename_as_pool", surnameGlyph = "chinesename_keep_surname", surnameKey = "chinesename.surname.v1";
+const string root = "group_1", given = "group_2", fixture = "verification:pool-aliases";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var leader = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(leader);
+var culture = world.cultures.newCulture(leader, true);
+leader.setCulture(culture);
+var origin = world.languages.newLanguage(leader, true);
+var other = world.languages.newLanguage(leader, false);
+leader.joinLanguage(origin);
+var service = NamingApi.Current;
+var addon = new NamingPack { Id = fixture, Format = 1, Supplemental = true,
+    PoolAliases = new Dictionary<string, string> { ["agafasa"] = surnamePool, ["afakasa"] = surnamePool } };
+if (!service.Packages.Contains(fixture))
+{
+    var path = Path.Combine(WorldNamingStore.PackageDirectory, "verification-pool-aliases.naming.json");
+    if (!File.Exists(path)) WorldNamingStore.Export(addon);
+    service.InstallPack(addon);
+}
+var main = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+config.EnabledPacks.Add(fixture);
+void KeepOnly(Language language, string pool, string text)
+{
+    if (!config.Languages.TryGetValue(language.id, out var profile))
+        config.Languages[language.id] = profile = new LanguageNaming();
+    var keep = main.Words.Single(word => word.Text == text && main.Pools[pool].ContainsKey(word.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = main.Pools[pool].Keys.Where(id => id != keep).ToList() };
+}
+KeepOnly(origin, surnamePool, "欧阳");
+KeepOnly(other, surnamePool, "李");
+KeepOnly(origin, givenPool, "青");
+KeepOnly(other, givenPool, "怀");
+config.Languages[origin.id].Groups[places] = main.Id + "/river-places";
+foreach (var poolGroup in main.WordGroups.Where(pair => pair.Value.Pool != places && pair.Value.Pool != givenPool)
+             .GroupBy(pair => pair.Value.Pool))
+    config.Languages[origin.id].Pools[poolGroup.Key] = new PoolEdit { Group = main.Id + "/" + poolGroup.First().Key };
+config.Languages[origin.id].Pools[givenPool].Group = main.Id + "/clear-given-names";
+WorldNamingStore.Apply(config);
+world.cultures.checkLists(); world.languages.checkLists();
+
+SelectedUnit.select(leader);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string Short(string id) => AssetManager.onomastics_library.get(id).short_id.ToString();
+string Display() => shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+string personTemplate = "0" + Short(marker) + Short(surnameGlyph) + "1" + Short(marker) +
+    "|0:afakasa agafasa;1:给名首字";
+tab.loadTemplate(personTemplate);
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+Check(Display() == (string.IsNullOrEmpty(Surname(leader)) ? "欧阳" : Surname(leader)) + "青",
+    "The native preview did not combine the two glyphs: " + Display());
+var personOrder = new[] { root, marker, surnameGlyph, given, marker };
+Check(culture.getOnomasticData(MetaType.Unit).getFullTemplateData().SequenceEqual(personOrder),
+    "The native culture did not save the combination.");
+
+Actor NewPerson(Language language, ActorSex sex = ActorSex.Male)
+{
+    var actor = world.units.createNewUnit("human", tile);
+    actor.data.sex = sex;
+    actor.setCulture(culture);
+    actor.joinLanguage(language);
+    return actor;
+}
+string Surname(Actor actor) { actor.data.get(surnameKey, out string name); return name; }
+var father = NewPerson(origin);
+var mother = NewPerson(other, ActorSex.Female);
+Check(father.getName() == "欧阳青" && mother.getName() == "李怀" && Surname(father) == "欧阳" && Surname(mother) == "李",
+    $"First generation got {father.getName()}, {mother.getName()}.");
+var child = BabyMaker.makeBaby(father, mother, ActorSex.Female, pTile: tile);
+child.setCulture(culture);
+child.joinLanguage(other);
+Check(Surname(child) == "欧阳" && child.getName() == "欧阳怀", "Child did not keep the surname and use its own language.");
+
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" };
+NameResult Person(Culture owner, Language language, string inherited = null) =>
+    service.Generate(new NameRequest(person, 23, owner.id, language.id, inputs,
+        inherited == null ? null : new Dictionary<string, string> { ["surname"] = inherited }));
+var first = Person(culture, origin);
+Check(first.Parts["surname"] == "欧阳" && first.Sources["surname"].Reference == surnamePool &&
+    Person(culture, other, "欧阳").Sources["surname"].Kind == "inherited",
+    "The returned surname metadata did not distinguish the pool and inheritance.");
+
+config = service.GetWorld();
+config.EnabledPacks.Remove(fixture);
+WorldNamingStore.Apply(config);
+var inheritedWithoutPack = Person(culture, other, "欧阳");
+Check(inheritedWithoutPack.Text == "欧阳怀" && inheritedWithoutPack.Sources["surname"].Kind == "inherited",
+    "An available inherited surname should work even if none of its selector aliases is installed.");
+config.EnabledPacks.Add(fixture);
+WorldNamingStore.Apply(config);
+
+// Exercise vanilla language evolution without disturbing the explicitly pinned personal-name pool.
+world.cities.buildNewCity(leader, tile.zone);
+Check(AssetManager.plots_library.get("language_divergence").action(leader), "The original language split failed.");
+var branchLanguage = leader.language;
+var settings = service.GetWorld();
+Check(branchLanguage != origin && settings.LanguageParents[branchLanguage.id] == origin.id &&
+    settings.Languages[branchLanguage.id].GroupPreferences[places][main.Id + "/hill-places"] == .2 &&
+    settings.Languages[branchLanguage.id].Pools[surnamePool].ExcludeIds.SequenceEqual(settings.Languages[origin.id].Pools[surnamePool].ExcludeIds) &&
+    Person(culture, branchLanguage).Text == "欧阳青",
+    "Language divergence changed selector aliases or dropped the parent language's pool settings.");
+var aliasesBefore = culture.getOnomasticData(MetaType.Unit).getGroupString(root);
+Check(AssetManager.plots_library.get("culture_divide").action(leader), "The original culture split failed.");
+var branch = leader.culture;
+Check(branch != culture && branch.getOnomasticData(MetaType.Unit).getFullTemplateData().SequenceEqual(personOrder) &&
+    branch.getOnomasticData(MetaType.Unit).getGroupString(root) == aliasesBefore &&
+    branch.getOnomasticData(MetaType.Unit).getGroupString(given) == "给名首字" && Person(branch, branchLanguage).Text == "欧阳青",
+    "The child culture mutated the lookup aliases or lost native arrangement.");
+
+var savedFolder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "pool-glyph-save");
+Directory.CreateDirectory(savedFolder);
+for (int i = 0; i < 120 && !world.units.getSimpleList().Contains(child); i++) await Game.NextFrame();
+world.units.checkLists(); world.languages.checkLists(); world.cultures.checkLists(); world.cities.checkLists(); world.kingdoms.checkLists();
+var saved = SaveManager.saveWorldToDirectory(savedFolder);
+Check(saved.actors_data.Any(actor => actor.id == child.getID() && actor.name == "欧阳怀"), "The saved map lacked the child.");
+File.WriteAllLines(Path.Combine(savedFolder, "expected.txt"), new[] {
+    culture.id, branch.id, origin.id, other.id, branchLanguage.id, father.getID(), child.getID()
+}.Select(id => id.ToString()));
+return new { first = father.getName(), mother = mother.getName(), child = child.getName(),
+    inheritedWithoutPack = inheritedWithoutPack.Text, branch = Person(branch, branchLanguage).Text, aliasesBefore, savedFolder };

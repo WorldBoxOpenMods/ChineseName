@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>命名管理 · 交互草图</title>
+<style>
+:root{color-scheme:light;--ink:#26332f;--muted:#65736b;--line:#dce3da;--paper:#fffef9;--accent:#2f6957;--soft:#eaf1e9;--warn:#80561c}
+*{box-sizing:border-box}body{margin:0;background:#f1f3ed;color:var(--ink);font:15px/1.65 system-ui,"Microsoft YaHei",sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:1px solid #b9c9bc;background:white;color:var(--ink);border-radius:6px;padding:6px 11px}button:hover{background:var(--soft)}button:disabled{cursor:default;opacity:.45}input,select{max-width:100%;border:1px solid #becabe;border-radius:5px;background:white;padding:5px 8px}input[type=number]{width:84px}input[type=checkbox]{accent-color:var(--accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a9c8b5;outline-offset:2px}.primary{background:var(--accent);color:white;border-color:var(--accent)}.primary:hover{background:#255443}.shell{max-width:1440px;margin:auto;padding:24px}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:14px 0 6px}p{margin:8px 0}.muted,small{color:var(--muted)}.top,.row,.toolbar,.tabs,.chips{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.top{justify-content:space-between}.tabs{margin:18px 0 12px}.tabs button[aria-current=page]{background:var(--accent);color:white}.scope{background:var(--paper);border:1px solid var(--line);padding:12px 16px;border-radius:8px;margin-bottom:14px}.grid{display:grid;grid-template-columns:180px minmax(320px,1fr) minmax(300px,360px);gap:14px;align-items:start}.panel{border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:17px}.side button{display:block;width:100%;text-align:left;margin:7px 0}.side button.selected{background:var(--soft);border-color:var(--accent)}.side small{display:block}.badge{display:inline-block;border-radius:4px;padding:1px 6px;font-size:12px;background:var(--soft);color:var(--accent)}.notice{border-left:3px solid #bd9654;background:#fff6e4;color:var(--warn);padding:9px 11px;margin:10px 0}.ok{color:var(--accent)}.error{color:#a22e2e}.field{display:flex;align-items:center;justify-content:space-between;gap:9px;border-bottom:1px solid var(--line);padding:9px 0}.field>label{flex:1}.field>label>input{margin-left:8px}.reset{font-size:12px;padding:3px 6px}.part{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:9px;background:#f3f6ef;border:1px solid var(--line);margin:6px 0;border-radius:6px}.part button{padding:1px 7px}.words{display:flex;flex-wrap:wrap;gap:7px}.word{background:#f3f6ef;border:1px solid var(--line);border-radius:5px;padding:4px 8px}.samples{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.sample{border:1px solid var(--line);padding:9px;border-radius:6px}.sample strong{font-size:18px;display:block}.sample small{font-size:12px}.toolbar{margin-top:14px;position:sticky;bottom:0;background:var(--paper);border:1px solid var(--line);padding:13px;border-radius:8px}.toolbar .grow{flex:1}#message{min-height:27px;color:var(--accent);margin:10px 0}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:7px 5px;vertical-align:top}details{margin:12px 0}summary{cursor:pointer}.intro{margin:12px 0}.label{display:block;margin-top:10px}.preview label{font-size:13px}.preview .row select{flex:1}.stack{display:grid;gap:14px}.fine{font-size:12px}.card{border:1px solid var(--line);border-radius:7px;padding:12px;margin:10px 0}.selected-card{border-color:var(--accent)}.sample-area{margin-top:14px}.type-line{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px}
+html{scroll-padding-top:20px;scroll-padding-bottom:135px}.grid>*{min-width:0}.preview{position:sticky;top:14px;max-height:calc(100vh - 135px);overflow:auto}.actionbar{position:sticky;bottom:0;z-index:5;margin-top:14px;padding:13px;background:var(--paper);border:1px solid var(--line);border-radius:8px;box-shadow:0 -3px 12px #26332f08}.actionbar .toolbar{position:static;margin:0;padding:0;border:0;background:transparent}.toolbar .grow{min-width:200px}#message{min-height:0;margin:8px 0 0}#message:empty{display:none}.compact-preview{display:none}.current-object{display:block;padding:5px 0;color:var(--accent)}
+@media(max-width:1050px){.grid{grid-template-columns:minmax(0,1fr) 310px}.side{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px}.side h2,.side p{margin:0}.side button{display:inline-block;width:auto;margin:0}.shell{padding:16px}}
+@media(max-width:700px){html{scroll-padding-top:110px}.grid{grid-template-columns:minmax(0,1fr)}.preview{grid-column:auto;position:static;max-height:none}.shell{padding:10px}.actionbar{position:static}.field{flex-wrap:wrap}.compact-preview{display:flex;position:sticky;top:0;z-index:4;gap:7px;align-items:center;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px;margin-bottom:12px;box-shadow:0 3px 12px #26332f0d}.compact-preview strong{font-size:15px}.compact-preview small{width:100%}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="top"><div><h1>命名管理 <span class="badge">交互草图</span></h1><div class="muted">示例世界 · 文化结构与语言词库</div></div><div class="row"><button data-action="save-world">模拟存档</button><button data-action="load-world">模拟读档</button><button data-action="restart">重置演示</button></div></header>
+  <p class="intro muted">仅使用示例数据，不连接游戏。刷新页面会重置；存档与草稿保存只在本次演示会话内有效。</p>
+  <nav class="tabs" aria-label="命名工作区" id="tabs"></nav>
+  <div class="scope" id="scope"></div>
+  <div class="compact-preview" id="compact-preview" aria-label="窄窗口命名预览"></div>
+  <div class="grid"><aside class="panel side" id="sidebar"></aside><section class="panel" id="editor"></section><aside class="panel preview" id="preview"></aside></div>
+  <div class="actionbar"><div class="toolbar" id="toolbar"></div><div id="message" role="status" aria-live="polite"></div></div>
+  <section class="panel sample-area"><div class="top"><h2>演示世界中的已有生物</h2><button data-action="spawn">模拟新增一个生物</button></div><p class="muted fine" id="spawn-info"></p><div id="records"></div></section>
+</main>
+<script id="demo-model">
+const NamingDemo = (() => {
+  const copy = value => structuredClone(value);
+  const cultures = {river:{name:'河谷文化',language:'han'},coast:{name:'海岸文化',language:'han'}};
+  const languages = {han:{name:'汉语',words:['青','川','明','月','远','林','宁']},sea:{name:'海语',words:['青','川','明','月','远','林','宁']}};
+  const own = (o,k) => Object.prototype.hasOwnProperty.call(o,k);
+  let state;
+  function reset(){state={packages:{version:1,available:true},active:{},drafts:{},savedDrafts:{},history:{},future:{},records:[{name:'李青川',culture:'river',language:'han',custom:false},{name:'王明月',culture:'coast',language:'han',custom:false},{name:'小可爱',culture:'river',language:'han',custom:true}],savedWorld:null};}
+  reset();
+  function defaults(key){if(key.startsWith('culture:'))return {doubleWeight:4,singleWeight:1,doubleEnabled:true,condition:'any',inheritance:key.endsWith('coast')?'mother':'father',order:state.packages.version===1?['surname','given1','given2']:['title','surname','given1','given2']};if(key.startsWith('language:'))return {excluded:[],preferred:'',customWords:[]};return {themeEnabled:true};}
+  function effective(key,draft=false){return {...defaults(key),...copy(draft&&own(state.drafts,key)?state.drafts[key]:state.active[key]||{})};}
+  function edit(key,field,value,remove=false){
+    const previous=copy(state.drafts[key]??state.active[key]??{}),next=copy(previous);
+    if(remove)delete next[field];else next[field]=copy(value);
+    if(JSON.stringify(previous)===JSON.stringify(next))return;
+    (state.history[key]??=[]).push(previous);state.future[key]=[];state.drafts[key]=next;
+  }
+  function hasChanges(key){return own(state.drafts,key)&&JSON.stringify(state.drafts[key])!==JSON.stringify(state.active[key]||{});}
+  function moveHistory(key,from,to){const source=state[from][key]||[];if(!source.length)return;(state[to][key]??=[]).push(copy(state.drafts[key]??state.active[key]??{}));state.drafts[key]=source.pop();}
+  function clearDraft(key){delete state.drafts[key];delete state.savedDrafts[key];state.history[key]=[];state.future[key]=[];}
+  function validate(key){const cfg=effective(key,true);if(key.startsWith('culture:')&&(!Number.isFinite(cfg.doubleWeight)||!Number.isFinite(cfg.singleWeight)||cfg.doubleWeight<0||cfg.singleWeight<0))return '规则权重必须是有效的非负数。';return '';}
+  function apply(key){const error=validate(key);if(error)return error;if(!hasChanges(key))return '当前对象没有未应用的修改。';state.active[key]=copy(state.drafts[key]);clearDraft(key);return '';}
+  function saveDraft(key){if(!own(state.drafts,key))return false;state.savedDrafts[key]=copy(state.drafts[key]);return true;}
+  function saveWorld(){state.savedWorld=copy({active:state.active,records:state.records,savedDrafts:state.savedDrafts});}
+  function loadWorld(){if(!state.savedWorld)return false;const saved=copy(state.savedWorld);state.active=saved.active;state.records=saved.records;state.savedDrafts=saved.savedDrafts;state.drafts=copy(saved.savedDrafts);state.history={};state.future={};return true;}
+  function pending(key){return defaults(key).order.filter(part=>!effective(key,true).order.includes(part));}
+  function random(seed){let a=seed>>>0;return ()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+  function generate({culture='river',language='han',workspace='culture',draft=true,sex='male',fixed=null,seed=19,count=6}={}){
+    const ckey='culture:'+culture,lkey='language:'+language;
+    const c=effective(ckey,draft&&workspace==='culture'),l=effective(lkey,draft&&workspace==='language'),w=effective('world:main',draft&&workspace==='world');
+    const error=workspace==='culture'&&draft?validate(ckey):'';
+    if(error)return {names:[],issue:error,fallback:false};
+    const rng=random(seed),names=[];
+    const base=languages[language].words;
+    const words=[...base,...(w.themeEnabled?['岚','澜','舟','星']:[]),...l.customWords].filter(word=>!l.excluded.includes(word));
+    const doubleAllowed=c.doubleEnabled&&(c.condition==='any'||c.condition===sex);
+    let reason=!state.packages.available?'基础包缺失；保留编辑，使用类型默认示例。':!words.length?'名字词库为空，使用类型默认示例。':(!doubleAllowed||c.doubleWeight===0)&&c.singleWeight===0?'没有适用的人名规则，使用类型默认示例。':'';
+    const weighted=words.flatMap((word,i)=>Array.from({length:(word===l.preferred?3:1)*(1+((i+(language==='han'?1:3))%3))},()=>word));
+    for(let i=0;i<count;i++){
+      const surname=fixed!==null?fixed:c.inheritance==='father'?'李':c.inheritance==='mother'?'王':rng()<.5?'李':'王';
+      if(reason){names.push({text:surname+'安',rule:'类型默认示例',parts:[{label:'姓氏',text:surname,source:'已确定或模拟继承'},{label:'名',text:'安',source:'类型默认示例'}]});continue;}
+      const double=rng()*((doubleAllowed?c.doubleWeight:0)+c.singleWeight)<(doubleAllowed?c.doubleWeight:0);
+      const pick=()=>weighted[Math.floor(rng()*weighted.length)];
+      const values={surname,given1:pick(),given2:double?pick():'',title:'行者'};
+      const labels={surname:'姓氏',given1:'名字用字',given2:'名字用字',title:'称号'};
+      const parts=(double?c.order:['surname','given1']).map(id=>({label:labels[id],text:values[id],source:id==='surname'?'已确定或模拟继承':id==='title'?'中式基础 · 更新内容':l.customWords.includes(values[id])?'当前语言新增词条':'当前语言词库'}));
+      names.push({text:parts.map(p=>p.text).join(''),rule:double?'双字名':'单字名',parts});
+    }
+    return {names,issue:reason,fallback:!!reason};
+  }
+  function spawn(culture,language,seed){const result=generate({culture,language,draft:false,seed,count:1});const item={name:result.names[0].text,culture,language,custom:false};state.records.push(item);return item;}
+  return {get state(){return state;},cultures,languages,defaults,effective,edit,hasChanges,apply,clearDraft,saveDraft,saveWorld,loadWorld,pending,generate,spawn,validate,reset,undo:key=>moveHistory(key,'history','future'),redo:key=>moveHistory(key,'future','history')};
+})();
+</script>
+<script id="demo-interface">
+const M=NamingDemo;
+const ui={workspace:'culture',culture:'river',language:'han',sex:'male',surnameMode:'birth',surname:'李',seed:19};
+const titles={culture:'文化规则',language:'语言词库',packs:'命名包',world:'世界方案'};
+const partNames={surname:'姓氏',given1:'名字用字一',given2:'名字用字二',title:'称号'};
+const fieldNames={doubleEnabled:'双字名启用状态',doubleWeight:'双字名权重',singleWeight:'单字名权重',condition:'适用条件',order:'部件顺序',inheritance:'继承方式',excluded:'排除项',preferred:'用字偏好',themeEnabled:'补充包启用状态'};
+const el=id=>document.getElementById(id);
+const h=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key=()=>ui.workspace==='culture'?'culture:'+ui.culture:ui.workspace==='language'?'language:'+ui.language:'world:main';
+const targetName=()=>ui.workspace==='culture'?M.cultures[ui.culture].name:ui.workspace==='language'?M.languages[ui.language].name:'当前世界方案';
+const option=(value,text,selected)=>`<option value="${h(value)}" ${selected===value?'selected':''}>${h(text)}</option>`;
+const button=(action,text,extra='')=>`<button data-action="${action}" ${extra}>${text}</button>`;
+const selector=(id,entries,value)=>`<select id="${id}" data-ui="${id}">${entries.map(([v,t])=>option(v,t,value)).join('')}</select>`;
+const resetField=field=>button('reset-field',field==='excluded'?'重置排除项':'重置',`class="reset" data-field="${field}" aria-label="重置${h(fieldNames[field])}为当前方案默认值"`);
+function message(text){el('message').textContent=text;}
+function dirty(key){return M.hasChanges(key);}
+function cultureEntries(){return Object.entries(M.cultures).map(([id,x])=>[id,x.name]);}
+function languageEntries(){return Object.entries(M.languages).map(([id,x])=>[id,x.name]);}
+function badge(field){return Object.prototype.hasOwnProperty.call(M.state.drafts[key()]??M.state.active[key()]??{},field)?'<span class="badge">玩家修改</span>':'<small>来自方案</small>';}
+function fieldRow(label,field,control){return `<div class="field"><label>${label} <span data-source-field="${field}">${badge(field)}</span> ${control}</label>${resetField(field)}</div>`;}
+function renderScope(){
+  const scope=ui.workspace==='culture'?`编辑：${targetName()} / 人名 · 影响该文化之后的人名；已有名字保留。`:ui.workspace==='language'?`编辑：${targetName()} / 名字用字 · 使用该语言的多个文化可能受到影响。`:ui.workspace==='world'?'编辑：当前世界 · 包启用修改应用后影响新命名；已有名字保留。':'查看已安装内容 · 安装与在世界中启用分开。';
+  el('scope').innerHTML=`<strong>${h(scope)}</strong>${ui.workspace==='packs'?'':` <span class="badge">${dirty(key())?'未应用草稿':'已生效配置'}</span>`}`;
+}
+function render(){
+  el('tabs').innerHTML=Object.entries(titles).map(([id,title])=>button('tab',title,`data-tab="${id}" ${ui.workspace===id?'aria-current="page"':''}`)).join('');
+  renderScope();
+  const sideEntries=ui.workspace==='culture'?cultureEntries():ui.workspace==='language'?languageEntries():[['main',ui.workspace==='world'?'示例世界':'已安装的命名包']];
+  el('sidebar').innerHTML=`<h2>${ui.workspace==='culture'?'文化':ui.workspace==='language'?'语言':'当前范围'}</h2>`+sideEntries.map(([id,label])=>button('select',h(label),`data-id="${id}" class="${(ui.workspace==='culture'?ui.culture:ui.workspace==='language'?ui.language:'main')===id?'selected':''}"`)).join('')+'<p class="muted fine">切换对象和页面会保留未应用草稿。</p>';
+  renderEditor();renderPreview();renderToolbar();renderRecords();
+}
+function renderEditor(){
+  const cfg=M.effective(key(),true);
+  if(ui.workspace==='culture'){
+    const inheritance=selector('inheritance',[['father','优先父姓'],['mother','优先母姓'],['random','从一位亲代随机继承']],cfg.inheritance);
+    const order=cfg.order.map((part,i)=>`<div class="part"><span>${partNames[part]}</span><div>${button('move','↑',`data-index="${i}" data-step="-1" ${i===0?'disabled':''} aria-label="上移${partNames[part]}"`)} ${button('move','↓',`data-index="${i}" data-step="1" ${i===cfg.order.length-1?'disabled':''} aria-label="下移${partNames[part]}"`)}</div></div>`).join('');
+    const pending=M.pending(key());
+    el('editor').innerHTML=`<h2>人名规则</h2><div class="type-line muted">基础方案：中式基础 · 当前安装第 ${M.state.packages.version} 版</div>${!M.state.packages.available?'<div class="notice">基础包缺失。编辑记录保留，预览与新增对象会标明回退。</div>':''}<div class="card selected-card"><strong>双字名</strong>${fieldRow('启用','doubleEnabled',`<input type="checkbox" data-field="doubleEnabled" ${cfg.doubleEnabled?'checked':''}>`)}${fieldRow('权重','doubleWeight',`<input type="number" min="0" step="1" data-field="doubleWeight" value="${h(cfg.doubleWeight)}">`)}${fieldRow('适用性别','condition',selector('condition',[['any','通用'],['male','男性'],['female','女性']],cfg.condition))}<h3>输出顺序 ${badge('order')}</h3>${order}${resetField('order')}${pending.length?`<div class="notice"><strong>待加入</strong>${pending.map(part=>`<div>${partNames[part]} ${button('adopt','加入末尾',`data-part="${part}"`)}</div>`).join('')}加入后可以调整位置。</div>`:''}</div><div class="card"><strong>单字名</strong>${fieldRow('权重','singleWeight',`<input type="number" min="0" step="1" data-field="singleWeight" value="${h(cfg.singleWeight)}">`)}<small>输出：姓氏 → 名字用字</small></div><h3>文化继承习惯</h3>${fieldRow('继承方式','inheritance',inheritance)}<p class="muted fine">用于之后的出生；已有确定姓氏原样保留。</p>${button('lexicon','查看名字用字词库')}`;
+  }else if(ui.workspace==='language'){
+    const inUse=Object.values(M.cultures).filter(c=>c.language===ui.language).map(c=>c.name);
+    const world=M.effective('world:main');
+    const words=[...M.languages[ui.language].words,...(world.themeEnabled?['岚','澜','舟','星']:[]),...cfg.customWords];
+    el('editor').innerHTML=`<h2>名字用字</h2><p class="muted">使用本语言的示例文化：${inUse.map(h).join('、')||'暂无，仍可用于模拟预览'}。</p><p>取消勾选词条表示排除；结构仍由预览文化决定。</p><div class="words">${words.map(word=>`<label class="word"><input type="checkbox" data-word="${h(word)}" ${cfg.excluded.includes(word)?'':'checked'}> ${h(word)}</label>`).join('')}</div><div class="field"><label>偏好用字 ${selector('preferred',[['','无额外偏好'],...words.map(w=>[w,w])],cfg.preferred)}</label>${resetField('preferred')}</div><p class="muted fine">两种示例语言使用同一词库，按语言保持不同的稳定权重；偏好与排除另行覆盖。</p><div class="row"><label>新增词条 <input id="new-word" maxlength="12" placeholder="例如：清" size="10"></label>${button('add-word','添加')}</div><div class="row" style="margin-top:10px">${resetField('excluded')}${button('back-culture','返回文化规则')}</div><p class="fine muted">重置排除项只恢复当前语言的默认排除设置。</p>`;
+  }else if(ui.workspace==='world'){
+    el('editor').innerHTML=`<h2>当前世界的命名方案</h2><p>基础：中式基础；语言按世界中各自配置取词。</p><div class="card"><strong>山水补充</strong>${fieldRow('在本世界启用','themeEnabled',`<input type="checkbox" data-field="themeEnabled" ${cfg.themeEnabled?'checked':''}>`)}<p class="muted fine">为名字用字补充“岚、澜、舟、星”。此开关先修改草稿，应用后才生效。</p></div><p>范围：当前演示世界的名字用字。</p><p class="muted">包优先级、绑定范围和预设导入的复杂交互尚未在此原型实现。</p>`;
+  }else{
+    el('editor').innerHTML=`<h2>已安装内容</h2><div class="card"><strong>中式基础</strong> <span class="badge">${M.state.packages.available?'可用':'缺失'}</span><p>当前安装第 ${M.state.packages.version} 版。第 2 版为双字名新增“称号”输出部件。</p><div class="row">${button('update-pack','模拟更新到第 2 版',M.state.packages.version===2?'disabled':'')}${button('availability',M.state.packages.available?'模拟基础包缺失':'恢复基础包')}</div></div><div class="card"><strong>山水补充</strong><p>已安装；是否启用在“世界方案”中设置。</p>${button('tab','前往世界方案','data-tab="world"')}</div><div class="notice">以上是演示安装状态的专用按钮。包更新会立即进入当前内容解析；它不会重取已有名字，模拟读档也不会恢复旧包版本。</div><p class="muted fine">可先在文化页修改部件顺序，再回来模拟更新，观察“待加入”。</p>`;
+  }
+}
+function previewResult(){return M.generate({...ui,draft:true,fixed:ui.surnameMode==='fixed'?ui.surname:null});}
+function renderPreview(){
+  const composition=ui.workspace==='culture'?'本文化草稿 ＋ 已生效语言与世界配置':ui.workspace==='language'?'本语言草稿 ＋ 已生效文化与世界配置':ui.workspace==='world'?'本世界方案草稿 ＋ 已生效文化与语言配置':'已生效文化、语言与世界配置';
+  const cultureControl=ui.workspace==='culture'?`<span class="label">当前编辑文化</span><strong class="current-object">${h(M.cultures[ui.culture].name)}</strong>`:`<label class="label" for="culture">预览文化</label>${selector('culture',cultureEntries(),ui.culture)}`;
+  const languageControl=ui.workspace==='language'?`<span class="label">当前编辑语言</span><strong class="current-object">${h(M.languages[ui.language].name)}</strong>`:`<label class="label" for="language">预览语言</label>${selector('language',languageEntries(),ui.language)}`;
+  el('preview').innerHTML=`<h2>命名预览</h2><p class="muted fine">${composition}</p>${cultureControl}${languageControl}<label class="label" for="sex">模拟性别</label>${selector('sex',[['male','男性'],['female','女性']],ui.sex)}<label class="label" for="surnameMode">姓氏输入</label>${selector('surnameMode',[['birth','模拟出生：父姓李，母姓王'],['fixed','已有确定姓氏']],ui.surnameMode)}${ui.surnameMode==='fixed'?`<label class="label">确定姓氏 <input id="fixed-surname" data-ui="surname" value="${h(ui.surname)}" maxlength="12" size="10"></label>`:''}<div id="preview-results"></div>`;
+  renderPreviewResults();
+}
+function renderPreviewResults(){
+  const result=previewResult();
+  el('preview-results').innerHTML=`${result.issue?`<div class="notice">${h(result.issue)}</div>`:''}<div class="samples">${result.names.map(n=>`<div class="sample"><strong>${h(n.text)}</strong><small>${h(n.rule)}</small></div>`).join('')}</div>${button('reroll','换一批')}<details><summary>第一个结果的组成与来源</summary>${result.names[0]?result.names[0].parts.map(p=>`<p><strong>${h(p.text)}</strong> · ${h(p.label)}<br><small>${h(p.source)}</small></p>`).join(''):'当前草稿无法生成。'}</details><p class="muted fine">当前物种：人类。原型只演示人名路径，使用简化规则；预览不修改下方已有对象。</p>`;
+  el('compact-preview').innerHTML=`<span class="badge">命名预览</span>${result.names.slice(0,3).map(n=>`<strong>${h(n.text)}</strong>`).join('')}<small>${h(result.issue||'跟随当前页面的草稿预览；完整输入与来源在预览区查看。')}</small>`;
+}
+function renderToolbar(){
+  if(ui.workspace==='packs'){el('toolbar').innerHTML='<span class="muted">包页当前只查看内容及模拟安装变化；世界启用设置在世界方案页应用。</span>';return;}
+  const changes=dirty(key())?Object.keys(M.state.drafts[key()]).length:0;
+  const error=M.validate(key());
+  const applyLabel=ui.workspace==='culture'?'应用当前文化':ui.workspace==='language'?'应用当前语言':'应用世界方案';
+  el('toolbar').innerHTML=`${button('undo','撤销',M.state.history[key()]?.length?'':'disabled')}${button('redo','重做',M.state.future[key()]?.length?'':'disabled')}${button('discard','放弃当前草稿',dirty(key())?'':'disabled')}${button('save-draft','保存草稿',dirty(key())?'':'disabled')}<span class="grow muted fine">${error?`<span class="error">${h(error)}</span>`:`目标：${h(targetName())}；草稿含 ${changes} 项字段覆盖。其他对象草稿不会一起应用。`}</span>${button('apply',applyLabel,`class="primary" ${!dirty(key())||error?'disabled':''}`)}`;
+}
+function renderRecords(){
+  el('spawn-info').textContent=`新增示例使用 ${M.cultures[ui.culture].name} / ${M.languages[ui.language].name} 的已生效配置，按模拟父母和生效继承规则确定姓氏。`;
+  el('records').innerHTML=`<table><thead><tr><th>已有名字</th><th>文化</th><th>语言</th><th>来源</th></tr></thead><tbody>${M.state.records.map(r=>`<tr><td>${h(r.name)}</td><td>${h(M.cultures[r.culture].name)}</td><td>${h(M.languages[r.language].name)}</td><td>${r.custom?'玩家手改':'已生成并保存'}</td></tr>`).join('')}</tbody></table>`;
+}
+document.addEventListener('click',event=>{
+  const b=event.target.closest('button[data-action]');if(!b||b.disabled)return;
+  const action=b.dataset.action;let msg='';
+  if(action==='tab')ui.workspace=b.dataset.tab;
+  else if(action==='select'){if(ui.workspace==='culture')ui.culture=b.dataset.id;else if(ui.workspace==='language')ui.language=b.dataset.id;}
+  else if(action==='reset-field'){M.edit(key(),b.dataset.field,null,true);msg='该字段重新跟随当前方案默认值，尚未应用。';}
+  else if(action==='move'){const order=M.effective(key(),true).order;const i=Number(b.dataset.index),j=i+Number(b.dataset.step);[order[i],order[j]]=[order[j],order[i]];M.edit(key(),'order',order);}
+  else if(action==='adopt'){M.edit(key(),'order',[...M.effective(key(),true).order,b.dataset.part]);msg='部件已加入草稿，可继续调整位置。';}
+  else if(action==='lexicon'){ui.workspace='language';msg='文化草稿已保留。当前语言页预览使用已生效的文化配置。';}
+  else if(action==='back-culture')ui.workspace='culture';
+  else if(action==='add-word'){const word=el('new-word').value.trim();if(!word){message('请输入词条。');return;}const cfg=M.effective(key(),true);if([...M.languages[ui.language].words,'岚','澜','舟','星',...cfg.customWords].includes(word)){message('该词条已存在于此示例中。');return;}M.edit(key(),'customWords',[...cfg.customWords,word]);msg='新增词条已存入当前语言草稿。';}
+  else if(action==='undo')M.undo(key());else if(action==='redo')M.redo(key());
+  else if(action==='discard'){M.clearDraft(key());msg='已放弃当前对象的草稿，重新使用已生效配置。';}
+  else if(action==='save-draft'){M.saveDraft(key());msg='已在本次演示会话保存草稿；尚未应用。模拟存档会保存这些显式保存的草稿。';}
+  else if(action==='apply'){msg=M.apply(key())||`已应用 ${targetName()}。其他对象草稿与已有名字保留。`;}
+  else if(action==='reroll')ui.seed+=37;
+  else if(action==='update-pack'){M.state.packages.version=2;msg='基础包已更新。未改顺序的文化跟随新顺序；自定义顺序显示待加入。';}
+  else if(action==='availability'){M.state.packages.available=!M.state.packages.available;msg=M.state.packages.available?'基础包已恢复，保留的编辑重新参与解析。':'模拟基础包缺失。所有编辑和已有名字保留，生成显示回退。';}
+  else if(action==='spawn'){const item=M.spawn(ui.culture,ui.language,ui.seed+M.state.records.length*31);msg=`新增示例：${item.name}。使用已生效配置，未提交其他草稿。`;}
+  else if(action==='save-world'){M.saveWorld();msg='已模拟存档：保存生效配置、已有名字和显式保存的草稿；不冻结包版本。';}
+  else if(action==='load-world'){msg=M.loadWorld()?'已模拟读档，恢复存档与显式保存的草稿；安装内容维持当前版本。':'请先模拟存档。';}
+  else if(action==='restart'){M.reset();Object.assign(ui,{workspace:'culture',culture:'river',language:'han',sex:'male',surnameMode:'birth',surname:'李',seed:19});msg='演示已重置。';}
+  render();message(msg);
+  if(action==='add-word')el('new-word')?.focus({preventScroll:true});
+});
+document.addEventListener('keydown',event=>{
+  if(event.target.id==='new-word'&&event.key==='Enter'&&!event.isComposing){event.preventDefault();document.querySelector('[data-action="add-word"]').click();}
+});
+document.addEventListener('input',event=>{
+  const t=event.target;
+  if(t.dataset.ui==='surname'){ui.surname=t.value;renderPreviewResults();return;}
+  if(t.type!=='number'||!t.dataset.field)return;
+  M.edit(key(),t.dataset.field,t.value===''?null:Number(t.value));
+  const source=document.querySelector(`[data-source-field="${CSS.escape(t.dataset.field)}"]`);
+  if(source)source.innerHTML=badge(t.dataset.field);
+  renderScope();renderPreview();renderToolbar();message('');
+});
+document.addEventListener('change',event=>{
+  const t=event.target;
+  if(t.type==='number'||t.dataset.ui==='surname')return;
+  if(t.dataset.word!==undefined){const excluded=M.effective(key(),true).excluded.filter(w=>w!==t.dataset.word);if(!t.checked)excluded.push(t.dataset.word);M.edit(key(),'excluded',excluded);}
+  else if(t.dataset.field){M.edit(key(),t.dataset.field,t.type==='checkbox'?t.checked:t.type==='number'?(t.value===''?null:Number(t.value)):t.value);}
+  else if(t.dataset.ui){const field=t.dataset.ui;if(['inheritance','condition','preferred'].includes(field))M.edit(key(),field,t.value);else ui[field]=t.value;}
+  else return;
+  const focusId=t.id;
+  const focusWord=t.dataset.word;
+  const focusField=t.dataset.field;
+  render();message('');
+  const replacement=focusId?el(focusId):focusWord!==undefined?document.querySelector(`[data-word="${CSS.escape(focusWord)}"]`):focusField?document.querySelector(`input[data-field="${CSS.escape(focusField)}"]`):null;
+  replacement?.focus({preventScroll:true});
+});
+render();
+</script>
+</body>
+</html>

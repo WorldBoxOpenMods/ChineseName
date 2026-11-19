@@ -1,0 +1,8 @@
+{
+  "name": "Spell Names Example",
+  "author": "ChineseName",
+  "version": "1.0.0",
+  "GUID": "ChineseName.SpellNamesExample",
+  "Dependencies": ["CHINESENAME"],
+  "description": "Registers a spell name type and provides a package authors can replace."
+}

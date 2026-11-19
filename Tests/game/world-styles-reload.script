@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var file = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/world-styles-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(file), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(file));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The atlas save did not open.");
+
+Config.paused = true;
+var world = World.world;
+var korea = world.units.get(ids[0]);
+var cat = world.units.get(ids[4]);
+var oldCountry = world.kingdoms.get(ids[3]);
+Check(korea?.language?.id == ids[2] && cat?.language?.id == ids[6] && oldCountry?.name == "新罗国",
+    "The saved names or language links changed.");
+Check(world.cultures.get(ids[1]).getOnomasticData(MetaType.Kingdom).getGroupString("group_2") == "邦" &&
+      world.cultures.get(ids[5]).getOnomasticData(MetaType.City).getGroupString("group_2") == "市" &&
+      korea.generateName(MetaType.Kingdom, 7) == "百济邦" && cat.generateName(MetaType.City, 7) == "谧檐市",
+    "The edited regional or species arrangement did not survive.");
+var service = NamingApi.Current;
+var request = new NameRequest("worldbox:person", 0, ids[1], ids[2],
+    new Dictionary<string, object> { ["kind"] = "sapient", ["culture-species"] = "human" }, writing: NameWriting.Original);
+Check(service.Generate(request).Text == "김도윤", "The installed original spellings were unavailable after reload.");
+
+var vocabulary = Path.Combine(WorldNamingStore.PackageDirectory, "test-world-styles-world-styles-lexicon.naming.json");
+File.Move(vocabulary, vocabulary + ".disabled");
+try
+{
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "Could not reload the remaining vocabulary.");
+    Check(korea.generateName(MetaType.Kingdom, 7) != "百济邦" && oldCountry.name == "新罗国" &&
+        cat.generateName(MetaType.City, 7) == "谧檐市", "Removing the atlas did not fall back independently.");
+}
+finally
+{
+    File.Move(vocabulary + ".disabled", vocabulary);
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "Could not reinstall the atlas vocabulary.");
+}
+Check(korea.generateName(MetaType.Kingdom, 7) == "百济邦", "The reinstalled atlas did not restore the edit.");
+return new { existing = oldCountry.name, edited = new[] { "百济邦", "谧檐市" }, original = "김도윤", file };

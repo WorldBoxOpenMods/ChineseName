@@ -1,0 +1,2658 @@
+{
+  "format": 1,
+  "id": "chinesename:fantasy-race-lexicon",
+  "label": "西幻诸族词库",
+  "supplemental": true,
+  "words": [
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6a33065c14057a701814",
+      "text": "洛榆薇"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-23fa0e2a3a30e08867e5",
+      "text": "艾莎林"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-90572f1f191c7ad79033",
+      "text": "岚维雅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-50831ab7993a99a1c5db",
+      "text": "柳薇娜"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b4020c18d81193b4e8f2",
+      "text": "米蕾拉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f55c9c9d1d2d49ad386e",
+      "text": "艾斐琳"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-93a003298101fef5c9b5",
+      "text": "希露维"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b8bbab47401b9becc20a",
+      "text": "伊澜雅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-268fe153783ef7edb7b6",
+      "text": "瑟洛薇"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d0546802ace265d1359f",
+      "text": "翠伊莎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f4de896f44870d104ad6",
+      "text": "绿茵娜"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7ea00c04b4eceebd87b2",
+      "text": "诺薇安"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-072d920e4833f8c12bfc",
+      "text": "瑟琳雅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-84d1d36127b587064664",
+      "text": "艾芙蕾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3d1f23cbbc9045396fa7",
+      "text": "洛妮缇"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7cced85afdb3aa1fb368",
+      "text": "苏蕾安"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3577fdff89052813154d",
+      "text": "暮伊莎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c096af092486cdfea3d7",
+      "text": "星蕾维"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b30a72edbc76fad9555f",
+      "text": "安妮露"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-48dc1a70682b0cbcdfe5",
+      "text": "希缇拉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-66122246665590ca4b82",
+      "text": "伊露希"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-231380518a5efa7b75ed",
+      "text": "艾兰弥"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d1b8556f8bdff24d8b82",
+      "text": "露弥缇"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a220f7e4aad1935dc2f5",
+      "text": "西莱雅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a54ce53d9984199cbb53",
+      "text": "绿叶"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-63e873a955a59d060ddd",
+      "text": "晨露"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-509971fdbbd6c322d9c6",
+      "text": "风歌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b8ac98ae181a42c78216",
+      "text": "银枝"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-43a23263f74c844f3436",
+      "text": "翠叶"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e78417f2732b8af56919",
+      "text": "夏槐"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-10cb93db0015224d166a",
+      "text": "露藤"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-187bbcac3d5c3af75b44",
+      "text": "白桦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0da4ab44b0ef6b77bd48",
+      "text": "轻羽"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0b8cfc27b264203a64be",
+      "text": "松语"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-06f8be26d9dee0845b6f",
+      "text": "清泉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e0fbad2633d88ce8437c",
+      "text": "兰芒"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-241b676faa0ddd79ef2f",
+      "text": "星落"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-84d508ddbfd89f276c56",
+      "text": "月影"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0cff755ddb4f4994fcf7",
+      "text": "银月"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f9969b1159565d458e82",
+      "text": "霜星"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6e4ca585efcc0fd4993f",
+      "text": "星眸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b5abafc82158bd8fb049",
+      "text": "暮星"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f3d26c1a83b587763c01",
+      "text": "夜露"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-cb7e5f365a29a180296f",
+      "text": "冷辉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c26623313cd697117c9e",
+      "text": "晨辉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b618b8ca593ce7a709d2",
+      "text": "月弦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f48200b879b0041bba58",
+      "text": "流辉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ec0c1ec2a4568104dec6",
+      "text": "晨雾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-af852d67ddb643ec61ef",
+      "text": "银柳"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-df2d4ca3cbbecba8820e",
+      "text": "青梣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6206e48df49b3c8ab027",
+      "text": "翠蕨"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f17cba4f63faaa92687d",
+      "text": "清藤"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-af76eca09840399ab53d",
+      "text": "桃雾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e16a6f078b690a7a5262",
+      "text": "沉松"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ae06c37850c196cf2802",
+      "text": "琴木"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9522f8c19d7c2378440f",
+      "text": "绿荫"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c5938f1a8958c537f581",
+      "text": "鸿叶"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e12a8ddadfc01970080b",
+      "text": "岚杉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-97d187a924e4f7bcef13",
+      "text": "露杉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-eaffc974535ce95cee79",
+      "text": "青苔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c0ad72e249160dd11452",
+      "text": "微澜"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3bf9a6c84550cb3bcf20",
+      "text": "银溪"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e23adcbcdd8f2975eb3d",
+      "text": "黎泉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0b01affeb2b75e0550c0",
+      "text": "浅汀"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-74571b7cc38f1fbbfcb3",
+      "text": "清沅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e3913225b9fc7abfcf46",
+      "text": "银芦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1babe43290fc2cdf21b9",
+      "text": "碧涛"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1ea069b6ae22df0812b2",
+      "text": "霜渡"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d03abc11b5e36c149e02",
+      "text": "叶湾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ee5c14c2f71176f9c074",
+      "text": "青渊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4e9a0802c251f7e60292",
+      "text": "曙浦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7335fe5946b0507083f0",
+      "text": "凝辉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0cff3c9b1cdea5254ca3",
+      "text": "林"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bb5edfd7deea57299afb",
+      "text": "谷"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5d2d0d8422767fc34da7",
+      "text": "泉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-26835d955b52e62a72f5",
+      "text": "泽"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-af009c33a22fe72d3667",
+      "text": "丘"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fc67251519876c25e2a0",
+      "text": "湾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-81b3ed91bd5c0b74a7f0",
+      "text": "庭"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b3b1dcfda3a44b01739d",
+      "text": "塔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-596a51de3f966bc8756a",
+      "text": "苑"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1151db5f85fbe8253b88",
+      "text": "港"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-76f47004cc1240c69cd1",
+      "text": "城"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7a9a91a24e57e0ade966",
+      "text": "殿"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-cc4ec2c5a6dffb43de80",
+      "text": "风吟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2d493fe0106e70e8509f",
+      "text": "叶语"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-028a4642362f09cf378c",
+      "text": "鸟鸣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7ec2d2c6d68bf9b99731",
+      "text": "林声"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-93f7f213a2b92a869a9f",
+      "text": "溪唱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-87923cc576a5f2207300",
+      "text": "春潮"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1606096bae05cb6483eb",
+      "text": "春岫"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-26a892e0b963c0863d9a",
+      "text": "银弦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-aececcbf5dbbd32b4007",
+      "text": "星咏"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b64a43c4cf8263e4763f",
+      "text": "月韵"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bdfbd98073912334c695",
+      "text": "雪吟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-50f3b3ae66675daa4f8c",
+      "text": "夜歌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d12e9df26946f3a75eb2",
+      "text": "晨音"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0051e265f67d83e60a4c",
+      "text": "曙韵"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2d5d33e7801f31ad7f4f",
+      "text": "星光纪年"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f502219605fbe55e3fe9",
+      "text": "森林秘史"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3c90c7391b5b8f4794be",
+      "text": "远古誓约录"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f6a08bd041552cf9141d",
+      "text": "银枝家纪"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d434195b0de5fc26dadf",
+      "text": "青梣编年"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-98c4b236668144c92b05",
+      "text": "翠藤先王传"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0ca7b029e9d71bd2893e",
+      "text": "晨泉旧约"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-312864ea767fc2ee676d",
+      "text": "银月之歌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-554131b2177fe1e9bcbe",
+      "text": "月下弦谱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3808a7e6f9d5e5552f49",
+      "text": "清流曲集"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1f2fb4c61594438bdb15",
+      "text": "夏槐歌册"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-10f56b76d94faee10eff",
+      "text": "林途诗选"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bf9db5ed023f48045df9",
+      "text": "星弦琴谱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-408573a5cfa6013c34f9",
+      "text": "寻露小记"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-51c8d6900f0508a2aa45",
+      "text": "博格"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5d870c0ac6cb0c4dcfef",
+      "text": "巴尔德"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-07176310705160f05294",
+      "text": "格鲁姆"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b8bb7db54e7a2112dea1",
+      "text": "卡斯博"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a70c1bdf97c9b43c8429",
+      "text": "布伦塔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bb7289b7ac419b20da31",
+      "text": "锡格洛"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-80ff5134b4256aec8703",
+      "text": "瓦铎恩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6a610d99e4686fc5af17",
+      "text": "奥斯铎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f8ac866251b7cd2ee60e",
+      "text": "布洛岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9a0691ad9f8e8b346932",
+      "text": "铁博森"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ccc00c884d7deda272cb",
+      "text": "赫鲁铎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-27250756a0ad69472134",
+      "text": "扎尔钦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d1b0d44054c3ed9e68aa",
+      "text": "卡尔岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9d160a810e2d94c5fb64",
+      "text": "多姆克"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a1725d3ee036d1b492bb",
+      "text": "葛里石"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fe0ad5cac87559d426ef",
+      "text": "岩戈斯"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5cb5d337e9f1b856be33",
+      "text": "欧德岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a41558d9e3170e53a96b",
+      "text": "莫兰塔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-52e21c3d95c2a9e78e10",
+      "text": "凿格林"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9c8149dc33d83e9dc8a3",
+      "text": "索米克"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-162f533febb8d2e546f6",
+      "text": "巴尔岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f556509309ac8ad90cb9",
+      "text": "洛穆山"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b745e2eb41ff6702afc5",
+      "text": "铁格纳"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-be2acfe9e91b4a9c9bd6",
+      "text": "贝尔铎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b094339479ac81e90661",
+      "text": "铁砧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-62ffa2d7dc3019e80ef7",
+      "text": "铜须"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c28a410157a35265e2cd",
+      "text": "银炉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-23b96fb57f872d718a89",
+      "text": "火锤"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c46662c75a86bbd9e6b1",
+      "text": "钢纹"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fc56390ca3708ae39171",
+      "text": "赤砧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9197a1cfce23d22878dc",
+      "text": "铜铆"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1e5eb49345b86ab50999",
+      "text": "铜链"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c532db9151594f5dbc7d",
+      "text": "冷锤"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f4f63efba349612cfae3",
+      "text": "钢盾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4bc434b9d73801f6e798",
+      "text": "银锻"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-391426bd516dd01b7455",
+      "text": "黑铁"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-427d3de4d8832716a4c7",
+      "text": "石盾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7df3a6a75451cab6092e",
+      "text": "岩斧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131",
+      "text": "铜脉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187",
+      "text": "铁山"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b318e57037d433d8835d",
+      "text": "玄盐"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-29eb968f9585136789ce",
+      "text": "深岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-62528fbcbf6aaa22b10d",
+      "text": "石眼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21",
+      "text": "金隧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9aae5ca769becb669a7c",
+      "text": "鹰脊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9de3da41dd37f9e07b8f",
+      "text": "云砾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d256d9b5e59493fa73e8",
+      "text": "白岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1667f476c00efe85370f",
+      "text": "岩髓"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2cc0d63ffd406ceeaa33",
+      "text": "铁脊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-014bf2c7ec90f6b4600c",
+      "text": "银砾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0ef1d411bcdbcb021df3",
+      "text": "赭岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-59086d6977be7595348f",
+      "text": "深矿"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-98e84f52673a012996c7",
+      "text": "铁砂"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6bcdb2d7dd025b9c6b5b",
+      "text": "玄晶"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a473ecb6b1962bcf81d0",
+      "text": "锡岭"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fa806898f0328d623b33",
+      "text": "煤脊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-8e52d5b5099149ce754b",
+      "text": "砾岗"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e6c095e0eedf0d93b228",
+      "text": "石炉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7209b3c086e67caf893a",
+      "text": "岩心"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-cdc9577809ffe45d66d1",
+      "text": "铜砧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-18b4e34f0f6659db9565",
+      "text": "赤炉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6c0e14f83054d04134a4",
+      "text": "钢轮"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512",
+      "text": "星铸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1f5b24d40264d44e147a",
+      "text": "锤鸣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ec5cfd64c428bb32fd46",
+      "text": "岩铎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5c81a72ef77269d69a22",
+      "text": "火岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f7627a271416c4547092",
+      "text": "金熔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-61a401cf32d4f165e993",
+      "text": "堡"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3426ec04f61764eede1c",
+      "text": "垒"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5d0ae622f61f8ebf1e88",
+      "text": "关"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a407325e0081cb7db786",
+      "text": "门"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9c7d965bdc8fb30b7250",
+      "text": "磐"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9caac2029fd2d130ec74",
+      "text": "矿"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b9d4360d0bcb5325f04d",
+      "text": "坑"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4ad801e1ba42f57cb90d",
+      "text": "炉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fa0f0461a14bf7fd81c9",
+      "text": "井"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3a1a6a546e3a3037c79b",
+      "text": "厅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4c4dbb7748443a716d98",
+      "text": "窟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-8d796d8b26084aee966c",
+      "text": "锻炉秘典"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4b25618a76a1e174b4f0",
+      "text": "铁砧铭文"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c6ca7c49eee69256e2de",
+      "text": "矿脉探秘录"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1d8271cad93b8af1ab83",
+      "text": "砧纹工谱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ead9fbf2a0d91242027e",
+      "text": "深层矿图"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-21ebd1f7a07a7e8f913e",
+      "text": "熔金方册"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-8cfb9aea7ac3b86bb7bf",
+      "text": "钢火手记"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ce5356f3d39e1649e6e2",
+      "text": "山岳法典"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b0b3debbfb662ca13a83",
+      "text": "雷锤史诗"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-15f27ed7c3cbc5e131e1",
+      "text": "先祖锤音"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-29334783b0eb9481ab07",
+      "text": "矿道族纪"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6c7feb362fa448ef4f81",
+      "text": "石厅盟约"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fe3cbed648794d8cc461",
+      "text": "炉心列传"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7106e7627f205af99a38",
+      "text": "铜脉旧札"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-06fbb3f1859bfdafbca3",
+      "text": "格伦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c41cce8ed11b45bbbce0",
+      "text": "卡尔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-243ea7d7914f27645033",
+      "text": "卡扎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f3a6d694835ff95ebecc",
+      "text": "格鲁"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ae974c4ffb77a559ec68",
+      "text": "布塔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7b20634f9c54dbf0ceec",
+      "text": "赫扎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-803820f2d889385ebaec",
+      "text": "罗葛"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-76619a46c273b80f2b46",
+      "text": "阿鲁班"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d47277ee737ad6626118",
+      "text": "乌泽"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e3d46380fcc64e73de04",
+      "text": "阿戈拉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9d8b962240f21ae8cdf9",
+      "text": "巴喀乌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-246844eea0fc0b8eac34",
+      "text": "瓦洛"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5ab21cf942175ff04714",
+      "text": "岩扎"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e7dd9b4b74b656ebbc29",
+      "text": "歌尔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0de64193dd9f84017e4c",
+      "text": "斧洛"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5866d618ab6ba421594d",
+      "text": "格岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ba27583bc4c57bce757d",
+      "text": "罗铁"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fd6593597806366ba8d4",
+      "text": "卡洛格"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-63295b6fd1048bd8afc5",
+      "text": "乌根"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-87f73689a819bf58e7e6",
+      "text": "布格"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-efbdfae93b4955f565f1",
+      "text": "苏岩塔"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6bd0b8f2b9cb34f7e822",
+      "text": "额鲁"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-75c10f5ac08b16a8bfda",
+      "text": "哲勾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-acaf3d508635b32d8c5c",
+      "text": "赤赫"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2671a6b11967ff5d4889",
+      "text": "钢牙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-300835edd193b71a3124",
+      "text": "血爪"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-86502be3490b82c0d62e",
+      "text": "雷角"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4089458de8f2c36b4bed",
+      "text": "白鬃"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-980d27f39631f78661b9",
+      "text": "铁鬃"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9e25815ea476e68d2dac",
+      "text": "赤羽"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e33ae8ac716d030a9645",
+      "text": "灰狼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-abce92ca36ee0e1637fd",
+      "text": "獠角"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-152d45e2a787272f3daa",
+      "text": "长牙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-978bb6a5bf86dbfcf5f6",
+      "text": "碎蹄"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-099dbac0f0f6952a6490",
+      "text": "黑蹄"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c4ef832123338508ad79",
+      "text": "苍皮"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-57e1e994f286b204c248",
+      "text": "山崩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-70ab29aedb242af164e3",
+      "text": "林吼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b30862d36e292ea18652",
+      "text": "河怒"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-784d00d1db0d1b2eb84a",
+      "text": "岩裂"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9bc126e2ae71fa22e58f",
+      "text": "冰咆"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b93501d7b61df5417676",
+      "text": "火翼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-93a8f7ce0b043e052006",
+      "text": "黑棘"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a8ef4ae2d41de921a7bd",
+      "text": "岩桥"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-eae7dafc2762c04d4115",
+      "text": "燧崖"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f43d1e91f4b4b6539854",
+      "text": "狂风"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9e9daed08734f78398bd",
+      "text": "断牙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d42acfb74cf3923906bc",
+      "text": "沙脊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-29df3fbcc58244df04a7",
+      "text": "逐水"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ad5411253bcf1d427122",
+      "text": "长原"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7f0a737bf8d7a17b9489",
+      "text": "野炬"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-396aa441af8e0ae77557",
+      "text": "老牧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-543dbc5de00841a8382e",
+      "text": "狼行"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-642de137ec8c664f9f58",
+      "text": "荒垣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c29f77e5672112b4b8ba",
+      "text": "烈草"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-dfa6cedbbdb14eabfe6b",
+      "text": "低原"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2116666b00a6568d4a73",
+      "text": "银鬃"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-afcf14719d5bc6421362",
+      "text": "东牧"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-8d2579c9bd196ff54fba",
+      "text": "听鼓"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e9ef433fa0987ced3183",
+      "text": "鹰旗"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fd4ae3678d5bce2169e7",
+      "text": "断岩"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-70e3887c68a895702dbe",
+      "text": "红石"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-757997844d8a20f74377",
+      "text": "灰脊"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-555ef0ff896cdfa13960",
+      "text": "斧痕"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-365eccfc70b7d8f45c77",
+      "text": "黑林"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4c7a16407bdcafdca595",
+      "text": "巨骨"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-02352c6e032da5f8b01b",
+      "text": "赤砾"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2d67b7e2590a9b05fd1e",
+      "text": "石牙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1c8c65765d6a9bc03445",
+      "text": "荒岸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e69b6b8627fc90e37c76",
+      "text": "风峡"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-aa04d2fc13bb0454af8c",
+      "text": "战骨"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-38e6f65887d3c0d6aaa6",
+      "text": "乌岭"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-1ecd10d4a775e7b90d53",
+      "text": "部"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b8003d4ad0d611f65d09",
+      "text": "部族"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2e813d69fd7351ab8e6a",
+      "text": "营"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-573a378c00b6e976c030",
+      "text": "猎场"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7506d7e4f22bf8815b48",
+      "text": "大帐"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-290230413da300b3aac3",
+      "text": "牧场"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bd2a01de83f96e506296",
+      "text": "寨"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b5f0f70d8d1a3e828112",
+      "text": "壁"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b23aed657bd878b0ac5a",
+      "text": "王庭"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f9bab1c5399d2f8704cd",
+      "text": "领地"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ded4f945f6818b65caa7",
+      "text": "先祖咆哮录"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-9ccd3d8f44bf44ac7012",
+      "text": "荒野法则"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4ddd36a79db53625493a",
+      "text": "灰鬃传说"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2fbcb4ada9169cf9bb82",
+      "text": "旧营火谣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bd8aa2a08750f28f67eb",
+      "text": "狼群之约"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-79351611f26659429e2c",
+      "text": "长原族谱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4ac5f2cc7b1df997737e",
+      "text": "风峡迁徙歌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-72aad58b0e7aa98cf717",
+      "text": "血怒战歌"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0ef6f3a216be82a80e24",
+      "text": "铁骨训诫"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7fa412ee9e9596999301",
+      "text": "雷霆战术"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-95e55ce6d70f1e90cd7e",
+      "text": "战旗史书"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6d797717a5be01fb8a02",
+      "text": "斧锋图谱"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-767706aa7e2eb0f8854e",
+      "text": "守岩军略"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0f1f116ca54fb20c11ac",
+      "text": "首领誓词"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c434cd64f19511cbbd92",
+      "text": "守住炉火"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4ba74abcc016c24ea097",
+      "text": "血亲同心"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-78dd2feb2d5b847e48a2",
+      "text": "星与林同在"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7ac856b0159a7b940868",
+      "text": "长路共享粮"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-981d4bd5bfee996b04aa",
+      "text": "盟中之言当信"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2e81b5548afef0f560d2",
+      "text": "将火种传下去"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f8f4329c0f55b03a92fc",
+      "text": "守约方可进门"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d2f6ec6a2d60cc1ba069",
+      "text": "共守一墙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c2b60ff98290300f2d2c",
+      "text": "风下立誓"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4d3ece7dcfeaaa13c0a7",
+      "text": "群山知承诺"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2bba64fd8eb63b0f5c2c",
+      "text": "值守到天明"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fc76b0d2de87f47fba60",
+      "text": "以盾护归途"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-974f4bdff11454feafe8",
+      "text": "誓不弃行旅"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3258c333bbf28e4fcaae",
+      "text": "矿灯照归路"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d48f110f73c4bc5ca009",
+      "text": "草原容来客"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a0ab4928c8bbded4a9f4",
+      "text": "石垣不弃城"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-2ec68048ba387b5d8439",
+      "text": "炉嗡"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-084695e4cdade8f0cf61",
+      "text": "铁韵"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b7a9571c80a0141f1ba9",
+      "text": "砧音"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a3fc43ef28755e071776",
+      "text": "铸声"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b20c1769e7f354c43204",
+      "text": "火吼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-189efbe1bb67fb9c2889",
+      "text": "岩吟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5f6392c16b92272de6a5",
+      "text": "隧语"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4bfbd8356a5286a6060e",
+      "text": "锡鸣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f60ebc8fdcdf2f9e5675",
+      "text": "石纹"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-bf2a821978919ad9051f",
+      "text": "深谷"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-dcd4e66bb487f3f524ac",
+      "text": "铜响"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ddce41b93413f39a6710",
+      "text": "逐风"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4f602be1a0f77820de74",
+      "text": "长啸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-980460513fc016e0f244",
+      "text": "鼓律"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-74be07a860b952966bf7",
+      "text": "苍吼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-49fba19855b651e325a4",
+      "text": "荒语"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ab4201d61a0785c6551d",
+      "text": "牧音"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-754797f946ead4d57077",
+      "text": "岩啸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-cabbc9e56dc1f1632e9f",
+      "text": "斧鸣"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-dce2bfea9845e09de858",
+      "text": "燧音"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a9176401789fb32fa571",
+      "text": "山吼"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-5bc9178a3c0a2457befd",
+      "text": "铁喉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-e077b5412607470ca9a6",
+      "text": "乌调"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d3f8b380c4cb83b8a3ad",
+      "text": "之战"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a829695c8a4f35cf495b",
+      "text": "会战"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c4a4821dc71c3eec026f",
+      "text": "争夺战"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-8483d7cdd631d4e1eeb4",
+      "text": "远征"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ff9f17ae826c5e29dd5d",
+      "text": "交锋"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-7ae0219da3aead459434",
+      "text": "战役"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-698ffe6c65decbbf93dc",
+      "text": "战事"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-988ca3fd4ef1c7f3794f",
+      "text": "纷争"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-83aa3225ddd2c01d8509",
+      "text": "议会"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-abc455a6b0d629590fc6",
+      "text": "诸领协约"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0ba36c6cac264bd8b3c6",
+      "text": "领主议盟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-07d9b4c890e1226f7073",
+      "text": "联盟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-0c89e1ad1be011eaece8",
+      "text": "守望盟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ad7345c2245bdbcece43",
+      "text": "共同誓约"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b656b5d808be020e055a",
+      "text": "防卫同盟"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-73d7c212f39fdf49d743",
+      "text": "联军协定"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-ab9d580e8c6bad81a700",
+      "text": "卫队"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-016c4a54bc4b31036ac2",
+      "text": "守望者"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a1679f7ba1597fe37cf8",
+      "text": "巡防团"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f8375ad6c108e4d42776",
+      "text": "边境卫"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-49e4501326124c723563",
+      "text": "军团"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-03dd50c62fbe4bdd72c3",
+      "text": "先锋团"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6f708e24e9ce186141ee",
+      "text": "骑士团"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f62d2b662e91ea32468a",
+      "text": "旗团"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3f18d2b43c4f101b3841",
+      "text": "编年史"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b620e08c0e164f832c82",
+      "text": "见闻录"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-4dbd9d4378a83b54e5d3",
+      "text": "记事卷"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d85fc914f70a32a56b8b",
+      "text": "古卷"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-c7cce2404f9894371339",
+      "text": "论"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-6eadeddb7e7047ab6875",
+      "text": "指南"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-a00e3c6bb7cd2a46e272",
+      "text": "秘典"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-53612efcd3127ac77aef",
+      "text": "图录"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-3c5a344c997099620184",
+      "text": "月铸"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-cda1b9aa3a170b024eaf",
+      "text": "晨曦"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-18f607f2a2f0ce905b89",
+      "text": "霜辉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-769307ce426c6eccbbcf",
+      "text": "深炉"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-fe858983d0e6ab32af32",
+      "text": "龙纹"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-d73c0b9261702a1c91a6",
+      "text": "灰烬"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-b9a9951d1286c48231b4",
+      "text": "誓纹"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-df1e348823cf9eea9e9d",
+      "text": "狼牙"
+    },
+    {
+      "id": "chinesename:fantasy-race-lexicon.w-f538b653bd09e42343f4",
+      "text": "古锻"
+    }
+  ],
+  "pools": {
+    "chinesename:fantasy-race-lexicon.elf-person": {
+      "chinesename:fantasy-race-lexicon.w-6a33065c14057a701814": 1,
+      "chinesename:fantasy-race-lexicon.w-23fa0e2a3a30e08867e5": 1,
+      "chinesename:fantasy-race-lexicon.w-90572f1f191c7ad79033": 1,
+      "chinesename:fantasy-race-lexicon.w-50831ab7993a99a1c5db": 1,
+      "chinesename:fantasy-race-lexicon.w-b4020c18d81193b4e8f2": 1,
+      "chinesename:fantasy-race-lexicon.w-f55c9c9d1d2d49ad386e": 1,
+      "chinesename:fantasy-race-lexicon.w-93a003298101fef5c9b5": 1,
+      "chinesename:fantasy-race-lexicon.w-b8bbab47401b9becc20a": 1,
+      "chinesename:fantasy-race-lexicon.w-268fe153783ef7edb7b6": 1,
+      "chinesename:fantasy-race-lexicon.w-d0546802ace265d1359f": 1,
+      "chinesename:fantasy-race-lexicon.w-f4de896f44870d104ad6": 1,
+      "chinesename:fantasy-race-lexicon.w-7ea00c04b4eceebd87b2": 1,
+      "chinesename:fantasy-race-lexicon.w-072d920e4833f8c12bfc": 1,
+      "chinesename:fantasy-race-lexicon.w-84d1d36127b587064664": 1,
+      "chinesename:fantasy-race-lexicon.w-3d1f23cbbc9045396fa7": 1,
+      "chinesename:fantasy-race-lexicon.w-7cced85afdb3aa1fb368": 1,
+      "chinesename:fantasy-race-lexicon.w-3577fdff89052813154d": 1,
+      "chinesename:fantasy-race-lexicon.w-c096af092486cdfea3d7": 1,
+      "chinesename:fantasy-race-lexicon.w-b30a72edbc76fad9555f": 1,
+      "chinesename:fantasy-race-lexicon.w-48dc1a70682b0cbcdfe5": 1,
+      "chinesename:fantasy-race-lexicon.w-66122246665590ca4b82": 1,
+      "chinesename:fantasy-race-lexicon.w-231380518a5efa7b75ed": 1,
+      "chinesename:fantasy-race-lexicon.w-d1b8556f8bdff24d8b82": 1,
+      "chinesename:fantasy-race-lexicon.w-a220f7e4aad1935dc2f5": 1
+    },
+    "chinesename:fantasy-race-lexicon.elf-house": {
+      "chinesename:fantasy-race-lexicon.w-a54ce53d9984199cbb53": 1,
+      "chinesename:fantasy-race-lexicon.w-63e873a955a59d060ddd": 1,
+      "chinesename:fantasy-race-lexicon.w-509971fdbbd6c322d9c6": 1,
+      "chinesename:fantasy-race-lexicon.w-b8ac98ae181a42c78216": 1,
+      "chinesename:fantasy-race-lexicon.w-43a23263f74c844f3436": 1,
+      "chinesename:fantasy-race-lexicon.w-e78417f2732b8af56919": 1,
+      "chinesename:fantasy-race-lexicon.w-10cb93db0015224d166a": 1,
+      "chinesename:fantasy-race-lexicon.w-187bbcac3d5c3af75b44": 1,
+      "chinesename:fantasy-race-lexicon.w-0da4ab44b0ef6b77bd48": 1,
+      "chinesename:fantasy-race-lexicon.w-0b8cfc27b264203a64be": 1,
+      "chinesename:fantasy-race-lexicon.w-06f8be26d9dee0845b6f": 1,
+      "chinesename:fantasy-race-lexicon.w-e0fbad2633d88ce8437c": 1,
+      "chinesename:fantasy-race-lexicon.w-241b676faa0ddd79ef2f": 1,
+      "chinesename:fantasy-race-lexicon.w-84d508ddbfd89f276c56": 1,
+      "chinesename:fantasy-race-lexicon.w-0cff755ddb4f4994fcf7": 1,
+      "chinesename:fantasy-race-lexicon.w-f9969b1159565d458e82": 1,
+      "chinesename:fantasy-race-lexicon.w-6e4ca585efcc0fd4993f": 1,
+      "chinesename:fantasy-race-lexicon.w-b5abafc82158bd8fb049": 1,
+      "chinesename:fantasy-race-lexicon.w-f3d26c1a83b587763c01": 1,
+      "chinesename:fantasy-race-lexicon.w-cb7e5f365a29a180296f": 1,
+      "chinesename:fantasy-race-lexicon.w-c26623313cd697117c9e": 1,
+      "chinesename:fantasy-race-lexicon.w-b618b8ca593ce7a709d2": 1,
+      "chinesename:fantasy-race-lexicon.w-f48200b879b0041bba58": 1,
+      "chinesename:fantasy-race-lexicon.w-ec0c1ec2a4568104dec6": 1
+    },
+    "chinesename:fantasy-race-lexicon.elf-place": {
+      "chinesename:fantasy-race-lexicon.w-af852d67ddb643ec61ef": 1,
+      "chinesename:fantasy-race-lexicon.w-df2d4ca3cbbecba8820e": 1,
+      "chinesename:fantasy-race-lexicon.w-6206e48df49b3c8ab027": 1,
+      "chinesename:fantasy-race-lexicon.w-f17cba4f63faaa92687d": 1,
+      "chinesename:fantasy-race-lexicon.w-af76eca09840399ab53d": 1,
+      "chinesename:fantasy-race-lexicon.w-e16a6f078b690a7a5262": 1,
+      "chinesename:fantasy-race-lexicon.w-ae06c37850c196cf2802": 1,
+      "chinesename:fantasy-race-lexicon.w-9522f8c19d7c2378440f": 1,
+      "chinesename:fantasy-race-lexicon.w-c5938f1a8958c537f581": 1,
+      "chinesename:fantasy-race-lexicon.w-e12a8ddadfc01970080b": 1,
+      "chinesename:fantasy-race-lexicon.w-97d187a924e4f7bcef13": 1,
+      "chinesename:fantasy-race-lexicon.w-eaffc974535ce95cee79": 1,
+      "chinesename:fantasy-race-lexicon.w-c0ad72e249160dd11452": 1,
+      "chinesename:fantasy-race-lexicon.w-3bf9a6c84550cb3bcf20": 1,
+      "chinesename:fantasy-race-lexicon.w-e23adcbcdd8f2975eb3d": 1,
+      "chinesename:fantasy-race-lexicon.w-0b01affeb2b75e0550c0": 1,
+      "chinesename:fantasy-race-lexicon.w-74571b7cc38f1fbbfcb3": 1,
+      "chinesename:fantasy-race-lexicon.w-e3913225b9fc7abfcf46": 1,
+      "chinesename:fantasy-race-lexicon.w-1babe43290fc2cdf21b9": 1,
+      "chinesename:fantasy-race-lexicon.w-1ea069b6ae22df0812b2": 1,
+      "chinesename:fantasy-race-lexicon.w-d03abc11b5e36c149e02": 1,
+      "chinesename:fantasy-race-lexicon.w-ee5c14c2f71176f9c074": 1,
+      "chinesename:fantasy-race-lexicon.w-4e9a0802c251f7e60292": 1,
+      "chinesename:fantasy-race-lexicon.w-7335fe5946b0507083f0": 1
+    },
+    "chinesename:fantasy-race-lexicon.elf-ending": {
+      "chinesename:fantasy-race-lexicon.w-0cff3c9b1cdea5254ca3": 1,
+      "chinesename:fantasy-race-lexicon.w-bb5edfd7deea57299afb": 1,
+      "chinesename:fantasy-race-lexicon.w-5d2d0d8422767fc34da7": 1,
+      "chinesename:fantasy-race-lexicon.w-26835d955b52e62a72f5": 1,
+      "chinesename:fantasy-race-lexicon.w-af009c33a22fe72d3667": 1,
+      "chinesename:fantasy-race-lexicon.w-fc67251519876c25e2a0": 1,
+      "chinesename:fantasy-race-lexicon.w-81b3ed91bd5c0b74a7f0": 1,
+      "chinesename:fantasy-race-lexicon.w-b3b1dcfda3a44b01739d": 1,
+      "chinesename:fantasy-race-lexicon.w-596a51de3f966bc8756a": 1,
+      "chinesename:fantasy-race-lexicon.w-1151db5f85fbe8253b88": 1,
+      "chinesename:fantasy-race-lexicon.w-76f47004cc1240c69cd1": 1,
+      "chinesename:fantasy-race-lexicon.w-7a9a91a24e57e0ade966": 1
+    },
+    "chinesename:fantasy-race-lexicon.elf-language": {
+      "chinesename:fantasy-race-lexicon.w-cc4ec2c5a6dffb43de80": 1,
+      "chinesename:fantasy-race-lexicon.w-2d493fe0106e70e8509f": 1,
+      "chinesename:fantasy-race-lexicon.w-028a4642362f09cf378c": 1,
+      "chinesename:fantasy-race-lexicon.w-7ec2d2c6d68bf9b99731": 1,
+      "chinesename:fantasy-race-lexicon.w-93f7f213a2b92a869a9f": 1,
+      "chinesename:fantasy-race-lexicon.w-87923cc576a5f2207300": 1,
+      "chinesename:fantasy-race-lexicon.w-1606096bae05cb6483eb": 1,
+      "chinesename:fantasy-race-lexicon.w-26a892e0b963c0863d9a": 1,
+      "chinesename:fantasy-race-lexicon.w-aececcbf5dbbd32b4007": 1,
+      "chinesename:fantasy-race-lexicon.w-b64a43c4cf8263e4763f": 1,
+      "chinesename:fantasy-race-lexicon.w-bdfbd98073912334c695": 1,
+      "chinesename:fantasy-race-lexicon.w-50f3b3ae66675daa4f8c": 1,
+      "chinesename:fantasy-race-lexicon.w-d12e9df26946f3a75eb2": 1,
+      "chinesename:fantasy-race-lexicon.w-0051e265f67d83e60a4c": 1
+    },
+    "chinesename:fantasy-race-lexicon.elf-book": {
+      "chinesename:fantasy-race-lexicon.w-2d5d33e7801f31ad7f4f": 1,
+      "chinesename:fantasy-race-lexicon.w-f502219605fbe55e3fe9": 1,
+      "chinesename:fantasy-race-lexicon.w-3c90c7391b5b8f4794be": 1,
+      "chinesename:fantasy-race-lexicon.w-f6a08bd041552cf9141d": 1,
+      "chinesename:fantasy-race-lexicon.w-d434195b0de5fc26dadf": 1,
+      "chinesename:fantasy-race-lexicon.w-98c4b236668144c92b05": 1,
+      "chinesename:fantasy-race-lexicon.w-0ca7b029e9d71bd2893e": 1,
+      "chinesename:fantasy-race-lexicon.w-312864ea767fc2ee676d": 1,
+      "chinesename:fantasy-race-lexicon.w-554131b2177fe1e9bcbe": 1,
+      "chinesename:fantasy-race-lexicon.w-3808a7e6f9d5e5552f49": 1,
+      "chinesename:fantasy-race-lexicon.w-1f2fb4c61594438bdb15": 1,
+      "chinesename:fantasy-race-lexicon.w-10f56b76d94faee10eff": 1,
+      "chinesename:fantasy-race-lexicon.w-bf9db5ed023f48045df9": 1,
+      "chinesename:fantasy-race-lexicon.w-408573a5cfa6013c34f9": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-person": {
+      "chinesename:fantasy-race-lexicon.w-51c8d6900f0508a2aa45": 1,
+      "chinesename:fantasy-race-lexicon.w-5d870c0ac6cb0c4dcfef": 1,
+      "chinesename:fantasy-race-lexicon.w-07176310705160f05294": 1,
+      "chinesename:fantasy-race-lexicon.w-b8bb7db54e7a2112dea1": 1,
+      "chinesename:fantasy-race-lexicon.w-a70c1bdf97c9b43c8429": 1,
+      "chinesename:fantasy-race-lexicon.w-bb7289b7ac419b20da31": 1,
+      "chinesename:fantasy-race-lexicon.w-80ff5134b4256aec8703": 1,
+      "chinesename:fantasy-race-lexicon.w-6a610d99e4686fc5af17": 1,
+      "chinesename:fantasy-race-lexicon.w-f8ac866251b7cd2ee60e": 1,
+      "chinesename:fantasy-race-lexicon.w-9a0691ad9f8e8b346932": 1,
+      "chinesename:fantasy-race-lexicon.w-ccc00c884d7deda272cb": 1,
+      "chinesename:fantasy-race-lexicon.w-27250756a0ad69472134": 1,
+      "chinesename:fantasy-race-lexicon.w-d1b0d44054c3ed9e68aa": 1,
+      "chinesename:fantasy-race-lexicon.w-9d160a810e2d94c5fb64": 1,
+      "chinesename:fantasy-race-lexicon.w-a1725d3ee036d1b492bb": 1,
+      "chinesename:fantasy-race-lexicon.w-fe0ad5cac87559d426ef": 1,
+      "chinesename:fantasy-race-lexicon.w-5cb5d337e9f1b856be33": 1,
+      "chinesename:fantasy-race-lexicon.w-a41558d9e3170e53a96b": 1,
+      "chinesename:fantasy-race-lexicon.w-52e21c3d95c2a9e78e10": 1,
+      "chinesename:fantasy-race-lexicon.w-9c8149dc33d83e9dc8a3": 1,
+      "chinesename:fantasy-race-lexicon.w-162f533febb8d2e546f6": 1,
+      "chinesename:fantasy-race-lexicon.w-f556509309ac8ad90cb9": 1,
+      "chinesename:fantasy-race-lexicon.w-b745e2eb41ff6702afc5": 1,
+      "chinesename:fantasy-race-lexicon.w-be2acfe9e91b4a9c9bd6": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-house": {
+      "chinesename:fantasy-race-lexicon.w-b094339479ac81e90661": 1,
+      "chinesename:fantasy-race-lexicon.w-62ffa2d7dc3019e80ef7": 1,
+      "chinesename:fantasy-race-lexicon.w-c28a410157a35265e2cd": 1,
+      "chinesename:fantasy-race-lexicon.w-23b96fb57f872d718a89": 1,
+      "chinesename:fantasy-race-lexicon.w-c46662c75a86bbd9e6b1": 1,
+      "chinesename:fantasy-race-lexicon.w-fc56390ca3708ae39171": 1,
+      "chinesename:fantasy-race-lexicon.w-9197a1cfce23d22878dc": 1,
+      "chinesename:fantasy-race-lexicon.w-1e5eb49345b86ab50999": 1,
+      "chinesename:fantasy-race-lexicon.w-c532db9151594f5dbc7d": 1,
+      "chinesename:fantasy-race-lexicon.w-f4f63efba349612cfae3": 1,
+      "chinesename:fantasy-race-lexicon.w-4bc434b9d73801f6e798": 1,
+      "chinesename:fantasy-race-lexicon.w-391426bd516dd01b7455": 1,
+      "chinesename:fantasy-race-lexicon.w-427d3de4d8832716a4c7": 1,
+      "chinesename:fantasy-race-lexicon.w-7df3a6a75451cab6092e": 1,
+      "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131": 1,
+      "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187": 1,
+      "chinesename:fantasy-race-lexicon.w-b318e57037d433d8835d": 1,
+      "chinesename:fantasy-race-lexicon.w-29eb968f9585136789ce": 1,
+      "chinesename:fantasy-race-lexicon.w-62528fbcbf6aaa22b10d": 1,
+      "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21": 1,
+      "chinesename:fantasy-race-lexicon.w-9aae5ca769becb669a7c": 1,
+      "chinesename:fantasy-race-lexicon.w-9de3da41dd37f9e07b8f": 1,
+      "chinesename:fantasy-race-lexicon.w-d256d9b5e59493fa73e8": 1,
+      "chinesename:fantasy-race-lexicon.w-1667f476c00efe85370f": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-place": {
+      "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131": 1,
+      "chinesename:fantasy-race-lexicon.w-2cc0d63ffd406ceeaa33": 1,
+      "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21": 1,
+      "chinesename:fantasy-race-lexicon.w-014bf2c7ec90f6b4600c": 1,
+      "chinesename:fantasy-race-lexicon.w-0ef1d411bcdbcb021df3": 1,
+      "chinesename:fantasy-race-lexicon.w-59086d6977be7595348f": 1,
+      "chinesename:fantasy-race-lexicon.w-98e84f52673a012996c7": 1,
+      "chinesename:fantasy-race-lexicon.w-6bcdb2d7dd025b9c6b5b": 1,
+      "chinesename:fantasy-race-lexicon.w-a473ecb6b1962bcf81d0": 1,
+      "chinesename:fantasy-race-lexicon.w-fa806898f0328d623b33": 1,
+      "chinesename:fantasy-race-lexicon.w-1667f476c00efe85370f": 1,
+      "chinesename:fantasy-race-lexicon.w-8e52d5b5099149ce754b": 1,
+      "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187": 1,
+      "chinesename:fantasy-race-lexicon.w-e6c095e0eedf0d93b228": 1,
+      "chinesename:fantasy-race-lexicon.w-7209b3c086e67caf893a": 1,
+      "chinesename:fantasy-race-lexicon.w-cdc9577809ffe45d66d1": 1,
+      "chinesename:fantasy-race-lexicon.w-18b4e34f0f6659db9565": 1,
+      "chinesename:fantasy-race-lexicon.w-6c0e14f83054d04134a4": 1,
+      "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512": 1,
+      "chinesename:fantasy-race-lexicon.w-1f5b24d40264d44e147a": 1,
+      "chinesename:fantasy-race-lexicon.w-ec5cfd64c428bb32fd46": 1,
+      "chinesename:fantasy-race-lexicon.w-5c81a72ef77269d69a22": 1,
+      "chinesename:fantasy-race-lexicon.w-f7627a271416c4547092": 1,
+      "chinesename:fantasy-race-lexicon.w-c532db9151594f5dbc7d": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-ending": {
+      "chinesename:fantasy-race-lexicon.w-61a401cf32d4f165e993": 1,
+      "chinesename:fantasy-race-lexicon.w-3426ec04f61764eede1c": 1,
+      "chinesename:fantasy-race-lexicon.w-5d0ae622f61f8ebf1e88": 1,
+      "chinesename:fantasy-race-lexicon.w-a407325e0081cb7db786": 1,
+      "chinesename:fantasy-race-lexicon.w-9c7d965bdc8fb30b7250": 1,
+      "chinesename:fantasy-race-lexicon.w-76f47004cc1240c69cd1": 1,
+      "chinesename:fantasy-race-lexicon.w-9caac2029fd2d130ec74": 1,
+      "chinesename:fantasy-race-lexicon.w-b9d4360d0bcb5325f04d": 1,
+      "chinesename:fantasy-race-lexicon.w-4ad801e1ba42f57cb90d": 1,
+      "chinesename:fantasy-race-lexicon.w-fa0f0461a14bf7fd81c9": 1,
+      "chinesename:fantasy-race-lexicon.w-3a1a6a546e3a3037c79b": 1,
+      "chinesename:fantasy-race-lexicon.w-4c4dbb7748443a716d98": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-book": {
+      "chinesename:fantasy-race-lexicon.w-8d796d8b26084aee966c": 1,
+      "chinesename:fantasy-race-lexicon.w-4b25618a76a1e174b4f0": 1,
+      "chinesename:fantasy-race-lexicon.w-c6ca7c49eee69256e2de": 1,
+      "chinesename:fantasy-race-lexicon.w-1d8271cad93b8af1ab83": 1,
+      "chinesename:fantasy-race-lexicon.w-ead9fbf2a0d91242027e": 1,
+      "chinesename:fantasy-race-lexicon.w-21ebd1f7a07a7e8f913e": 1,
+      "chinesename:fantasy-race-lexicon.w-8cfb9aea7ac3b86bb7bf": 1,
+      "chinesename:fantasy-race-lexicon.w-ce5356f3d39e1649e6e2": 1,
+      "chinesename:fantasy-race-lexicon.w-b0b3debbfb662ca13a83": 1,
+      "chinesename:fantasy-race-lexicon.w-15f27ed7c3cbc5e131e1": 1,
+      "chinesename:fantasy-race-lexicon.w-29334783b0eb9481ab07": 1,
+      "chinesename:fantasy-race-lexicon.w-6c7feb362fa448ef4f81": 1,
+      "chinesename:fantasy-race-lexicon.w-fe3cbed648794d8cc461": 1,
+      "chinesename:fantasy-race-lexicon.w-7106e7627f205af99a38": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-person": {
+      "chinesename:fantasy-race-lexicon.w-06fbb3f1859bfdafbca3": 1,
+      "chinesename:fantasy-race-lexicon.w-c41cce8ed11b45bbbce0": 1,
+      "chinesename:fantasy-race-lexicon.w-243ea7d7914f27645033": 1,
+      "chinesename:fantasy-race-lexicon.w-f3a6d694835ff95ebecc": 1,
+      "chinesename:fantasy-race-lexicon.w-ae974c4ffb77a559ec68": 1,
+      "chinesename:fantasy-race-lexicon.w-7b20634f9c54dbf0ceec": 1,
+      "chinesename:fantasy-race-lexicon.w-803820f2d889385ebaec": 1,
+      "chinesename:fantasy-race-lexicon.w-76619a46c273b80f2b46": 1,
+      "chinesename:fantasy-race-lexicon.w-d47277ee737ad6626118": 1,
+      "chinesename:fantasy-race-lexicon.w-e3d46380fcc64e73de04": 1,
+      "chinesename:fantasy-race-lexicon.w-9d8b962240f21ae8cdf9": 1,
+      "chinesename:fantasy-race-lexicon.w-246844eea0fc0b8eac34": 1,
+      "chinesename:fantasy-race-lexicon.w-5ab21cf942175ff04714": 1,
+      "chinesename:fantasy-race-lexicon.w-e7dd9b4b74b656ebbc29": 1,
+      "chinesename:fantasy-race-lexicon.w-0de64193dd9f84017e4c": 1,
+      "chinesename:fantasy-race-lexicon.w-5866d618ab6ba421594d": 1,
+      "chinesename:fantasy-race-lexicon.w-ba27583bc4c57bce757d": 1,
+      "chinesename:fantasy-race-lexicon.w-fd6593597806366ba8d4": 1,
+      "chinesename:fantasy-race-lexicon.w-63295b6fd1048bd8afc5": 1,
+      "chinesename:fantasy-race-lexicon.w-87f73689a819bf58e7e6": 1,
+      "chinesename:fantasy-race-lexicon.w-efbdfae93b4955f565f1": 1,
+      "chinesename:fantasy-race-lexicon.w-6bd0b8f2b9cb34f7e822": 1,
+      "chinesename:fantasy-race-lexicon.w-75c10f5ac08b16a8bfda": 1,
+      "chinesename:fantasy-race-lexicon.w-acaf3d508635b32d8c5c": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-house": {
+      "chinesename:fantasy-race-lexicon.w-2671a6b11967ff5d4889": 1,
+      "chinesename:fantasy-race-lexicon.w-300835edd193b71a3124": 1,
+      "chinesename:fantasy-race-lexicon.w-86502be3490b82c0d62e": 1,
+      "chinesename:fantasy-race-lexicon.w-4089458de8f2c36b4bed": 1,
+      "chinesename:fantasy-race-lexicon.w-980d27f39631f78661b9": 1,
+      "chinesename:fantasy-race-lexicon.w-9e25815ea476e68d2dac": 1,
+      "chinesename:fantasy-race-lexicon.w-e33ae8ac716d030a9645": 1,
+      "chinesename:fantasy-race-lexicon.w-abce92ca36ee0e1637fd": 1,
+      "chinesename:fantasy-race-lexicon.w-152d45e2a787272f3daa": 1,
+      "chinesename:fantasy-race-lexicon.w-978bb6a5bf86dbfcf5f6": 1,
+      "chinesename:fantasy-race-lexicon.w-099dbac0f0f6952a6490": 1,
+      "chinesename:fantasy-race-lexicon.w-c4ef832123338508ad79": 1,
+      "chinesename:fantasy-race-lexicon.w-57e1e994f286b204c248": 1,
+      "chinesename:fantasy-race-lexicon.w-70ab29aedb242af164e3": 1,
+      "chinesename:fantasy-race-lexicon.w-b30862d36e292ea18652": 1,
+      "chinesename:fantasy-race-lexicon.w-784d00d1db0d1b2eb84a": 1,
+      "chinesename:fantasy-race-lexicon.w-9bc126e2ae71fa22e58f": 1,
+      "chinesename:fantasy-race-lexicon.w-b93501d7b61df5417676": 1,
+      "chinesename:fantasy-race-lexicon.w-93a8f7ce0b043e052006": 1,
+      "chinesename:fantasy-race-lexicon.w-a8ef4ae2d41de921a7bd": 1,
+      "chinesename:fantasy-race-lexicon.w-eae7dafc2762c04d4115": 1,
+      "chinesename:fantasy-race-lexicon.w-f43d1e91f4b4b6539854": 1,
+      "chinesename:fantasy-race-lexicon.w-9e9daed08734f78398bd": 1,
+      "chinesename:fantasy-race-lexicon.w-d42acfb74cf3923906bc": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-place": {
+      "chinesename:fantasy-race-lexicon.w-29df3fbcc58244df04a7": 1,
+      "chinesename:fantasy-race-lexicon.w-ad5411253bcf1d427122": 1,
+      "chinesename:fantasy-race-lexicon.w-7f0a737bf8d7a17b9489": 1,
+      "chinesename:fantasy-race-lexicon.w-396aa441af8e0ae77557": 1,
+      "chinesename:fantasy-race-lexicon.w-543dbc5de00841a8382e": 1,
+      "chinesename:fantasy-race-lexicon.w-642de137ec8c664f9f58": 1,
+      "chinesename:fantasy-race-lexicon.w-c29f77e5672112b4b8ba": 1,
+      "chinesename:fantasy-race-lexicon.w-dfa6cedbbdb14eabfe6b": 1,
+      "chinesename:fantasy-race-lexicon.w-2116666b00a6568d4a73": 1,
+      "chinesename:fantasy-race-lexicon.w-afcf14719d5bc6421362": 1,
+      "chinesename:fantasy-race-lexicon.w-8d2579c9bd196ff54fba": 1,
+      "chinesename:fantasy-race-lexicon.w-e9ef433fa0987ced3183": 1,
+      "chinesename:fantasy-race-lexicon.w-fd4ae3678d5bce2169e7": 1,
+      "chinesename:fantasy-race-lexicon.w-70e3887c68a895702dbe": 1,
+      "chinesename:fantasy-race-lexicon.w-757997844d8a20f74377": 1,
+      "chinesename:fantasy-race-lexicon.w-555ef0ff896cdfa13960": 1,
+      "chinesename:fantasy-race-lexicon.w-365eccfc70b7d8f45c77": 1,
+      "chinesename:fantasy-race-lexicon.w-4c7a16407bdcafdca595": 1,
+      "chinesename:fantasy-race-lexicon.w-02352c6e032da5f8b01b": 1,
+      "chinesename:fantasy-race-lexicon.w-2d67b7e2590a9b05fd1e": 1,
+      "chinesename:fantasy-race-lexicon.w-1c8c65765d6a9bc03445": 1,
+      "chinesename:fantasy-race-lexicon.w-e69b6b8627fc90e37c76": 1,
+      "chinesename:fantasy-race-lexicon.w-aa04d2fc13bb0454af8c": 1,
+      "chinesename:fantasy-race-lexicon.w-38e6f65887d3c0d6aaa6": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-ending": {
+      "chinesename:fantasy-race-lexicon.w-1ecd10d4a775e7b90d53": 1,
+      "chinesename:fantasy-race-lexicon.w-b8003d4ad0d611f65d09": 1,
+      "chinesename:fantasy-race-lexicon.w-2e813d69fd7351ab8e6a": 1,
+      "chinesename:fantasy-race-lexicon.w-573a378c00b6e976c030": 1,
+      "chinesename:fantasy-race-lexicon.w-7506d7e4f22bf8815b48": 1,
+      "chinesename:fantasy-race-lexicon.w-290230413da300b3aac3": 1,
+      "chinesename:fantasy-race-lexicon.w-bd2a01de83f96e506296": 1,
+      "chinesename:fantasy-race-lexicon.w-61a401cf32d4f165e993": 1,
+      "chinesename:fantasy-race-lexicon.w-b5f0f70d8d1a3e828112": 1,
+      "chinesename:fantasy-race-lexicon.w-5d0ae622f61f8ebf1e88": 1,
+      "chinesename:fantasy-race-lexicon.w-b23aed657bd878b0ac5a": 1,
+      "chinesename:fantasy-race-lexicon.w-f9bab1c5399d2f8704cd": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-book": {
+      "chinesename:fantasy-race-lexicon.w-ded4f945f6818b65caa7": 1,
+      "chinesename:fantasy-race-lexicon.w-9ccd3d8f44bf44ac7012": 1,
+      "chinesename:fantasy-race-lexicon.w-4ddd36a79db53625493a": 1,
+      "chinesename:fantasy-race-lexicon.w-2fbcb4ada9169cf9bb82": 1,
+      "chinesename:fantasy-race-lexicon.w-bd8aa2a08750f28f67eb": 1,
+      "chinesename:fantasy-race-lexicon.w-79351611f26659429e2c": 1,
+      "chinesename:fantasy-race-lexicon.w-4ac5f2cc7b1df997737e": 1,
+      "chinesename:fantasy-race-lexicon.w-72aad58b0e7aa98cf717": 1,
+      "chinesename:fantasy-race-lexicon.w-0ef6f3a216be82a80e24": 1,
+      "chinesename:fantasy-race-lexicon.w-7fa412ee9e9596999301": 1,
+      "chinesename:fantasy-race-lexicon.w-95e55ce6d70f1e90cd7e": 1,
+      "chinesename:fantasy-race-lexicon.w-6d797717a5be01fb8a02": 1,
+      "chinesename:fantasy-race-lexicon.w-767706aa7e2eb0f8854e": 1,
+      "chinesename:fantasy-race-lexicon.w-0f1f116ca54fb20c11ac": 1
+    },
+    "chinesename:fantasy-race-lexicon.frontier-oaths": {
+      "chinesename:fantasy-race-lexicon.w-c434cd64f19511cbbd92": 1,
+      "chinesename:fantasy-race-lexicon.w-4ba74abcc016c24ea097": 1,
+      "chinesename:fantasy-race-lexicon.w-78dd2feb2d5b847e48a2": 1,
+      "chinesename:fantasy-race-lexicon.w-7ac856b0159a7b940868": 1,
+      "chinesename:fantasy-race-lexicon.w-981d4bd5bfee996b04aa": 1,
+      "chinesename:fantasy-race-lexicon.w-2e81b5548afef0f560d2": 1,
+      "chinesename:fantasy-race-lexicon.w-f8f4329c0f55b03a92fc": 1,
+      "chinesename:fantasy-race-lexicon.w-d2f6ec6a2d60cc1ba069": 1,
+      "chinesename:fantasy-race-lexicon.w-c2b60ff98290300f2d2c": 1,
+      "chinesename:fantasy-race-lexicon.w-4d3ece7dcfeaaa13c0a7": 1,
+      "chinesename:fantasy-race-lexicon.w-2bba64fd8eb63b0f5c2c": 1,
+      "chinesename:fantasy-race-lexicon.w-fc76b0d2de87f47fba60": 1,
+      "chinesename:fantasy-race-lexicon.w-974f4bdff11454feafe8": 1,
+      "chinesename:fantasy-race-lexicon.w-3258c333bbf28e4fcaae": 1,
+      "chinesename:fantasy-race-lexicon.w-d48f110f73c4bc5ca009": 1,
+      "chinesename:fantasy-race-lexicon.w-a0ab4928c8bbded4a9f4": 1
+    },
+    "chinesename:fantasy-race-lexicon.dwarf-language": {
+      "chinesename:fantasy-race-lexicon.w-1f5b24d40264d44e147a": 1,
+      "chinesename:fantasy-race-lexicon.w-2ec68048ba387b5d8439": 1,
+      "chinesename:fantasy-race-lexicon.w-084695e4cdade8f0cf61": 1,
+      "chinesename:fantasy-race-lexicon.w-b7a9571c80a0141f1ba9": 1,
+      "chinesename:fantasy-race-lexicon.w-a3fc43ef28755e071776": 1,
+      "chinesename:fantasy-race-lexicon.w-b20c1769e7f354c43204": 1,
+      "chinesename:fantasy-race-lexicon.w-189efbe1bb67fb9c2889": 1,
+      "chinesename:fantasy-race-lexicon.w-5f6392c16b92272de6a5": 1,
+      "chinesename:fantasy-race-lexicon.w-4bfbd8356a5286a6060e": 1,
+      "chinesename:fantasy-race-lexicon.w-f60ebc8fdcdf2f9e5675": 1,
+      "chinesename:fantasy-race-lexicon.w-bf2a821978919ad9051f": 1,
+      "chinesename:fantasy-race-lexicon.w-dcd4e66bb487f3f524ac": 1
+    },
+    "chinesename:fantasy-race-lexicon.orc-language": {
+      "chinesename:fantasy-race-lexicon.w-ddce41b93413f39a6710": 1,
+      "chinesename:fantasy-race-lexicon.w-4f602be1a0f77820de74": 1,
+      "chinesename:fantasy-race-lexicon.w-980460513fc016e0f244": 1,
+      "chinesename:fantasy-race-lexicon.w-74be07a860b952966bf7": 1,
+      "chinesename:fantasy-race-lexicon.w-49fba19855b651e325a4": 1,
+      "chinesename:fantasy-race-lexicon.w-ab4201d61a0785c6551d": 1,
+      "chinesename:fantasy-race-lexicon.w-754797f946ead4d57077": 1,
+      "chinesename:fantasy-race-lexicon.w-cabbc9e56dc1f1632e9f": 1,
+      "chinesename:fantasy-race-lexicon.w-dce2bfea9845e09de858": 1,
+      "chinesename:fantasy-race-lexicon.w-a9176401789fb32fa571": 1,
+      "chinesename:fantasy-race-lexicon.w-5bc9178a3c0a2457befd": 1,
+      "chinesename:fantasy-race-lexicon.w-e077b5412607470ca9a6": 1
+    },
+    "chinesename:fantasy-race-lexicon.war-ending": {
+      "chinesename:fantasy-race-lexicon.w-d3f8b380c4cb83b8a3ad": 1,
+      "chinesename:fantasy-race-lexicon.w-a829695c8a4f35cf495b": 1,
+      "chinesename:fantasy-race-lexicon.w-c4a4821dc71c3eec026f": 1,
+      "chinesename:fantasy-race-lexicon.w-8483d7cdd631d4e1eeb4": 1,
+      "chinesename:fantasy-race-lexicon.w-ff9f17ae826c5e29dd5d": 1,
+      "chinesename:fantasy-race-lexicon.w-7ae0219da3aead459434": 1,
+      "chinesename:fantasy-race-lexicon.w-698ffe6c65decbbf93dc": 1,
+      "chinesename:fantasy-race-lexicon.w-988ca3fd4ef1c7f3794f": 1
+    },
+    "chinesename:fantasy-race-lexicon.alliance-ending": {
+      "chinesename:fantasy-race-lexicon.w-83aa3225ddd2c01d8509": 1,
+      "chinesename:fantasy-race-lexicon.w-abc455a6b0d629590fc6": 1,
+      "chinesename:fantasy-race-lexicon.w-0ba36c6cac264bd8b3c6": 1,
+      "chinesename:fantasy-race-lexicon.w-07d9b4c890e1226f7073": 1,
+      "chinesename:fantasy-race-lexicon.w-0c89e1ad1be011eaece8": 1,
+      "chinesename:fantasy-race-lexicon.w-ad7345c2245bdbcece43": 1,
+      "chinesename:fantasy-race-lexicon.w-b656b5d808be020e055a": 1,
+      "chinesename:fantasy-race-lexicon.w-73d7c212f39fdf49d743": 1
+    },
+    "chinesename:fantasy-race-lexicon.army-ending": {
+      "chinesename:fantasy-race-lexicon.w-ab9d580e8c6bad81a700": 1,
+      "chinesename:fantasy-race-lexicon.w-016c4a54bc4b31036ac2": 1,
+      "chinesename:fantasy-race-lexicon.w-a1679f7ba1597fe37cf8": 1,
+      "chinesename:fantasy-race-lexicon.w-f8375ad6c108e4d42776": 1,
+      "chinesename:fantasy-race-lexicon.w-49e4501326124c723563": 1,
+      "chinesename:fantasy-race-lexicon.w-03dd50c62fbe4bdd72c3": 1,
+      "chinesename:fantasy-race-lexicon.w-6f708e24e9ce186141ee": 1,
+      "chinesename:fantasy-race-lexicon.w-f62d2b662e91ea32468a": 1
+    },
+    "chinesename:fantasy-race-lexicon.book-ending": {
+      "chinesename:fantasy-race-lexicon.w-3f18d2b43c4f101b3841": 1,
+      "chinesename:fantasy-race-lexicon.w-b620e08c0e164f832c82": 1,
+      "chinesename:fantasy-race-lexicon.w-4dbd9d4378a83b54e5d3": 1,
+      "chinesename:fantasy-race-lexicon.w-d85fc914f70a32a56b8b": 1,
+      "chinesename:fantasy-race-lexicon.w-c7cce2404f9894371339": 1,
+      "chinesename:fantasy-race-lexicon.w-6eadeddb7e7047ab6875": 1,
+      "chinesename:fantasy-race-lexicon.w-a00e3c6bb7cd2a46e272": 1,
+      "chinesename:fantasy-race-lexicon.w-53612efcd3127ac77aef": 1
+    },
+    "chinesename:fantasy-race-lexicon.artifact": {
+      "chinesename:fantasy-race-lexicon.w-c26623313cd697117c9e": 1,
+      "chinesename:fantasy-race-lexicon.w-b5abafc82158bd8fb049": 1,
+      "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512": 1,
+      "chinesename:fantasy-race-lexicon.w-3c5a344c997099620184": 1,
+      "chinesename:fantasy-race-lexicon.w-cda1b9aa3a170b024eaf": 1,
+      "chinesename:fantasy-race-lexicon.w-18f607f2a2f0ce905b89": 1,
+      "chinesename:fantasy-race-lexicon.w-769307ce426c6eccbbcf": 1,
+      "chinesename:fantasy-race-lexicon.w-fe858983d0e6ab32af32": 1,
+      "chinesename:fantasy-race-lexicon.w-d73c0b9261702a1c91a6": 1,
+      "chinesename:fantasy-race-lexicon.w-b9a9951d1286c48231b4": 1,
+      "chinesename:fantasy-race-lexicon.w-df1e348823cf9eea9e9d": 1,
+      "chinesename:fantasy-race-lexicon.w-f538b653bd09e42343f4": 1
+    }
+  },
+  "poolLabels": {
+    "chinesename:fantasy-race-lexicon.elf-person": "精灵给名",
+    "chinesename:fantasy-race-lexicon.elf-house": "精灵氏族名",
+    "chinesename:fantasy-race-lexicon.elf-place": "精灵地名主体",
+    "chinesename:fantasy-race-lexicon.elf-ending": "精灵地名后缀",
+    "chinesename:fantasy-race-lexicon.elf-language": "精灵语言词根",
+    "chinesename:fantasy-race-lexicon.elf-book": "精灵文献",
+    "chinesename:fantasy-race-lexicon.dwarf-person": "矮人给名",
+    "chinesename:fantasy-race-lexicon.dwarf-house": "矮人氏族名",
+    "chinesename:fantasy-race-lexicon.dwarf-place": "矮人城塞主体",
+    "chinesename:fantasy-race-lexicon.dwarf-ending": "矮人城塞后缀",
+    "chinesename:fantasy-race-lexicon.dwarf-book": "矮人文献",
+    "chinesename:fantasy-race-lexicon.orc-person": "兽人给名",
+    "chinesename:fantasy-race-lexicon.orc-house": "兽人部族名",
+    "chinesename:fantasy-race-lexicon.orc-place": "兽人地名主体",
+    "chinesename:fantasy-race-lexicon.orc-ending": "兽人领地后缀",
+    "chinesename:fantasy-race-lexicon.orc-book": "兽人文献",
+    "chinesename:fantasy-race-lexicon.frontier-oaths": "西幻边地格言",
+    "chinesename:fantasy-race-lexicon.dwarf-language": "矮人语言词根",
+    "chinesename:fantasy-race-lexicon.orc-language": "兽人语言词根",
+    "chinesename:fantasy-race-lexicon.war-ending": "西幻战事称谓",
+    "chinesename:fantasy-race-lexicon.alliance-ending": "西幻盟约称谓",
+    "chinesename:fantasy-race-lexicon.army-ending": "西幻军号后缀",
+    "chinesename:fantasy-race-lexicon.book-ending": "西幻书名后缀",
+    "chinesename:fantasy-race-lexicon.artifact": "西幻器物名号"
+  },
+  "poolAliases": {
+    "精灵给名": "chinesename:fantasy-race-lexicon.elf-person",
+    "精灵氏族名": "chinesename:fantasy-race-lexicon.elf-house",
+    "精灵家族名": "chinesename:fantasy-race-lexicon.elf-house",
+    "精灵地名主体": "chinesename:fantasy-race-lexicon.elf-place",
+    "精灵地名后缀": "chinesename:fantasy-race-lexicon.elf-ending",
+    "精灵语言词根": "chinesename:fantasy-race-lexicon.elf-language",
+    "精灵文献": "chinesename:fantasy-race-lexicon.elf-book",
+    "矮人给名": "chinesename:fantasy-race-lexicon.dwarf-person",
+    "矮人氏族名": "chinesename:fantasy-race-lexicon.dwarf-house",
+    "矮人城塞主体": "chinesename:fantasy-race-lexicon.dwarf-place",
+    "矮人城塞后缀": "chinesename:fantasy-race-lexicon.dwarf-ending",
+    "矮人文献": "chinesename:fantasy-race-lexicon.dwarf-book",
+    "兽人给名": "chinesename:fantasy-race-lexicon.orc-person",
+    "兽人部族名": "chinesename:fantasy-race-lexicon.orc-house",
+    "兽人氏族名": "chinesename:fantasy-race-lexicon.orc-house",
+    "兽人地名主体": "chinesename:fantasy-race-lexicon.orc-place",
+    "兽人领地后缀": "chinesename:fantasy-race-lexicon.orc-ending",
+    "兽人文献": "chinesename:fantasy-race-lexicon.orc-book",
+    "西幻边地格言": "chinesename:fantasy-race-lexicon.frontier-oaths",
+    "矮人语言词根": "chinesename:fantasy-race-lexicon.dwarf-language",
+    "兽人语言词根": "chinesename:fantasy-race-lexicon.orc-language",
+    "西幻战事称谓": "chinesename:fantasy-race-lexicon.war-ending",
+    "西幻盟约称谓": "chinesename:fantasy-race-lexicon.alliance-ending",
+    "西幻军号后缀": "chinesename:fantasy-race-lexicon.army-ending",
+    "西幻书名后缀": "chinesename:fantasy-race-lexicon.book-ending",
+    "西幻器物名号": "chinesename:fantasy-race-lexicon.artifact"
+  },
+  "wordGroups": {
+    "elf-person.woodland": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-6a33065c14057a701814",
+        "chinesename:fantasy-race-lexicon.w-23fa0e2a3a30e08867e5",
+        "chinesename:fantasy-race-lexicon.w-90572f1f191c7ad79033",
+        "chinesename:fantasy-race-lexicon.w-50831ab7993a99a1c5db",
+        "chinesename:fantasy-race-lexicon.w-b4020c18d81193b4e8f2",
+        "chinesename:fantasy-race-lexicon.w-f55c9c9d1d2d49ad386e",
+        "chinesename:fantasy-race-lexicon.w-93a003298101fef5c9b5",
+        "chinesename:fantasy-race-lexicon.w-b8bbab47401b9becc20a",
+        "chinesename:fantasy-race-lexicon.w-268fe153783ef7edb7b6",
+        "chinesename:fantasy-race-lexicon.w-d0546802ace265d1359f",
+        "chinesename:fantasy-race-lexicon.w-f4de896f44870d104ad6",
+        "chinesename:fantasy-race-lexicon.w-7ea00c04b4eceebd87b2"
+      ]
+    },
+    "elf-person.celestial": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-072d920e4833f8c12bfc",
+        "chinesename:fantasy-race-lexicon.w-84d1d36127b587064664",
+        "chinesename:fantasy-race-lexicon.w-3d1f23cbbc9045396fa7",
+        "chinesename:fantasy-race-lexicon.w-7cced85afdb3aa1fb368",
+        "chinesename:fantasy-race-lexicon.w-3577fdff89052813154d",
+        "chinesename:fantasy-race-lexicon.w-c096af092486cdfea3d7",
+        "chinesename:fantasy-race-lexicon.w-b30a72edbc76fad9555f",
+        "chinesename:fantasy-race-lexicon.w-48dc1a70682b0cbcdfe5",
+        "chinesename:fantasy-race-lexicon.w-66122246665590ca4b82",
+        "chinesename:fantasy-race-lexicon.w-231380518a5efa7b75ed",
+        "chinesename:fantasy-race-lexicon.w-d1b8556f8bdff24d8b82",
+        "chinesename:fantasy-race-lexicon.w-a220f7e4aad1935dc2f5"
+      ]
+    },
+    "elf-house.woodland": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-a54ce53d9984199cbb53",
+        "chinesename:fantasy-race-lexicon.w-63e873a955a59d060ddd",
+        "chinesename:fantasy-race-lexicon.w-509971fdbbd6c322d9c6",
+        "chinesename:fantasy-race-lexicon.w-b8ac98ae181a42c78216",
+        "chinesename:fantasy-race-lexicon.w-43a23263f74c844f3436",
+        "chinesename:fantasy-race-lexicon.w-e78417f2732b8af56919",
+        "chinesename:fantasy-race-lexicon.w-10cb93db0015224d166a",
+        "chinesename:fantasy-race-lexicon.w-187bbcac3d5c3af75b44",
+        "chinesename:fantasy-race-lexicon.w-0da4ab44b0ef6b77bd48",
+        "chinesename:fantasy-race-lexicon.w-0b8cfc27b264203a64be",
+        "chinesename:fantasy-race-lexicon.w-06f8be26d9dee0845b6f",
+        "chinesename:fantasy-race-lexicon.w-e0fbad2633d88ce8437c"
+      ]
+    },
+    "elf-house.celestial": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-241b676faa0ddd79ef2f",
+        "chinesename:fantasy-race-lexicon.w-84d508ddbfd89f276c56",
+        "chinesename:fantasy-race-lexicon.w-0cff755ddb4f4994fcf7",
+        "chinesename:fantasy-race-lexicon.w-f9969b1159565d458e82",
+        "chinesename:fantasy-race-lexicon.w-6e4ca585efcc0fd4993f",
+        "chinesename:fantasy-race-lexicon.w-b5abafc82158bd8fb049",
+        "chinesename:fantasy-race-lexicon.w-f3d26c1a83b587763c01",
+        "chinesename:fantasy-race-lexicon.w-cb7e5f365a29a180296f",
+        "chinesename:fantasy-race-lexicon.w-c26623313cd697117c9e",
+        "chinesename:fantasy-race-lexicon.w-b618b8ca593ce7a709d2",
+        "chinesename:fantasy-race-lexicon.w-f48200b879b0041bba58",
+        "chinesename:fantasy-race-lexicon.w-ec0c1ec2a4568104dec6"
+      ]
+    },
+    "elf-place.woodland": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-af852d67ddb643ec61ef",
+        "chinesename:fantasy-race-lexicon.w-df2d4ca3cbbecba8820e",
+        "chinesename:fantasy-race-lexicon.w-6206e48df49b3c8ab027",
+        "chinesename:fantasy-race-lexicon.w-f17cba4f63faaa92687d",
+        "chinesename:fantasy-race-lexicon.w-af76eca09840399ab53d",
+        "chinesename:fantasy-race-lexicon.w-e16a6f078b690a7a5262",
+        "chinesename:fantasy-race-lexicon.w-ae06c37850c196cf2802",
+        "chinesename:fantasy-race-lexicon.w-9522f8c19d7c2378440f",
+        "chinesename:fantasy-race-lexicon.w-c5938f1a8958c537f581",
+        "chinesename:fantasy-race-lexicon.w-e12a8ddadfc01970080b",
+        "chinesename:fantasy-race-lexicon.w-97d187a924e4f7bcef13",
+        "chinesename:fantasy-race-lexicon.w-eaffc974535ce95cee79"
+      ]
+    },
+    "elf-place.water": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c0ad72e249160dd11452",
+        "chinesename:fantasy-race-lexicon.w-3bf9a6c84550cb3bcf20",
+        "chinesename:fantasy-race-lexicon.w-e23adcbcdd8f2975eb3d",
+        "chinesename:fantasy-race-lexicon.w-0b01affeb2b75e0550c0",
+        "chinesename:fantasy-race-lexicon.w-74571b7cc38f1fbbfcb3",
+        "chinesename:fantasy-race-lexicon.w-e3913225b9fc7abfcf46",
+        "chinesename:fantasy-race-lexicon.w-1babe43290fc2cdf21b9",
+        "chinesename:fantasy-race-lexicon.w-1ea069b6ae22df0812b2",
+        "chinesename:fantasy-race-lexicon.w-d03abc11b5e36c149e02",
+        "chinesename:fantasy-race-lexicon.w-ee5c14c2f71176f9c074",
+        "chinesename:fantasy-race-lexicon.w-4e9a0802c251f7e60292",
+        "chinesename:fantasy-race-lexicon.w-7335fe5946b0507083f0"
+      ]
+    },
+    "elf-ending.nature": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-0cff3c9b1cdea5254ca3",
+        "chinesename:fantasy-race-lexicon.w-bb5edfd7deea57299afb",
+        "chinesename:fantasy-race-lexicon.w-5d2d0d8422767fc34da7",
+        "chinesename:fantasy-race-lexicon.w-26835d955b52e62a72f5",
+        "chinesename:fantasy-race-lexicon.w-af009c33a22fe72d3667",
+        "chinesename:fantasy-race-lexicon.w-fc67251519876c25e2a0"
+      ]
+    },
+    "elf-ending.civic": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-81b3ed91bd5c0b74a7f0",
+        "chinesename:fantasy-race-lexicon.w-b3b1dcfda3a44b01739d",
+        "chinesename:fantasy-race-lexicon.w-596a51de3f966bc8756a",
+        "chinesename:fantasy-race-lexicon.w-1151db5f85fbe8253b88",
+        "chinesename:fantasy-race-lexicon.w-76f47004cc1240c69cd1",
+        "chinesename:fantasy-race-lexicon.w-7a9a91a24e57e0ade966"
+      ]
+    },
+    "elf-language.natural": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-cc4ec2c5a6dffb43de80",
+        "chinesename:fantasy-race-lexicon.w-2d493fe0106e70e8509f",
+        "chinesename:fantasy-race-lexicon.w-028a4642362f09cf378c",
+        "chinesename:fantasy-race-lexicon.w-7ec2d2c6d68bf9b99731",
+        "chinesename:fantasy-race-lexicon.w-93f7f213a2b92a869a9f",
+        "chinesename:fantasy-race-lexicon.w-87923cc576a5f2207300",
+        "chinesename:fantasy-race-lexicon.w-1606096bae05cb6483eb"
+      ]
+    },
+    "elf-language.poetic": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-26a892e0b963c0863d9a",
+        "chinesename:fantasy-race-lexicon.w-aececcbf5dbbd32b4007",
+        "chinesename:fantasy-race-lexicon.w-b64a43c4cf8263e4763f",
+        "chinesename:fantasy-race-lexicon.w-bdfbd98073912334c695",
+        "chinesename:fantasy-race-lexicon.w-50f3b3ae66675daa4f8c",
+        "chinesename:fantasy-race-lexicon.w-d12e9df26946f3a75eb2",
+        "chinesename:fantasy-race-lexicon.w-0051e265f67d83e60a4c"
+      ]
+    },
+    "elf-book.history": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-2d5d33e7801f31ad7f4f",
+        "chinesename:fantasy-race-lexicon.w-f502219605fbe55e3fe9",
+        "chinesename:fantasy-race-lexicon.w-3c90c7391b5b8f4794be",
+        "chinesename:fantasy-race-lexicon.w-f6a08bd041552cf9141d",
+        "chinesename:fantasy-race-lexicon.w-d434195b0de5fc26dadf",
+        "chinesename:fantasy-race-lexicon.w-98c4b236668144c92b05",
+        "chinesename:fantasy-race-lexicon.w-0ca7b029e9d71bd2893e"
+      ]
+    },
+    "elf-book.arts": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-312864ea767fc2ee676d",
+        "chinesename:fantasy-race-lexicon.w-554131b2177fe1e9bcbe",
+        "chinesename:fantasy-race-lexicon.w-3808a7e6f9d5e5552f49",
+        "chinesename:fantasy-race-lexicon.w-1f2fb4c61594438bdb15",
+        "chinesename:fantasy-race-lexicon.w-10f56b76d94faee10eff",
+        "chinesename:fantasy-race-lexicon.w-bf9db5ed023f48045df9",
+        "chinesename:fantasy-race-lexicon.w-408573a5cfa6013c34f9"
+      ]
+    },
+    "dwarf-person.forge": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-51c8d6900f0508a2aa45",
+        "chinesename:fantasy-race-lexicon.w-5d870c0ac6cb0c4dcfef",
+        "chinesename:fantasy-race-lexicon.w-07176310705160f05294",
+        "chinesename:fantasy-race-lexicon.w-b8bb7db54e7a2112dea1",
+        "chinesename:fantasy-race-lexicon.w-a70c1bdf97c9b43c8429",
+        "chinesename:fantasy-race-lexicon.w-bb7289b7ac419b20da31",
+        "chinesename:fantasy-race-lexicon.w-80ff5134b4256aec8703",
+        "chinesename:fantasy-race-lexicon.w-6a610d99e4686fc5af17",
+        "chinesename:fantasy-race-lexicon.w-f8ac866251b7cd2ee60e",
+        "chinesename:fantasy-race-lexicon.w-9a0691ad9f8e8b346932",
+        "chinesename:fantasy-race-lexicon.w-ccc00c884d7deda272cb",
+        "chinesename:fantasy-race-lexicon.w-27250756a0ad69472134"
+      ]
+    },
+    "dwarf-person.miners": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-d1b0d44054c3ed9e68aa",
+        "chinesename:fantasy-race-lexicon.w-9d160a810e2d94c5fb64",
+        "chinesename:fantasy-race-lexicon.w-a1725d3ee036d1b492bb",
+        "chinesename:fantasy-race-lexicon.w-fe0ad5cac87559d426ef",
+        "chinesename:fantasy-race-lexicon.w-5cb5d337e9f1b856be33",
+        "chinesename:fantasy-race-lexicon.w-a41558d9e3170e53a96b",
+        "chinesename:fantasy-race-lexicon.w-52e21c3d95c2a9e78e10",
+        "chinesename:fantasy-race-lexicon.w-9c8149dc33d83e9dc8a3",
+        "chinesename:fantasy-race-lexicon.w-162f533febb8d2e546f6",
+        "chinesename:fantasy-race-lexicon.w-f556509309ac8ad90cb9",
+        "chinesename:fantasy-race-lexicon.w-b745e2eb41ff6702afc5",
+        "chinesename:fantasy-race-lexicon.w-be2acfe9e91b4a9c9bd6"
+      ]
+    },
+    "dwarf-house.forge": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-b094339479ac81e90661",
+        "chinesename:fantasy-race-lexicon.w-62ffa2d7dc3019e80ef7",
+        "chinesename:fantasy-race-lexicon.w-c28a410157a35265e2cd",
+        "chinesename:fantasy-race-lexicon.w-23b96fb57f872d718a89",
+        "chinesename:fantasy-race-lexicon.w-c46662c75a86bbd9e6b1",
+        "chinesename:fantasy-race-lexicon.w-fc56390ca3708ae39171",
+        "chinesename:fantasy-race-lexicon.w-9197a1cfce23d22878dc",
+        "chinesename:fantasy-race-lexicon.w-1e5eb49345b86ab50999",
+        "chinesename:fantasy-race-lexicon.w-c532db9151594f5dbc7d",
+        "chinesename:fantasy-race-lexicon.w-f4f63efba349612cfae3",
+        "chinesename:fantasy-race-lexicon.w-4bc434b9d73801f6e798",
+        "chinesename:fantasy-race-lexicon.w-391426bd516dd01b7455"
+      ]
+    },
+    "dwarf-house.miners": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-427d3de4d8832716a4c7",
+        "chinesename:fantasy-race-lexicon.w-7df3a6a75451cab6092e",
+        "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131",
+        "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187",
+        "chinesename:fantasy-race-lexicon.w-b318e57037d433d8835d",
+        "chinesename:fantasy-race-lexicon.w-29eb968f9585136789ce",
+        "chinesename:fantasy-race-lexicon.w-62528fbcbf6aaa22b10d",
+        "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21",
+        "chinesename:fantasy-race-lexicon.w-9aae5ca769becb669a7c",
+        "chinesename:fantasy-race-lexicon.w-9de3da41dd37f9e07b8f",
+        "chinesename:fantasy-race-lexicon.w-d256d9b5e59493fa73e8",
+        "chinesename:fantasy-race-lexicon.w-1667f476c00efe85370f"
+      ]
+    },
+    "dwarf-place.mines": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131",
+        "chinesename:fantasy-race-lexicon.w-2cc0d63ffd406ceeaa33",
+        "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21",
+        "chinesename:fantasy-race-lexicon.w-014bf2c7ec90f6b4600c",
+        "chinesename:fantasy-race-lexicon.w-0ef1d411bcdbcb021df3",
+        "chinesename:fantasy-race-lexicon.w-59086d6977be7595348f",
+        "chinesename:fantasy-race-lexicon.w-98e84f52673a012996c7",
+        "chinesename:fantasy-race-lexicon.w-6bcdb2d7dd025b9c6b5b",
+        "chinesename:fantasy-race-lexicon.w-a473ecb6b1962bcf81d0",
+        "chinesename:fantasy-race-lexicon.w-fa806898f0328d623b33",
+        "chinesename:fantasy-race-lexicon.w-1667f476c00efe85370f",
+        "chinesename:fantasy-race-lexicon.w-8e52d5b5099149ce754b"
+      ]
+    },
+    "dwarf-place.forges": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187",
+        "chinesename:fantasy-race-lexicon.w-e6c095e0eedf0d93b228",
+        "chinesename:fantasy-race-lexicon.w-7209b3c086e67caf893a",
+        "chinesename:fantasy-race-lexicon.w-cdc9577809ffe45d66d1",
+        "chinesename:fantasy-race-lexicon.w-18b4e34f0f6659db9565",
+        "chinesename:fantasy-race-lexicon.w-6c0e14f83054d04134a4",
+        "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512",
+        "chinesename:fantasy-race-lexicon.w-1f5b24d40264d44e147a",
+        "chinesename:fantasy-race-lexicon.w-ec5cfd64c428bb32fd46",
+        "chinesename:fantasy-race-lexicon.w-5c81a72ef77269d69a22",
+        "chinesename:fantasy-race-lexicon.w-f7627a271416c4547092",
+        "chinesename:fantasy-race-lexicon.w-c532db9151594f5dbc7d"
+      ]
+    },
+    "dwarf-ending.defense": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-61a401cf32d4f165e993",
+        "chinesename:fantasy-race-lexicon.w-3426ec04f61764eede1c",
+        "chinesename:fantasy-race-lexicon.w-5d0ae622f61f8ebf1e88",
+        "chinesename:fantasy-race-lexicon.w-a407325e0081cb7db786",
+        "chinesename:fantasy-race-lexicon.w-9c7d965bdc8fb30b7250",
+        "chinesename:fantasy-race-lexicon.w-76f47004cc1240c69cd1"
+      ]
+    },
+    "dwarf-ending.work": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-9caac2029fd2d130ec74",
+        "chinesename:fantasy-race-lexicon.w-b9d4360d0bcb5325f04d",
+        "chinesename:fantasy-race-lexicon.w-4ad801e1ba42f57cb90d",
+        "chinesename:fantasy-race-lexicon.w-fa0f0461a14bf7fd81c9",
+        "chinesename:fantasy-race-lexicon.w-3a1a6a546e3a3037c79b",
+        "chinesename:fantasy-race-lexicon.w-4c4dbb7748443a716d98"
+      ]
+    },
+    "dwarf-book.craft": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-8d796d8b26084aee966c",
+        "chinesename:fantasy-race-lexicon.w-4b25618a76a1e174b4f0",
+        "chinesename:fantasy-race-lexicon.w-c6ca7c49eee69256e2de",
+        "chinesename:fantasy-race-lexicon.w-1d8271cad93b8af1ab83",
+        "chinesename:fantasy-race-lexicon.w-ead9fbf2a0d91242027e",
+        "chinesename:fantasy-race-lexicon.w-21ebd1f7a07a7e8f913e",
+        "chinesename:fantasy-race-lexicon.w-8cfb9aea7ac3b86bb7bf"
+      ]
+    },
+    "dwarf-book.annals": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ce5356f3d39e1649e6e2",
+        "chinesename:fantasy-race-lexicon.w-b0b3debbfb662ca13a83",
+        "chinesename:fantasy-race-lexicon.w-15f27ed7c3cbc5e131e1",
+        "chinesename:fantasy-race-lexicon.w-29334783b0eb9481ab07",
+        "chinesename:fantasy-race-lexicon.w-6c7feb362fa448ef4f81",
+        "chinesename:fantasy-race-lexicon.w-fe3cbed648794d8cc461",
+        "chinesename:fantasy-race-lexicon.w-7106e7627f205af99a38"
+      ]
+    },
+    "orc-person.steppe": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-06fbb3f1859bfdafbca3",
+        "chinesename:fantasy-race-lexicon.w-c41cce8ed11b45bbbce0",
+        "chinesename:fantasy-race-lexicon.w-243ea7d7914f27645033",
+        "chinesename:fantasy-race-lexicon.w-f3a6d694835ff95ebecc",
+        "chinesename:fantasy-race-lexicon.w-ae974c4ffb77a559ec68",
+        "chinesename:fantasy-race-lexicon.w-7b20634f9c54dbf0ceec",
+        "chinesename:fantasy-race-lexicon.w-803820f2d889385ebaec",
+        "chinesename:fantasy-race-lexicon.w-76619a46c273b80f2b46",
+        "chinesename:fantasy-race-lexicon.w-d47277ee737ad6626118",
+        "chinesename:fantasy-race-lexicon.w-e3d46380fcc64e73de04",
+        "chinesename:fantasy-race-lexicon.w-9d8b962240f21ae8cdf9",
+        "chinesename:fantasy-race-lexicon.w-246844eea0fc0b8eac34"
+      ]
+    },
+    "orc-person.mountain": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-person",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-5ab21cf942175ff04714",
+        "chinesename:fantasy-race-lexicon.w-e7dd9b4b74b656ebbc29",
+        "chinesename:fantasy-race-lexicon.w-0de64193dd9f84017e4c",
+        "chinesename:fantasy-race-lexicon.w-5866d618ab6ba421594d",
+        "chinesename:fantasy-race-lexicon.w-ba27583bc4c57bce757d",
+        "chinesename:fantasy-race-lexicon.w-fd6593597806366ba8d4",
+        "chinesename:fantasy-race-lexicon.w-63295b6fd1048bd8afc5",
+        "chinesename:fantasy-race-lexicon.w-87f73689a819bf58e7e6",
+        "chinesename:fantasy-race-lexicon.w-efbdfae93b4955f565f1",
+        "chinesename:fantasy-race-lexicon.w-6bd0b8f2b9cb34f7e822",
+        "chinesename:fantasy-race-lexicon.w-75c10f5ac08b16a8bfda",
+        "chinesename:fantasy-race-lexicon.w-acaf3d508635b32d8c5c"
+      ]
+    },
+    "orc-house.beast": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-2671a6b11967ff5d4889",
+        "chinesename:fantasy-race-lexicon.w-300835edd193b71a3124",
+        "chinesename:fantasy-race-lexicon.w-86502be3490b82c0d62e",
+        "chinesename:fantasy-race-lexicon.w-4089458de8f2c36b4bed",
+        "chinesename:fantasy-race-lexicon.w-980d27f39631f78661b9",
+        "chinesename:fantasy-race-lexicon.w-9e25815ea476e68d2dac",
+        "chinesename:fantasy-race-lexicon.w-e33ae8ac716d030a9645",
+        "chinesename:fantasy-race-lexicon.w-abce92ca36ee0e1637fd",
+        "chinesename:fantasy-race-lexicon.w-152d45e2a787272f3daa",
+        "chinesename:fantasy-race-lexicon.w-978bb6a5bf86dbfcf5f6",
+        "chinesename:fantasy-race-lexicon.w-099dbac0f0f6952a6490",
+        "chinesename:fantasy-race-lexicon.w-c4ef832123338508ad79"
+      ]
+    },
+    "orc-house.land": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-house",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-57e1e994f286b204c248",
+        "chinesename:fantasy-race-lexicon.w-70ab29aedb242af164e3",
+        "chinesename:fantasy-race-lexicon.w-b30862d36e292ea18652",
+        "chinesename:fantasy-race-lexicon.w-784d00d1db0d1b2eb84a",
+        "chinesename:fantasy-race-lexicon.w-9bc126e2ae71fa22e58f",
+        "chinesename:fantasy-race-lexicon.w-b93501d7b61df5417676",
+        "chinesename:fantasy-race-lexicon.w-93a8f7ce0b043e052006",
+        "chinesename:fantasy-race-lexicon.w-a8ef4ae2d41de921a7bd",
+        "chinesename:fantasy-race-lexicon.w-eae7dafc2762c04d4115",
+        "chinesename:fantasy-race-lexicon.w-f43d1e91f4b4b6539854",
+        "chinesename:fantasy-race-lexicon.w-9e9daed08734f78398bd",
+        "chinesename:fantasy-race-lexicon.w-d42acfb74cf3923906bc"
+      ]
+    },
+    "orc-place.camp": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-29df3fbcc58244df04a7",
+        "chinesename:fantasy-race-lexicon.w-ad5411253bcf1d427122",
+        "chinesename:fantasy-race-lexicon.w-7f0a737bf8d7a17b9489",
+        "chinesename:fantasy-race-lexicon.w-396aa441af8e0ae77557",
+        "chinesename:fantasy-race-lexicon.w-543dbc5de00841a8382e",
+        "chinesename:fantasy-race-lexicon.w-642de137ec8c664f9f58",
+        "chinesename:fantasy-race-lexicon.w-c29f77e5672112b4b8ba",
+        "chinesename:fantasy-race-lexicon.w-dfa6cedbbdb14eabfe6b",
+        "chinesename:fantasy-race-lexicon.w-2116666b00a6568d4a73",
+        "chinesename:fantasy-race-lexicon.w-afcf14719d5bc6421362",
+        "chinesename:fantasy-race-lexicon.w-8d2579c9bd196ff54fba",
+        "chinesename:fantasy-race-lexicon.w-e9ef433fa0987ced3183"
+      ]
+    },
+    "orc-place.fort": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-fd4ae3678d5bce2169e7",
+        "chinesename:fantasy-race-lexicon.w-70e3887c68a895702dbe",
+        "chinesename:fantasy-race-lexicon.w-757997844d8a20f74377",
+        "chinesename:fantasy-race-lexicon.w-555ef0ff896cdfa13960",
+        "chinesename:fantasy-race-lexicon.w-365eccfc70b7d8f45c77",
+        "chinesename:fantasy-race-lexicon.w-4c7a16407bdcafdca595",
+        "chinesename:fantasy-race-lexicon.w-02352c6e032da5f8b01b",
+        "chinesename:fantasy-race-lexicon.w-2d67b7e2590a9b05fd1e",
+        "chinesename:fantasy-race-lexicon.w-1c8c65765d6a9bc03445",
+        "chinesename:fantasy-race-lexicon.w-e69b6b8627fc90e37c76",
+        "chinesename:fantasy-race-lexicon.w-aa04d2fc13bb0454af8c",
+        "chinesename:fantasy-race-lexicon.w-38e6f65887d3c0d6aaa6"
+      ]
+    },
+    "orc-ending.camp": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-1ecd10d4a775e7b90d53",
+        "chinesename:fantasy-race-lexicon.w-b8003d4ad0d611f65d09",
+        "chinesename:fantasy-race-lexicon.w-2e813d69fd7351ab8e6a",
+        "chinesename:fantasy-race-lexicon.w-573a378c00b6e976c030",
+        "chinesename:fantasy-race-lexicon.w-7506d7e4f22bf8815b48",
+        "chinesename:fantasy-race-lexicon.w-290230413da300b3aac3"
+      ]
+    },
+    "orc-ending.fort": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-bd2a01de83f96e506296",
+        "chinesename:fantasy-race-lexicon.w-61a401cf32d4f165e993",
+        "chinesename:fantasy-race-lexicon.w-b5f0f70d8d1a3e828112",
+        "chinesename:fantasy-race-lexicon.w-5d0ae622f61f8ebf1e88",
+        "chinesename:fantasy-race-lexicon.w-b23aed657bd878b0ac5a",
+        "chinesename:fantasy-race-lexicon.w-f9bab1c5399d2f8704cd"
+      ]
+    },
+    "orc-book.ancestors": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ded4f945f6818b65caa7",
+        "chinesename:fantasy-race-lexicon.w-9ccd3d8f44bf44ac7012",
+        "chinesename:fantasy-race-lexicon.w-4ddd36a79db53625493a",
+        "chinesename:fantasy-race-lexicon.w-2fbcb4ada9169cf9bb82",
+        "chinesename:fantasy-race-lexicon.w-bd8aa2a08750f28f67eb",
+        "chinesename:fantasy-race-lexicon.w-79351611f26659429e2c",
+        "chinesename:fantasy-race-lexicon.w-4ac5f2cc7b1df997737e"
+      ]
+    },
+    "orc-book.warfare": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-book",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-72aad58b0e7aa98cf717",
+        "chinesename:fantasy-race-lexicon.w-0ef6f3a216be82a80e24",
+        "chinesename:fantasy-race-lexicon.w-7fa412ee9e9596999301",
+        "chinesename:fantasy-race-lexicon.w-95e55ce6d70f1e90cd7e",
+        "chinesename:fantasy-race-lexicon.w-6d797717a5be01fb8a02",
+        "chinesename:fantasy-race-lexicon.w-767706aa7e2eb0f8854e",
+        "chinesename:fantasy-race-lexicon.w-0f1f116ca54fb20c11ac"
+      ]
+    },
+    "frontier-oaths.kinship": {
+      "pool": "chinesename:fantasy-race-lexicon.frontier-oaths",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c434cd64f19511cbbd92",
+        "chinesename:fantasy-race-lexicon.w-4ba74abcc016c24ea097",
+        "chinesename:fantasy-race-lexicon.w-78dd2feb2d5b847e48a2",
+        "chinesename:fantasy-race-lexicon.w-7ac856b0159a7b940868",
+        "chinesename:fantasy-race-lexicon.w-981d4bd5bfee996b04aa",
+        "chinesename:fantasy-race-lexicon.w-2e81b5548afef0f560d2",
+        "chinesename:fantasy-race-lexicon.w-f8f4329c0f55b03a92fc",
+        "chinesename:fantasy-race-lexicon.w-d2f6ec6a2d60cc1ba069"
+      ]
+    },
+    "frontier-oaths.frontier": {
+      "pool": "chinesename:fantasy-race-lexicon.frontier-oaths",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c2b60ff98290300f2d2c",
+        "chinesename:fantasy-race-lexicon.w-4d3ece7dcfeaaa13c0a7",
+        "chinesename:fantasy-race-lexicon.w-2bba64fd8eb63b0f5c2c",
+        "chinesename:fantasy-race-lexicon.w-fc76b0d2de87f47fba60",
+        "chinesename:fantasy-race-lexicon.w-974f4bdff11454feafe8",
+        "chinesename:fantasy-race-lexicon.w-3258c333bbf28e4fcaae",
+        "chinesename:fantasy-race-lexicon.w-d48f110f73c4bc5ca009",
+        "chinesename:fantasy-race-lexicon.w-a0ab4928c8bbded4a9f4"
+      ]
+    },
+    "dwarf-language.forge": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-1f5b24d40264d44e147a",
+        "chinesename:fantasy-race-lexicon.w-2ec68048ba387b5d8439",
+        "chinesename:fantasy-race-lexicon.w-084695e4cdade8f0cf61",
+        "chinesename:fantasy-race-lexicon.w-b7a9571c80a0141f1ba9",
+        "chinesename:fantasy-race-lexicon.w-a3fc43ef28755e071776",
+        "chinesename:fantasy-race-lexicon.w-b20c1769e7f354c43204"
+      ]
+    },
+    "dwarf-language.mine": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-189efbe1bb67fb9c2889",
+        "chinesename:fantasy-race-lexicon.w-5f6392c16b92272de6a5",
+        "chinesename:fantasy-race-lexicon.w-4bfbd8356a5286a6060e",
+        "chinesename:fantasy-race-lexicon.w-f60ebc8fdcdf2f9e5675",
+        "chinesename:fantasy-race-lexicon.w-bf2a821978919ad9051f",
+        "chinesename:fantasy-race-lexicon.w-dcd4e66bb487f3f524ac"
+      ]
+    },
+    "orc-language.camp": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ddce41b93413f39a6710",
+        "chinesename:fantasy-race-lexicon.w-4f602be1a0f77820de74",
+        "chinesename:fantasy-race-lexicon.w-980460513fc016e0f244",
+        "chinesename:fantasy-race-lexicon.w-74be07a860b952966bf7",
+        "chinesename:fantasy-race-lexicon.w-49fba19855b651e325a4",
+        "chinesename:fantasy-race-lexicon.w-ab4201d61a0785c6551d"
+      ]
+    },
+    "orc-language.fort": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-language",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-754797f946ead4d57077",
+        "chinesename:fantasy-race-lexicon.w-cabbc9e56dc1f1632e9f",
+        "chinesename:fantasy-race-lexicon.w-dce2bfea9845e09de858",
+        "chinesename:fantasy-race-lexicon.w-a9176401789fb32fa571",
+        "chinesename:fantasy-race-lexicon.w-5bc9178a3c0a2457befd",
+        "chinesename:fantasy-race-lexicon.w-e077b5412607470ca9a6"
+      ]
+    },
+    "war-ending.campaign": {
+      "pool": "chinesename:fantasy-race-lexicon.war-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-d3f8b380c4cb83b8a3ad",
+        "chinesename:fantasy-race-lexicon.w-a829695c8a4f35cf495b",
+        "chinesename:fantasy-race-lexicon.w-c4a4821dc71c3eec026f",
+        "chinesename:fantasy-race-lexicon.w-8483d7cdd631d4e1eeb4"
+      ]
+    },
+    "war-ending.chronicle": {
+      "pool": "chinesename:fantasy-race-lexicon.war-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ff9f17ae826c5e29dd5d",
+        "chinesename:fantasy-race-lexicon.w-7ae0219da3aead459434",
+        "chinesename:fantasy-race-lexicon.w-698ffe6c65decbbf93dc",
+        "chinesename:fantasy-race-lexicon.w-988ca3fd4ef1c7f3794f"
+      ]
+    },
+    "alliance-ending.council": {
+      "pool": "chinesename:fantasy-race-lexicon.alliance-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-83aa3225ddd2c01d8509",
+        "chinesename:fantasy-race-lexicon.w-abc455a6b0d629590fc6",
+        "chinesename:fantasy-race-lexicon.w-0ba36c6cac264bd8b3c6",
+        "chinesename:fantasy-race-lexicon.w-07d9b4c890e1226f7073"
+      ]
+    },
+    "alliance-ending.oath": {
+      "pool": "chinesename:fantasy-race-lexicon.alliance-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-0c89e1ad1be011eaece8",
+        "chinesename:fantasy-race-lexicon.w-ad7345c2245bdbcece43",
+        "chinesename:fantasy-race-lexicon.w-b656b5d808be020e055a",
+        "chinesename:fantasy-race-lexicon.w-73d7c212f39fdf49d743"
+      ]
+    },
+    "army-ending.guard": {
+      "pool": "chinesename:fantasy-race-lexicon.army-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ab9d580e8c6bad81a700",
+        "chinesename:fantasy-race-lexicon.w-016c4a54bc4b31036ac2",
+        "chinesename:fantasy-race-lexicon.w-a1679f7ba1597fe37cf8",
+        "chinesename:fantasy-race-lexicon.w-f8375ad6c108e4d42776"
+      ]
+    },
+    "army-ending.field": {
+      "pool": "chinesename:fantasy-race-lexicon.army-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-49e4501326124c723563",
+        "chinesename:fantasy-race-lexicon.w-03dd50c62fbe4bdd72c3",
+        "chinesename:fantasy-race-lexicon.w-6f708e24e9ce186141ee",
+        "chinesename:fantasy-race-lexicon.w-f62d2b662e91ea32468a"
+      ]
+    },
+    "book-ending.records": {
+      "pool": "chinesename:fantasy-race-lexicon.book-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-3f18d2b43c4f101b3841",
+        "chinesename:fantasy-race-lexicon.w-b620e08c0e164f832c82",
+        "chinesename:fantasy-race-lexicon.w-4dbd9d4378a83b54e5d3",
+        "chinesename:fantasy-race-lexicon.w-d85fc914f70a32a56b8b"
+      ]
+    },
+    "book-ending.study": {
+      "pool": "chinesename:fantasy-race-lexicon.book-ending",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c7cce2404f9894371339",
+        "chinesename:fantasy-race-lexicon.w-6eadeddb7e7047ab6875",
+        "chinesename:fantasy-race-lexicon.w-a00e3c6bb7cd2a46e272",
+        "chinesename:fantasy-race-lexicon.w-53612efcd3127ac77aef"
+      ]
+    },
+    "artifact.celestial": {
+      "pool": "chinesename:fantasy-race-lexicon.artifact",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c26623313cd697117c9e",
+        "chinesename:fantasy-race-lexicon.w-b5abafc82158bd8fb049",
+        "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512",
+        "chinesename:fantasy-race-lexicon.w-3c5a344c997099620184",
+        "chinesename:fantasy-race-lexicon.w-cda1b9aa3a170b024eaf",
+        "chinesename:fantasy-race-lexicon.w-18f607f2a2f0ce905b89"
+      ]
+    },
+    "artifact.forge": {
+      "pool": "chinesename:fantasy-race-lexicon.artifact",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-769307ce426c6eccbbcf",
+        "chinesename:fantasy-race-lexicon.w-fe858983d0e6ab32af32",
+        "chinesename:fantasy-race-lexicon.w-d73c0b9261702a1c91a6",
+        "chinesename:fantasy-race-lexicon.w-b9a9951d1286c48231b4",
+        "chinesename:fantasy-race-lexicon.w-df1e348823cf9eea9e9d",
+        "chinesename:fantasy-race-lexicon.w-f538b653bd09e42343f4"
+      ]
+    }
+  }
+}

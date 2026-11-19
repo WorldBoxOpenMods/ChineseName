@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool condition, string message)
+{
+    if (!condition) throw new InvalidOperationException(message);
+}
+void CheckName(string type, string actual, string expected) =>
+    Check(actual == expected, $"{type} returned {actual} instead of {expected}.");
+
+var world = World.world;
+var previousMap = world.map_stats;
+world.generateNewMap();
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && !ReferenceEquals(world.map_stats, previousMap),
+    "The game did not generate a fresh world for the naming entry points.");
+Config.paused = true;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var otherTile = world.tiles_list.First(t => t.Type.ground && Math.Abs(t.x - tile.x) + Math.Abs(t.y - tile.y) > 40);
+var founder = world.units.createNewUnit("human", tile);
+var neighbour = world.units.createNewUnit("human", otherTile);
+var fixture = new Dictionary<string, string>
+{
+    ["city"] = "澄江", ["kingdom"] = "景国", ["culture"] = "青川文", ["language"] = "南泽语",
+    ["religion"] = "南泽教", ["family"] = "梅庭", ["clan"] = "梅氏", ["alliance"] = "青川同盟",
+    ["war"] = "南泽之战", ["motto"] = "山河共守", ["book"] = "长风志", ["item"] = "听雷",
+    ["army"] = "长风军", ["subspecies"] = "炎天系"
+};
+var service = NamingApi.Current;
+var bundled = service.GetPackage(service.DefaultPack);
+Check(bundled.Words.Any(word => word.Text + "界" == world.map_stats.name) &&
+      bundled.Words.Any(word => word.Text + "君" == world.map_stats.player_name),
+    "New worlds did not receive their bundled world and creator names.");
+var pack = new NamingPack { Format = 1, Id = "chinesename:entrypoints", Supplemental = true, Priority = 1000 };
+var own = service.GetWorld();
+foreach (var entry in fixture)
+{
+    pack.Rules["worldbox:" + entry.Key] = new List<Rule>
+    {
+        new Rule { Id = "fixture", Priority = 1000, Parts = new List<Part> { new Part { Id = "name", Literal = entry.Value } } }
+    };
+}
+service.InstallPack(pack);
+own.EnabledPacks.Add(pack.Id);
+WorldNamingStore.Apply(own);
+
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var rival = world.kingdoms.makeNewCivKingdom(neighbour);
+CheckName("kingdom", kingdom.name, fixture["kingdom"]);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+var clan = world.clans.newClan(founder, true);
+var religion = world.religions.newReligion(founder, true);
+var family = world.families.newFamily(founder, tile, null);
+var city = world.cities.buildNewCity(founder, tile.zone);
+CheckName("city", city.name, fixture["city"]);
+CheckName("culture", culture.name, fixture["culture"]);
+CheckName("language", language.name, fixture["language"]);
+CheckName("clan", clan.name, fixture["clan"]);
+CheckName("religion", religion.name, fixture["religion"]);
+CheckName("family", family.name, fixture["family"]);
+
+var alliance = world.alliances.newAlliance(kingdom, rival);
+CheckName("alliance", alliance.name, fixture["alliance"]);
+var war = world.wars.newWar(rival, kingdom, AssetManager.war_types_library.list[0]);
+CheckName("war", war.name, fixture["war"]);
+CheckName("kingdom motto", kingdom.getMotto(), fixture["motto"]);
+CheckName("clan motto", clan.getMotto(), fixture["motto"]);
+CheckName("alliance motto", alliance.getMotto(), fixture["motto"]);
+
+var army = world.armies.newArmy(founder, city);
+CheckName("army", army.name, fixture["army"]);
+army.data.custom_name = true;
+army.setName("守城军");
+army.onKingdomNameChange();
+CheckName("manual army", army.name, "守城军");
+
+var subspecies = world.subspecies.newSpecies(founder.asset, tile, pMutation: true);
+CheckName("subspecies", subspecies.name, fixture["subspecies"]);
+var book = world.books.newObject();
+book.newBook(founder, AssetManager.book_types.get("friendship_story"), null, null, null, null);
+CheckName("book", book.name, fixture["book"]);
+var equipment = AssetManager.items.list.First(asset => asset.equipment_type == EquipmentType.Weapon);
+var item = world.items.generateItem(equipment, kingdom, pActor: founder, pTries: 0);
+Check(world.items.checkModName(item, new ItemModAsset { quality = Rarity.R3_Legendary }, equipment, founder, out var legendary),
+    "Legendary naming did not supply a candidate.");
+CheckName("legendary item", legendary, fixture["item"]);
+item.reforge(1);
+CheckName("reforged item", item.name, fixture["item"]);
+item.data.custom_name = true;
+item.setName("传家宝");
+item.reforge(1);
+CheckName("manual item", item.name, "传家宝");
+
+return new { verified = fixture.Keys, preserve = new[] { army.name, item.name }, legendary,
+    worldName = world.map_stats.name, creator = world.map_stats.player_name };

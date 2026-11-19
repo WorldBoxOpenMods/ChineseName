@@ -1,0 +1,222 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string nordic = "chinesename:world-nordic-set", atlas = "chinesename:world-styles-lexicon";
+const string cats = "chinesename:species-lexicon", given = cats + ".cat.given", place = cats + ".cat.place";
+const string person = "worldbox:person", selector = "chinesename_as_pool", surnameKey = "chinesename.surname.v1";
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+async System.Threading.Tasks.Task Frames(int n = 10) { for (int i = 0; i < n; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.isGoodForNewCity());
+var founder = world.units.createNewUnit("civ_cat", tile);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var home = world.languages.newLanguage(founder, true);
+var shore = world.languages.newLanguage(founder, false);
+founder.joinLanguage(home);
+founder.data.set(surnameKey, (string)null);
+var other = world.units.createNewUnit("human", tile);
+var humanCulture = world.cultures.newCulture(other, true);
+other.setCulture(humanCulture);
+other.joinLanguage(home);
+other.data.set(surnameKey, (string)null);
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+
+var options = service.GetWorld();
+string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+foreach (string id in new[] { atlas, cats, nordic })
+{
+    string file = id.Split(':')[1] + ".naming.json";
+    File.Copy(Path.Combine(examples, file), Path.Combine(WorldNamingStore.PackageDirectory, "test-world-styles-" + file), true);
+    if (!options.EnabledPacks.Contains(id)) options.EnabledPacks.Add(id);
+}
+var errors = WorldNamingStore.ReloadPacks();
+Check(errors.Count == 0, string.Join("\n", errors));
+options.Cultures[culture.id] = new CultureNaming { Pack = nordic };
+options.Cultures[humanCulture.id] = new CultureNaming { Pack = nordic };
+var speciesWords = service.GetPackage(cats);
+void Only(Language language, string pool, string term)
+{
+    if (!options.Languages.TryGetValue(language.id, out var profile)) options.Languages[language.id] = profile = new LanguageNaming();
+    var pack = service.GetPackage(pool.StartsWith(cats, StringComparison.Ordinal) ? cats : atlas);
+    var id = pack.Words.Single(word => word.Text == term && pack.Pools[pool].ContainsKey(word.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(key => key != id).ToList() };
+}
+Only(home, given, "夜瞳");
+Only(home, place, "猫眼台");
+Only(shore, given, "月爪");
+Only(shore, place, "长尾湾");
+Only(home, atlas + ".nordic.given", "Erik");
+Only(home, atlas + ".nordic.surname", "Eriksson");
+Only(home, atlas + ".nordic.city", "Uppsala");
+Only(home, atlas + ".nordic.realm", "Svealand");
+WorldNamingStore.Apply(options);
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["culture-species"] = "civ_cat", ["species"] = "civ_cat" };
+NameResult Person(Language language, int seed = 0, string inherited = null) =>
+    service.Generate(new NameRequest(person, (ulong)seed, culture.id, language.id, inputs,
+        inherited == null ? null : new Dictionary<string, string> { ["surname"] = inherited }));
+Check(Person(home).Text == "埃里克·埃里克松", "The original Nordic layout was not active.");
+other.generateNewName();
+Check(other.getName() == "埃里克·埃里克松", "The human control did not use the Nordic vocabulary.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+Check(shell?.tabs != null, "The original culture window could not open.");
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+await Frames();
+
+int actions = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string point = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var center = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+            rect.TransformPoint(rect.rect.center));
+        point = $" {(int)center.x} {UnityEngine.Screen.height - (int)center.y}";
+    }
+    string file = Path.Combine(exchange, ++actions + ".mouse");
+    File.WriteAllText(file + ".tmp", action + point);
+    File.Move(file + ".tmp", file);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(file + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(file + ".done"), "Mouse input did not complete.");
+    await Frames();
+}
+async System.Threading.Tasks.Task Select(MetaType type)
+{
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + type.ToString().ToLowerInvariant()).toggle.click();
+    await Frames();
+}
+string Preview() => Regex.Replace(shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ?? "", "</?color[^>]*>", "");
+Button Flag(Language language) => shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + language.id);
+async System.Threading.Tasks.Task Words(string slot, string original, string value)
+{
+    var button = tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Single(card => card.onomastics_asset.id == slot).button;
+    if (tab._selected_editor_group?.id != slot) await Mouse("click", button);
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    await Frames();
+    var input = tab._editor_input.inputField;
+    Check(input.text == original, "Expected the Nordic word group but found " + input.text);
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = value;
+    await Mouse("paste");
+    Check(input.isFocused && input.text.Trim() == value, "The original word-group editor did not accept " + value);
+    await Mouse("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames();
+}
+string[] Layout() => tab.getOnomasticsData().getFullTemplateData().ToArray();
+
+await Select(MetaType.Unit);
+var personOrder = Layout();
+Check(personOrder.SequenceEqual(new[] { "group_3", selector, "chinesename_rule_separator", "group_1", selector,
+    "chinesename_keep_surname" }), "Expected the Nordic arrangement, its divider and surname inheritance.");
+await Words("group_3", "北欧风格给名", "灵猫个体名");
+Check(Preview() == "夜瞳·埃里克松", "A regional and a species pool did not generate together: " + Preview());
+await Words("group_1", "北欧风格姓氏", "灵猫地名词根");
+Check(Layout().SequenceEqual(personOrder) && Preview() == "夜瞳·猫眼台",
+    "Replacing the pools changed the regional arrangement: " + Preview());
+await Mouse("click", Flag(shore));
+Check(Preview() == "月爪·长尾湾" && Person(shore).Text == Preview(), "The language flag selected " + Preview());
+
+await Select(MetaType.City);
+var cityOrder = Layout();
+await Words("group_1", "北欧风格城市名", "灵猫地名词根");
+Check(Layout().SequenceEqual(cityOrder) && Preview() == "猫眼台", "The edited Nordic city preview was " + Preview());
+await Select(MetaType.Kingdom);
+var stateOrder = Layout();
+await Words("group_1", "北欧风格国号词根", "灵猫地名词根");
+Check(Layout().SequenceEqual(stateOrder) && tab.getOnomasticsData().getGroupString("group_2") == "领" &&
+    Preview() == "猫眼台领", "The edited Nordic country preview was " + Preview());
+
+founder.data.sex = ActorSex.Male;
+founder.generateNewName();
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var city = world.cities.buildNewCity(founder, tile.zone);
+founder.joinCity(city);
+Check(founder.getName() == "夜瞳·猫眼台" && city.name == "猫眼台" && kingdom.name == "猫眼台领",
+    "The mixed arrangement did not name actual game objects.");
+var mother = world.units.createNewUnit("civ_cat", tile);
+mother.setCulture(culture);
+mother.joinCity(city);
+mother.joinLanguage(shore);
+mother.data.sex = ActorSex.Female;
+mother.data.set(surnameKey, (string)null);
+mother.generateNewName();
+Check(mother.getName() == "月爪·长尾湾", "The new speaker drew the wrong dialect's words.");
+
+var evolution = service.GetWorld();
+var parent = evolution.Languages[home.id];
+foreach (var pack in evolution.EnabledPacks.Append(service.DefaultPack).Select(service.GetPackage).Where(pack => pack != null))
+foreach (var section in pack.WordGroups.Where(pair => pair.Value.Pool != given).GroupBy(pair => pair.Value.Pool))
+{
+    if (!parent.Pools.TryGetValue(section.Key, out var edit)) parent.Pools[section.Key] = edit = new PoolEdit();
+    edit.Group = pack.Id + "/" + section.First().Key;
+}
+string eye = speciesWords.Words.Single(word => word.Text == "夜瞳").Id;
+parent.Groups[given] = cats + "/cat.given.marks";
+parent.Pools[given] = new PoolEdit {
+    ExcludeText = new List<string> { "白袜" }, Bias = new Dictionary<string, double> { [eye] = 1.6 }
+};
+WorldNamingStore.Apply(evolution);
+string[] Sample(Language language) => Enumerable.Range(0, 256).Select(seed => Person(language, seed).Text).ToArray();
+var before = Sample(home);
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "WorldBox did not create a child language.");
+var childLanguage = founder.language;
+world.languages.checkLists();
+var state = service.GetWorld();
+var childProfile = state.Languages[childLanguage.id];
+var preference = childProfile.GroupPreferences.Single();
+var after = Sample(childLanguage);
+int changes = before.Zip(after, (first, second) => first != second).Count(changed => changed);
+Check(state.LanguageParents[childLanguage.id] == home.id && preference.Key == given &&
+      Math.Abs(preference.Value[cats + "/cat.given.marks"] - .8) < 1e-9 &&
+      Math.Abs(preference.Value[cats + "/cat.given.habits"] - .2) < 1e-9 &&
+      NamingJson.Write(childProfile.Pools[given]) == NamingJson.Write(parent.Pools[given]) &&
+      changes > 0 && after.All(name => name.EndsWith("·猫眼台") && !name.StartsWith("白袜")),
+    "The language divergence did not preserve the arrangement or change the native draws.");
+
+var kitten = BabyMaker.makeBaby(founder, mother, ActorSex.Female, pTile: tile);
+kitten.setCulture(culture);
+kitten.joinLanguage(childLanguage);
+kitten.data.get(surnameKey, out string inherited);
+var name = kitten.getName();
+Check(inherited == "猫眼台" && after.Contains(name) && founder.getName() == "夜瞳·猫眼台",
+    "Actual birth did not keep the surname and use the child language: " + name);
+Check(service.GetWorld().Cultures[culture.id].Pack == nordic && other.getName() == "埃里克·埃里克松",
+    "The original Nordic base or the other culture's names changed.");
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "nordic-cats");
+Directory.CreateDirectory(output);
+world.units.checkContainer(); world.cities.checkLists(); world.kingdoms.checkLists(); world.languages.checkLists();
+var saved = SaveManager.saveWorldToDirectory(output);
+Check(saved.actors_data.Any(actor => actor.id == kitten.getID()),
+    $"The kitten was not saved (alive: {kitten.isAlive()}, listed: {world.units.getSimpleList().Contains(kitten)}).");
+File.WriteAllLines(Path.Combine(output, "ids.txt"), new[] { culture.id, founder.getID(), kitten.getID(), home.id,
+    childLanguage.id, city.id, kingdom.id, humanCulture.id }.Select(id => id.ToString()));
+File.WriteAllLines(Path.Combine(output, "samples.txt"), after);
+return new { regional = other.getName(), mixed = founder.getName(), city = city.name, country = kingdom.name,
+    otherLanguage = mother.getName(), kitten = name, shift = preference.Value, changedSeeds = changes, mouseActions = actions, output };

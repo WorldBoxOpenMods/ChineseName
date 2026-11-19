@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>命名学 · 部件编辑原型</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #27241f; --muted: #625d53; --paper: #fffdf8; --ground: #f3f0e9;
+      --line: #ded6ca; --accent: #603e4c; --tint: #f4eaf0;
+      --warn: #8a471e; --warn-bg: #fbefe1;
+      --sans: 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, sans-serif;
+      --serif: 'Noto Serif CJK SC', 'Songti SC', SimSun, Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--ground); color: var(--ink); font: 14px/1.6 var(--sans); }
+    button, select, input { font: inherit; color: inherit; }
+    button, select { cursor: pointer; }
+    button, select, input:not([type=checkbox]) {
+      border: 1px solid var(--line); background: var(--paper); border-radius: 7px; min-height: 38px; padding: 6px 12px;
+    }
+    button:hover:not(:disabled) { border-color: var(--accent); background: var(--tint); }
+    :focus-visible { outline: 3px solid #946780; outline-offset: 3px; }
+    :disabled { opacity: .52; cursor: default; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font: 700 clamp(28px, 4vw, 42px)/1.2 var(--serif); }
+    h2 { font-size: 17px; } h3 { font-size: 14px; }
+    input[type=checkbox] { accent-color: var(--accent); width: 17px; height: 17px; }
+    small, .muted { color: var(--muted); }
+    .shell { max-width: 1232px; margin: auto; padding: 32px 26px 46px; }
+    .masthead { display: flex; justify-content: space-between; align-items: end; gap: 12px; border-bottom: 2px solid var(--accent); padding-bottom: 13px; }
+    .masthead p { color: var(--muted); margin-bottom: 4px; }
+    .scenes { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+    .scenes button[aria-pressed=true] { border-color: var(--accent); color: var(--accent); background: var(--tint); font-weight: 700; }
+    .grid { display: grid; grid-template-columns: minmax(0,1.16fr) minmax(0,1fr); gap: 16px; align-items: start; }
+    .panel { min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+    .panel + .panel { margin-top: 12px; }
+    .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .spread { justify-content: space-between; }
+    .status { font-size: 12px; color: var(--muted); }
+    .dirty { color: var(--accent); font-weight: 700; }
+    .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,150px),1fr)); gap: 10px; margin-top: 12px; }
+    .field { display: grid; gap: 4px; min-width: 0; align-content: start; }
+    .field > span { font-size: 12px; color: var(--muted); }
+    .field select, .field input { width: 100%; min-width: 0; }
+    .check { display: flex; align-items: center; gap: 7px; }
+    .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 13px; }
+    .part { display: grid; text-align: left; padding: 8px 13px; min-width: 94px; }
+    .part span { font: 700 25px/1.4 var(--serif); overflow-wrap: anywhere; }
+    .part[aria-pressed=true], .segment[aria-pressed=true] { background: var(--tint); border-color: var(--accent); color: var(--accent); }
+    .subpanel { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; }
+    .preview { position: sticky; top: 14px; }
+    .comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin-top: 13px; }
+    .sample { border: 1px solid var(--line); border-radius: 8px; padding: 11px; min-width: 0; }
+    .sample .field select { padding-inline: 7px; }
+    .sample-name { display: block; font: 700 clamp(19px,2.5vw,31px)/1.32 var(--serif); margin: 12px 0 7px; overflow-wrap: anywhere; }
+    .segments { display: flex; gap: 5px; flex-wrap: wrap; }
+    .segment { min-height: 30px; padding: 2px 7px; }
+    .source { background: #f4efe6; border-radius: 6px; padding: 8px; margin-top: 9px; font-size: 12px; overflow-wrap: anywhere; }
+    .source summary { cursor: pointer; }
+    .source p { margin-top: 5px; }
+    .notice { padding: 9px; background: var(--warn-bg); color: var(--warn); border-radius: 6px; margin-top: 9px; }
+    details.advanced summary { cursor: pointer; font-weight: 700; }
+    .cards { display: grid; gap: 7px; margin: 10px 0; }
+    .card { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 7px; border: 1px solid var(--line); border-radius: 6px; }
+    .card strong { min-width: 68px; } .card .grow { flex: 1; min-width: 120px; }
+    .card button { padding: 4px 8px; }
+    .action { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+    .primary { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .primary:hover:not(:disabled) { background: #50313f; }
+    .feedback { color: var(--muted); min-height: 1.5em; margin-top: 7px; }
+    .compact { display: none; }
+    @media (max-width: 850px) { .shell { padding: 18px 15px 30px; } .grid { grid-template-columns: minmax(0,1fr) minmax(0,.9fr); gap: 10px; } .panel { padding: 13px; } .comparison { grid-template-columns: 1fr; } }
+    @media (max-width: 660px) {
+      .grid { grid-template-columns: 1fr; }
+      .preview { position: static; }
+      .compact { display: flex; position: sticky; top: 0; z-index: 1; background: var(--ground); padding: 7px 0; }
+      html { scroll-padding-top: 62px; }
+    }
+    @media (max-width: 400px) { .shell { padding-inline: 10px; } .scenes { gap: 5px; } .scenes button { padding-inline: 8px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div><p>文化档案 / 命名学</p><h1>命名规则</h1></div>
+      <small>离线交互原型</small>
+    </header>
+    <nav id="scenes" class="scenes" aria-label="示例规则"></nav>
+    <div id="compact" class="compact row spread"></div>
+    <div class="grid">
+      <div class="editor">
+        <section id="rule" class="panel" aria-labelledby="rule-title"></section>
+        <details id="advanced" class="panel advanced">
+          <summary>高级设置</summary>
+          <div id="cards"></div>
+        </details>
+      </div>
+      <section id="preview" class="panel preview" aria-labelledby="preview-title"></section>
+    </div>
+  </main>
+<script>
+  const word = (original, zh = original) => ({ original, zh });
+  const chinese = (...values) => values.map(value => word(value));
+  const pool = (label, left, right) => ({ label, left, right });
+  const parts = {
+    surname: { label: '姓氏', sources: ['language', 'culture', 'fixed'] },
+    given: { label: '给名', sources: ['language', 'culture', 'fixed'] },
+    middle: { label: '中间名', sources: ['language', 'culture', 'fixed'] },
+    place: { label: '地名主体', sources: ['language', 'culture', 'fixed'] },
+    suffix: { label: '后缀', sources: ['fixed', 'culture', 'language'] },
+    complete: { label: '完整地名', sources: ['language', 'culture', 'fixed'] }
+  };
+  const scenes = {
+    han: {
+      category: '人名', culture: '华风文化', example: '欧阳青', languages: ['中原话', '河谷话'],
+      initialPart: 'surname', lock: true, inherited: '欧阳', parents: ['欧阳', '林'],
+      pools: {
+        surname: { family: pool('常见姓氏', chinese('欧阳', '林'), chinese('沈', '宋')) },
+        given: {
+          common: pool('常见给名用字', chinese('青', '宁', '清'), chinese('岚', '溪', '澜')),
+          poetic: pool('风物用字', chinese('松', '云'), chinese('汀', '舟')),
+          ending: pool('给名末字', chinese('和', '川'), chinese('舟', '远'))
+        }
+      },
+      settings: { surname: ['language', 'family', '欧阳，林'], given: ['language', 'common', '青，宁'] }
+    },
+    city: {
+      category: '城市名', culture: '江岭文化', example: '澄江府', languages: ['江南话', '岭南话'],
+      initialPart: 'suffix', pools: {
+        place: {
+          local: pool('山水地名', chinese('澄江', '云津'), chinese('栖岭', '南浦')),
+          classic: pool('古地名', chinese('临川', '建安'), chinese('高凉', '番禺'))
+        },
+        suffix: { district: pool('行政后缀', chinese('府', '州'), chinese('州', '关')) },
+        complete: { full: pool('完整地名', chinese('临安', '广陵'), chinese('南海', '清远')) }
+      },
+      settings: { place: ['language', 'local', '澄江，栖岭'], suffix: ['fixed', 'district', '府，州，关', '府'], complete: ['language', 'full', '临安，南海'] }
+    },
+    western: {
+      category: '人名', culture: '英语命名风格', example: '约翰·史密斯', languages: ['英语', '法语'],
+      initialPart: 'given', lock: false, inherited: '史密斯', parents: ['史密斯', '米勒'],
+      pools: {
+        surname: { family: pool('常见姓氏', [word('Smith', '史密斯'), word('Miller', '米勒')], [word('Martin', '马丁'), word('Dupont', '迪蓬')]) },
+        given: {
+          common: pool('常见给名', [word('John', '约翰'), word('Mary', '玛丽'), word('Ainsley', '')], [word('Jean', '让'), word('Marie', '玛丽')]),
+          historic: pool('古典给名', [word('Arthur', '亚瑟'), word('Edward', '爱德华')], [word('Louis', '路易'), word('Henri', '亨利')])
+        },
+        middle: { middle: pool('中间名词库', [word('James', '詹姆斯')], [word('Anne', '安娜')]) }
+      },
+      settings: { surname: ['language', 'family', '史密斯，米勒'], given: ['language', 'common', '约翰，玛丽'], middle: ['language', 'middle', '詹姆斯'] }
+    }
+  };
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const hasSurname = rule => rule.person && rule.inheritance !== 'none';
+  const layout = rule => {
+    if (!rule.person) return rule.structure === 'full' ? ['complete'] : ['place', ...(rule.withSuffix ? ['suffix'] : [])];
+    const given = ['given', ...(rule.middle ? ['middle'] : [])];
+    if (!hasSurname(rule)) return given;
+    return rule.order === 'first' ? ['surname', ...given] : [...given, 'surname'];
+  };
+  function defaultRule(id, scene) {
+    const rule = {
+      person: id !== 'city', western: id === 'western', mode: 'parts', order: id === 'western' ? 'last' : 'first',
+      inheritance: id === 'western' ? 'new' : 'father', length: 'single', ending: 'ending', structure: 'compound',
+      withSuffix: true, middle: false, separators: { zh: '·', original: ' ' }, source: {}
+    };
+    for (const [role, [kind, poolId, words, fixed = '']] of Object.entries(scene.settings)) {
+      rule.source[role] = { kind, pool: poolId, words, fixed };
+    }
+    rule.cards = layout(rule).map((role, index) => ({ id: index + 1, kind: 'group', role }));
+    return rule;
+  }
+  const records = Object.fromEntries(Object.entries(scenes).map(([id, scene]) => {
+    const initial = defaultRule(id, scene);
+    return [id, {
+      initial, active: clone(initial), draft: clone(initial), selected: scene.initialPart,
+      preview: { languages: ['left', 'right'], style: 'zh', sample: 0, lock: !!scene.lock, surname: scene.inherited || '', side: 0 },
+      advanced: false, message: '', nextCard: 3
+    }];
+  }));
+  let activeScene = 'han';
+  const current = () => ({ scene: scenes[activeScene], record: records[activeScene] });
+  const sourceLabels = { language: '语言词库', culture: '文化词表', fixed: '固定文字' };
+  const separatorLabels = { '·': '间隔号', ' ': '空格', '': '紧接' };
+  const e = id => document.getElementById(id);
+  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+  const option = (value, label, current) => `<option value="${escape(value)}"${value === current ? ' selected' : ''}>${escape(label)}</option>`;
+  const select = (id, title, value, options) => `<label class="field" for="${id}"><span>${title}</span><select id="${id}">${options.map(([key,label]) => option(key,label,value)).join('')}</select></label>`;
+  const input = (id, title, value) => `<label class="field" for="${id}"><span>${title}</span><input id="${id}" value="${escape(value)}" maxlength="100"></label>`;
+  const check = (id, title, checked) => `<label class="check"><input id="${id}" type="checkbox"${checked ? ' checked' : ''}>${title}</label>`;
+  const button = (id, title, action, extra = '') => `<button type="button" id="${id}" data-action="${action}" ${extra}>${title}</button>`;
+  const splitWords = text => text.split(/[、，,\n]+/).map(value => value.trim()).filter(Boolean);
+  const pick = (list, sample) => list[sample % list.length];
+  const languageLabel = (scene, language) => scene.languages[language === 'left' ? 0 : 1];
+  const namesOf = (scene, role) => Object.entries(scene.pools[role]).map(([id, item]) => [id, item.label]);
+  const roleLabel = role => parts[role].label;
+  const typesOf = role => parts[role].sources.map(id => [id, sourceLabels[id]]);
+  function hasChanges({ active, draft }) {
+    const visible = rule => ({ ...rule, cards: rule.cards.map(({ id, ...card }) => card) });
+    return JSON.stringify(visible(active)) !== JSON.stringify(visible(draft));
+  }
+
+  function wordFromPool(role, id, scene, language, preview) {
+    const source = scene.pools[role][id];
+    const entry = pick(source[language], preview.sample);
+    const untranslated = preview.style === 'zh' && !entry.zh;
+    const text = preview.style === 'zh' ? entry.zh || entry.original : entry.original;
+    const candidates = source[language].map(value => preview.style === 'zh' ? value.zh || value.original : value.original);
+    return { text, source: `${languageLabel(scene, language)} · ${source.label}`, candidates, untranslated,
+      translation: entry.zh !== entry.original && !untranslated ? `${entry.original} / ${entry.zh}` : '' };
+  }
+
+  function buildPart(role, scene, rule, language, preview) {
+    if (role === 'surname') {
+      if (!hasSurname(rule)) return null;
+      if (preview.lock && preview.surname.trim()) return { role, text: preview.surname.trim(), source: '模拟继承 · 完整保留', candidates: [] };
+      if (rule.inheritance !== 'new') {
+        const parent = rule.inheritance === 'father' ? 0 : rule.inheritance === 'mother' ? 1 : preview.sample % 2;
+        return { role, text: scene.parents[parent], source: parent === 0 ? '模拟继承 · 父系' : '模拟继承 · 母系', candidates: [] };
+      }
+    }
+    const setting = rule.source[role];
+    let item;
+    if (setting.kind === 'language') item = wordFromPool(role, setting.pool, scene, language, preview);
+    else if (setting.kind === 'culture') {
+      const candidates = splitWords(setting.words);
+      item = { text: pick(candidates, preview.sample), source: '文化词表', candidates };
+    } else item = { text: setting.fixed.trim(), source: '文化规则 · 固定文字', candidates: [] };
+    if (role === 'given' && !rule.western && setting.kind === 'language' &&
+      (rule.length === 'double' || (rule.length === 'mixed' && preview.sample % 2))) {
+      const ending = wordFromPool(role, rule.ending, scene, language, preview);
+      item = { text: item.text + ending.text, source: `${item.source} ＋ ${ending.source}`, candidates: [...item.candidates, ...ending.candidates] };
+    }
+    return { role, ...item };
+  }
+
+  function cardIssue(rule) {
+    const groups = rule.cards.filter(card => card.kind === 'group');
+    const count = role => groups.filter(card => card.role === role).length;
+    if (hasSurname(rule) && count('surname') !== 1) return '卡片排列需要恰好一个姓氏组。';
+    if (rule.person && !count('given')) return '卡片排列缺少给名组。';
+    if (!rule.person && !count('place') && !count('complete')) return '卡片排列缺少地名主体或完整地名。';
+    return '';
+  }
+
+  function generate(scene, rule, language, preview) {
+    let issue = rule.mode === 'cards' ? cardIssue(rule) : '';
+    const native = rule.mode === 'cards' && !issue;
+    const entries = native ? rule.cards : layout(rule).map(role => ({kind:'group',role}));
+    const normalSeparator = rule.western ? rule.separators[preview.style] : '';
+    let explicitSeparator;
+    const output = [];
+    for (const entry of entries) {
+      if (entry.kind === 'separator') { explicitSeparator = entry.value; continue; }
+      const item = buildPart(entry.role, scene, rule, language, preview);
+      if (!item) continue;
+      if (!item.text) { issue ||= `${roleLabel(entry.role)}的候选为空。`; continue; }
+      output.push({ ...item, separator: output.length ? explicitSeparator ?? normalSeparator : '', card: native ? entry.id : null });
+      explicitSeparator = undefined;
+    }
+    const text = output.map(item => item.separator + item.text).join('');
+    return { output, text, issue, mode: issue ? native || rule.mode !== 'cards' ? '需要修正' : '回退到部件规则' : native ? '原版卡片' : '部件规则' };
+  }
+
+  function renderRule(scene, record, comparison, dirty) {
+    const rule = record.draft;
+    const first = comparison[0];
+    const inUse = rule.mode === 'cards' && !cardIssue(rule)
+      ? [...new Set(rule.cards.filter(card => card.kind === 'group').map(card => card.role))].filter(role => role !== 'surname' || hasSurname(rule))
+      : layout(rule);
+    if (!inUse.includes(record.selected)) record.selected = inUse[0];
+    const selected = record.selected;
+    const source = rule.source[selected];
+    const common = rule.mode === 'cards' ? `<div class="row">
+      <span class="muted">名称由卡片排列组成</span>${button('goto-cards','调整卡片','goto-cards')}</div>` : rule.person ? `
+      ${hasSurname(rule) ? select('order','姓氏位置',rule.order,[['first','姓在前'],['last','姓在后']]) : ''}
+      ${rule.western ? check('with-middle','加入中间名',rule.middle) : ''}` : `
+      ${select('structure','城市命名结构',rule.structure,[['compound','主体与后缀'],['full','完整地名']])}
+      ${rule.structure === 'compound' ? check('with-suffix','使用后缀',rule.withSuffix) : ''}`;
+    const chips = inUse.map(role => {
+      const text = first.output.find(item => item.role === role)?.text || '—';
+      return button(`part-${role}`, `<small>${roleLabel(role)}</small><span>${escape(text)}</span>`, 'part',
+        `data-role="${role}" aria-pressed="${role === selected}" class="part"`);
+    }).join('');
+    let extra = '';
+    if (selected === 'surname') extra = select('inheritance','姓氏继承',rule.inheritance,
+      [['father','父系优先'],['mother','母系优先'],['random','随机继承一方'],['new','新取姓氏'],['none','无姓氏']]);
+    if (selected === 'given' && !rule.western && source.kind === 'language') {
+      extra = select('given-length','给名长度',rule.length,[['single','单字'],['double','双字'],['mixed','单字与双字混合']]);
+      if (rule.length !== 'single') extra += select('ending-pool','末字词库',rule.ending,namesOf(scene,'given'));
+    }
+    const poolLabel = selected === 'surname' ? '新取姓氏词库' : selected === 'given' && !rule.western && rule.length !== 'single' ? '首字词库' : '选择词库';
+    const sourceField = source.kind === 'language' ? select('part-pool',poolLabel,source.pool,namesOf(scene,selected)) :
+      source.kind === 'culture' ? input('part-words','候选词，用顿号或逗号分隔',source.words) : input('part-fixed','固定文字',source.fixed);
+    const restoreSurname = rule.person && rule.inheritance === 'none' ? button('restore-surname','启用姓氏','restore-surname') : '';
+    e('rule').innerHTML = `
+      <div class="row spread"><h2 id="rule-title">${scene.category}部件</h2><span id="draft-state" class="status ${dirty ? 'dirty' : ''}">${dirty ? '草稿未应用' : '与生效规则一致'}</span></div>
+      <small>${escape(scene.culture)}</small>
+      <div class="controls">${common}</div>
+      <div class="chain" aria-label="选择要编辑的部件">${chips}${restoreSurname}</div>
+      <div class="subpanel">
+        <h3>${roleLabel(selected)}</h3>
+        <div class="controls">${extra}${select('part-source','文字来源',source.kind,typesOf(selected))}${sourceField}</div>
+        ${rule.mode === 'cards' ? '<small>卡片顺序在「高级设置」调整。</small>' : ''}
+      </div>
+      <footer class="action">
+        <div class="row">
+          ${button('apply-rule','应用此规则','apply',`class="primary" ${!dirty || comparison.some(result => result.issue) ? 'disabled' : ''}`)}
+          ${button('discard-rule','放弃草稿','discard',dirty ? '' : 'disabled')}
+          ${button('reset-rule','恢复示例默认','reset')}
+        </div>
+        <p class="feedback" role="status" id="feedback">${escape(record.message)}</p>
+      </footer>`;
+  }
+
+  function renderCards(scene, record, issue) {
+    const rule = record.draft;
+    const available = Object.keys(scene.settings).map(role => [role,roleLabel(role)]);
+    const list = rule.cards.map((card, index) => {
+      const field = card.kind === 'group' ? select(`card-${card.id}-role`,'绑定部件',card.role,available) :
+        select(`card-${card.id}-symbol`,'分隔文字',card.value,Object.entries(separatorLabels));
+      return `<div class="card" data-card="${card.id}">
+        <strong>${card.kind === 'group' ? `词组 ${index + 1}` : '分隔卡'}</strong><div class="grow">${field}</div>
+        ${button(`up-${card.id}`,'上移','up',`aria-label="上移第 ${index+1} 张卡片" ${index === 0 ? 'disabled' : ''}`)}
+        ${button(`down-${card.id}`,'下移','down',`aria-label="下移第 ${index+1} 张卡片" ${index === rule.cards.length-1 ? 'disabled' : ''}`)}
+        ${button(`remove-${card.id}`,'移除','remove',`aria-label="移除第 ${index+1} 张卡片"`)}
+      </div>`;
+    }).join('');
+    const separatorOptions = Object.entries(separatorLabels);
+    e('cards').innerHTML = `<div class="controls">${select('naming-mode','命名方式',rule.mode,[['parts','部件规则'],['cards','原版卡片']])}
+        ${rule.western ? select('zh-separator','中文写法分隔',rule.separators.zh,separatorOptions) +
+          select('original-separator','原文写法分隔',rule.separators.original,separatorOptions) : ''}
+      </div>
+      ${rule.mode === 'cards' ? `
+        <div class="cards" aria-label="原版卡片顺序">${list}</div>
+        <div class="row">${button('add-group','加词组','add-group')}${button('add-separator','加分隔卡','add-separator')}${button('restore-cards','按部件重建排列','restore-cards')}</div>
+        ${issue ? `<p class="notice" id="card-issue">${escape(issue)} 预览显示部件规则的结果。</p>` : ''}` :
+      '<p class="muted">切到原版卡片后，可以单独调整词组顺序和绑定。</p>'}`;
+    e('advanced').open = record.advanced;
+  }
+
+  function renderPreviewResults(scene, record, comparison) {
+    const {preview} = record;
+    const languageOptions = [['left',scene.languages[0]],['right',scene.languages[1]]];
+    const columns = comparison.map((result, side) => {
+      const item = result.output.find(part => part.role === record.selected);
+      const selector = select(side ? 'language-b' : 'language-a',side ? '对照语言' : '参考语言',preview.languages[side],languageOptions);
+      const details = item ? `<details class="source" id="source-${side}" ${preview.side === side ? 'open' : ''}>
+        <summary>${roleLabel(item.role)}的来源</summary>
+        <p>${item.card !== null ? '原版词组 · ' : ''}${escape(item.source)}</p>
+        ${item.translation ? `<p>${escape(item.translation)}</p>` : ''}
+        ${item.untranslated ? '<p>命名包缺少中文译名，显示原文。</p>' : ''}
+        ${item.candidates.length ? `<p>候选 ${item.candidates.map(escape).join('、')}</p>` : ''}
+      </details>` : '';
+      return `<article class="sample">${selector}
+        <strong class="sample-name" id="sample-${side}">${escape(result.text || '暂时无法生成')}</strong>
+        <div class="segments">${result.output.map((part,index) => button(`preview-${side}-${index}`,escape(part.text),'preview-part',
+          `data-role="${part.role}" data-side="${side}" aria-label="${roleLabel(part.role)} ${escape(part.text)}" aria-pressed="${part.role === record.selected}" class="segment"`)).join('')}</div>
+        ${details}
+      </article>`;
+    }).join('');
+    const issue = comparison.find(result => result.issue)?.issue;
+    const same = !issue && preview.languages[0] !== preview.languages[1] && comparison[0].text === comparison[1].text;
+    e('preview-mode').textContent = comparison.find(result => result.issue)?.mode || comparison[0].mode;
+    e('preview-results').innerHTML = `
+      ${issue ? `<p class="notice" id="preview-issue">${escape(issue)}</p>` : ''}
+      <div class="comparison">${columns}</div>
+      ${same ? '<p class="muted">两边碰巧相同。展开来源可比较候选。</p>' : ''}`;
+    e('compact').innerHTML = `<small>${comparison.map(item => escape(item.text || '—')).join(' ／ ')}</small><a href="#preview">查看对照</a>`;
+  }
+
+  function renderPreview(scene, record, comparison) {
+    const {draft:rule, preview} = record;
+    const inherited = rule.person && hasSurname(rule) ? `<div class="controls">
+      ${check('lock-surname','固定模拟继承的姓氏',preview.lock)}
+      ${preview.lock ? input('preview-surname','继承的完整姓氏',preview.surname) : ''}</div>` : '';
+    e('preview').innerHTML = `
+      <div class="row spread"><h2 id="preview-title">语言对照</h2><span class="status" id="preview-mode"></span></div>
+      <div class="controls">
+        ${rule.western ? select('writing','显示写法',preview.style,[['zh','中文译名'],['original','原文']]) : ''}
+        <div class="row"><span class="muted">样例 ${preview.sample+1}</span>${button('next-sample','换一组','sample')}</div>
+      </div>${inherited}
+      <div id="preview-results"></div>`;
+    renderPreviewResults(scene, record, comparison);
+  }
+
+  function render(focus = null, fallback = null) {
+    const { scene, record } = current();
+    const comparison = record.preview.languages.map(language => generate(scene,record.draft,language,record.preview));
+    const dirty = hasChanges(record);
+    e('scenes').innerHTML = Object.entries(scenes).map(([id, data]) => button(`scene-${id}`,
+      `${data.category} · ${data.example}`,'scene',`data-scene="${id}" aria-pressed="${id === activeScene}"`)).join('');
+    renderRule(scene, record, comparison, dirty);
+    renderCards(scene, record, record.draft.mode === 'cards' ? cardIssue(record.draft) : '');
+    renderPreview(scene, record, comparison);
+    const target = e(focus);
+    const next = target && !target.disabled ? target : e(fallback);
+    if (next) next.focus({ preventScroll: true });
+  }
+
+  e('advanced').querySelector('summary').addEventListener('click', () => {
+    current().record.advanced = !e('advanced').open;
+  });
+
+  document.addEventListener('click', event => {
+    const clicked = event.target.closest('button[data-action]');
+    if (!clicked) return;
+    const { record } = current();
+    const { draft, preview } = record;
+    const action = clicked.dataset.action;
+    let fallback;
+    if (action === 'scene') activeScene = clicked.dataset.scene;
+    else if (action === 'goto-cards') {
+      record.advanced = true;
+      render('naming-mode');
+      e('advanced').scrollIntoView({ block: 'nearest' });
+      return;
+    }
+    else if (action === 'part' || action === 'preview-part') {
+      record.selected = clicked.dataset.role;
+      if (action === 'preview-part') preview.side = Number(clicked.dataset.side);
+    } else if (action === 'sample') preview.sample++;
+    else if (action === 'restore-surname') { draft.inheritance = 'father'; record.selected = 'surname'; fallback = 'part-surname'; }
+    else if (action === 'apply') { record.active = clone(draft); record.message = '已应用当前规则。'; fallback = 'reset-rule'; }
+    else if (action === 'discard') { record.draft = clone(record.active); record.message = '已恢复到上次应用的规则。'; fallback = 'reset-rule'; }
+    else if (action === 'reset') { record.draft = clone(record.initial); record.message = '已载入默认草稿。'; }
+    else if (action === 'restore-cards') draft.cards = layout(draft).map(role => ({ id:record.nextCard++, kind:'group', role }));
+    else if (action === 'add-group') draft.cards.push({ id:record.nextCard++, kind:'group', role:record.selected });
+    else if (action === 'add-separator') draft.cards.push({ id:record.nextCard++, kind:'separator', value:'·' });
+    else if (['remove','up','down'].includes(action)) {
+      const index = draft.cards.findIndex(card => card.id === Number(clicked.closest('[data-card]').dataset.card));
+      if (action === 'remove') { draft.cards.splice(index,1); fallback = 'add-group'; }
+      else {
+        const to = index + (action === 'up' ? -1 : 1);
+        [draft.cards[index],draft.cards[to]] = [draft.cards[to],draft.cards[index]];
+        fallback = `card-${draft.cards[to].id}-${draft.cards[to].kind === 'group' ? 'role' : 'symbol'}`;
+      }
+    }
+    if (!['apply','discard','reset','scene','sample','part','preview-part'].includes(action)) record.message = '';
+    render(clicked.id, fallback);
+  });
+
+  document.addEventListener('change', event => {
+    const field = event.target;
+    const { record } = current();
+    const { draft, preview } = record;
+    const value = field.value;
+    const edit = {
+      order: () => { draft.order = value; },
+      'with-middle': () => { draft.middle = field.checked; },
+      structure: () => { draft.structure = value; },
+      'with-suffix': () => { draft.withSuffix = field.checked; },
+      inheritance: () => { draft.inheritance = value; },
+      'given-length': () => { draft.length = value; },
+      'ending-pool': () => { draft.ending = value; },
+      'part-source': () => { draft.source[record.selected].kind = value; },
+      'part-pool': () => { draft.source[record.selected].pool = value; },
+      'naming-mode': () => { draft.mode = value; },
+      'zh-separator': () => { draft.separators.zh = value; },
+      'original-separator': () => { draft.separators.original = value; }
+    };
+    const view = {
+      'language-a': () => { preview.languages[0] = value; preview.side = 0; },
+      'language-b': () => { preview.languages[1] = value; preview.side = 1; },
+      writing: () => { preview.style = value; },
+      'lock-surname': () => { preview.lock = field.checked; }
+    };
+    const card = field.closest('[data-card]');
+    if (card) {
+      const data = draft.cards.find(item => item.id === Number(card.dataset.card));
+      if (data.kind === 'group') data.role = value;
+      else data.value = value;
+      record.message = '';
+    } else if (edit[field.id]) { edit[field.id](); record.message = ''; }
+    else if (view[field.id]) view[field.id]();
+    else return;
+    render(field.id);
+  });
+
+  document.addEventListener('input', event => {
+    const { id, value } = event.target;
+    const { scene, record } = current();
+    const { draft, preview } = record;
+    const source = draft.source[record.selected];
+    if (id === 'part-words') source.words = value;
+    else if (id === 'part-fixed') source.fixed = value;
+    else if (id === 'preview-surname') preview.surname = value;
+    else return;
+    if (id !== 'preview-surname') record.message = '';
+    const comparison = preview.languages.map(language => generate(scene, draft, language, preview));
+    const dirty = hasChanges(record);
+    e('draft-state').textContent = dirty ? '草稿未应用' : '与生效规则一致';
+    e('draft-state').classList.toggle('dirty', dirty);
+    e('apply-rule').disabled = !dirty || comparison.some(result => result.issue);
+    e('discard-rule').disabled = !dirty;
+    e('feedback').textContent = record.message;
+    for (const chip of e('rule').querySelectorAll('.part')) {
+      chip.querySelector('span').textContent = comparison[0].output.find(item => item.role === chip.dataset.role)?.text || '—';
+    }
+    renderPreviewResults(scene, record, comparison);
+  });
+  render();
+</script>
+</body>
+</html>

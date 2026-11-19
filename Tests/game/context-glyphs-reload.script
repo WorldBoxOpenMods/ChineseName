@@ -1,0 +1,61 @@
+using System;
+using System.IO;
+using System.Linq;
+using Cultiway.Core.SkillLibV3.Utils;
+using UnityEngine.UI;
+
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 12) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+async System.Threading.Tasks.Task<string> Load(string folder)
+{
+    string path = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+        .Where(name => name.EndsWith("/" + folder + "/map.wbox")).OrderBy(name => name, StringComparer.Ordinal).Last();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(path));
+    for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "Timed out loading " + folder);
+    Config.paused = true;
+    return Path.GetDirectoryName(path);
+}
+long[] Ids(string path) => File.ReadAllLines(Path.Combine(path, "expected.txt")).Select(long.Parse).ToArray();
+
+string contextFolder = await Load("context-glyphs-save");
+var ids = Ids(contextFolder);
+var world = World.world;
+var actor = world.units.get(ids[1]);
+var culture = world.cultures.get(ids[0]);
+var sword = world.items.get(ids[9]);
+var ring = world.items.get(ids[10]);
+Check(sword?.name == "铁剑铭" && ring?.name == "铁戒铭" && world.armies.get(ids[6]).name == "澄江卫" &&
+      world.alliances.get(ids[7]).name == "临川国同盟" && world.families.get(ids[8]).name == "欧阳堂", "Stored names changed.");
+sword.reforge(1);
+Check(sword.name == "铁剑铭", "Reforging after load lost the equipment rule.");
+string Fireball() => new SkillContainerBuilder(Cultiway.Content.SkillEntities.Fireball).UseAnimation(0)
+    .Build(SkillContainerBuildMode.RuleOnly, actor).Name.value;
+Check(Fireball() == "炎珠", "The stored spell arrangement did not name the real Fireball.");
+actor.joinLanguage(world.languages.get(ids[3]));
+Check(Fireball() == "火丸", "The second language's stored spell settings were lost.");
+actor.joinLanguage(world.languages.get(ids[2]));
+
+world.console.Hide();
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+async System.Threading.Tasks.Task Preview(string category, string text, params string[] cards)
+{
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_" + category).toggle.click();
+    await Frames();
+    shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + actor.language.id).onClick.Invoke();
+    await Frames();
+    Check(shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text == text &&
+          tab.getOnomasticsData().getFullTemplateData().SequenceEqual(cards), "Could not reopen " + category);
+}
+await Preview("item", "铁剑铭", "chinesename:equipment-material", "chinesename:equipment-kind", "group_3");
+await Preview("mod_cultiway:spell", "炎珠", "cultiway:spell-element", "cultiway:spell-form");
+
+return new { sword = "铁剑铭", ring = "铁戒铭", spell = "炎珠", otherLanguage = "火丸", contextFolder };

@@ -1,0 +1,1942 @@
+{
+  "format": 1,
+  "id": "chinesename:books-craft-lexicon",
+  "label": "书志与器物词库",
+  "supplemental": true,
+  "words": [
+    {
+      "id": "chinesename:books-craft-lexicon.w-4c0824997ad15aea8b77",
+      "text": "史录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-578e524e59dc4fc84704",
+      "text": "纪年志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1f3f283222811479d0cc",
+      "text": "通鉴"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e791058512a2044997c2",
+      "text": "王朝录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f00964c22404ac29de19",
+      "text": "世纪"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b0d2e51f310936cd7e9a",
+      "text": "长编"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0821b04abbcf1df361f1",
+      "text": "帝纪"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7eba5b324926f24f6cdf",
+      "text": "诸国记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-557b3b2f6ea9291f987b",
+      "text": "郡志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ff41ad5a00835a21c1ac",
+      "text": "山川记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-da471f536fc2ae45dfac",
+      "text": "卷考"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4a4231250d78cde9cbd0",
+      "text": "旧闻"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-74801a23f4f08432b528",
+      "text": "图经"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a68f12aca15ba8a73719",
+      "text": "纪略"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f99c6b4258932027d6ef",
+      "text": "江海志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-61f9e9ee2206a39804e1",
+      "text": "岁时记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6375e9a7a7ecd041cb6e",
+      "text": "博物志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a49a7664948e10c68419",
+      "text": "生灵录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-147f3cf9c0d3c00f4133",
+      "text": "草木经"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-120033f41529e63489e7",
+      "text": "万类鉴"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-73eb4f3c433bd9ea7090",
+      "text": "羽族图谱"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b2d90759d7d5bbd56d49",
+      "text": "水族志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1ad9719f5869772d9b46",
+      "text": "药草谱"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0576affce3ef0b7cdf54",
+      "text": "田野笔记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-dd59ebd43f9a1d071b2d",
+      "text": "观兽札记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-aa479fd8cc795d8396a4",
+      "text": "虫草考辨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8b9a5b5007a182c61f06",
+      "text": "栖地观察"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-02a382beab9497f5ac56",
+      "text": "山野录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7d31b002abc781f930b9",
+      "text": "湖泽调查"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-fb976205dd3591e20cd3",
+      "text": "栖地纪"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d6ccba62ee9af9500a29",
+      "text": "兵书"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c054396c1fcad2068daf",
+      "text": "战策"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5f530544fc7b3da0f2ea",
+      "text": "阵图"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c0d121727454af2b8aa3",
+      "text": "军略"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1b18c3156c7c8c43ba06",
+      "text": "边防考"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6b0dd24a5f8f373ae76b",
+      "text": "征行纪"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-07131b2b6d78f1e4f16d",
+      "text": "兵家要诀"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-76458bba6a3fcd03b596",
+      "text": "守城要略"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c72d11154b8e6e664935",
+      "text": "关津案卷"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f6c8f09ee8e0439eb646",
+      "text": "烽燧令"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2c863caf7a22ebe7e2ab",
+      "text": "斥候手记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-382f268611242d2709c0",
+      "text": "筑营法"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b83cac3b458f4b3af9c5",
+      "text": "军储志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5f0b478611a75af0f31e",
+      "text": "算经"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-22d5b460a238f8cb8a61",
+      "text": "数术录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-47ac3a8534edaeaef53b",
+      "text": "演算志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-786fa3a51f1cc85cb639",
+      "text": "天元谱"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-dea6f0455c051dd095d7",
+      "text": "经世篇"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9eac1e0294684ec91780",
+      "text": "邦交录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-432fe64656be0cf2a35e",
+      "text": "使略"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-247b9e98290c719dd07d",
+      "text": "富国策"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d78e04899a224b16e3d2",
+      "text": "商道录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-74300ad8f2cbe280ac0e",
+      "text": "候水记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ddab6c63962a21110e45",
+      "text": "安邦志"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-010930fcef753df6530e",
+      "text": "田赋考"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a4b7ced61cfb61fed358",
+      "text": "和议篇"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1719264b5b374bb0b943",
+      "text": "测绘记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-eec9174cc40565fb3b99",
+      "text": "情缘录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b86bc89b75e9b6ad28dd",
+      "text": "相思记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-df6811c8c150467148c7",
+      "text": "恋歌"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0e90a1252aeacbffd058",
+      "text": "遗恨篇"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-126cb3f2ae10ed31940b",
+      "text": "旧约书"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2e24b71cd81ad25592d2",
+      "text": "来信"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ae5e53cbc0a27665a647",
+      "text": "夜记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-114fcb616f84b67f1f91",
+      "text": "寓言"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-053766d27f1b32fc6121",
+      "text": "喻世篇"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-df752e90958576114f9e",
+      "text": "镜鉴"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-cd36300aa86e9921bac3",
+      "text": "训诫录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e269d1d80a8b94a8a243",
+      "text": "野谈"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b77d7deb7d56cdf068da",
+      "text": "小记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-56a9bdc42cbc7503fce6",
+      "text": "行旅异闻"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0875bd97f62accd019f8",
+      "text": "遗篇"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9279d2957d4a59871f8a",
+      "text": "家传"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ef664ce82d5c08edc638",
+      "text": "秘录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8ca008b3013d208409cf",
+      "text": "编年"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-043f0974bed7d1611163",
+      "text": "札记"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a694251b6996c899623d",
+      "text": "续编"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-074c558deee891261f58",
+      "text": "手著"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b620e08c0e164f832c82",
+      "text": "见闻录"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b6697c9cabd6cad16bc5",
+      "text": "校注"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bb270581dad38323a792",
+      "text": "释义"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e1b125ac7acbf2b3348e",
+      "text": "遗稿"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-12752e45691112289534",
+      "text": "拾遗"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f1f1264d03cf6a4345f1",
+      "text": "镇边"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-850ec776e7ad5f7236dc",
+      "text": "守隘"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-32c13da714ddee521272",
+      "text": "边防"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-410bb4ba3e40592fc4f1",
+      "text": "卫河"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e1e7f58592e8be098628",
+      "text": "渡守"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-930616ad9c3f7d9a0350",
+      "text": "烽燧"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c1a95c6e2dfca7f0e021",
+      "text": "青旌"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ce92dabe4e9c61d149a7",
+      "text": "驻云"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-584c224178c53fada802",
+      "text": "守城"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-50a2ebcfc0b092315825",
+      "text": "关防"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2fea8b50fa63bb750b9d",
+      "text": "天策"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3b102627e8df3b701469",
+      "text": "玄甲"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9e25815ea476e68d2dac",
+      "text": "赤羽"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-858e8d92daee74453cd4",
+      "text": "长锋"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9ff8c3753f1391cd6ee2",
+      "text": "骁卫"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d1cd0c168849d2e6dfbd",
+      "text": "横江"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-999ca59745cf5838683c",
+      "text": "飞骑"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e9ef433fa0987ced3183",
+      "text": "鹰旗"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-807ef09ad7cef2035b49",
+      "text": "凌霄"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e761c55110465f962363",
+      "text": "追霞"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3c4ae1533a73a0c17e19",
+      "text": "军"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-49e4501326124c723563",
+      "text": "军团"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2e813d69fd7351ab8e6a",
+      "text": "营"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6199808a7c303778f933",
+      "text": "旅"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4bba26852cd554ac0f74",
+      "text": "兵团"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9971297206c91c865fd6",
+      "text": "卫"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ab9d580e8c6bad81a700",
+      "text": "卫队"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-03267452f39da765571a",
+      "text": "哨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e79ef030670bb247e8ba",
+      "text": "戍"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0b301faf8ede92a2fae8",
+      "text": "团"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-40a0384a46f881360402",
+      "text": "诸国"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6230e119a162d60ef3e5",
+      "text": "众城"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a2bbdc08503958b9e60d",
+      "text": "山河"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2b1c5c6218928ab954c2",
+      "text": "北境"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0b9ba3e6f2fa99e75ed4",
+      "text": "四水"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-55019cacc92ba7f526d5",
+      "text": "三川"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4305d242601bff50fed7",
+      "text": "白塔"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-fb94c686b1852b69d4b1",
+      "text": "岛链"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-904dc5895f1ba792e7ae",
+      "text": "银湾"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-edc61dbc7d6687a0e96a",
+      "text": "东陆"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c38b401e2062ca88b559",
+      "text": "和平"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d1047eed5dd5db0db2da",
+      "text": "自由"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c2c1845c3b009f687e4a",
+      "text": "秩序"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-abebd14cce842e8fb1b8",
+      "text": "守约"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-33c83afac51755251893",
+      "text": "同心"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-29c0863fd5027048b09e",
+      "text": "共同防备"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-551a40a62f1e8315e5ee",
+      "text": "互市"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-309768895acd2794d2a2",
+      "text": "三方共议"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-66bc8952514707741411",
+      "text": "护商"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e425d11e25215dcd5c28",
+      "text": "一水同源"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8686612600ab40a56da2",
+      "text": "盟"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5ba1e3c0eb6361618e95",
+      "text": "会"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-07d9b4c890e1226f7073",
+      "text": "联盟"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7646fe9d31f603730153",
+      "text": "同盟"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-28975672e53d648ee668",
+      "text": "协会"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bbd46e528a69a44df869",
+      "text": "联邦"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-75d2ff8798c357b057f2",
+      "text": "盟约"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2ffa5f34893d5751467b",
+      "text": "会盟"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-04ac58cd9ccafc08a6ce",
+      "text": "条约"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5d44334d2a56c1647b2a",
+      "text": "公约"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bff3e9e98ab290fdcbfc",
+      "text": "协定"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c364274b1124dae57a9d",
+      "text": "共约"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-63bcda9d4ff558ddeeba",
+      "text": "霜镜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4b9f9115c2c7044f77fc",
+      "text": "藏雷"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8f3ac98e3c3e233a464a",
+      "text": "枯潮"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e8049a675cdbe7a98c0f",
+      "text": "裂月"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-124abb295f2e018d2f79",
+      "text": "照水"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-01a05647c4174812b693",
+      "text": "耀星"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0ba5a69253c3ea32d3ec",
+      "text": "掠风"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e1fe5bfbc64ec699d5ee",
+      "text": "雨过"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d1668d3b4b8706357e5a",
+      "text": "青焰"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2a0c5aebaf65e584eae0",
+      "text": "寒泉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0491f24328f6c7a8e2d5",
+      "text": "青岫"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2fc01adc9305d487d540",
+      "text": "承影"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e9e1636ecd51ddd25917",
+      "text": "双铸"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-fe858983d0e6ab32af32",
+      "text": "龙纹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9d373efcef0118aed216",
+      "text": "八锻"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-03498ea2e65bacbbc66a",
+      "text": "破妄"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1232c7c3228e314e1f4c",
+      "text": "守誓"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9580edab4061813d4ffb",
+      "text": "金鳞"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-df56e73f97f3a24d32f4",
+      "text": "黎明"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e4003dabf85237b3f789",
+      "text": "九炼"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b71656b97c609e7c0347",
+      "text": "断锁"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9d20b966c5ceaacf2322",
+      "text": "素光"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c836dd5082f072a7e387",
+      "text": "凝冰"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f57d2da5f21743255649",
+      "text": "玄水"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6517f5ddae2fa81f15aa",
+      "text": "赤霞"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-157cd8662ddfbef92bb0",
+      "text": "流风"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-08b9ef3e06cbef20123f",
+      "text": "悬星"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5301b005d64c49b60294",
+      "text": "雾灯"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-18c040c2cfeb3cab58ca",
+      "text": "沈雷"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-59ba8ef348d00341a18b",
+      "text": "暮焰"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2255f0b3c93f21a4e2de",
+      "text": "夜阑"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f81ed0cfb7b3e120b509",
+      "text": "定潮"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-789a6abe30584a81037c",
+      "text": "青焱"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-de09c093c7f8a7c93598",
+      "text": "流光"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d7271ef8022a56493637",
+      "text": "轮印"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-893939bad9c21307cfdb",
+      "text": "归契"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3187015765d6d96b014d",
+      "text": "天枢"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8f1a0547a73155676401",
+      "text": "景曜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b9847d13d82b62ac132e",
+      "text": "镜花"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3ff357784ad24dcd7e2b",
+      "text": "五衡"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7a5824839940d46e628d",
+      "text": "云纹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-af971d05078ad95eae5d",
+      "text": "万象"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3dd19bd40bf2339d4bfb",
+      "text": "鹿骨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-99315e67a46078eb0154",
+      "text": "书青"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1bd6298308dfb0d2b0c8",
+      "text": "问象"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-65914ebbb3a068467b92",
+      "text": "划界"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-fb112fa4f9d5ae434dc5",
+      "text": "玄鳞"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c49a4bb2392b19cd7e38",
+      "text": "鹰羽"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ec94a74c15adbad3198c",
+      "text": "暗金"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5033884c9d866fb76eda",
+      "text": "夜纹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-eed766b1de9c4ff5cf3e",
+      "text": "白霜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b97408c4375f812aced2",
+      "text": "星痕"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-99b1d1ddf04b59876c02",
+      "text": "玉鳞"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f8297ebe62ff2bcc500e",
+      "text": "青纹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-09fffd1ab1871ac53690",
+      "text": "苍缨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a246565115699fbafcf1",
+      "text": "守门"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1c95f64aafe94c27fa42",
+      "text": "磐岩"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c410f4dbd4a8b70d7d55",
+      "text": "朔盾"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0195f48b09ebbb8da896",
+      "text": "镇关"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-d3a9b6805169bc59e9fb",
+      "text": "坚阵"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1e91acac614a6b638888",
+      "text": "拒浪"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f6b6a496040413e50081",
+      "text": "守夜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-87b881d217279b6fdabc",
+      "text": "铁幕"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-63afaa2406a7ce0d9ab2",
+      "text": "护行"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-da851b9a63b4972cf567",
+      "text": "壁垒"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-eec7d6f05577f3b9597a",
+      "text": "沉山"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7a508a24e5fadbf0366c",
+      "text": "镜光"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9a19fd83bf36d9c9d769",
+      "text": "照月"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-67462cea355951b453ba",
+      "text": "岁星"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-13cbdb7bc05bb2dbfe2b",
+      "text": "银虹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9264d02a6587edff402f",
+      "text": "白虹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-110a74ba18a28943f9f5",
+      "text": "浅辉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-343671ffbcd0c199ea62",
+      "text": "烛明"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f22ed8c115218422e315",
+      "text": "青晶"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6bcdb2d7dd025b9c6b5b",
+      "text": "玄晶"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5073027e7a9572812c66",
+      "text": "夕照"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6d72c53c853e425ad7e5",
+      "text": "照夜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1f1f9cfe35f630290cb2",
+      "text": "长安"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-679efce8cdbbf7ed89bf",
+      "text": "宁神"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-757acfdeab991aabe928",
+      "text": "福泽"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-da73d223a8bf1573ee3e",
+      "text": "留思"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b08094b609a236ed055b",
+      "text": "盼归"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b023936ceb739cc987da",
+      "text": "相合"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-763a63c034a054c99846",
+      "text": "归来"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-089d028f29b2d3db5b78",
+      "text": "鸿信"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-e42a2fd0637672d36c6c",
+      "text": "守信"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4b8ca2ed6c7c485edff5",
+      "text": "生铁"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c2e1087b86d3581be14b",
+      "text": "熟铁"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3cafba402176f0451783",
+      "text": "花纹钢"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4608039c93643b11e426",
+      "text": "青铜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-231511a004cbcc263657",
+      "text": "赤铜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bbede2eba87d8110eb79",
+      "text": "银铜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-3d35ee6f432774851f69",
+      "text": "锡铜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-fc341407408fc97106eb",
+      "text": "精钢"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-2b8eae97a2503c4b724e",
+      "text": "星金"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-a6890f15e62325a3a706",
+      "text": "月银"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5e38b593797b8e72806d",
+      "text": "玄铁"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8a40bd1845c90bbdee1d",
+      "text": "乌金"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1784a317579e3d50c9b6",
+      "text": "青纹钢"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-baac88fd3e6f34635e37",
+      "text": "黯铜"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-63f30b7a12862a7c7aef",
+      "text": "流银"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8d7d59c85737b6c1f50e",
+      "text": "冷银"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-c1fe0ad4b4d666723eb3",
+      "text": "白玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-34f13269da392ffa488d",
+      "text": "碧玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b13d01dab9a04f6e4010",
+      "text": "青玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-dca044e7f5870df2f3e5",
+      "text": "墨玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0bb89093be9efc18b925",
+      "text": "黄玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-dbed937768b4c3391bf6",
+      "text": "绿松石"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9881ca86e013f8ff34b6",
+      "text": "青金石"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-094767af7017c39cabbd",
+      "text": "玛瑙"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-614312b465caea84a45a",
+      "text": "星纹玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-0983dca8c7c615790bd8",
+      "text": "冰玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-b8ea774eae0077135063",
+      "text": "云髓"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-558c068d49402e9fcfee",
+      "text": "石魄"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-cb0774d35ba83c00741b",
+      "text": "日辉晶"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ecb1499cc94e141429f2",
+      "text": "深渊玉"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-6a9f1ec6abc8aa19a7ae",
+      "text": "月璃"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-78cbaacd34727d543b00",
+      "text": "暮翠"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f9724eb8298239bc4b56",
+      "text": "松木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-ca3910e3c418f8cffcdb",
+      "text": "山榆"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-7518a3f7edf370402070",
+      "text": "青竹"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-1eae35fe988c02aabd9d",
+      "text": "檀木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bf678909da68b86bb744",
+      "text": "樟木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9d8dfc6ad9ed05063005",
+      "text": "红枫"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-8b9c112022202bc5f683",
+      "text": "铁木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-5515c36994ce85566d68",
+      "text": "桐木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-4aaf55814976c282b647",
+      "text": "橡木"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-80bba7b12ed63153ab52",
+      "text": "鲸骨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-bf7d9a7a9a7d1eca0477",
+      "text": "鹿角"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-47a2f39f4619e4ddbea8",
+      "text": "象牙"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-f5711d62e04f297687e3",
+      "text": "龟甲"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-dee706180eadf86754e4",
+      "text": "干骨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-56942faf952d4410a4e2",
+      "text": "鱼骨"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-df1e348823cf9eea9e9d",
+      "text": "狼牙"
+    },
+    {
+      "id": "chinesename:books-craft-lexicon.w-9190c279c11fa8ff00cc",
+      "text": "羊角"
+    }
+  ],
+  "pools": {
+    "chinesename:books-craft-lexicon.history-ending": {
+      "chinesename:books-craft-lexicon.w-4c0824997ad15aea8b77": 1,
+      "chinesename:books-craft-lexicon.w-578e524e59dc4fc84704": 1,
+      "chinesename:books-craft-lexicon.w-1f3f283222811479d0cc": 1,
+      "chinesename:books-craft-lexicon.w-e791058512a2044997c2": 1,
+      "chinesename:books-craft-lexicon.w-f00964c22404ac29de19": 1,
+      "chinesename:books-craft-lexicon.w-b0d2e51f310936cd7e9a": 1,
+      "chinesename:books-craft-lexicon.w-0821b04abbcf1df361f1": 1,
+      "chinesename:books-craft-lexicon.w-7eba5b324926f24f6cdf": 1,
+      "chinesename:books-craft-lexicon.w-557b3b2f6ea9291f987b": 1,
+      "chinesename:books-craft-lexicon.w-ff41ad5a00835a21c1ac": 1,
+      "chinesename:books-craft-lexicon.w-da471f536fc2ae45dfac": 1,
+      "chinesename:books-craft-lexicon.w-4a4231250d78cde9cbd0": 1,
+      "chinesename:books-craft-lexicon.w-74801a23f4f08432b528": 1,
+      "chinesename:books-craft-lexicon.w-a68f12aca15ba8a73719": 1,
+      "chinesename:books-craft-lexicon.w-f99c6b4258932027d6ef": 1,
+      "chinesename:books-craft-lexicon.w-61f9e9ee2206a39804e1": 1
+    },
+    "chinesename:books-craft-lexicon.biology-ending": {
+      "chinesename:books-craft-lexicon.w-6375e9a7a7ecd041cb6e": 1,
+      "chinesename:books-craft-lexicon.w-a49a7664948e10c68419": 1,
+      "chinesename:books-craft-lexicon.w-147f3cf9c0d3c00f4133": 1,
+      "chinesename:books-craft-lexicon.w-120033f41529e63489e7": 1,
+      "chinesename:books-craft-lexicon.w-73eb4f3c433bd9ea7090": 1,
+      "chinesename:books-craft-lexicon.w-b2d90759d7d5bbd56d49": 1,
+      "chinesename:books-craft-lexicon.w-1ad9719f5869772d9b46": 1,
+      "chinesename:books-craft-lexicon.w-0576affce3ef0b7cdf54": 1,
+      "chinesename:books-craft-lexicon.w-dd59ebd43f9a1d071b2d": 1,
+      "chinesename:books-craft-lexicon.w-aa479fd8cc795d8396a4": 1,
+      "chinesename:books-craft-lexicon.w-8b9a5b5007a182c61f06": 1,
+      "chinesename:books-craft-lexicon.w-02a382beab9497f5ac56": 1,
+      "chinesename:books-craft-lexicon.w-7d31b002abc781f930b9": 1,
+      "chinesename:books-craft-lexicon.w-fb976205dd3591e20cd3": 1
+    },
+    "chinesename:books-craft-lexicon.strategy-ending": {
+      "chinesename:books-craft-lexicon.w-d6ccba62ee9af9500a29": 1,
+      "chinesename:books-craft-lexicon.w-c054396c1fcad2068daf": 1,
+      "chinesename:books-craft-lexicon.w-5f530544fc7b3da0f2ea": 1,
+      "chinesename:books-craft-lexicon.w-c0d121727454af2b8aa3": 1,
+      "chinesename:books-craft-lexicon.w-1b18c3156c7c8c43ba06": 1,
+      "chinesename:books-craft-lexicon.w-6b0dd24a5f8f373ae76b": 1,
+      "chinesename:books-craft-lexicon.w-07131b2b6d78f1e4f16d": 1,
+      "chinesename:books-craft-lexicon.w-76458bba6a3fcd03b596": 1,
+      "chinesename:books-craft-lexicon.w-c72d11154b8e6e664935": 1,
+      "chinesename:books-craft-lexicon.w-f6c8f09ee8e0439eb646": 1,
+      "chinesename:books-craft-lexicon.w-2c863caf7a22ebe7e2ab": 1,
+      "chinesename:books-craft-lexicon.w-382f268611242d2709c0": 1,
+      "chinesename:books-craft-lexicon.w-b83cac3b458f4b3af9c5": 1
+    },
+    "chinesename:books-craft-lexicon.scholar-ending": {
+      "chinesename:books-craft-lexicon.w-5f0b478611a75af0f31e": 1,
+      "chinesename:books-craft-lexicon.w-22d5b460a238f8cb8a61": 1,
+      "chinesename:books-craft-lexicon.w-47ac3a8534edaeaef53b": 1,
+      "chinesename:books-craft-lexicon.w-786fa3a51f1cc85cb639": 1,
+      "chinesename:books-craft-lexicon.w-dea6f0455c051dd095d7": 1,
+      "chinesename:books-craft-lexicon.w-9eac1e0294684ec91780": 1,
+      "chinesename:books-craft-lexicon.w-432fe64656be0cf2a35e": 1,
+      "chinesename:books-craft-lexicon.w-247b9e98290c719dd07d": 1,
+      "chinesename:books-craft-lexicon.w-d78e04899a224b16e3d2": 1,
+      "chinesename:books-craft-lexicon.w-74300ad8f2cbe280ac0e": 1,
+      "chinesename:books-craft-lexicon.w-ddab6c63962a21110e45": 1,
+      "chinesename:books-craft-lexicon.w-010930fcef753df6530e": 1,
+      "chinesename:books-craft-lexicon.w-a4b7ced61cfb61fed358": 1,
+      "chinesename:books-craft-lexicon.w-1719264b5b374bb0b943": 1
+    },
+    "chinesename:books-craft-lexicon.fiction-ending": {
+      "chinesename:books-craft-lexicon.w-eec9174cc40565fb3b99": 1,
+      "chinesename:books-craft-lexicon.w-b86bc89b75e9b6ad28dd": 1,
+      "chinesename:books-craft-lexicon.w-df6811c8c150467148c7": 1,
+      "chinesename:books-craft-lexicon.w-0e90a1252aeacbffd058": 1,
+      "chinesename:books-craft-lexicon.w-126cb3f2ae10ed31940b": 1,
+      "chinesename:books-craft-lexicon.w-2e24b71cd81ad25592d2": 1,
+      "chinesename:books-craft-lexicon.w-ae5e53cbc0a27665a647": 1,
+      "chinesename:books-craft-lexicon.w-114fcb616f84b67f1f91": 1,
+      "chinesename:books-craft-lexicon.w-053766d27f1b32fc6121": 1,
+      "chinesename:books-craft-lexicon.w-df752e90958576114f9e": 1,
+      "chinesename:books-craft-lexicon.w-cd36300aa86e9921bac3": 1,
+      "chinesename:books-craft-lexicon.w-e269d1d80a8b94a8a243": 1,
+      "chinesename:books-craft-lexicon.w-b77d7deb7d56cdf068da": 1,
+      "chinesename:books-craft-lexicon.w-56a9bdc42cbc7503fce6": 1
+    },
+    "chinesename:books-craft-lexicon.author-ending": {
+      "chinesename:books-craft-lexicon.w-0875bd97f62accd019f8": 1,
+      "chinesename:books-craft-lexicon.w-9279d2957d4a59871f8a": 1,
+      "chinesename:books-craft-lexicon.w-ef664ce82d5c08edc638": 1,
+      "chinesename:books-craft-lexicon.w-8ca008b3013d208409cf": 1,
+      "chinesename:books-craft-lexicon.w-043f0974bed7d1611163": 1,
+      "chinesename:books-craft-lexicon.w-a694251b6996c899623d": 1,
+      "chinesename:books-craft-lexicon.w-074c558deee891261f58": 1,
+      "chinesename:books-craft-lexicon.w-b620e08c0e164f832c82": 1,
+      "chinesename:books-craft-lexicon.w-b6697c9cabd6cad16bc5": 1,
+      "chinesename:books-craft-lexicon.w-bb270581dad38323a792": 1,
+      "chinesename:books-craft-lexicon.w-e1b125ac7acbf2b3348e": 1,
+      "chinesename:books-craft-lexicon.w-12752e45691112289534": 1
+    },
+    "chinesename:books-craft-lexicon.military-token": {
+      "chinesename:books-craft-lexicon.w-f1f1264d03cf6a4345f1": 1,
+      "chinesename:books-craft-lexicon.w-850ec776e7ad5f7236dc": 1,
+      "chinesename:books-craft-lexicon.w-32c13da714ddee521272": 1,
+      "chinesename:books-craft-lexicon.w-410bb4ba3e40592fc4f1": 1,
+      "chinesename:books-craft-lexicon.w-e1e7f58592e8be098628": 1,
+      "chinesename:books-craft-lexicon.w-930616ad9c3f7d9a0350": 1,
+      "chinesename:books-craft-lexicon.w-c1a95c6e2dfca7f0e021": 1,
+      "chinesename:books-craft-lexicon.w-ce92dabe4e9c61d149a7": 1,
+      "chinesename:books-craft-lexicon.w-584c224178c53fada802": 1,
+      "chinesename:books-craft-lexicon.w-50a2ebcfc0b092315825": 1,
+      "chinesename:books-craft-lexicon.w-2fea8b50fa63bb750b9d": 1,
+      "chinesename:books-craft-lexicon.w-3b102627e8df3b701469": 1,
+      "chinesename:books-craft-lexicon.w-9e25815ea476e68d2dac": 1,
+      "chinesename:books-craft-lexicon.w-858e8d92daee74453cd4": 1,
+      "chinesename:books-craft-lexicon.w-9ff8c3753f1391cd6ee2": 1,
+      "chinesename:books-craft-lexicon.w-d1cd0c168849d2e6dfbd": 1,
+      "chinesename:books-craft-lexicon.w-999ca59745cf5838683c": 1,
+      "chinesename:books-craft-lexicon.w-e9ef433fa0987ced3183": 1,
+      "chinesename:books-craft-lexicon.w-807ef09ad7cef2035b49": 1,
+      "chinesename:books-craft-lexicon.w-e761c55110465f962363": 1
+    },
+    "chinesename:books-craft-lexicon.military-ending": {
+      "chinesename:books-craft-lexicon.w-3c4ae1533a73a0c17e19": 1,
+      "chinesename:books-craft-lexicon.w-49e4501326124c723563": 1,
+      "chinesename:books-craft-lexicon.w-2e813d69fd7351ab8e6a": 1,
+      "chinesename:books-craft-lexicon.w-6199808a7c303778f933": 1,
+      "chinesename:books-craft-lexicon.w-4bba26852cd554ac0f74": 1,
+      "chinesename:books-craft-lexicon.w-9971297206c91c865fd6": 1,
+      "chinesename:books-craft-lexicon.w-ab9d580e8c6bad81a700": 1,
+      "chinesename:books-craft-lexicon.w-03267452f39da765571a": 1,
+      "chinesename:books-craft-lexicon.w-e79ef030670bb247e8ba": 1,
+      "chinesename:books-craft-lexicon.w-0b301faf8ede92a2fae8": 1
+    },
+    "chinesename:books-craft-lexicon.alliance-token": {
+      "chinesename:books-craft-lexicon.w-40a0384a46f881360402": 1,
+      "chinesename:books-craft-lexicon.w-6230e119a162d60ef3e5": 1,
+      "chinesename:books-craft-lexicon.w-a2bbdc08503958b9e60d": 1,
+      "chinesename:books-craft-lexicon.w-2b1c5c6218928ab954c2": 1,
+      "chinesename:books-craft-lexicon.w-0b9ba3e6f2fa99e75ed4": 1,
+      "chinesename:books-craft-lexicon.w-55019cacc92ba7f526d5": 1,
+      "chinesename:books-craft-lexicon.w-4305d242601bff50fed7": 1,
+      "chinesename:books-craft-lexicon.w-fb94c686b1852b69d4b1": 1,
+      "chinesename:books-craft-lexicon.w-904dc5895f1ba792e7ae": 1,
+      "chinesename:books-craft-lexicon.w-edc61dbc7d6687a0e96a": 1,
+      "chinesename:books-craft-lexicon.w-c38b401e2062ca88b559": 1,
+      "chinesename:books-craft-lexicon.w-d1047eed5dd5db0db2da": 1,
+      "chinesename:books-craft-lexicon.w-c2c1845c3b009f687e4a": 1,
+      "chinesename:books-craft-lexicon.w-abebd14cce842e8fb1b8": 1,
+      "chinesename:books-craft-lexicon.w-33c83afac51755251893": 1,
+      "chinesename:books-craft-lexicon.w-29c0863fd5027048b09e": 1,
+      "chinesename:books-craft-lexicon.w-551a40a62f1e8315e5ee": 1,
+      "chinesename:books-craft-lexicon.w-309768895acd2794d2a2": 1,
+      "chinesename:books-craft-lexicon.w-66bc8952514707741411": 1,
+      "chinesename:books-craft-lexicon.w-e425d11e25215dcd5c28": 1
+    },
+    "chinesename:books-craft-lexicon.alliance-ending": {
+      "chinesename:books-craft-lexicon.w-8686612600ab40a56da2": 1,
+      "chinesename:books-craft-lexicon.w-5ba1e3c0eb6361618e95": 1,
+      "chinesename:books-craft-lexicon.w-07d9b4c890e1226f7073": 1,
+      "chinesename:books-craft-lexicon.w-7646fe9d31f603730153": 1,
+      "chinesename:books-craft-lexicon.w-28975672e53d648ee668": 1,
+      "chinesename:books-craft-lexicon.w-bbd46e528a69a44df869": 1,
+      "chinesename:books-craft-lexicon.w-75d2ff8798c357b057f2": 1,
+      "chinesename:books-craft-lexicon.w-2ffa5f34893d5751467b": 1,
+      "chinesename:books-craft-lexicon.w-04ac58cd9ccafc08a6ce": 1,
+      "chinesename:books-craft-lexicon.w-5d44334d2a56c1647b2a": 1,
+      "chinesename:books-craft-lexicon.w-bff3e9e98ab290fdcbfc": 1,
+      "chinesename:books-craft-lexicon.w-c364274b1124dae57a9d": 1
+    },
+    "chinesename:books-craft-lexicon.blade": {
+      "chinesename:books-craft-lexicon.w-63bcda9d4ff558ddeeba": 1,
+      "chinesename:books-craft-lexicon.w-4b9f9115c2c7044f77fc": 1,
+      "chinesename:books-craft-lexicon.w-8f3ac98e3c3e233a464a": 1,
+      "chinesename:books-craft-lexicon.w-e8049a675cdbe7a98c0f": 1,
+      "chinesename:books-craft-lexicon.w-124abb295f2e018d2f79": 1,
+      "chinesename:books-craft-lexicon.w-01a05647c4174812b693": 1,
+      "chinesename:books-craft-lexicon.w-0ba5a69253c3ea32d3ec": 1,
+      "chinesename:books-craft-lexicon.w-e1fe5bfbc64ec699d5ee": 1,
+      "chinesename:books-craft-lexicon.w-d1668d3b4b8706357e5a": 1,
+      "chinesename:books-craft-lexicon.w-2a0c5aebaf65e584eae0": 1,
+      "chinesename:books-craft-lexicon.w-0491f24328f6c7a8e2d5": 1,
+      "chinesename:books-craft-lexicon.w-2fc01adc9305d487d540": 1,
+      "chinesename:books-craft-lexicon.w-e9e1636ecd51ddd25917": 1,
+      "chinesename:books-craft-lexicon.w-fe858983d0e6ab32af32": 1,
+      "chinesename:books-craft-lexicon.w-9d373efcef0118aed216": 1,
+      "chinesename:books-craft-lexicon.w-03498ea2e65bacbbc66a": 1,
+      "chinesename:books-craft-lexicon.w-1232c7c3228e314e1f4c": 1,
+      "chinesename:books-craft-lexicon.w-9580edab4061813d4ffb": 1,
+      "chinesename:books-craft-lexicon.w-df56e73f97f3a24d32f4": 1,
+      "chinesename:books-craft-lexicon.w-e4003dabf85237b3f789": 1,
+      "chinesename:books-craft-lexicon.w-b71656b97c609e7c0347": 1,
+      "chinesename:books-craft-lexicon.w-9d20b966c5ceaacf2322": 1
+    },
+    "chinesename:books-craft-lexicon.staff": {
+      "chinesename:books-craft-lexicon.w-c836dd5082f072a7e387": 1,
+      "chinesename:books-craft-lexicon.w-f57d2da5f21743255649": 1,
+      "chinesename:books-craft-lexicon.w-6517f5ddae2fa81f15aa": 1,
+      "chinesename:books-craft-lexicon.w-157cd8662ddfbef92bb0": 1,
+      "chinesename:books-craft-lexicon.w-08b9ef3e06cbef20123f": 1,
+      "chinesename:books-craft-lexicon.w-5301b005d64c49b60294": 1,
+      "chinesename:books-craft-lexicon.w-18c040c2cfeb3cab58ca": 1,
+      "chinesename:books-craft-lexicon.w-59ba8ef348d00341a18b": 1,
+      "chinesename:books-craft-lexicon.w-2255f0b3c93f21a4e2de": 1,
+      "chinesename:books-craft-lexicon.w-f81ed0cfb7b3e120b509": 1,
+      "chinesename:books-craft-lexicon.w-789a6abe30584a81037c": 1,
+      "chinesename:books-craft-lexicon.w-de09c093c7f8a7c93598": 1,
+      "chinesename:books-craft-lexicon.w-d7271ef8022a56493637": 1,
+      "chinesename:books-craft-lexicon.w-893939bad9c21307cfdb": 1,
+      "chinesename:books-craft-lexicon.w-3187015765d6d96b014d": 1,
+      "chinesename:books-craft-lexicon.w-8f1a0547a73155676401": 1,
+      "chinesename:books-craft-lexicon.w-b9847d13d82b62ac132e": 1,
+      "chinesename:books-craft-lexicon.w-3ff357784ad24dcd7e2b": 1,
+      "chinesename:books-craft-lexicon.w-7a5824839940d46e628d": 1,
+      "chinesename:books-craft-lexicon.w-af971d05078ad95eae5d": 1,
+      "chinesename:books-craft-lexicon.w-3dd19bd40bf2339d4bfb": 1,
+      "chinesename:books-craft-lexicon.w-99315e67a46078eb0154": 1,
+      "chinesename:books-craft-lexicon.w-1bd6298308dfb0d2b0c8": 1,
+      "chinesename:books-craft-lexicon.w-65914ebbb3a068467b92": 1
+    },
+    "chinesename:books-craft-lexicon.armor": {
+      "chinesename:books-craft-lexicon.w-7a5824839940d46e628d": 1,
+      "chinesename:books-craft-lexicon.w-fb112fa4f9d5ae434dc5": 1,
+      "chinesename:books-craft-lexicon.w-c49a4bb2392b19cd7e38": 1,
+      "chinesename:books-craft-lexicon.w-ec94a74c15adbad3198c": 1,
+      "chinesename:books-craft-lexicon.w-9e25815ea476e68d2dac": 1,
+      "chinesename:books-craft-lexicon.w-5033884c9d866fb76eda": 1,
+      "chinesename:books-craft-lexicon.w-eed766b1de9c4ff5cf3e": 1,
+      "chinesename:books-craft-lexicon.w-b97408c4375f812aced2": 1,
+      "chinesename:books-craft-lexicon.w-99b1d1ddf04b59876c02": 1,
+      "chinesename:books-craft-lexicon.w-f8297ebe62ff2bcc500e": 1,
+      "chinesename:books-craft-lexicon.w-09fffd1ab1871ac53690": 1,
+      "chinesename:books-craft-lexicon.w-a246565115699fbafcf1": 1,
+      "chinesename:books-craft-lexicon.w-1c95f64aafe94c27fa42": 1,
+      "chinesename:books-craft-lexicon.w-c410f4dbd4a8b70d7d55": 1,
+      "chinesename:books-craft-lexicon.w-0195f48b09ebbb8da896": 1,
+      "chinesename:books-craft-lexicon.w-d3a9b6805169bc59e9fb": 1,
+      "chinesename:books-craft-lexicon.w-1e91acac614a6b638888": 1,
+      "chinesename:books-craft-lexicon.w-f6b6a496040413e50081": 1,
+      "chinesename:books-craft-lexicon.w-87b881d217279b6fdabc": 1,
+      "chinesename:books-craft-lexicon.w-63afaa2406a7ce0d9ab2": 1,
+      "chinesename:books-craft-lexicon.w-da851b9a63b4972cf567": 1,
+      "chinesename:books-craft-lexicon.w-eec7d6f05577f3b9597a": 1
+    },
+    "chinesename:books-craft-lexicon.ornament": {
+      "chinesename:books-craft-lexicon.w-7a508a24e5fadbf0366c": 1,
+      "chinesename:books-craft-lexicon.w-9a19fd83bf36d9c9d769": 1,
+      "chinesename:books-craft-lexicon.w-67462cea355951b453ba": 1,
+      "chinesename:books-craft-lexicon.w-13cbdb7bc05bb2dbfe2b": 1,
+      "chinesename:books-craft-lexicon.w-9264d02a6587edff402f": 1,
+      "chinesename:books-craft-lexicon.w-110a74ba18a28943f9f5": 1,
+      "chinesename:books-craft-lexicon.w-343671ffbcd0c199ea62": 1,
+      "chinesename:books-craft-lexicon.w-f22ed8c115218422e315": 1,
+      "chinesename:books-craft-lexicon.w-6bcdb2d7dd025b9c6b5b": 1,
+      "chinesename:books-craft-lexicon.w-5073027e7a9572812c66": 1,
+      "chinesename:books-craft-lexicon.w-6d72c53c853e425ad7e5": 1,
+      "chinesename:books-craft-lexicon.w-33c83afac51755251893": 1,
+      "chinesename:books-craft-lexicon.w-1232c7c3228e314e1f4c": 1,
+      "chinesename:books-craft-lexicon.w-1f1f9cfe35f630290cb2": 1,
+      "chinesename:books-craft-lexicon.w-679efce8cdbbf7ed89bf": 1,
+      "chinesename:books-craft-lexicon.w-757acfdeab991aabe928": 1,
+      "chinesename:books-craft-lexicon.w-da73d223a8bf1573ee3e": 1,
+      "chinesename:books-craft-lexicon.w-b08094b609a236ed055b": 1,
+      "chinesename:books-craft-lexicon.w-b023936ceb739cc987da": 1,
+      "chinesename:books-craft-lexicon.w-763a63c034a054c99846": 1,
+      "chinesename:books-craft-lexicon.w-089d028f29b2d3db5b78": 1,
+      "chinesename:books-craft-lexicon.w-e42a2fd0637672d36c6c": 1
+    },
+    "chinesename:books-craft-lexicon.metal": {
+      "chinesename:books-craft-lexicon.w-4b8ca2ed6c7c485edff5": 1,
+      "chinesename:books-craft-lexicon.w-c2e1087b86d3581be14b": 1,
+      "chinesename:books-craft-lexicon.w-3cafba402176f0451783": 1,
+      "chinesename:books-craft-lexicon.w-4608039c93643b11e426": 1,
+      "chinesename:books-craft-lexicon.w-231511a004cbcc263657": 1,
+      "chinesename:books-craft-lexicon.w-bbede2eba87d8110eb79": 1,
+      "chinesename:books-craft-lexicon.w-3d35ee6f432774851f69": 1,
+      "chinesename:books-craft-lexicon.w-fc341407408fc97106eb": 1,
+      "chinesename:books-craft-lexicon.w-2b8eae97a2503c4b724e": 1,
+      "chinesename:books-craft-lexicon.w-a6890f15e62325a3a706": 1,
+      "chinesename:books-craft-lexicon.w-5e38b593797b8e72806d": 1,
+      "chinesename:books-craft-lexicon.w-8a40bd1845c90bbdee1d": 1,
+      "chinesename:books-craft-lexicon.w-1784a317579e3d50c9b6": 1,
+      "chinesename:books-craft-lexicon.w-baac88fd3e6f34635e37": 1,
+      "chinesename:books-craft-lexicon.w-63f30b7a12862a7c7aef": 1,
+      "chinesename:books-craft-lexicon.w-8d7d59c85737b6c1f50e": 1
+    },
+    "chinesename:books-craft-lexicon.jade": {
+      "chinesename:books-craft-lexicon.w-c1fe0ad4b4d666723eb3": 1,
+      "chinesename:books-craft-lexicon.w-34f13269da392ffa488d": 1,
+      "chinesename:books-craft-lexicon.w-b13d01dab9a04f6e4010": 1,
+      "chinesename:books-craft-lexicon.w-dca044e7f5870df2f3e5": 1,
+      "chinesename:books-craft-lexicon.w-0bb89093be9efc18b925": 1,
+      "chinesename:books-craft-lexicon.w-dbed937768b4c3391bf6": 1,
+      "chinesename:books-craft-lexicon.w-9881ca86e013f8ff34b6": 1,
+      "chinesename:books-craft-lexicon.w-094767af7017c39cabbd": 1,
+      "chinesename:books-craft-lexicon.w-614312b465caea84a45a": 1,
+      "chinesename:books-craft-lexicon.w-0983dca8c7c615790bd8": 1,
+      "chinesename:books-craft-lexicon.w-b8ea774eae0077135063": 1,
+      "chinesename:books-craft-lexicon.w-558c068d49402e9fcfee": 1,
+      "chinesename:books-craft-lexicon.w-cb0774d35ba83c00741b": 1,
+      "chinesename:books-craft-lexicon.w-ecb1499cc94e141429f2": 1,
+      "chinesename:books-craft-lexicon.w-6a9f1ec6abc8aa19a7ae": 1,
+      "chinesename:books-craft-lexicon.w-78cbaacd34727d543b00": 1
+    },
+    "chinesename:books-craft-lexicon.wood-bone": {
+      "chinesename:books-craft-lexicon.w-f9724eb8298239bc4b56": 1,
+      "chinesename:books-craft-lexicon.w-ca3910e3c418f8cffcdb": 1,
+      "chinesename:books-craft-lexicon.w-7518a3f7edf370402070": 1,
+      "chinesename:books-craft-lexicon.w-1eae35fe988c02aabd9d": 1,
+      "chinesename:books-craft-lexicon.w-bf678909da68b86bb744": 1,
+      "chinesename:books-craft-lexicon.w-9d8dfc6ad9ed05063005": 1,
+      "chinesename:books-craft-lexicon.w-8b9c112022202bc5f683": 1,
+      "chinesename:books-craft-lexicon.w-5515c36994ce85566d68": 1,
+      "chinesename:books-craft-lexicon.w-4aaf55814976c282b647": 1,
+      "chinesename:books-craft-lexicon.w-80bba7b12ed63153ab52": 1,
+      "chinesename:books-craft-lexicon.w-bf7d9a7a9a7d1eca0477": 1,
+      "chinesename:books-craft-lexicon.w-47a2f39f4619e4ddbea8": 1,
+      "chinesename:books-craft-lexicon.w-f5711d62e04f297687e3": 1,
+      "chinesename:books-craft-lexicon.w-dee706180eadf86754e4": 1,
+      "chinesename:books-craft-lexicon.w-56942faf952d4410a4e2": 1,
+      "chinesename:books-craft-lexicon.w-df1e348823cf9eea9e9d": 1,
+      "chinesename:books-craft-lexicon.w-9190c279c11fa8ff00cc": 1
+    }
+  },
+  "poolLabels": {
+    "chinesename:books-craft-lexicon.history-ending": "史书题名尾字",
+    "chinesename:books-craft-lexicon.biology-ending": "博物书题名尾字",
+    "chinesename:books-craft-lexicon.strategy-ending": "兵书题名尾字",
+    "chinesename:books-craft-lexicon.scholar-ending": "学术书题名尾字",
+    "chinesename:books-craft-lexicon.fiction-ending": "故事题名尾字",
+    "chinesename:books-craft-lexicon.author-ending": "著述题名尾字",
+    "chinesename:books-craft-lexicon.military-token": "军号主体",
+    "chinesename:books-craft-lexicon.military-ending": "军号后缀",
+    "chinesename:books-craft-lexicon.alliance-token": "盟约主体",
+    "chinesename:books-craft-lexicon.alliance-ending": "盟约后缀",
+    "chinesename:books-craft-lexicon.blade": "刃器名号",
+    "chinesename:books-craft-lexicon.staff": "法器名号",
+    "chinesename:books-craft-lexicon.armor": "甲衣名号",
+    "chinesename:books-craft-lexicon.ornament": "饰物名号",
+    "chinesename:books-craft-lexicon.metal": "器物金材",
+    "chinesename:books-craft-lexicon.jade": "器物玉材",
+    "chinesename:books-craft-lexicon.wood-bone": "器物木骨材"
+  },
+  "poolAliases": {
+    "史书题名尾字": "chinesename:books-craft-lexicon.history-ending",
+    "博物书题名尾字": "chinesename:books-craft-lexicon.biology-ending",
+    "兵书题名尾字": "chinesename:books-craft-lexicon.strategy-ending",
+    "学术书题名尾字": "chinesename:books-craft-lexicon.scholar-ending",
+    "故事题名尾字": "chinesename:books-craft-lexicon.fiction-ending",
+    "著述题名尾字": "chinesename:books-craft-lexicon.author-ending",
+    "军号主体": "chinesename:books-craft-lexicon.military-token",
+    "军号后缀": "chinesename:books-craft-lexicon.military-ending",
+    "盟约主体": "chinesename:books-craft-lexicon.alliance-token",
+    "盟约后缀": "chinesename:books-craft-lexicon.alliance-ending",
+    "刃器名号": "chinesename:books-craft-lexicon.blade",
+    "法器名号": "chinesename:books-craft-lexicon.staff",
+    "甲衣名号": "chinesename:books-craft-lexicon.armor",
+    "饰物名号": "chinesename:books-craft-lexicon.ornament",
+    "器物金材": "chinesename:books-craft-lexicon.metal",
+    "器物玉材": "chinesename:books-craft-lexicon.jade",
+    "器物木骨材": "chinesename:books-craft-lexicon.wood-bone"
+  },
+  "wordGroups": {
+    "history-ending.chronicles": {
+      "pool": "chinesename:books-craft-lexicon.history-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-4c0824997ad15aea8b77",
+        "chinesename:books-craft-lexicon.w-578e524e59dc4fc84704",
+        "chinesename:books-craft-lexicon.w-1f3f283222811479d0cc",
+        "chinesename:books-craft-lexicon.w-e791058512a2044997c2",
+        "chinesename:books-craft-lexicon.w-f00964c22404ac29de19",
+        "chinesename:books-craft-lexicon.w-b0d2e51f310936cd7e9a",
+        "chinesename:books-craft-lexicon.w-0821b04abbcf1df361f1",
+        "chinesename:books-craft-lexicon.w-7eba5b324926f24f6cdf"
+      ]
+    },
+    "history-ending.local": {
+      "pool": "chinesename:books-craft-lexicon.history-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-557b3b2f6ea9291f987b",
+        "chinesename:books-craft-lexicon.w-ff41ad5a00835a21c1ac",
+        "chinesename:books-craft-lexicon.w-da471f536fc2ae45dfac",
+        "chinesename:books-craft-lexicon.w-4a4231250d78cde9cbd0",
+        "chinesename:books-craft-lexicon.w-74801a23f4f08432b528",
+        "chinesename:books-craft-lexicon.w-a68f12aca15ba8a73719",
+        "chinesename:books-craft-lexicon.w-f99c6b4258932027d6ef",
+        "chinesename:books-craft-lexicon.w-61f9e9ee2206a39804e1"
+      ]
+    },
+    "biology-ending.catalogues": {
+      "pool": "chinesename:books-craft-lexicon.biology-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-6375e9a7a7ecd041cb6e",
+        "chinesename:books-craft-lexicon.w-a49a7664948e10c68419",
+        "chinesename:books-craft-lexicon.w-147f3cf9c0d3c00f4133",
+        "chinesename:books-craft-lexicon.w-120033f41529e63489e7",
+        "chinesename:books-craft-lexicon.w-73eb4f3c433bd9ea7090",
+        "chinesename:books-craft-lexicon.w-b2d90759d7d5bbd56d49",
+        "chinesename:books-craft-lexicon.w-1ad9719f5869772d9b46"
+      ]
+    },
+    "biology-ending.notes": {
+      "pool": "chinesename:books-craft-lexicon.biology-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-0576affce3ef0b7cdf54",
+        "chinesename:books-craft-lexicon.w-dd59ebd43f9a1d071b2d",
+        "chinesename:books-craft-lexicon.w-aa479fd8cc795d8396a4",
+        "chinesename:books-craft-lexicon.w-8b9a5b5007a182c61f06",
+        "chinesename:books-craft-lexicon.w-02a382beab9497f5ac56",
+        "chinesename:books-craft-lexicon.w-7d31b002abc781f930b9",
+        "chinesename:books-craft-lexicon.w-fb976205dd3591e20cd3"
+      ]
+    },
+    "strategy-ending.field": {
+      "pool": "chinesename:books-craft-lexicon.strategy-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-d6ccba62ee9af9500a29",
+        "chinesename:books-craft-lexicon.w-c054396c1fcad2068daf",
+        "chinesename:books-craft-lexicon.w-5f530544fc7b3da0f2ea",
+        "chinesename:books-craft-lexicon.w-c0d121727454af2b8aa3",
+        "chinesename:books-craft-lexicon.w-1b18c3156c7c8c43ba06",
+        "chinesename:books-craft-lexicon.w-6b0dd24a5f8f373ae76b",
+        "chinesename:books-craft-lexicon.w-07131b2b6d78f1e4f16d"
+      ]
+    },
+    "strategy-ending.garrison": {
+      "pool": "chinesename:books-craft-lexicon.strategy-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-76458bba6a3fcd03b596",
+        "chinesename:books-craft-lexicon.w-c72d11154b8e6e664935",
+        "chinesename:books-craft-lexicon.w-f6c8f09ee8e0439eb646",
+        "chinesename:books-craft-lexicon.w-2c863caf7a22ebe7e2ab",
+        "chinesename:books-craft-lexicon.w-382f268611242d2709c0",
+        "chinesename:books-craft-lexicon.w-b83cac3b458f4b3af9c5"
+      ]
+    },
+    "scholar-ending.theory": {
+      "pool": "chinesename:books-craft-lexicon.scholar-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-5f0b478611a75af0f31e",
+        "chinesename:books-craft-lexicon.w-22d5b460a238f8cb8a61",
+        "chinesename:books-craft-lexicon.w-47ac3a8534edaeaef53b",
+        "chinesename:books-craft-lexicon.w-786fa3a51f1cc85cb639",
+        "chinesename:books-craft-lexicon.w-dea6f0455c051dd095d7",
+        "chinesename:books-craft-lexicon.w-9eac1e0294684ec91780",
+        "chinesename:books-craft-lexicon.w-432fe64656be0cf2a35e"
+      ]
+    },
+    "scholar-ending.practice": {
+      "pool": "chinesename:books-craft-lexicon.scholar-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-247b9e98290c719dd07d",
+        "chinesename:books-craft-lexicon.w-d78e04899a224b16e3d2",
+        "chinesename:books-craft-lexicon.w-74300ad8f2cbe280ac0e",
+        "chinesename:books-craft-lexicon.w-ddab6c63962a21110e45",
+        "chinesename:books-craft-lexicon.w-010930fcef753df6530e",
+        "chinesename:books-craft-lexicon.w-a4b7ced61cfb61fed358",
+        "chinesename:books-craft-lexicon.w-1719264b5b374bb0b943"
+      ]
+    },
+    "fiction-ending.personal": {
+      "pool": "chinesename:books-craft-lexicon.fiction-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-eec9174cc40565fb3b99",
+        "chinesename:books-craft-lexicon.w-b86bc89b75e9b6ad28dd",
+        "chinesename:books-craft-lexicon.w-df6811c8c150467148c7",
+        "chinesename:books-craft-lexicon.w-0e90a1252aeacbffd058",
+        "chinesename:books-craft-lexicon.w-126cb3f2ae10ed31940b",
+        "chinesename:books-craft-lexicon.w-2e24b71cd81ad25592d2",
+        "chinesename:books-craft-lexicon.w-ae5e53cbc0a27665a647"
+      ]
+    },
+    "fiction-ending.fable": {
+      "pool": "chinesename:books-craft-lexicon.fiction-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-114fcb616f84b67f1f91",
+        "chinesename:books-craft-lexicon.w-053766d27f1b32fc6121",
+        "chinesename:books-craft-lexicon.w-df752e90958576114f9e",
+        "chinesename:books-craft-lexicon.w-cd36300aa86e9921bac3",
+        "chinesename:books-craft-lexicon.w-e269d1d80a8b94a8a243",
+        "chinesename:books-craft-lexicon.w-b77d7deb7d56cdf068da",
+        "chinesename:books-craft-lexicon.w-56a9bdc42cbc7503fce6"
+      ]
+    },
+    "author-ending.archives": {
+      "pool": "chinesename:books-craft-lexicon.author-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-0875bd97f62accd019f8",
+        "chinesename:books-craft-lexicon.w-9279d2957d4a59871f8a",
+        "chinesename:books-craft-lexicon.w-ef664ce82d5c08edc638",
+        "chinesename:books-craft-lexicon.w-8ca008b3013d208409cf",
+        "chinesename:books-craft-lexicon.w-043f0974bed7d1611163",
+        "chinesename:books-craft-lexicon.w-a694251b6996c899623d"
+      ]
+    },
+    "author-ending.notations": {
+      "pool": "chinesename:books-craft-lexicon.author-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-074c558deee891261f58",
+        "chinesename:books-craft-lexicon.w-b620e08c0e164f832c82",
+        "chinesename:books-craft-lexicon.w-b6697c9cabd6cad16bc5",
+        "chinesename:books-craft-lexicon.w-bb270581dad38323a792",
+        "chinesename:books-craft-lexicon.w-e1b125ac7acbf2b3348e",
+        "chinesename:books-craft-lexicon.w-12752e45691112289534"
+      ]
+    },
+    "military-token.station": {
+      "pool": "chinesename:books-craft-lexicon.military-token",
+      "words": [
+        "chinesename:books-craft-lexicon.w-f1f1264d03cf6a4345f1",
+        "chinesename:books-craft-lexicon.w-850ec776e7ad5f7236dc",
+        "chinesename:books-craft-lexicon.w-32c13da714ddee521272",
+        "chinesename:books-craft-lexicon.w-410bb4ba3e40592fc4f1",
+        "chinesename:books-craft-lexicon.w-e1e7f58592e8be098628",
+        "chinesename:books-craft-lexicon.w-930616ad9c3f7d9a0350",
+        "chinesename:books-craft-lexicon.w-c1a95c6e2dfca7f0e021",
+        "chinesename:books-craft-lexicon.w-ce92dabe4e9c61d149a7",
+        "chinesename:books-craft-lexicon.w-584c224178c53fada802",
+        "chinesename:books-craft-lexicon.w-50a2ebcfc0b092315825"
+      ]
+    },
+    "military-token.expedition": {
+      "pool": "chinesename:books-craft-lexicon.military-token",
+      "words": [
+        "chinesename:books-craft-lexicon.w-2fea8b50fa63bb750b9d",
+        "chinesename:books-craft-lexicon.w-3b102627e8df3b701469",
+        "chinesename:books-craft-lexicon.w-9e25815ea476e68d2dac",
+        "chinesename:books-craft-lexicon.w-858e8d92daee74453cd4",
+        "chinesename:books-craft-lexicon.w-9ff8c3753f1391cd6ee2",
+        "chinesename:books-craft-lexicon.w-d1cd0c168849d2e6dfbd",
+        "chinesename:books-craft-lexicon.w-999ca59745cf5838683c",
+        "chinesename:books-craft-lexicon.w-e9ef433fa0987ced3183",
+        "chinesename:books-craft-lexicon.w-807ef09ad7cef2035b49",
+        "chinesename:books-craft-lexicon.w-e761c55110465f962363"
+      ]
+    },
+    "military-ending.army": {
+      "pool": "chinesename:books-craft-lexicon.military-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-3c4ae1533a73a0c17e19",
+        "chinesename:books-craft-lexicon.w-49e4501326124c723563",
+        "chinesename:books-craft-lexicon.w-2e813d69fd7351ab8e6a",
+        "chinesename:books-craft-lexicon.w-6199808a7c303778f933",
+        "chinesename:books-craft-lexicon.w-4bba26852cd554ac0f74"
+      ]
+    },
+    "military-ending.guard": {
+      "pool": "chinesename:books-craft-lexicon.military-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-9971297206c91c865fd6",
+        "chinesename:books-craft-lexicon.w-ab9d580e8c6bad81a700",
+        "chinesename:books-craft-lexicon.w-03267452f39da765571a",
+        "chinesename:books-craft-lexicon.w-e79ef030670bb247e8ba",
+        "chinesename:books-craft-lexicon.w-0b301faf8ede92a2fae8"
+      ]
+    },
+    "alliance-token.place": {
+      "pool": "chinesename:books-craft-lexicon.alliance-token",
+      "words": [
+        "chinesename:books-craft-lexicon.w-40a0384a46f881360402",
+        "chinesename:books-craft-lexicon.w-6230e119a162d60ef3e5",
+        "chinesename:books-craft-lexicon.w-a2bbdc08503958b9e60d",
+        "chinesename:books-craft-lexicon.w-2b1c5c6218928ab954c2",
+        "chinesename:books-craft-lexicon.w-0b9ba3e6f2fa99e75ed4",
+        "chinesename:books-craft-lexicon.w-55019cacc92ba7f526d5",
+        "chinesename:books-craft-lexicon.w-4305d242601bff50fed7",
+        "chinesename:books-craft-lexicon.w-fb94c686b1852b69d4b1",
+        "chinesename:books-craft-lexicon.w-904dc5895f1ba792e7ae",
+        "chinesename:books-craft-lexicon.w-edc61dbc7d6687a0e96a"
+      ]
+    },
+    "alliance-token.aim": {
+      "pool": "chinesename:books-craft-lexicon.alliance-token",
+      "words": [
+        "chinesename:books-craft-lexicon.w-c38b401e2062ca88b559",
+        "chinesename:books-craft-lexicon.w-d1047eed5dd5db0db2da",
+        "chinesename:books-craft-lexicon.w-c2c1845c3b009f687e4a",
+        "chinesename:books-craft-lexicon.w-abebd14cce842e8fb1b8",
+        "chinesename:books-craft-lexicon.w-33c83afac51755251893",
+        "chinesename:books-craft-lexicon.w-29c0863fd5027048b09e",
+        "chinesename:books-craft-lexicon.w-551a40a62f1e8315e5ee",
+        "chinesename:books-craft-lexicon.w-309768895acd2794d2a2",
+        "chinesename:books-craft-lexicon.w-66bc8952514707741411",
+        "chinesename:books-craft-lexicon.w-e425d11e25215dcd5c28"
+      ]
+    },
+    "alliance-ending.institution": {
+      "pool": "chinesename:books-craft-lexicon.alliance-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-8686612600ab40a56da2",
+        "chinesename:books-craft-lexicon.w-5ba1e3c0eb6361618e95",
+        "chinesename:books-craft-lexicon.w-07d9b4c890e1226f7073",
+        "chinesename:books-craft-lexicon.w-7646fe9d31f603730153",
+        "chinesename:books-craft-lexicon.w-28975672e53d648ee668",
+        "chinesename:books-craft-lexicon.w-bbd46e528a69a44df869"
+      ]
+    },
+    "alliance-ending.agreement": {
+      "pool": "chinesename:books-craft-lexicon.alliance-ending",
+      "words": [
+        "chinesename:books-craft-lexicon.w-75d2ff8798c357b057f2",
+        "chinesename:books-craft-lexicon.w-2ffa5f34893d5751467b",
+        "chinesename:books-craft-lexicon.w-04ac58cd9ccafc08a6ce",
+        "chinesename:books-craft-lexicon.w-5d44334d2a56c1647b2a",
+        "chinesename:books-craft-lexicon.w-bff3e9e98ab290fdcbfc",
+        "chinesename:books-craft-lexicon.w-c364274b1124dae57a9d"
+      ]
+    },
+    "blade.natural": {
+      "pool": "chinesename:books-craft-lexicon.blade",
+      "words": [
+        "chinesename:books-craft-lexicon.w-63bcda9d4ff558ddeeba",
+        "chinesename:books-craft-lexicon.w-4b9f9115c2c7044f77fc",
+        "chinesename:books-craft-lexicon.w-8f3ac98e3c3e233a464a",
+        "chinesename:books-craft-lexicon.w-e8049a675cdbe7a98c0f",
+        "chinesename:books-craft-lexicon.w-124abb295f2e018d2f79",
+        "chinesename:books-craft-lexicon.w-01a05647c4174812b693",
+        "chinesename:books-craft-lexicon.w-0ba5a69253c3ea32d3ec",
+        "chinesename:books-craft-lexicon.w-e1fe5bfbc64ec699d5ee",
+        "chinesename:books-craft-lexicon.w-d1668d3b4b8706357e5a",
+        "chinesename:books-craft-lexicon.w-2a0c5aebaf65e584eae0",
+        "chinesename:books-craft-lexicon.w-0491f24328f6c7a8e2d5"
+      ]
+    },
+    "blade.craft": {
+      "pool": "chinesename:books-craft-lexicon.blade",
+      "words": [
+        "chinesename:books-craft-lexicon.w-2fc01adc9305d487d540",
+        "chinesename:books-craft-lexicon.w-e9e1636ecd51ddd25917",
+        "chinesename:books-craft-lexicon.w-fe858983d0e6ab32af32",
+        "chinesename:books-craft-lexicon.w-9d373efcef0118aed216",
+        "chinesename:books-craft-lexicon.w-03498ea2e65bacbbc66a",
+        "chinesename:books-craft-lexicon.w-1232c7c3228e314e1f4c",
+        "chinesename:books-craft-lexicon.w-9580edab4061813d4ffb",
+        "chinesename:books-craft-lexicon.w-df56e73f97f3a24d32f4",
+        "chinesename:books-craft-lexicon.w-e4003dabf85237b3f789",
+        "chinesename:books-craft-lexicon.w-b71656b97c609e7c0347",
+        "chinesename:books-craft-lexicon.w-9d20b966c5ceaacf2322"
+      ]
+    },
+    "staff.elements": {
+      "pool": "chinesename:books-craft-lexicon.staff",
+      "words": [
+        "chinesename:books-craft-lexicon.w-c836dd5082f072a7e387",
+        "chinesename:books-craft-lexicon.w-f57d2da5f21743255649",
+        "chinesename:books-craft-lexicon.w-6517f5ddae2fa81f15aa",
+        "chinesename:books-craft-lexicon.w-157cd8662ddfbef92bb0",
+        "chinesename:books-craft-lexicon.w-08b9ef3e06cbef20123f",
+        "chinesename:books-craft-lexicon.w-5301b005d64c49b60294",
+        "chinesename:books-craft-lexicon.w-18c040c2cfeb3cab58ca",
+        "chinesename:books-craft-lexicon.w-59ba8ef348d00341a18b",
+        "chinesename:books-craft-lexicon.w-2255f0b3c93f21a4e2de",
+        "chinesename:books-craft-lexicon.w-f81ed0cfb7b3e120b509",
+        "chinesename:books-craft-lexicon.w-789a6abe30584a81037c",
+        "chinesename:books-craft-lexicon.w-de09c093c7f8a7c93598"
+      ]
+    },
+    "staff.craft": {
+      "pool": "chinesename:books-craft-lexicon.staff",
+      "words": [
+        "chinesename:books-craft-lexicon.w-d7271ef8022a56493637",
+        "chinesename:books-craft-lexicon.w-893939bad9c21307cfdb",
+        "chinesename:books-craft-lexicon.w-3187015765d6d96b014d",
+        "chinesename:books-craft-lexicon.w-8f1a0547a73155676401",
+        "chinesename:books-craft-lexicon.w-b9847d13d82b62ac132e",
+        "chinesename:books-craft-lexicon.w-3ff357784ad24dcd7e2b",
+        "chinesename:books-craft-lexicon.w-7a5824839940d46e628d",
+        "chinesename:books-craft-lexicon.w-af971d05078ad95eae5d",
+        "chinesename:books-craft-lexicon.w-3dd19bd40bf2339d4bfb",
+        "chinesename:books-craft-lexicon.w-99315e67a46078eb0154",
+        "chinesename:books-craft-lexicon.w-1bd6298308dfb0d2b0c8",
+        "chinesename:books-craft-lexicon.w-65914ebbb3a068467b92"
+      ]
+    },
+    "armor.appearance": {
+      "pool": "chinesename:books-craft-lexicon.armor",
+      "words": [
+        "chinesename:books-craft-lexicon.w-7a5824839940d46e628d",
+        "chinesename:books-craft-lexicon.w-fb112fa4f9d5ae434dc5",
+        "chinesename:books-craft-lexicon.w-c49a4bb2392b19cd7e38",
+        "chinesename:books-craft-lexicon.w-ec94a74c15adbad3198c",
+        "chinesename:books-craft-lexicon.w-9e25815ea476e68d2dac",
+        "chinesename:books-craft-lexicon.w-5033884c9d866fb76eda",
+        "chinesename:books-craft-lexicon.w-eed766b1de9c4ff5cf3e",
+        "chinesename:books-craft-lexicon.w-b97408c4375f812aced2",
+        "chinesename:books-craft-lexicon.w-99b1d1ddf04b59876c02",
+        "chinesename:books-craft-lexicon.w-f8297ebe62ff2bcc500e",
+        "chinesename:books-craft-lexicon.w-09fffd1ab1871ac53690"
+      ]
+    },
+    "armor.protection": {
+      "pool": "chinesename:books-craft-lexicon.armor",
+      "words": [
+        "chinesename:books-craft-lexicon.w-a246565115699fbafcf1",
+        "chinesename:books-craft-lexicon.w-1c95f64aafe94c27fa42",
+        "chinesename:books-craft-lexicon.w-c410f4dbd4a8b70d7d55",
+        "chinesename:books-craft-lexicon.w-0195f48b09ebbb8da896",
+        "chinesename:books-craft-lexicon.w-d3a9b6805169bc59e9fb",
+        "chinesename:books-craft-lexicon.w-1e91acac614a6b638888",
+        "chinesename:books-craft-lexicon.w-f6b6a496040413e50081",
+        "chinesename:books-craft-lexicon.w-87b881d217279b6fdabc",
+        "chinesename:books-craft-lexicon.w-63afaa2406a7ce0d9ab2",
+        "chinesename:books-craft-lexicon.w-da851b9a63b4972cf567",
+        "chinesename:books-craft-lexicon.w-eec7d6f05577f3b9597a"
+      ]
+    },
+    "ornament.light": {
+      "pool": "chinesename:books-craft-lexicon.ornament",
+      "words": [
+        "chinesename:books-craft-lexicon.w-7a508a24e5fadbf0366c",
+        "chinesename:books-craft-lexicon.w-9a19fd83bf36d9c9d769",
+        "chinesename:books-craft-lexicon.w-67462cea355951b453ba",
+        "chinesename:books-craft-lexicon.w-13cbdb7bc05bb2dbfe2b",
+        "chinesename:books-craft-lexicon.w-9264d02a6587edff402f",
+        "chinesename:books-craft-lexicon.w-110a74ba18a28943f9f5",
+        "chinesename:books-craft-lexicon.w-343671ffbcd0c199ea62",
+        "chinesename:books-craft-lexicon.w-f22ed8c115218422e315",
+        "chinesename:books-craft-lexicon.w-6bcdb2d7dd025b9c6b5b",
+        "chinesename:books-craft-lexicon.w-5073027e7a9572812c66",
+        "chinesename:books-craft-lexicon.w-6d72c53c853e425ad7e5"
+      ]
+    },
+    "ornament.meaning": {
+      "pool": "chinesename:books-craft-lexicon.ornament",
+      "words": [
+        "chinesename:books-craft-lexicon.w-33c83afac51755251893",
+        "chinesename:books-craft-lexicon.w-1232c7c3228e314e1f4c",
+        "chinesename:books-craft-lexicon.w-1f1f9cfe35f630290cb2",
+        "chinesename:books-craft-lexicon.w-679efce8cdbbf7ed89bf",
+        "chinesename:books-craft-lexicon.w-757acfdeab991aabe928",
+        "chinesename:books-craft-lexicon.w-da73d223a8bf1573ee3e",
+        "chinesename:books-craft-lexicon.w-b08094b609a236ed055b",
+        "chinesename:books-craft-lexicon.w-b023936ceb739cc987da",
+        "chinesename:books-craft-lexicon.w-763a63c034a054c99846",
+        "chinesename:books-craft-lexicon.w-089d028f29b2d3db5b78",
+        "chinesename:books-craft-lexicon.w-e42a2fd0637672d36c6c"
+      ]
+    },
+    "metal.plain": {
+      "pool": "chinesename:books-craft-lexicon.metal",
+      "words": [
+        "chinesename:books-craft-lexicon.w-4b8ca2ed6c7c485edff5",
+        "chinesename:books-craft-lexicon.w-c2e1087b86d3581be14b",
+        "chinesename:books-craft-lexicon.w-3cafba402176f0451783",
+        "chinesename:books-craft-lexicon.w-4608039c93643b11e426",
+        "chinesename:books-craft-lexicon.w-231511a004cbcc263657",
+        "chinesename:books-craft-lexicon.w-bbede2eba87d8110eb79",
+        "chinesename:books-craft-lexicon.w-3d35ee6f432774851f69",
+        "chinesename:books-craft-lexicon.w-fc341407408fc97106eb"
+      ]
+    },
+    "metal.fantasy": {
+      "pool": "chinesename:books-craft-lexicon.metal",
+      "words": [
+        "chinesename:books-craft-lexicon.w-2b8eae97a2503c4b724e",
+        "chinesename:books-craft-lexicon.w-a6890f15e62325a3a706",
+        "chinesename:books-craft-lexicon.w-5e38b593797b8e72806d",
+        "chinesename:books-craft-lexicon.w-8a40bd1845c90bbdee1d",
+        "chinesename:books-craft-lexicon.w-1784a317579e3d50c9b6",
+        "chinesename:books-craft-lexicon.w-baac88fd3e6f34635e37",
+        "chinesename:books-craft-lexicon.w-63f30b7a12862a7c7aef",
+        "chinesename:books-craft-lexicon.w-8d7d59c85737b6c1f50e"
+      ]
+    },
+    "jade.stone": {
+      "pool": "chinesename:books-craft-lexicon.jade",
+      "words": [
+        "chinesename:books-craft-lexicon.w-c1fe0ad4b4d666723eb3",
+        "chinesename:books-craft-lexicon.w-34f13269da392ffa488d",
+        "chinesename:books-craft-lexicon.w-b13d01dab9a04f6e4010",
+        "chinesename:books-craft-lexicon.w-dca044e7f5870df2f3e5",
+        "chinesename:books-craft-lexicon.w-0bb89093be9efc18b925",
+        "chinesename:books-craft-lexicon.w-dbed937768b4c3391bf6",
+        "chinesename:books-craft-lexicon.w-9881ca86e013f8ff34b6",
+        "chinesename:books-craft-lexicon.w-094767af7017c39cabbd"
+      ]
+    },
+    "jade.fantasy": {
+      "pool": "chinesename:books-craft-lexicon.jade",
+      "words": [
+        "chinesename:books-craft-lexicon.w-614312b465caea84a45a",
+        "chinesename:books-craft-lexicon.w-0983dca8c7c615790bd8",
+        "chinesename:books-craft-lexicon.w-b8ea774eae0077135063",
+        "chinesename:books-craft-lexicon.w-558c068d49402e9fcfee",
+        "chinesename:books-craft-lexicon.w-cb0774d35ba83c00741b",
+        "chinesename:books-craft-lexicon.w-ecb1499cc94e141429f2",
+        "chinesename:books-craft-lexicon.w-6a9f1ec6abc8aa19a7ae",
+        "chinesename:books-craft-lexicon.w-78cbaacd34727d543b00"
+      ]
+    },
+    "wood-bone.wood": {
+      "pool": "chinesename:books-craft-lexicon.wood-bone",
+      "words": [
+        "chinesename:books-craft-lexicon.w-f9724eb8298239bc4b56",
+        "chinesename:books-craft-lexicon.w-ca3910e3c418f8cffcdb",
+        "chinesename:books-craft-lexicon.w-7518a3f7edf370402070",
+        "chinesename:books-craft-lexicon.w-1eae35fe988c02aabd9d",
+        "chinesename:books-craft-lexicon.w-bf678909da68b86bb744",
+        "chinesename:books-craft-lexicon.w-9d8dfc6ad9ed05063005",
+        "chinesename:books-craft-lexicon.w-8b9c112022202bc5f683",
+        "chinesename:books-craft-lexicon.w-5515c36994ce85566d68",
+        "chinesename:books-craft-lexicon.w-4aaf55814976c282b647"
+      ]
+    },
+    "wood-bone.bone": {
+      "pool": "chinesename:books-craft-lexicon.wood-bone",
+      "words": [
+        "chinesename:books-craft-lexicon.w-80bba7b12ed63153ab52",
+        "chinesename:books-craft-lexicon.w-bf7d9a7a9a7d1eca0477",
+        "chinesename:books-craft-lexicon.w-47a2f39f4619e4ddbea8",
+        "chinesename:books-craft-lexicon.w-f5711d62e04f297687e3",
+        "chinesename:books-craft-lexicon.w-dee706180eadf86754e4",
+        "chinesename:books-craft-lexicon.w-56942faf952d4410a4e2",
+        "chinesename:books-craft-lexicon.w-df1e348823cf9eea9e9d",
+        "chinesename:books-craft-lexicon.w-9190c279c11fa8ff00cc"
+      ]
+    }
+  }
+}

@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/pool-glyph-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading test world.");
+var world = World.world;
+var source = world.cultures.get(ids[0]);
+var branch = world.cultures.get(ids[1]);
+var father = world.units.get(ids[5]);
+var child = world.units.get(ids[6]);
+var order = new[] { "group_1", "chinesename_as_pool", "chinesename_keep_surname", "group_2", "chinesename_as_pool" };
+foreach (var culture in new[] { source, branch })
+{
+    var cards = culture.getOnomasticData(MetaType.Unit);
+    Check(cards.getFullTemplateData().SequenceEqual(order) &&
+        cards.getGroupString("group_1") == "afakasa agafasa", "The native short template failed to round-trip.");
+}
+child.data.get("chinesename.surname.v1", out string surname);
+Check(father.getName() == "欧阳青" && child.getName() == "欧阳怀" && surname == "欧阳", "Saved names or surname changed.");
+var service = NamingApi.Current;
+var state = service.GetWorld();
+Check(state.Cultures[branch.id].Parent == source.id && state.LanguageParents[ids[4]] == ids[2],
+    "Culture or language lineage was lost.");
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" };
+var generated = service.Generate(new NameRequest("worldbox:person", 23, branch.id, ids[4], inputs));
+Check(generated.Text == "欧阳青" && generated.Sources["surname"].Reference == "chinesename:surname",
+    "New naming after restart did not use the saved arrangement and language.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedMetas.selected_culture = branch;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + ids[4]).onClick.Invoke();
+for (int i = 0; i < 10; i++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(order) && preview?.EndsWith("青") == true,
+    "The native editor failed to reopen the saved arrangement: " + preview);
+return new { father = father.getName(), child = child.getName(), generated = generated.Text, preview, save };

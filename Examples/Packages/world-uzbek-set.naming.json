@@ -1,0 +1,272 @@
+{
+  "format": 1,
+  "id": "chinesename:world-uzbek-set",
+  "label": "乌兹别克绿洲",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:world-styles-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:world-styles-lexicon.uzbek.given"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.uzbek.city"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "国"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "乌兹别克语"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.steppe.creed"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.steppe.war-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:world-styles-lexicon.uzbek.realm"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.steppe.alliance-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:world-styles-lexicon.uzbek.city"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.steppe.army-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.steppe.book-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.steppe.motto"
+          }
+        ]
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "world-uzbek-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.steppe.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      }
+    ]
+  }
+}

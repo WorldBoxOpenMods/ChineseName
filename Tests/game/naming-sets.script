@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+
+const string style = "chinesename:western-localized";
+const string person = "worldbox:person";
+const string knownName = "约翰·史密斯";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+
+var world = World.world;
+Config.paused = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+founder.joinCity(world.cities.buildNewCity(founder, tile.zone));
+founder.setName("旧名");
+founder.data.custom_name = true;
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists(); world.cities.checkLists();
+
+var service = NamingApi.Current;
+var source = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages",
+    "western-localized.naming.json");
+var path = Path.Combine(WorldNamingStore.PackageDirectory, "test-western-localized.naming.json");
+File.Copy(source, path);
+Check(WorldNamingStore.ReloadPacks().Count == 0 && service.Packages.Contains(style), "The western set could not be installed.");
+var pack = service.GetPackage(style);
+Check(pack.Rules.Count == 17, "The western set does not provide all base categories.");
+var choices = service.GetWorld();
+choices.EnabledPacks.Add(style);
+choices.CulturePack = style;
+var basePack = service.GetPackage(service.DefaultPack);
+if (!choices.Languages.TryGetValue(language.id, out var preference)) choices.Languages[language.id] = preference = new LanguageNaming();
+foreach (var pair in new[] { (Pool: "chinesename:western-given", Word: "John"), (Pool: "chinesename:western-surname", Word: "Smith") })
+{
+    var id = basePack.Words.Single(word => word.Text == pair.Word && basePack.Pools[pair.Pool].ContainsKey(word.Id)).Id;
+    preference.Pools[pair.Pool] = new PoolEdit { ExcludeIds = basePack.Pools[pair.Pool].Keys.Where(key => key != id).ToList() };
+}
+WorldNamingStore.Apply(choices);
+var request = new NameRequest(person, 0, culture.id, language.id,
+    new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" });
+Check(service.Generate(request).Text == knownName &&
+      service.Generate(new NameRequest(person, 0, culture.id, language.id, request.Inputs, writing: NameWriting.Original)).Text == "John Smith",
+      "The sequence, translation or separator of the western name is wrong.");
+
+foreach (var type in service.Types.Where(type => type.Id.StartsWith("worldbox:", StringComparison.Ordinal)))
+{
+    var fields = type.Fields.Values.Where(field => field.Example != null).ToDictionary(field => field.Id, field => field.Example);
+    if (type.Id == person) fields["kind"] = "sapient";
+    var result = service.Generate(new NameRequest(type.Id, 0, culture.id, language.id, fields));
+    Check(result.Success && result.Sources.Values.Any(part => part.Reference?.StartsWith("chinesename:western-", StringComparison.Ordinal) == true),
+        "The western set fell through to classic names for " + type.Id);
+}
+File.Delete(path);
+Check(WorldNamingStore.ReloadPacks().Count == 0 && !service.Packages.Contains(style), "Removing the style left it installed.");
+var fallback = service.Generate(request);
+Check(fallback.Success && fallback.Text != knownName && founder.getName() == "旧名" &&
+      service.GetWorld().CulturePack == style, "Removing the style changed a saved name or lost its binding.");
+
+var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "naming-sets-save");
+Directory.CreateDirectory(output);
+for (int i = 0; i < 120 && !world.units.getSimpleList().Contains(founder); i++) await Game.NextFrame();
+world.units.checkLists(); world.kingdoms.checkLists(); world.cities.checkLists();
+var save = SaveManager.saveWorldToDirectory(output);
+Check(save.actors_data.Any(actor => actor.id == founder.getID()) && world.kingdoms.get(kingdom.id) != null,
+    "The naming-set fixture was not ready to save.");
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { founder.getID(), culture.id, language.id }.Select(id => id.ToString()));
+File.WriteAllText(Path.Combine(output, "fallback.txt"), fallback.Text);
+return new { styled = knownName, fallback = fallback.Text, savedName = founder.getName(), output };

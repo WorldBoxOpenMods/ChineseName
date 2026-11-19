@@ -1,0 +1,60 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const string given = "chinesename:species-lexicon.cat.given", place = "chinesename:species-lexicon.cat.place";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var map = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/nordic-cats-generations/map.wbox", StringComparison.Ordinal))
+    .OrderBy(path => path, StringComparer.Ordinal).Last();
+var original = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(map), "expected.txt"));
+long cultureId = long.Parse(original[0]), languageId = long.Parse(original[3].Split(' ').Last());
+
+SaveManager.loadMapFromBytes(File.ReadAllBytes(map));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+var world = World.world;
+Config.paused = true;
+var culture = world.cultures.get(cultureId);
+var founder = world.units.get(long.Parse(original[1]));
+Check(!SmoothLoader.isLoading() && founder?.language?.id == languageId && founder?.culture == culture,
+    "The three-generation source world did not reload.");
+var service = NamingApi.Current;
+var before = service.GetWorld();
+var profile = before.Languages[languageId];
+Check(before.Cultures[cultureId].Cards.Count == 3 && profile.Pools[given].ExcludeText.Contains("白袜") &&
+    profile.Pools[place].ExcludeIds.Count == 1 && profile.Pools[given].Bias.Values.Single() == 1.6 &&
+    profile.Pools[place].Bias.Values.Single() == 1.4, "The source map lost saved edits.");
+
+var types = new[] { ("worldbox:person", MetaType.Unit), ("worldbox:city", MetaType.City), ("worldbox:kingdom", MetaType.Kingdom) };
+var templates = types.Select(entry => culture.getOnomasticData(entry.Item2).getShortTemplate()).ToArray();
+string id = "verification:nordic-cats-" + Guid.NewGuid().ToString("N");
+string path = WorldNamingStore.ExportCombination(id, cultureId, languageId);
+var pack = NamingJson.Read<NamingPack>(File.ReadAllText(path));
+Check(pack.UseAsLanguageDefault && pack.Requires.Count == 0 &&
+    types.Select((entry, index) => pack.Rules[entry.Item1].Any(rule => rule.NativeCards?.Template == templates[index])).All(saved => saved),
+    "The exported pack omitted an edited native arrangement.");
+Check(pack.PoolAliases["灵猫个体名"] == given && pack.PoolAliases["灵猫地名词根"] == place &&
+    pack.Pools[given].Count > 1 && pack.Pools[place].Count > 1 &&
+    pack.WordGroups.Values.Any(group => group.Pool == given) && pack.WordGroups.Values.Any(group => group.Pool == place) &&
+    pack.WordGroups.Values.All(group => group.Words.All(pack.Pools[group.Pool].ContainsKey)) &&
+    !pack.Words.Any(word => word.Text == "白袜" && pack.Pools[given].ContainsKey(word.Id)) &&
+    profile.Pools[place].ExcludeIds.All(word => !pack.Pools[place].ContainsKey(word)),
+    "The exported vocabularies lost a pool, alias, group or exclusion.");
+Check(!pack.PoolAliases.ContainsKey("毛利风格给名"), "An unrelated atlas alias was copied.");
+
+string evidence = Path.Combine(output.FullName, "nordic-cats-export");
+Directory.CreateDirectory(evidence);
+File.WriteAllLines(Path.Combine(evidence, "expected.txt"), new[] { id, path }.Concat(templates));
+string originals = Path.Combine(evidence, "original-packs");
+Directory.CreateDirectory(originals);
+var sources = Directory.GetFiles(WorldNamingStore.PackageDirectory, "blend-*.naming.json");
+Check(sources.Length == 46, "The isolated source package set is incomplete.");
+foreach (string source in sources) File.Move(source, Path.Combine(originals, Path.GetFileName(source)));
+Check(WorldNamingStore.ReloadPacks().Count == 0 && service.Packages.Contains(id) &&
+    service.Packages.Contains("chinesename:species-lexicon") && !service.Packages.Contains("chinesename:world-nordic-set"),
+    "The isolated target profile still relies on the source packs.");
+return new { path, size = new FileInfo(path).Length, templates, wordPools = pack.Pools.Count,
+    groups = pack.WordGroups.Count, restoredFounder = founder.getName(), evidence };

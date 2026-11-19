@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool result, string message) { if (!result) throw new InvalidOperationException(message); }
+
+const string id = "chinesename:disk-smoke";
+var pack = new NamingPack
+{
+    Format = 1, Id = id, Supplemental = true, Priority = 200,
+    Requires = new Dictionary<string, int> { ["chinesename:classic"] = 1 },
+    RuleEdits = new Dictionary<string, RuleEdit>
+    {
+        ["worldbox:book/default"] = new RuleEdit
+        {
+            Fields = new Dictionary<string, PartEdit>
+            {
+                ["suffix"] = new PartEdit { Operation = new Part { Id = "suffix", Literal = "录" } }
+            }
+        }
+    }
+};
+var service = NamingApi.Current;
+var before = service.GetWorld();
+var request = new NameRequest("worldbox:book", 77);
+var oldName = service.Generate(request).Text;
+string file = WorldNamingStore.Export(pack);
+try
+{
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "The exported JSON could not be installed.");
+    Check(service.Packages.Contains(id), "The portable package is absent from the installed package list.");
+    Check(service.Generate(request).Text == oldName, "Installation must not enable the pack.");
+    var draft = service.GetWorld();
+    draft.EnabledPacks.Add(id);
+    Check(service.Preview(request, draft).Text.EndsWith("录"), "The scoped preview did not include the supplement.");
+    WorldNamingStore.Apply(draft);
+    Check(service.Generate(request).Text.EndsWith("录"), "Enabling the package did not affect new names.");
+
+    var original = World.world.map_stats;
+    World.world.map_stats = new MapStats();
+    try
+    {
+        Check(!NamingApi.Current.GetWorld().EnabledPacks.Contains(id), "A different world inherited enabled packs.");
+        Check(NamingApi.Current.Generate(request).Text == oldName, "A different world used the changed rule.");
+    }
+    finally { World.world.map_stats = original; }
+
+    File.Delete(file);
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "Package rescan failed after removal.");
+    Check(NamingApi.Current.GetWorld().EnabledPacks.Contains(id), "Removal erased the saved package reference.");
+    Check(NamingApi.Current.Generate(request).Text == oldName, "Package removal did not restore the baseline.");
+    file = WorldNamingStore.Export(pack);
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "The package could not be installed again.");
+    Check(NamingApi.Current.Generate(request).Text.EndsWith("录"), "Reinstallation did not restore the saved package.");
+    return new { id, previous = oldName, restored = NamingApi.Current.Generate(request).Text };
+}
+finally
+{
+    File.Delete(file);
+    WorldNamingStore.ReloadPacks();
+    WorldNamingStore.Apply(before);
+}

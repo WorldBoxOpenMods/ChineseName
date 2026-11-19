@@ -1,0 +1,278 @@
+{
+  "format": 1,
+  "id": "chinesename:world-russian-set",
+  "label": "俄语风格",
+  "requires": {
+    "chinesename:classic": 1,
+    "chinesename:world-styles-lexicon": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:world-styles-lexicon.russian.given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:world-styles-lexicon.russian.surname"
+          }
+        ],
+        "when": {
+          "kind": "sapient"
+        },
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "inheritance": "Father"
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.russian.city"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.russian.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "领"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.russian.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "传统"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.russian.realm"
+          },
+          {
+            "id": "suffix",
+            "literal": "俄语"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "founder-surname",
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:world-styles-lexicon.russian.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "家族"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.russian.surname"
+          },
+          {
+            "id": "suffix",
+            "literal": "氏族"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.northern.creed"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "attacker",
+            "input": "attacker"
+          },
+          {
+            "id": "bridge",
+            "literal": "—"
+          },
+          {
+            "id": "defender",
+            "input": "defender"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.northern.war-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "origin",
+            "input": "origin",
+            "fallbackPool": "chinesename:world-styles-lexicon.russian.realm"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.northern.alliance-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "station",
+            "input": "station",
+            "fallbackPool": "chinesename:world-styles-lexicon.russian.city"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.northern.army-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "topic",
+            "poolInput": "topic",
+            "pool": "chinesename:book-",
+            "fallbackPool": "chinesename:book-name"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:world-styles-lexicon.northern.book-ending"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.northern.motto"
+          }
+        ]
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "world-russian-set",
+        "priority": 40,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:world-styles-lexicon.northern.artifact"
+          },
+          {
+            "id": "material",
+            "poolInput": "material",
+            "pool": "chinesename:equipment-material",
+            "fallbackPool": "chinesename:equipment-material"
+          },
+          {
+            "id": "equipment",
+            "poolInput": "equipment",
+            "pool": "chinesename:equipment-kind",
+            "fallbackPool": "chinesename:equipment-kind"
+          }
+        ]
+      }
+    ]
+  }
+}

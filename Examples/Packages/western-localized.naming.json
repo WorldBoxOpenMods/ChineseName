@@ -1,0 +1,504 @@
+{
+  "format": 1,
+  "id": "chinesename:western-localized",
+  "label": "西式本地化",
+  "requires": {
+    "chinesename:classic": 1
+  },
+  "rules": {
+    "worldbox:person": [
+      {
+        "id": "sapient",
+        "priority": 10,
+        "when": {
+          "kind": "sapient"
+        },
+        "writing": "Chinese",
+        "chineseSeparator": "·",
+        "originalSeparator": " ",
+        "parts": [
+          {
+            "id": "given",
+            "pool": "chinesename:western-given"
+          },
+          {
+            "id": "surname",
+            "pool": "chinesename:western-surname"
+          }
+        ]
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "places",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-city-places"
+          }
+        ]
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "countries",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-kingdom-countries"
+          }
+        ]
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-culture"
+          }
+        ]
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-language"
+          }
+        ]
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-religion"
+          }
+        ]
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-family"
+          }
+        ]
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-clan"
+          }
+        ]
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-army"
+          }
+        ]
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-alliance"
+          }
+        ]
+      }
+    ],
+    "worldbox:world": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-world"
+          }
+        ]
+      }
+    ],
+    "worldbox:player": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-player"
+          }
+        ]
+      }
+    ],
+    "worldbox:subspecies": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-subspecies"
+          }
+        ]
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war"
+          }
+        ]
+      },
+      {
+        "id": "normal",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war-normal"
+          }
+        ],
+        "when": {
+          "kind": "normal"
+        },
+        "priority": 5
+      },
+      {
+        "id": "spite",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war-spite"
+          }
+        ],
+        "when": {
+          "kind": "spite"
+        },
+        "priority": 5
+      },
+      {
+        "id": "inspire",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war-inspire"
+          }
+        ],
+        "when": {
+          "kind": "inspire"
+        },
+        "priority": 5
+      },
+      {
+        "id": "rebellion",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war-rebellion"
+          }
+        ],
+        "when": {
+          "kind": "rebellion"
+        },
+        "priority": 5
+      },
+      {
+        "id": "whisper-of-war",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-war-whisper-of-war"
+          }
+        ],
+        "when": {
+          "kind": "whisper_of_war"
+        },
+        "priority": 5
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book"
+          }
+        ]
+      },
+      {
+        "id": "love-story",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-love-story"
+          }
+        ],
+        "when": {
+          "kind": "book_name_love_story"
+        },
+        "priority": 5
+      },
+      {
+        "id": "bad-story",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-bad-story"
+          }
+        ],
+        "when": {
+          "kind": "book_name_bad_story"
+        },
+        "priority": 5
+      },
+      {
+        "id": "fable",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-fable"
+          }
+        ],
+        "when": {
+          "kind": "book_name_fable"
+        },
+        "priority": 5
+      },
+      {
+        "id": "warfare-manual",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-warfare-manual"
+          }
+        ],
+        "when": {
+          "kind": "book_name_warfare_manual"
+        },
+        "priority": 5
+      },
+      {
+        "id": "economy-manual",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-economy-manual"
+          }
+        ],
+        "when": {
+          "kind": "book_name_economy_manual"
+        },
+        "priority": 5
+      },
+      {
+        "id": "stewardship-manual",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-stewardship-manual"
+          }
+        ],
+        "when": {
+          "kind": "book_name_stewardship_manual"
+        },
+        "priority": 5
+      },
+      {
+        "id": "diplomacy-manual",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-diplomacy-manual"
+          }
+        ],
+        "when": {
+          "kind": "book_name_diplomacy_manual"
+        },
+        "priority": 5
+      },
+      {
+        "id": "math",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-math"
+          }
+        ],
+        "when": {
+          "kind": "book_name_math"
+        },
+        "priority": 5
+      },
+      {
+        "id": "biology",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-biology"
+          }
+        ],
+        "when": {
+          "kind": "book_name_biology"
+        },
+        "priority": 5
+      },
+      {
+        "id": "history",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-book-history"
+          }
+        ],
+        "when": {
+          "kind": "book_name_history"
+        },
+        "priority": 5
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-item"
+          }
+        ]
+      },
+      {
+        "id": "legendary",
+        "when": {
+          "stage": "legendary"
+        },
+        "priority": 5,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-item"
+          }
+        ]
+      },
+      {
+        "id": "reforged",
+        "when": {
+          "stage": "reforge"
+        },
+        "priority": 5,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-item"
+          }
+        ]
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "default",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-motto"
+          }
+        ]
+      },
+      {
+        "id": "kingdom",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-motto-kingdom"
+          }
+        ],
+        "when": {
+          "kind": "kingdom"
+        },
+        "priority": 5
+      },
+      {
+        "id": "clan",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-motto-clan"
+          }
+        ],
+        "when": {
+          "kind": "clan"
+        },
+        "priority": 5
+      },
+      {
+        "id": "alliance",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-motto-alliance"
+          }
+        ],
+        "when": {
+          "kind": "alliance"
+        },
+        "priority": 5
+      }
+    ]
+  }
+}

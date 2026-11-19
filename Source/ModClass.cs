@@ -1,98 +1,43 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Chinese_Name.Abstract;
+using Chinese_Name.Naming.Game;
 using HarmonyLib;
-using NeoModLoader;
 using NeoModLoader.api;
-using NeoModLoader.api.attributes;
-using NeoModLoader.General;
 using NeoModLoader.services;
 
 namespace Chinese_Name;
 
-internal class ModClass : BasicMod<ModClass>, IReloadable
+internal sealed class ModClass : BasicMod<ModClass>
 {
-    private List<ICanReload> _reloadables = new List<ICanReload>();
-    private List<ICanPostInit> _postinits = new List<ICanPostInit>();
-    public Dictionary<string, string> GlobalParameters = new();
-    public static void LogAllException(Exception e)
-    {
-        LogService.LogException(e);
-        int i = 0;
-        while (e.InnerException != null)
-        {
-            LogService.LogInfo($"Inner Level: {i}");
-            LogService.LogException(e.InnerException);
-            e = e.InnerException;
-        }
-    }
-    private HashSet<IMod> _loaded_mods = new HashSet<IMod>();
-    private void Update()
-    {
-        foreach (var mod in WorldBoxMod.LoadedMods)
-        {
-            if (_loaded_mods.Contains(mod)) continue;
-            _loaded_mods.Add(mod);
-            try
-            {
-                ChineseNameGeneratorLibrary.Instance.LoadFromMod(mod);
-                WordLibraryLibrary.Instance.LoadFromMod(mod);
-            }
-            catch (Exception e)
-            {
-                LogAllException(e);
-            }
-        }
-    }
-
     protected override void OnModLoad()
     {
-        AssetManager._instance.add(WordLibraryLibrary.Instance, "Chinese_Name.WordLibraries");
-        AssetManager._instance.add(ChineseNameGeneratorLibrary.Instance, "Chinese_Name.ChineseNameGeneratorLibrary");
-
-
-        var init_types = new List<Type>();
-        foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(t =>
-                     typeof(ICanInit).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract))
+        WorldNamingStore.Initialize(GetDeclaration().FolderPath);
+        NativeNamingGlyphs.Register();
+        var harmony = new Harmony(GetDeclaration().UID + ".naming");
+        Type[] patches =
         {
-            init_types.Add(t);
-        }
-        
-        foreach (var t in InitAfterAttribute.Sort(init_types))
+            typeof(WorldNamingStore.NewWorld), typeof(VanillaNames.ActorNames), typeof(VanillaNames.FirstName),
+            typeof(VanillaNames.Birth), typeof(VanillaNames.CopyIdentity), typeof(VanillaNames.MaterializeIdentity),
+            typeof(IndependentNames.WorldNames), typeof(IndependentNames.AllianceName), typeof(IndependentNames.WarName),
+            typeof(IndependentNames.BookName), typeof(IndependentNames.ArmyName), typeof(IndependentNames.SubspeciesName),
+            typeof(IndependentNames.ItemOrigin), typeof(IndependentNames.LegendaryName), typeof(IndependentNames.ReforgeName),
+            typeof(IndependentNames.UndeadNames),
+            typeof(IndependentNames.KingdomMotto), typeof(IndependentNames.ClanMotto), typeof(IndependentNames.AllianceMotto),
+            typeof(NamingLineage.CultureSplit), typeof(NamingLineage.NewLanguage), typeof(NamingLineage.RenameSkeletonSubspecies),
+            typeof(NamingLineage.UpliftName), typeof(NamingWindow.EditorPointer), typeof(NamingWindow.EditorKeyboard),
+            typeof(NativeOnomastics.DrawGroup), typeof(NativeOnomastics.BeginArrangementDraw), typeof(NativeNamingTab.ReadDraft), typeof(NativeNamingTab.AttachEditor),
+            typeof(NativeNamingTab.DraftPreview), typeof(NativeNamingTab.InvalidatePreview), typeof(NativeNamingTab.CloseWordEditorOnLoad), typeof(NativeNamingTab.WordGroupSelection),
+            typeof(NativeNamingTab.BoundGroups), typeof(NativeNamingTab.GlyphPalette), typeof(NativeNamingTab.Categories),
+            typeof(NativeNamingTab.ResetGlyphs), typeof(NativeNamingTab.GlyphImport), typeof(NativeNamingTab.PreparePooledGlyph),
+            typeof(NativeNamingTab.WordGroupCharacters),
+            typeof(NamingWindow.OnomasticsEditor.PalettePosition)
+        };
+        foreach (var patch in patches)
         {
-            try
+            try { harmony.CreateClassProcessor(patch).Patch(); }
+            catch (Exception error)
             {
-                var can_init = (ICanInit)Activator.CreateInstance(t, true);
-                can_init.Init();
-                if (can_init is ICanReload reloadable)
-                {
-                    _reloadables.Add(reloadable);
-                }
-
-                if (can_init is ICanPostInit post_init)
-                {
-                    _postinits.Add(post_init);
-                }
-            }
-            catch (Exception e)
-            {
-                LogAllException(e);
-            }
-        }
-
-        foreach (var t in Assembly.GetExecutingAssembly().GetTypes()
-                     .Where(t => typeof(IPatch).IsAssignableFrom(t) && !t.IsInterface))
-        {
-            try
-            {
-                Harmony.CreateAndPatchAll(t, GetDeclaration().UID);
-            }
-            catch (Exception e)
-            {
-                LogAllException(e);
+                LogService.LogWarning("ChineseName could not install " + patch.Name + ". That entry uses vanilla naming.");
+                LogService.LogException(error);
             }
         }
     }
@@ -100,53 +45,7 @@ internal class ModClass : BasicMod<ModClass>, IReloadable
     public override void PostInit()
     {
         base.PostInit();
-        string locales_dir = GetLocaleFilesDirectory(GetDeclaration());
-        if (Directory.Exists(locales_dir))
-        {
-            var files = Directory.GetFiles(locales_dir, "*", SearchOption.AllDirectories);
-            var csv_separator = ',';
-
-            foreach (var locale_file in files)
-            {
-                try
-                {
-                    if (locale_file.EndsWith(".json"))
-                    {
-                        LM.LoadLocale(Path.GetFileNameWithoutExtension(locale_file), locale_file);
-                    }
-                    else if (locale_file.EndsWith(".csv"))
-                    {
-                        LM.LoadLocales(locale_file, csv_separator);
-                    }
-                }
-                catch (FormatException e)
-                {
-                    LogService.LogWarning(e.Message);
-                }
-            }
-
-            LM.ApplyLocale(false);
-        }
-
-        foreach (var can_post_init in _postinits)
-        {
-            try
-            {
-                can_post_init.PostInit();
-            }
-            catch (Exception e)
-            {
-                LogAllException(e);
-            }
-        }
+        NamingLineage.ConnectLanguageSplit();
+        NamingWindow.Register(gameObject);
     }
-    [Hotfixable]
-    public void Reload()
-    {
-        foreach (var reloadable in _reloadables)
-        {
-            reloadable.Reload();
-        }
-    }
-    
 }

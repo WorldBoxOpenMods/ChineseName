@@ -1,0 +1,186 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+var world = World.world;
+var firstTile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
+var secondTile = world.tiles_list.First(tile => tile.Type.ground &&
+    Math.Abs(tile.x - firstTile.x) + Math.Abs(tile.y - firstTile.y) > 40 && tile.zone.city == null);
+var first = world.units.createNewUnit("human", firstTile);
+var second = world.units.createNewUnit("human", secondTile);
+var firstKingdom = world.kingdoms.makeNewCivKingdom(first);
+var secondKingdom = world.kingdoms.makeNewCivKingdom(second);
+firstKingdom.setName("云津国");
+secondKingdom.setName("松岭国");
+var firstCulture = world.cultures.newCulture(first, true);
+var secondCulture = world.cultures.newCulture(second, true);
+first.setCulture(firstCulture);
+second.setCulture(secondCulture);
+firstKingdom.setCulture(firstCulture);
+secondKingdom.setCulture(secondCulture);
+var language = world.languages.newLanguage(first, true);
+first.joinLanguage(language);
+second.joinLanguage(language);
+firstKingdom.setLanguage(language);
+secondKingdom.setLanguage(language);
+var city = world.cities.buildNewCity(first, firstTile.zone);
+var secondCity = world.cities.buildNewCity(second, secondTile.zone);
+city.setCulture(firstCulture);
+secondCity.setCulture(secondCulture);
+first.joinCity(city);
+second.joinCity(secondCity);
+world.cultures.checkLists();
+world.languages.checkLists();
+world.kingdoms.checkLists();
+
+var service = NamingApi.Current;
+var pack = service.GetPackage(service.DefaultPack);
+var config = service.GetWorld();
+if (!config.Languages.TryGetValue(language.id, out var profile))
+    config.Languages[language.id] = profile = new LanguageNaming();
+void Restrict(string pool, string text)
+{
+    var word = pack.Words.Single(entry => entry.Text == text && pack.Pools[pool].ContainsKey(entry.Id));
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(id => id != word.Id).ToList() };
+}
+Restrict("chinesename:war-conquest", "征伐");
+Restrict("chinesename:war-uprising", "起事");
+Restrict("chinesename:army-formation", "卫");
+WorldNamingStore.Apply(config);
+
+world.console.Hide();
+SelectedUnit.select(first);
+SelectedMetas.selected_culture = firstCulture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+var toggles = tab._tab_groups._toggles.Where(toggle => toggle.gameObject.activeInHierarchy).ToArray();
+var categoryPanel = (RectTransform)tab._tab_groups.transform;
+Check(toggles.Length == 14 && toggles.All(toggle => toggle.transform.parent == categoryPanel && toggle.toggle.icon.sprite != null),
+    "All 14 icons should share the original category container.");
+var screen = (UnityEngine.Screen.width, UnityEngine.Screen.height, UnityEngine.Screen.fullScreenMode);
+int CountRows()
+{
+    var bounds = toggles.Select(toggle =>
+        RectTransformUtility.CalculateRelativeRectTransformBounds(categoryPanel, toggle.toggle.transform)).ToArray();
+    var rows = bounds.GroupBy(rect => Mathf.RoundToInt(rect.center.y)).Select(row => row.ToArray()).ToArray();
+    Check(bounds.All(rect => rect.min.x >= categoryPanel.rect.xMin - 1 && rect.max.x <= categoryPanel.rect.xMax + 1 &&
+              rect.min.y >= categoryPanel.rect.yMin - 1 && rect.max.y <= categoryPanel.rect.yMax + 1) &&
+        rows.All(row => row.Zip(row.Skip(1), (left, right) => left.max.x <= right.min.x + 1).All(separate => separate)) &&
+        rows.Zip(rows.Skip(1), (top, bottom) => top.Min(rect => rect.min.y) >= bottom.Max(rect => rect.max.y) - 1)
+            .All(separate => separate), "The category icons overlap or exceed their shared container.");
+    return rows.Length;
+}
+foreach (var (width, height) in new[] { (1280, 720), (960, 540) })
+{
+    UnityEngine.Screen.SetResolution(width, height, FullScreenMode.Windowed);
+    for (int i = 0; i < 175 && (UnityEngine.Screen.width != width || UnityEngine.Screen.height != height); i++) await Game.NextFrame();
+    await Frames();
+    Check(UnityEngine.Screen.width == width && UnityEngine.Screen.height == height, "Could not resize WorldBox.");
+    Check(CountRows() == 2, "Expected two rows at " + width + "×" + height);
+}
+float categoryWidth = categoryPanel.rect.width;
+categoryPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, categoryWidth * .65f);
+await Frames();
+Check(CountRows() == 3, "The original container did not wrap when narrowed.");
+categoryPanel.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, categoryWidth);
+UnityEngine.Screen.SetResolution(screen.width, screen.height, screen.fullScreenMode);
+await Frames();
+
+string Preview()
+{
+    var line = shell.transform.FindRecursive("PreviewName");
+    Check(line != null && line.GetComponent<Selectable>() == null, "Expected the single read-only preview.");
+    return line.GetComponent<Text>().text;
+}
+async System.Threading.Tasks.Task Edit(string id, string template, Func<string, bool> matches)
+{
+    toggles.Single(toggle => toggle.name == "tab_onomastics_" + id).toggle.click();
+    await Frames();
+    shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + language.id).onClick.Invoke();
+    await Frames();
+    tab.loadTemplate(template);
+    await Frames();
+    string preview = Preview();
+    Check(matches(preview), id + " preview was " + preview);
+    var state = service.GetWorld();
+    Check(state.Cultures[firstCulture.id].Cards["worldbox:" + id].Template == template &&
+          (!state.Cultures.TryGetValue(secondCulture.id, out var other) || !other.Cards.ContainsKey("worldbox:" + id)),
+        id + " edit did not isolate the two cultures.");
+}
+await Edit("war", "201|2:江门", text => text == "江门临川国征伐");
+await Edit("alliance", "0|0:两川同盟", text => text == "两川同盟");
+await Edit("army", "01|0:青岩", text => text == "青岩卫");
+await Edit("book", "01|0:同舟", text => text == "同舟纪");
+await Edit("motto", "0|0:守望同舟", text => text == "守望同舟");
+await Edit("item", "0|0:青炉", text => text == "青炉");
+
+var conquest = world.wars.newWar(firstKingdom, secondKingdom, AssetManager.war_types_library.get("normal"));
+var reverse = world.wars.newWar(secondKingdom, firstKingdom, AssetManager.war_types_library.get("normal"));
+var uprising = world.wars.newWar(secondKingdom, firstKingdom, AssetManager.war_types_library.get("rebellion"));
+Check(conquest.name == "江门云津国征伐" && reverse.name == "松岭国征伐" && uprising.name == "江门云津国起事",
+    "War source culture or subtype was lost: " + string.Join(", ", new[] { conquest.name, reverse.name, uprising.name }));
+var alliance = world.alliances.newAlliance(firstKingdom, secondKingdom);
+Check(alliance.name == "两川同盟", "Alliance bypassed its founder's culture: " + alliance.name);
+var army = world.armies.newArmy(first, city);
+var rivalArmy = world.armies.newArmy(second, secondCity);
+Check(army.name == "青岩卫" && rivalArmy.name != army.name, "Army did not use its city culture.");
+
+string WriteBook(string template, Actor author)
+{
+    var book = world.books.newObject();
+    book.newBook(author, AssetManager.book_types.list.First(type => type.name_template == "book_name_" + template),
+        null, null, null, null);
+    return book.name;
+}
+Check(WriteBook("history", first) == "同舟纪" && WriteBook("warfare_manual", first) == "同舟略" &&
+      WriteBook("history", second) != "同舟纪", "Book titles lost author culture or genre.");
+var clan = world.clans.newClan(first, true);
+Check(firstKingdom.getMotto() == "守望同舟" && alliance.getMotto() == "守望同舟" &&
+    clan.getMotto() == "守望同舟" && secondKingdom.getMotto() != "守望同舟", "A motto did not honor its source culture.");
+
+var weapon = AssetManager.items.list.First(asset => asset.equipment_type == EquipmentType.Weapon);
+var item = world.items.generateItem(weapon, firstKingdom, pTries: 0, pActor: first);
+var modifier = new ItemModAsset { quality = Rarity.R3_Legendary };
+Check(world.items.checkModName(item, modifier, weapon, first, out var legendary) && legendary == "青炉",
+    "The maker's culture did not name a legendary candidate.");
+Check(world.items.checkModName(item, modifier, weapon, null, out var byKingdom) && byKingdom == "青炉",
+    "The origin culture did not name an item without a maker.");
+var originalMods = weapon.item_modifiers;
+try
+{
+    weapon.item_modifiers = new[] { AssetManager.items_modifiers.list.First(mod => mod.quality == Rarity.R3_Legendary) };
+    var commissioned = world.items.generateItem(weapon, firstKingdom, pTries: 0, pActor: null);
+    Check(commissioned.name == "青炉", "A new legendary item from the kingdom was named " + commissioned.name);
+}
+finally { weapon.item_modifiers = originalMods; }
+item.reforge(1);
+Check(item.name == "青炉", "Reforging lost its culture.");
+item.data.custom_name = true;
+item.setName("传家宝");
+item.reforge(1);
+Check(item.name == "传家宝", "Reforging overwrote a manual name.");
+
+var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "culture-extra-save");
+Directory.CreateDirectory(output);
+for (int i = 0; i < 120 && !world.units.getSimpleList().Contains(first); i++) await Game.NextFrame();
+world.units.checkLists(); world.wars.checkLists(); world.kingdoms.checkLists(); world.cities.checkLists();
+var save = SaveManager.saveWorldToDirectory(output);
+Check(save.actors_data.Any(actor => actor.id == first.getID()), "The save missed the first actor.");
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] {
+    firstCulture.id, secondCulture.id, language.id, first.getID(), firstKingdom.id, conquest.id
+}.Select(id => id.ToString()));
+return new { war = conquest.name, rebellion = uprising.name, alliance = alliance.name, army = army.name, legendary,
+    manualItem = item.name, motto = firstKingdom.getMotto(), output };

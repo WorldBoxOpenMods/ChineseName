@@ -1,0 +1,36 @@
+using System;
+using System.Linq;
+using System.IO;
+using UnityEngine;
+using UnityEngine.UI;
+void Check(bool pass, string message) { if (!pass) throw new InvalidOperationException(message); }
+var shell = ScrollWindow.getCurrentWindow();
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+Check(tab != null && tab.parent_asset_specials.gameObject.activeInHierarchy, "The glyph palette must be visible.");
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+string shot = null;
+foreach (var size in new[] { (960,540), (1024,768), (1280,720) })
+{
+    UnityEngine.Screen.SetResolution(size.Item1, size.Item2, FullScreenMode.Windowed);
+    for (int i = 0; i < 175 && (UnityEngine.Screen.width != size.Item1 || UnityEngine.Screen.height != size.Item2); i++) await Game.NextFrame();
+    Check(UnityEngine.Screen.width == size.Item1 && UnityEngine.Screen.height == size.Item2, "Resolution change failed.");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    for (int i = 0; i < 32; i++) await Game.NextFrame();
+    var panel = (RectTransform)tab.parent_asset_specials.parent;
+    var icons = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>();
+    Check(icons.Length > 20 && shell.transform.FindRecursive("PreviewLanguageFlags") != null,
+       "The contents changed when resizing.");
+    foreach(var item in icons)
+    {
+        var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(panel, item.getRect());
+        Check(bounds.min.x >= panel.rect.xMin-1 && bounds.max.x <= panel.rect.xMax+1 &&
+             bounds.min.y >= panel.rect.yMin-1 && bounds.max.y <= panel.rect.yMax+1, "Glyph exceeds panel: " + item.onomastics_asset.id);
+    }
+    if (size.Item1 == 960)
+    {
+        shot = Path.Combine(output, "glyph-arrangement-960x540.png");
+        ScreenCapture.CaptureScreenshot(shot);
+        for (int i = 0; i < 30 && !File.Exists(shot); i++) await Game.NextFrame();
+    }
+}
+return new { resolutions = new[]{ "960x540","1024x768","1280x720" }, shot };

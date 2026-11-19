@@ -1,0 +1,30 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var file = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/package-word-group-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(file), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(file));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Save was not reloaded.");
+var service = NamingApi.Current;
+var state = service.GetWorld();
+long culture = long.Parse(expected[0]), language = long.Parse(expected[1]), city = long.Parse(expected[2]);
+var owner = World.world.cultures.get(culture);
+Check(owner != null && World.world.languages.get(language) != null, "The saved culture or language has no remaining speakers.");
+Check(World.world.cities.get(city).name == expected[3] && state.Languages[language].Pack == expected[4] &&
+    state.EnabledPacks.Contains(expected[5]) && service.Packages.Contains(expected[4]) &&
+    service.Packages.Contains(expected[5]) && !service.Packages.Contains(expected[6]),
+    "Reload did not restore the exported packages and existing name in isolation. Installed: " +
+    string.Join(", ", service.Packages) + " at " + WorldNamingStore.PackageDirectory);
+var incorrect = Enumerable.Range(1, 64).Select(seed =>
+    service.Generate(new NameRequest("worldbox:city", (ulong)seed, culture, language))).FirstOrDefault(result => result.Text != expected[7]);
+Check(incorrect == null, "New names after load did not use the exported alias and limited group. Got " + incorrect?.Text +
+    ". Active cards: " + owner.getOnomasticData(MetaType.City).getShortTemplate() +
+    ". Diagnostics: " + string.Join(", ", incorrect?.Diagnostics ?? Array.Empty<string>()));
+return new { existing = expected[3], newName = expected[7], file };

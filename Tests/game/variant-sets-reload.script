@@ -1,0 +1,74 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool ok, string error) { if (!ok) throw new InvalidOperationException(error); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/variant-sets-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the saved naming sets.");
+
+var world = World.world;
+Config.paused = true;
+var first = world.units.get(ids[0]);
+var guofeng = world.cultures.get(ids[1]);
+var wafuu = world.cultures.get(ids[2]);
+var city = world.cities.get(ids[5]);
+var newCity = world.cities.get(ids[6]);
+var elf = world.units.get(ids[7]);
+var fantasy = world.cultures.get(ids[8]);
+var country = world.kingdoms.get(ids[9]);
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+Check(settings.Cultures[guofeng.id].Pack == "chinesename:guofeng-set" &&
+      settings.Cultures[wafuu.id].Pack == "chinesename:wafuu-set" &&
+      settings.Cultures[fantasy.id].Pack == "chinesename:fantasy-race-set", "The culture pack bindings did not survive.");
+Check(first.getName() == "欧阳怀瑾" && city.name == "樱丘城" && newCity.name == "白滨町" && country.name == "绿叶王庭",
+    "A name changed after restarting.");
+Check(guofeng.getOnomasticData(MetaType.Unit).getGroupString("group_1") == "国风复姓" &&
+      wafuu.getOnomasticData(MetaType.City).getGroupString("group_2") == "町" &&
+      fantasy.getOnomasticData(MetaType.Kingdom).getGroupString("group_2") == "领" &&
+      elf.generateName(MetaType.Kingdom, 3) == "绿叶领", "A native edit did not survive.");
+
+NameResult CityName(long language) => service.Generate(new NameRequest("worldbox:city", 3, wafuu.id, language));
+Check(CityName(ids[3]).Text == "樱丘町" && CityName(ids[4]).Text == "白滨町", "Language preferences were not restored.");
+string filename = Path.Combine(WorldNamingStore.PackageDirectory, "test-variant-sets-wafuu-lexicon.naming.json");
+File.Move(filename, filename + ".disabled");
+try
+{
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "Scanning without the Wafuu dependency failed.");
+    var result = CityName(ids[4]);
+    Check(result.Success && result.Text != "白滨町" &&
+          result.Sources.Values.Any(source => source.Reference == "chinesename:places") &&
+          newCity.name == "白滨町" && wafuu.getOnomasticData(MetaType.City).getGroupString("group_2") == "町",
+        "Unloading the dependent lexicon did not fall back or discarded the edit.");
+}
+finally
+{
+    File.Move(filename + ".disabled", filename);
+    Check(WorldNamingStore.ReloadPacks().Count == 0, "Restoring the Wafuu dependency failed.");
+}
+Check(CityName(ids[4]).Text == "白滨町", "Restoring the lexicon did not recover the modified Wafuu set.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(world.units.get(wafuu.data.creator_id));
+SelectedMetas.selected_culture = wafuu;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_city").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + ids[4]).onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
+Check(preview == "白滨町" && tab.getOnomasticsData().getGroupString("group_2") == "町",
+    "The reverted pack did not reopen with the player-edited cards.");
+return new { savedPerson = first.getName(), savedCity = city.name, preview, freshCountry = elf.generateName(MetaType.Kingdom, 3), save };

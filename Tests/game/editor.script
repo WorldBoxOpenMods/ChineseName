@@ -1,0 +1,14 @@
+using System;
+using System.IO;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+
+NamingWindow.Open();
+await Game.NextFrame();
+await Game.NextFrame();
+var screenshot = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"),
+    "naming-editor-" + DateTime.UtcNow.ToString("HHmmssfff") + ".png");
+ScreenCapture.CaptureScreenshot(screenshot);
+for (int frame = 0; frame < 120 && !File.Exists(screenshot); frame++) await Game.NextFrame();
+if (!File.Exists(screenshot)) throw new InvalidOperationException("The editor screenshot was not captured.");
+return new { screenshot };

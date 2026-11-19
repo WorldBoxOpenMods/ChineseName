@@ -1,144 +1,33 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <OutputType>Library</OutputType>
     <LangVersion>12</LangVersion>
-    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
-    <GameManagedPath>$(MSBuildThisFileDirectory)..\..\worldbox_Data\Managed\</GameManagedPath>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GameRootPath Condition="'$(GameRootPath)' == ''">$(MSBuildThisFileDirectory)../..</GameRootPath>
+    <GameManagedPath>$(GameRootPath)/worldbox_Data/Managed</GameManagedPath>
+    <GameModsPath>$(GameRootPath)/worldbox_Data/StreamingAssets/mods</GameModsPath>
     <FrameworkPathOverride>$(GameManagedPath)</FrameworkPathOverride>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <Compile Include="Source/**/*.cs" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="Assembly-CSharp" HintPath="$(GameModsPath)/NML/Assembly-CSharp-Publicized.dll" />
+    <Reference Include="0Harmony" HintPath="$(GameModsPath)/NML/Assemblies/0Harmony.dll" />
+    <Reference Include="NeoModLoader" HintPath="$(GameModsPath)/NeoModLoader.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(GameManagedPath)/Newtonsoft.Json.dll" />
+    <Reference Include="netstandard" HintPath="$(GameManagedPath)/netstandard.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManagedPath)/UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(GameManagedPath)/UnityEngine.IMGUIModule.dll" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameManagedPath)/UnityEngine.InputLegacyModule.dll" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameManagedPath)/UnityEngine.TextRenderingModule.dll" />
+    <Reference Include="UnityEngine.UI" HintPath="$(GameManagedPath)/UnityEngine.UI.dll" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(GameManagedPath)/UnityEngine.UIModule.dll" />
+    <Reference Include="Unity.Mathematics" HintPath="$(GameManagedPath)/Unity.Mathematics.dll" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath Condition="Exists('..\..\BepInEx\core\0Harmony.dll')">..\..\BepInEx\core\0Harmony.dll</HintPath>
-      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll')">..\..\worldbox_Data\StreamingAssets\mods\NML\Assemblies\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath Condition="Exists('..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll')">..\..\worldbox_Data\StreamingAssets\mods\NML\Assembly-CSharp-Publicized.dll</HintPath>
-      <HintPath Condition="Exists('..\Cultiway\.GameSource\AuxiliaryFiles\GameAssemblies\Assembly-CSharp.dll')">..\Cultiway\.GameSource\AuxiliaryFiles\GameAssemblies\Assembly-CSharp.dll</HintPath>
-      <HintPath Condition="Exists('..\..\worldbox_Data\Managed\Assembly-CSharp.dll')">..\..\worldbox_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween">
-      <HintPath>..\..\worldbox_Data\Managed\DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zlib.CF">
-      <HintPath>..\..\worldbox_Data\Managed\Ionic.Zlib.CF.dll</HintPath>
-    </Reference>
-    <Reference Include="NeoModLoader">
-      <HintPath>..\..\worldbox_Data\StreamingAssets\mods\NeoModLoader.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\worldbox_Data\Managed\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="netstandard">
-      <HintPath>..\..\worldbox_Data\Managed\netstandard.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Purchasing.Common">
-      <HintPath>..\..\worldbox_Data\Managed\Purchasing.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="strings">
-      <HintPath>..\..\worldbox_Data\Managed\strings.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ClothModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.GridModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.GridModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.LocalizationModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.AppleCore">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleCore.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.AppleMacosStub">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleMacosStub.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.AppleStub">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.AppleStub.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.Codeless">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.Codeless.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.SecurityCore">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.SecurityCore.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.SecurityStub">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.SecurityStub.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.Stores">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.Stores.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.WinRTCore">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.WinRTCore.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing.WinRTStub">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.Purchasing.WinRTStub.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.SpriteMaskModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.StreamingModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextCoreFontEngineModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextCoreTextEngineModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TilemapModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\worldbox_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ChineseNamePackages\" />
-  </ItemGroup>
-
+  <Target Name="RequireGameReferences" BeforeTargets="ResolveAssemblyReferences"
+          Condition="!Exists('$(GameModsPath)/NML/Assembly-CSharp-Publicized.dll')">
+    <Error Text="Set GameRootPath to a WorldBox installation with NML and its publicized game assembly." />
+  </Target>
 </Project>

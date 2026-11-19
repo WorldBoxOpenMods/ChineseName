@@ -1,0 +1,142 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 12) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+string folder = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+var options = service.GetWorld();
+var stems = new[] { "guofeng", "wafuu", "fantasy-race" };
+foreach (var stem in stems)
+foreach (string kind in new[] { "lexicon", "set" })
+{
+    string file = stem + "-" + kind + ".naming.json";
+    File.Copy(Path.Combine(folder, file), Path.Combine(WorldNamingStore.PackageDirectory, "test-variant-sets-" + file), true);
+    string id = "chinesename:" + stem + "-" + kind;
+    if (!options.EnabledPacks.Contains(id)) options.EnabledPacks.Add(id);
+}
+var errors = WorldNamingStore.ReloadPacks();
+Check(errors.Count == 0, string.Join("\n", errors));
+var rows = new[] {
+    (Species: "human", Pools: new[] { "tradition", "speech", "hall", "emblem" },
+        Terms: new[] { "河洛", "江渚", "松庭", "白鹭" },
+        Names: new[] { "河洛之风", "江渚语", "松庭一门", "白鹭氏族" },
+        Dialect: "陇原", Founder: "欧阳", House: "欧阳一门"),
+    (Species: "human", Pools: new[] { "province", "province", "surname", "clan-root" },
+        Terms: new[] { "山城", "山城", "秋山", "武田" },
+        Names: new[] { "山城风俗", "山城语", "秋山家", "武田一门" },
+        Dialect: "相模", Founder: "佐藤", House: "佐藤家"),
+    (Species: "elf", Pools: new[] { "elf-place", "elf-language", "elf-house", "elf-house" },
+        Terms: new[] { "银柳", "风吟", "绿叶", "绿叶" },
+        Names: new[] { "银柳传统", "风吟语", "绿叶家族", "绿叶氏族" },
+        Dialect: "星咏", Founder: "银枝", House: "银枝家族")
+};
+var categories = new[] { MetaType.Culture, MetaType.Language, MetaType.Family, MetaType.Clan };
+var names = new List<string[]>();
+var edits = new List<long[]>();
+var fixtures = new List<(Actor Founder, Culture Culture, Language Other, WorldTile Tile)>();
+var zones = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(rows.Length).Select(group => group.First()).ToArray();
+for (int i = 0; i < rows.Length; i++)
+{
+    var row = rows[i];
+    var tile = zones[i];
+    var founder = world.units.createNewUnit(row.Species, tile);
+    var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+    var culture = world.cultures.newCulture(founder, true);
+    founder.setCulture(culture);
+    var home = world.languages.newLanguage(founder, true);
+    var other = world.languages.newLanguage(founder, false);
+    founder.joinLanguage(home);
+    founder.joinCity(world.cities.buildNewCity(founder, tile.zone));
+    founder.data.set("chinesename.surname.v1", "");
+    options.Cultures[culture.id] = new CultureNaming { Pack = "chinesename:" + stems[i] + "-set" };
+    string packId = "chinesename:" + stems[i] + "-lexicon";
+    var pack = service.GetPackage(packId);
+    void Set(Language language, string id, string value)
+    {
+        if (!options.Languages.TryGetValue(language.id, out var profile))
+            options.Languages.Add(language.id, profile = new LanguageNaming());
+        string pool = packId + "." + id;
+        var word = pack.Words.Single(w => w.Text == value && pack.Pools[pool].ContainsKey(w.Id));
+        profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(key => key != word.Id).ToList() };
+    }
+    for (int j = 0; j < row.Pools.Length; j++) Set(home, row.Pools[j], row.Terms[j]);
+    Set(other, row.Pools[1], row.Dialect);
+    fixtures.Add((founder, culture, other, tile));
+}
+WorldNamingStore.Apply(options);
+world.cultures.checkLists(); world.languages.checkLists(); world.units.checkLists();
+
+for (int i = 0; i < rows.Length; i++)
+{
+    var row = rows[i];
+    var (founder, culture, other, tile) = fixtures[i];
+    string[] actual = {
+        world.cultures.newCulture(founder, false).name,
+        world.languages.newLanguage(founder, false).name,
+        world.families.newFamily(founder, tile, null).name,
+        world.clans.newClan(founder, true).name
+    };
+    Check(actual.SequenceEqual(row.Names), stems[i] + " initial names: " + string.Join("，", actual));
+    founder.data.set("chinesename.surname.v1", row.Founder);
+    Check(world.families.newFamily(founder, tile, null).name == row.House, "The family ignored the founder's surname.");
+
+    world.console.Hide();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    SelectedUnit.select(founder);
+    SelectedMetas.selected_culture = culture;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    await Frames();
+    async System.Threading.Tasks.Task Select(MetaType type)
+    {
+        tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + type.ToString().ToLowerInvariant()).toggle.click();
+        await Frames();
+    }
+    string Preview() => shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+    string glyph = "chinesename:founder-surname";
+    for (int j = 0; j < categories.Length; j++)
+    {
+        await Select(categories[j]);
+        var cards = tab.getOnomasticsData().getFullTemplateData();
+        Check(cards.Contains(j == 2 ? glyph : "chinesename_as_pool"), categories[j] + " did not show its default glyphs.");
+        if (j != 2)
+            Check(Preview() == row.Names[j], categories[j] + " default preview was " + Preview());
+    }
+
+    await Select(MetaType.Language);
+    shell.GetComponentsInChildren<Button>().Single(b => b.name == "PreviewLanguage." + other.id).onClick.Invoke();
+    await Frames();
+    Check(Preview() == row.Dialect + "语", "The language flag did not change the vocabulary.");
+    var suffix = AssetManager.onomastics_library.get("group_2").short_id;
+    string previous = tab.getOnomasticsData().getShortTemplate();
+    tab.loadTemplate(previous.Replace(suffix + ":语", suffix + ":话"));
+    await Frames();
+    Check(Preview() == row.Dialect + "话", "The original language template could not be edited.");
+    founder.joinLanguage(other);
+    Check(world.languages.newLanguage(founder, false).name == row.Dialect + "话", "Creation ignored the edited group.");
+    edits.Add(new[] { culture.id, founder.getID(), other.id });
+    names.Add(actual.Append(row.House).Append(Preview()).ToArray());
+}
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "variant-social");
+Directory.CreateDirectory(output);
+world.cities.checkLists(); world.kingdoms.checkLists(); world.units.checkLists(); world.languages.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), edits.Select((ids, i) =>
+    string.Join(" ", ids) + " " + names[i].Last()));
+return new { names, verifiedStyles = names.Count, output };

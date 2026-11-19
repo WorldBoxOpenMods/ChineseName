@@ -1,0 +1,3213 @@
+{
+  "format": 1,
+  "id": "chinesename:guofeng-lexicon",
+  "label": "国风乡土词库",
+  "supplemental": true,
+  "words": [
+    {
+      "id": "chinesename:guofeng-lexicon.w-3399a0e651ad104cd1f5",
+      "text": "王"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c16667ca7839a011a548",
+      "text": "李"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f56a049fcc23f1ebfce1",
+      "text": "张"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b973e260b442e1402e06",
+      "text": "刘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c3a05bd5933256c17775",
+      "text": "陈"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3b4eb1eb439d4f1219ef",
+      "text": "杨"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c732e4d7e3805bf45ca3",
+      "text": "黄"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c9a85fff13f1e9e39e26",
+      "text": "赵"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-861aef24c6507f88ef6a",
+      "text": "吴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5c553ec3f6db54f0d1eb",
+      "text": "周"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-75669321492c00ca8379",
+      "text": "徐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1d8d64d2825e23903014",
+      "text": "孙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a25ee73c98d161721788",
+      "text": "马"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9dabef686a60d8db05fb",
+      "text": "朱"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e5877101f2e3e994f90a",
+      "text": "胡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0cff3c9b1cdea5254ca3",
+      "text": "林"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d61eecf2edd5350f25a7",
+      "text": "郭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c84635f39ee853adb126",
+      "text": "郑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3265cdd08afe9532de5f",
+      "text": "何"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1932990c7655e6365cd6",
+      "text": "罗"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-197c19bb92cb84f0ee18",
+      "text": "宋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-63facc0bd935ebca1ed8",
+      "text": "梁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-70883efd8bcaa95f8329",
+      "text": "谢"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5ca5981535bf3964e62f",
+      "text": "唐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8d3edaa608b7415fed1d",
+      "text": "许"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3f679bff4a5ff733e758",
+      "text": "韩"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9182f5770d6a443fa60c",
+      "text": "邓"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3e1efbe39a5bd512373b",
+      "text": "曹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-737b8448fca13c0c52ee",
+      "text": "彭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5a8650445fc66c15d36a",
+      "text": "曾"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-10a015c0d1e1cef9d50e",
+      "text": "萧"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a10ef997bac2e24f4ad2",
+      "text": "潘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c313bfaa8f635a30a8c8",
+      "text": "田"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bf438051494fe04e72b3",
+      "text": "董"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1ee51b6fe1d3547ec12c",
+      "text": "袁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ec46c055ab6b5fcc04ac",
+      "text": "于"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-86b296ab68b632889016",
+      "text": "余"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2bdcf003d4c7714b5a00",
+      "text": "叶"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b9e2deead0643716ed78",
+      "text": "魏"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b20c19f2398e39261352",
+      "text": "苏"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6bef7be42424e5d11529",
+      "text": "蒋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d92ed84e1f4bc8d070cb",
+      "text": "沈"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-22c418e81adad7f90711",
+      "text": "俞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-60c41a22aa565fe9535d",
+      "text": "傅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-02f183bb9133100629bc",
+      "text": "姜"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7b5a5d75887b37172480",
+      "text": "章"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-05cccae333e8e7e69630",
+      "text": "陆"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b4abb1ffcfeb0e41f36f",
+      "text": "岳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ee222b9d0f8aaab82374",
+      "text": "柳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-13e3018b48e5bcfce1cd",
+      "text": "顾"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8a8df676c46b7f354503",
+      "text": "秦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4a5ff677e1dbd37c59fe",
+      "text": "方"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e6df66d46112600ca97b",
+      "text": "石"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-86c76e8aa56230689dac",
+      "text": "晏"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2d518fb7f0a2c8aba3e2",
+      "text": "阮"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b0a1eab5f902df03059f",
+      "text": "花"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-52f354ecfccbb8e6c739",
+      "text": "蓝"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8482432c0274b8eefff7",
+      "text": "夏"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ade370960fa70d09d4c1",
+      "text": "祁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3ae2613a80c3e2da7d61",
+      "text": "甘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-db2442c675892042280c",
+      "text": "梅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d49dfdc172d6a3f0ec98",
+      "text": "乔"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-800cb3985451033864ee",
+      "text": "骆"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6244c4c963a8b55a89cf",
+      "text": "应"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-13d02782bb6a4598133a",
+      "text": "钟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7f77f23af7b0dcc87b5e",
+      "text": "元"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7032411fb35a3c9aaa1e",
+      "text": "温"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-27889fe8a4457ceeaf43",
+      "text": "戴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3342f4fb437f82a886c0",
+      "text": "池"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220",
+      "text": "宁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3b17f9fe1656694f2863",
+      "text": "纪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-360de0f3f0f356331786",
+      "text": "翟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6054497e09b08fb6bec0",
+      "text": "奚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-acf507207473bfe1908d",
+      "text": "孟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a70073342238ee86b440",
+      "text": "颜"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6d321163002e1b4f8737",
+      "text": "裴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bdd8ba1ad6ec18894431",
+      "text": "霍"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9e58283056307a7c674a",
+      "text": "景"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1340558609b818387d21",
+      "text": "欧阳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-be83ceae110e709d25d7",
+      "text": "司马"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-44fb0e31426b3daa9382",
+      "text": "诸葛"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ad127d6c29af28cff5b2",
+      "text": "上官"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5ed94fc5bfa026ad0187",
+      "text": "夏侯"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-31cd60ce395e46770679",
+      "text": "皇甫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e37530b89c739cadecb4",
+      "text": "公孙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3d1ce1d34b5e96e2d9eb",
+      "text": "司徒"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9dd1374e3e104a232c76",
+      "text": "司空"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9c21da9c64b1c072e26e",
+      "text": "百里"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bbaca97a375de6bdef90",
+      "text": "尉迟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-400fd9d1e56f51302c62",
+      "text": "慕容"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4e8fb56f59595778a47f",
+      "text": "令狐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e63ed3810bf65a40dbbb",
+      "text": "长孙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3098d9617358626788a6",
+      "text": "宇文"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-eeab6a98a62bd0542897",
+      "text": "赫连"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a422cb2909cb0eef8961",
+      "text": "闻人"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0917070a5fa0eec7db0f",
+      "text": "端木"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0416d3bd90468ac15976",
+      "text": "南宫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-67bad5bd2b80097da3ea",
+      "text": "东方"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e9b2f1970dee3b7b583d",
+      "text": "太史"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0a320a6c5ad7365cca17",
+      "text": "公羊"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-da149bbe755750b1a669",
+      "text": "呼延"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-246ad115c5903a4573ee",
+      "text": "单于"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-23052a661ccb7fdd3a5d",
+      "text": "景行"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a3c51c7c97cb9c6fa39d",
+      "text": "怀瑾"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-75b304aa94209920bd06",
+      "text": "正则"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f3f88ba254edef17095a",
+      "text": "灵均"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c7a40eead85b1927e393",
+      "text": "知新"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4a43db1b0728d917d631",
+      "text": "知远"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bdffd44d4bbbbb8e6503",
+      "text": "明德"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2f2d52a127206061fda6",
+      "text": "敦仁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fa9ef9ee318cd108072d",
+      "text": "允恭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1781fd9ecfa599a289fb",
+      "text": "德明"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e7dc6a18127e9e29da4e",
+      "text": "守拙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f328ca6f1f3104d0a806",
+      "text": "含章"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7a241ab768f93876420e",
+      "text": "修远"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-55d1bc074b26cd01b8a2",
+      "text": "君实"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8f69b19ae83093c53b2e",
+      "text": "季良"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ff86588d79b8bca39087",
+      "text": "思齐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c50c17439fb3f856f05c",
+      "text": "成文"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-59ddfc35a17ae6c48afd",
+      "text": "维桢"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d381c30be48e9483e840",
+      "text": "怀信"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-32808de6cfb16d56cd86",
+      "text": "允和"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-eb4d00bdd678d07b70f3",
+      "text": "云舟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-11beb3cb8af351a7a41f",
+      "text": "晏清"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a5b786d1602b11200f77",
+      "text": "青岚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ef23d38cd141578e7597",
+      "text": "安澜"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a029ba341e17059c2d25",
+      "text": "望舒"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3ea416f064ac315c89c0",
+      "text": "雨棠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c20e3fee21f1934c5542",
+      "text": "清越"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d64b97988c0eed129f73",
+      "text": "汀兰"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f342b68ada539d6922d5",
+      "text": "听松"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c829496e7ec26ddd09eb",
+      "text": "竹深"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6637fc93d5b5c9a9f78a",
+      "text": "晚晴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-69a8b1cf4afd702f910d",
+      "text": "松月"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a6b3ab24e74567a345d3",
+      "text": "归鸿"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-823838f239a1c04805cb",
+      "text": "千岭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3deb115c1470a0fe9bda",
+      "text": "林泉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cf556b42fd1e0a271e01",
+      "text": "朝雨"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-19a38df05fad3dfcd929",
+      "text": "涵秋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cc33aa991e5f3adb5e85",
+      "text": "念川"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5913c07a4ab3d0086422",
+      "text": "鹭明"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-17190da88fa1e76c1a4d",
+      "text": "雁行"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-94116b03bf953c4ea213",
+      "text": "孝诚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-00d5823e47c7c6cf7a7a",
+      "text": "仁辅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e4074b55e72b92463663",
+      "text": "淑贞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7298485cce21a196f65b",
+      "text": "贞吉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-60f02bcc2223483efc70",
+      "text": "承宗"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ccdd3e935197df079cf1",
+      "text": "延福"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-49e0ac365019a7727b39",
+      "text": "长宁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-03cc9b6c017cc4308a71",
+      "text": "安和"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d7f3d656325c04cabeba",
+      "text": "怀安"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4ce22f0d8e70a485c73e",
+      "text": "景福"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-119642bc2e0d6f7f0082",
+      "text": "安生"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d47d704bab39de522fe7",
+      "text": "庆余"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f151cd1f6be7b82cf68a",
+      "text": "守成"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6b08c40e2b19e48d14c5",
+      "text": "崇礼"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-669f8017030cf6394177",
+      "text": "继明"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5adbc889970129361454",
+      "text": "嘉顺"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f2a1c32b510f6ea642c6",
+      "text": "云生"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-64a438acb2500901857a",
+      "text": "兰心"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2fde2b673888c55ae688",
+      "text": "安平"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2dac66c73f33b19529ca",
+      "text": "宜年"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cf5a539d7b65b32b3ad5",
+      "text": "允"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b8feccc658745aa0cded",
+      "text": "怀"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-13d240c5bfa9d3d913f9",
+      "text": "承"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b59fb74892bec41c21c9",
+      "text": "继"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-60f13de463447482b8c0",
+      "text": "昭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bb3fda11b33e0c397681",
+      "text": "敦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a3e857680ce862328cad",
+      "text": "尚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bd5d0f6169394c03c96e",
+      "text": "修"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2dfb6f5012b3d7640e62",
+      "text": "崇"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-80ed541cd9598f566dd8",
+      "text": "维"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3abc957a4e9f5180df61",
+      "text": "嘉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-06052e19691f4aaffa7d",
+      "text": "绍"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3e99b40c4d396dde49e6",
+      "text": "守"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-142a111bdbd817ad0e2b",
+      "text": "知"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e29819879046dd06a3a9",
+      "text": "敏"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1f0193a67ca758d59d3e",
+      "text": "溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-83e9c51b3d7ade97d596",
+      "text": "星"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-dc06463a46eb5685ac7a",
+      "text": "青"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-260bd8046266d9bc9d54",
+      "text": "望"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-32d42b97294a13655f4c",
+      "text": "云"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-124d60580dfa9072dbea",
+      "text": "雨"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-89c3d5f9c3e582fb599c",
+      "text": "汀"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-86bd01841ad0fd082989",
+      "text": "兰"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fb82c376e9fbaa5bdb10",
+      "text": "松"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-80fb34c2cd82723ab137",
+      "text": "岫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fc1a6dc7ac704ab829ef",
+      "text": "初"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-207d9e34c15ca695c17d",
+      "text": "棠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9288090c16c9205260f1",
+      "text": "雁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1625179badc027f0d0a2",
+      "text": "月"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2c881c4923a9863bd06b",
+      "text": "德"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3677ef77b1574d162d7c",
+      "text": "文"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-04a990cfa68416f034dc",
+      "text": "诚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f006725b762250a30817",
+      "text": "贞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d734dea2e6253abe4239",
+      "text": "宗"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-eeb661df940d88075234",
+      "text": "辅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b433a7ea39936c5c706a",
+      "text": "仁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7460af6dd6a629bde359",
+      "text": "礼"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b25471b1ca084b2c95db",
+      "text": "恒"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d37a5d0db685a2acd42c",
+      "text": "谦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c4d5becf50f379f97a6c",
+      "text": "忠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-77f34a38180f766e6363",
+      "text": "安"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2527ecf9122b145bdd68",
+      "text": "平"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3d7114281f5b59d9a7ab",
+      "text": "和"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5dc039f2f84bf3866e94",
+      "text": "实"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b5aae693581d12c80a2a",
+      "text": "川"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9d09e3e0765a2e8dc190",
+      "text": "舟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e3f2f3cb990237e92ebe",
+      "text": "岚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5d2d0d8422767fc34da7",
+      "text": "泉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9c2aa8352e75b16dc646",
+      "text": "霁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fe5bbe7905c33c4fdcc0",
+      "text": "霖"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-727cf371de8886247750",
+      "text": "砚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5f8e490558897efa493c",
+      "text": "森"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f207fe7960fd1f31d5c1",
+      "text": "桐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5800cb071050b885e920",
+      "text": "野"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0ede0734dd4ab09cf1b1",
+      "text": "竹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-389a3f1a1da198141936",
+      "text": "霞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d88c3023292cc2c7fa93",
+      "text": "羽"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a5d6966e0e8e902d8ef9",
+      "text": "荷"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-537ee404352f15afec68",
+      "text": "商"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f77d7d6fdcadc75e03f2",
+      "text": "越"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bb1e2a980983d47956fc",
+      "text": "楚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a9252925bd57dc1b9ff5",
+      "text": "齐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9b56fb9ec265f6fe5f05",
+      "text": "鲁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2486504e64ec71940ab0",
+      "text": "蔡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9971297206c91c865fd6",
+      "text": "卫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f3e2433ef9ca89dec348",
+      "text": "燕"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-420831b8176fa513e7bb",
+      "text": "闽"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0df32dfde3c70a54119c",
+      "text": "粤"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-612aef6f9a8a5e30234d",
+      "text": "晋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-dfcd2da79f3c672aae6b",
+      "text": "隋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-80fa989e688472cd956d",
+      "text": "汉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-61b8365933063699fa23",
+      "text": "陇"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d73cabac5d49551be914",
+      "text": "蜀"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f3956d55514d3929d9d8",
+      "text": "凉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7e68a03a3ae48fd04d6a",
+      "text": "雍"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0eda571dff152d91d6f0",
+      "text": "代"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-28c005f26cf524f438da",
+      "text": "岐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-25b778833cd346cf664d",
+      "text": "安陵"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3acf46ced4e9bb802ef5",
+      "text": "孤竹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-90ce234cccdcfbed6b7c",
+      "text": "陆浑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7dcf4e07e2f2edf687d4",
+      "text": "中山"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-592a72a61dc9a942b2b8",
+      "text": "新蔡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-00764f00183e1962b444",
+      "text": "下邳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5c6dcbd65c5f2df529d3",
+      "text": "彭城"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1fe9f4e2bffa92657579",
+      "text": "南阳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d147c72434e4f929a356",
+      "text": "北凉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-dcda65c2ea4727c5fcda",
+      "text": "后赵"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3c9ce47b6287e3a712be",
+      "text": "东晋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ce12af7383a4ed1e79c6",
+      "text": "南唐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a2156bdab86643e940db",
+      "text": "西凉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e610d0e5638f5fe45924",
+      "text": "南梁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d2a30f484ca8d0dddc21",
+      "text": "青云"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ca39e4dad2b8ecfecfa0",
+      "text": "云岫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-500100a236169eb3f606",
+      "text": "长川"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-21b6cf38409d7284491b",
+      "text": "澄海"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bdbf32562552ee1e81a0",
+      "text": "玉衡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bdd3c417de747cbb7c7c",
+      "text": "朔原"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3222426abd19b1db6b18",
+      "text": "瑞庭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6a730fe37a740e5d426a",
+      "text": "苍陵"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2a9d7ff54ac2480d9156",
+      "text": "光原"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a038e296cf9ee0257048",
+      "text": "衡泽"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-935e932d1094d3b749b3",
+      "text": "晴川"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e1ea02933f9061be183f",
+      "text": "栖原"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-56ee51d6f9089b79c646",
+      "text": "临水"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-913474da373bd003e1ac",
+      "text": "东宸"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c33a810ad9046e79949f",
+      "text": "南市"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ef994bb7afee54decbba",
+      "text": "东桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a27dd09749704c51daa1",
+      "text": "青石"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-74f5702a53fe2205f865",
+      "text": "槐安"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6b1e00ea343b4f6c5227",
+      "text": "宛渠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6b39a0792a73be2c26d5",
+      "text": "西汀"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0e886249e811ecb3aa10",
+      "text": "柳桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-dafc5fdf8d347cb698b6",
+      "text": "杨埠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7565466f804bbdcc4df1",
+      "text": "白圩"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-52c1a8d5bdc008b0e5eb",
+      "text": "江口"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-baa7cc087a70e3decc02",
+      "text": "枫渡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7227fea238ff8cafc07e",
+      "text": "陆桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-87209e997d179bde0fcc",
+      "text": "长埠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8efa8c808aa7d83b680e",
+      "text": "徐桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f94cb1a20b984a0b6878",
+      "text": "古埠"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4ac7d42b036128ef1c24",
+      "text": "桃溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5707441041e10790a6eb",
+      "text": "平桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-71972e2db6360af2b25c",
+      "text": "青塘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-33823a1a7adf2a7a44d8",
+      "text": "盐浦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-270717c1b17e88fd01f8",
+      "text": "杏林"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2ec9fd9b09bf4d839195",
+      "text": "溪源"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4b540796df81a3e78a07",
+      "text": "桃坞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-08fe893f9f4ac022c410",
+      "text": "石陌"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ecd4c2706eaa3db4c5a3",
+      "text": "梅溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-70c499f90d471b2b3e0f",
+      "text": "青田"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ccfa6b41b415ffc4550e",
+      "text": "竹里"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-441809c30506614b353f",
+      "text": "稻岭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8b97e57f1dbca470d678",
+      "text": "杏坞"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fdfe14f767f3582404d4",
+      "text": "藕塘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6507b73849b2470e6008",
+      "text": "东堰"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1cd166a212e64b620e2b",
+      "text": "松冈"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f16a46b1146ed3ac7c0a",
+      "text": "兰皋"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6562882729f4b647c95f",
+      "text": "山阳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c6a5048154977deaef5f",
+      "text": "赤陶"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f1ad3500208f8b2d89e9",
+      "text": "双槐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-12f53c23ae1ddc286543",
+      "text": "禾亭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e0291b94a875d8436070",
+      "text": "芦荡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fbac51e8ba324faa3a4f",
+      "text": "驿柳"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b658e4d0eee37e4a9fca",
+      "text": "关山"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7e4a9d9b28f3ffe78388",
+      "text": "朔门"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-88e6584ac69e8a4ac1ff",
+      "text": "雁回"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-facf1c84f8a10cea0212",
+      "text": "落石"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1e8d4c16940c2645c2f8",
+      "text": "悬谷"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-600939157a1ff8db8677",
+      "text": "玉泉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2d84b81eb914ad4209ad",
+      "text": "陇西"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-040c894e51b638fe53cd",
+      "text": "回岭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ec625c027b11ac7d0104",
+      "text": "岩梁"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ea4e84a4063f1fb3d3dc",
+      "text": "龙脊"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3a04832d4be0c23d3cb5",
+      "text": "井陉"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-805c5203bf3d4851aac0",
+      "text": "黄沙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-251e34216d7a34555cb8",
+      "text": "幔山"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3d4e2e8187e190d52b95",
+      "text": "堡原"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-8f76206a04845db7cd36",
+      "text": "三岔"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-16572862d4c0427bb3f8",
+      "text": "白垣"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2df825fbdaad71be1b3c",
+      "text": "府"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-73007de2a43139b7555c",
+      "text": "州"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a86fa5a1f03eaebef7a7",
+      "text": "县"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-71acf738115db70c2d16",
+      "text": "郡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7eabb36ba1ab565b65e9",
+      "text": "都"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f4af4f3ef18a3450e848",
+      "text": "邑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b1a6152ed38c74dba6bf",
+      "text": "镇"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-838d805b8ad09c437c44",
+      "text": "坊"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-767c596dbfefebd16ce2",
+      "text": "市"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cf662fc92a5bc727cc00",
+      "text": "庄"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-61a401cf32d4f165e993",
+      "text": "堡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bd2a01de83f96e506296",
+      "text": "寨"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e3acd7c95f1c961119f5",
+      "text": "津"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-eb100cbabc568d535175",
+      "text": "渡"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d1566afa505af0f03b91",
+      "text": "国"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e676afc00222404c16bf",
+      "text": "邦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-419c745398dffb654b26",
+      "text": "朝"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2c922454f2d631224e14",
+      "text": "王朝"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-96da11258bbe0f3cc1c9",
+      "text": "王国"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7b82f9ac2ef5cf2ea145",
+      "text": "侯国"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-77ef5850a8d620fe6278",
+      "text": "诸州"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-06630489a687a8480743",
+      "text": "诸邦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b20b6409a86fa843607b",
+      "text": "群邑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a9d4c8ed424385d72e8d",
+      "text": "列城"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-bbd46e528a69a44df869",
+      "text": "联邦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3b819393f1542cff9d68",
+      "text": "都护府"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2458f9ad1b69e650be56",
+      "text": "与民同心"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-51c6f609692c6d16abf8",
+      "text": "协和万邦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b25c37c6783bcb77f6eb",
+      "text": "崇实黜浮"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2e06dabcad52e3dce296",
+      "text": "任贤使能"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ac5f3ac0ddd84c700029",
+      "text": "守法安民"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-931b3790a68fa81ab1b3",
+      "text": "邦本在民"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c1dcf11f363ce0e851b3",
+      "text": "以公正治国"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-514cd3b61a841735d251",
+      "text": "德以绥远"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b880a6697cc01416383e",
+      "text": "居安思危"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c782a9fcd7cd4cfe701b",
+      "text": "勤政爱民"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d95d35a8b55ecac159a6",
+      "text": "审名实定赏罚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-78bc435913a01914cf09",
+      "text": "兼爱非攻"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5e5d71c1cf23021811ee",
+      "text": "厚德载物"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-af1caa1903b188b13a2d",
+      "text": "格物致知"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-582a64fcbeaa193e9f03",
+      "text": "慎终如始"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-97d4bbf79b67f06e7520",
+      "text": "和而不同"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f5b50d1d0ccbbd99f14c",
+      "text": "言必有信"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c276b7fdf467b2afc499",
+      "text": "见贤思齐"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e89547e57396b2d29324",
+      "text": "修身立德"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a2a4c9ec0057a2e64195",
+      "text": "君子怀德"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-49abba3990b27fd3c340",
+      "text": "勤以持家"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c8bceee00a03c04a6bbf",
+      "text": "见利思义"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c5ea2e8a9f07101836a0",
+      "text": "青禾"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0dcd080a79195926d044",
+      "text": "玉垣"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1ba9f7395870582f279d",
+      "text": "沧浪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-69dc9d8c5a1f8709a63d",
+      "text": "朔风"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3d2c5360873f87d1c1a0",
+      "text": "海桑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-88f779a684a87ff07dac",
+      "text": "桂舟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3",
+      "text": "白鹭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-77303e12efe864b6af95",
+      "text": "赤松"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b11e0a306636605684bc",
+      "text": "明汀"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7958f11d5ad3e39f958e",
+      "text": "野梅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-742d6ceec106ca753901",
+      "text": "长河"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f7031792a74f38064dc2",
+      "text": "槐月"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-521f20d39eaf242aaf5d",
+      "text": "守土"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-f42f1fa52b8471b3c48e",
+      "text": "同舟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-afbd1a2f93ea3f39bec1",
+      "text": "礼耕"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e42a2fd0637672d36c6c",
+      "text": "守信"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-86dfcde851fb0c0a6224",
+      "text": "承志"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-240ac992f0f479fb0364",
+      "text": "秉义"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-447b1c900ea8dfcb2136",
+      "text": "清议"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-abebd14cce842e8fb1b8",
+      "text": "守约"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cad6ca996f74cf721966",
+      "text": "勤民"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-67431a66b8853dba14e3",
+      "text": "保境"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b711e30c9c4a33fc98b5",
+      "text": "崇贤"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-03a51c9e87eea69e41e8",
+      "text": "信和"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-05a2a2d9f2d0cf00801b",
+      "text": "河洛"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-69aacaf5f3c597f0bb91",
+      "text": "云泽"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-53b2ca5109e840fc5596",
+      "text": "岭南"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-da2510df7f9708283da6",
+      "text": "海隅"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-adb73eee69098808aee6",
+      "text": "江淮"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-18631f025b1eee042c10",
+      "text": "岱麓"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-534fbaf6b0b59736a025",
+      "text": "关陇"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d2bb01a4598d2272e721",
+      "text": "尚文"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-894e920ac6c0b3e019d8",
+      "text": "崇工"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-609c5ca5daef26ef0667",
+      "text": "重诺"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a5b098dcbd5dd83d29be",
+      "text": "崇学"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4752374e88bd8ea842ec",
+      "text": "敬山"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1183e8b2580373f38da4",
+      "text": "江渚"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-652a74a71fc517e367dc",
+      "text": "南音"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-17066a3b768ec8ae2fa1",
+      "text": "吴越"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-86a65acd594837136dff",
+      "text": "淮川"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-42dcf75b077ad97e4c35",
+      "text": "泽口"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7497a8492d489720e92e",
+      "text": "临溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1a46dfc5f361340d7f80",
+      "text": "海东"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-81550408cbf8d86a9f88",
+      "text": "越音"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1269f6b715a80c91fc8b",
+      "text": "陇原"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d5d2106abcd6b8f00414",
+      "text": "塞音"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e43a6b668e568029ddfc",
+      "text": "山右"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0ec13f452d277b72ffe4",
+      "text": "朔方"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-53cfd0c433c39d8ec1e9",
+      "text": "西岫"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2ae3a2aeec485e3b3f74",
+      "text": "岭上"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d07e61bdc97f2e1a1946",
+      "text": "秦声"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a158376d13f9e518956f",
+      "text": "松庭"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-e89cd48249127fca1213",
+      "text": "敦睦"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-144316ae2d9e57bd34e5",
+      "text": "积善"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7cac4468f50893586011",
+      "text": "明训"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1242ecf53eae72f789ce",
+      "text": "谦德"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-67785f927566af542531",
+      "text": "耕读"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a9c1c333feb532627cc9",
+      "text": "兰溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6ea56f2b55358e5786c6",
+      "text": "枫桥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-288b6adfbb5cbe5f9ae6",
+      "text": "水竹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-487d9550d074dc7547fc",
+      "text": "白沙"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1a641e046df114c02af2",
+      "text": "槐里"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0528030eaff589349131",
+      "text": "柳塘"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3a027441f073ebf077eb",
+      "text": "青溪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-91de18f3f689be90915d",
+      "text": "棠阴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-d3f8b380c4cb83b8a3ad",
+      "text": "之战"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-28ba0f82964f7f5a17c7",
+      "text": "兵事"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-73aebf2735a961feefbd",
+      "text": "战纪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5f8f194f035b9a16ddae",
+      "text": "交兵"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a829695c8a4f35cf495b",
+      "text": "会战"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7ae0219da3aead459434",
+      "text": "战役"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7ca6f8d2364efaace14c",
+      "text": "边战"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-1201ca2fd3db0434c29d",
+      "text": "攻防战"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2ffa5f34893d5751467b",
+      "text": "会盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7646fe9d31f603730153",
+      "text": "同盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c364274b1124dae57a9d",
+      "text": "共约"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b3f008771b4d84d5da91",
+      "text": "歃血之盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6d8f51d277b33b82a1eb",
+      "text": "诸邦盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-0c89e1ad1be011eaece8",
+      "text": "守望盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-17ab3aee2159e4348d4e",
+      "text": "联防约"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-2007c997e45be86bd0b1",
+      "text": "通好盟"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b650eed6e43ba9821e95",
+      "text": "戍军"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a219458557f0a4858e43",
+      "text": "边军"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-574db1de77f394fc14b9",
+      "text": "城防营"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-b51bb5d4b716aa29188c",
+      "text": "骁骑"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-803940895092389a35df",
+      "text": "神策军"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ab9193c9be88b9c93643",
+      "text": "锐士"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-79b392f7beb5f979bdc4",
+      "text": "先锋营"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-382557fee2325ffe7486",
+      "text": "志"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fc72a4479732661f0e5a",
+      "text": "录"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-9500d0d6a1915de660f4",
+      "text": "鉴"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cf995a6e671576960b43",
+      "text": "略"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-ccca74461399d2a0c9e3",
+      "text": "说"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-73108bd2d533b482d401",
+      "text": "通编"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-4ed393a02528cc2aea83",
+      "text": "疏义"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-cf34e3dc8424c3ca6b12",
+      "text": "百炼"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3c7856a895fcb19f39f1",
+      "text": "玄纹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-fe858983d0e6ab32af32",
+      "text": "龙纹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-a22d7a3ad267181487a2",
+      "text": "素纹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-c824daa137707ed91571",
+      "text": "云篆"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-73fad7506b3595722c63",
+      "text": "星纹"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-7e6809be1b345bbccfb1",
+      "text": "照雪"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-6b8e5d20a8e268bf25cc",
+      "text": "青冥"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-3c886bdae61b60f5c67c",
+      "text": "临渊"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-37f3552266d5b662520f",
+      "text": "长明"
+    },
+    {
+      "id": "chinesename:guofeng-lexicon.w-5a31d99182e2b151beb1",
+      "text": "怀光"
+    }
+  ],
+  "pools": {
+    "chinesename:guofeng-lexicon.single-surname": {
+      "chinesename:guofeng-lexicon.w-3399a0e651ad104cd1f5": 1,
+      "chinesename:guofeng-lexicon.w-c16667ca7839a011a548": 1,
+      "chinesename:guofeng-lexicon.w-f56a049fcc23f1ebfce1": 1,
+      "chinesename:guofeng-lexicon.w-b973e260b442e1402e06": 1,
+      "chinesename:guofeng-lexicon.w-c3a05bd5933256c17775": 1,
+      "chinesename:guofeng-lexicon.w-3b4eb1eb439d4f1219ef": 1,
+      "chinesename:guofeng-lexicon.w-c732e4d7e3805bf45ca3": 1,
+      "chinesename:guofeng-lexicon.w-c9a85fff13f1e9e39e26": 1,
+      "chinesename:guofeng-lexicon.w-861aef24c6507f88ef6a": 1,
+      "chinesename:guofeng-lexicon.w-5c553ec3f6db54f0d1eb": 1,
+      "chinesename:guofeng-lexicon.w-75669321492c00ca8379": 1,
+      "chinesename:guofeng-lexicon.w-1d8d64d2825e23903014": 1,
+      "chinesename:guofeng-lexicon.w-a25ee73c98d161721788": 1,
+      "chinesename:guofeng-lexicon.w-9dabef686a60d8db05fb": 1,
+      "chinesename:guofeng-lexicon.w-e5877101f2e3e994f90a": 1,
+      "chinesename:guofeng-lexicon.w-0cff3c9b1cdea5254ca3": 1,
+      "chinesename:guofeng-lexicon.w-d61eecf2edd5350f25a7": 1,
+      "chinesename:guofeng-lexicon.w-c84635f39ee853adb126": 1,
+      "chinesename:guofeng-lexicon.w-3265cdd08afe9532de5f": 1,
+      "chinesename:guofeng-lexicon.w-1932990c7655e6365cd6": 1,
+      "chinesename:guofeng-lexicon.w-197c19bb92cb84f0ee18": 1,
+      "chinesename:guofeng-lexicon.w-63facc0bd935ebca1ed8": 1,
+      "chinesename:guofeng-lexicon.w-70883efd8bcaa95f8329": 1,
+      "chinesename:guofeng-lexicon.w-5ca5981535bf3964e62f": 1,
+      "chinesename:guofeng-lexicon.w-8d3edaa608b7415fed1d": 1,
+      "chinesename:guofeng-lexicon.w-3f679bff4a5ff733e758": 1,
+      "chinesename:guofeng-lexicon.w-9182f5770d6a443fa60c": 1,
+      "chinesename:guofeng-lexicon.w-3e1efbe39a5bd512373b": 1,
+      "chinesename:guofeng-lexicon.w-737b8448fca13c0c52ee": 1,
+      "chinesename:guofeng-lexicon.w-5a8650445fc66c15d36a": 1,
+      "chinesename:guofeng-lexicon.w-10a015c0d1e1cef9d50e": 1,
+      "chinesename:guofeng-lexicon.w-a10ef997bac2e24f4ad2": 1,
+      "chinesename:guofeng-lexicon.w-c313bfaa8f635a30a8c8": 1,
+      "chinesename:guofeng-lexicon.w-bf438051494fe04e72b3": 1,
+      "chinesename:guofeng-lexicon.w-1ee51b6fe1d3547ec12c": 1,
+      "chinesename:guofeng-lexicon.w-ec46c055ab6b5fcc04ac": 1,
+      "chinesename:guofeng-lexicon.w-86b296ab68b632889016": 1,
+      "chinesename:guofeng-lexicon.w-2bdcf003d4c7714b5a00": 1,
+      "chinesename:guofeng-lexicon.w-b9e2deead0643716ed78": 1,
+      "chinesename:guofeng-lexicon.w-b20c19f2398e39261352": 1,
+      "chinesename:guofeng-lexicon.w-6bef7be42424e5d11529": 1,
+      "chinesename:guofeng-lexicon.w-d92ed84e1f4bc8d070cb": 1,
+      "chinesename:guofeng-lexicon.w-22c418e81adad7f90711": 1,
+      "chinesename:guofeng-lexicon.w-60c41a22aa565fe9535d": 1,
+      "chinesename:guofeng-lexicon.w-02f183bb9133100629bc": 1,
+      "chinesename:guofeng-lexicon.w-7b5a5d75887b37172480": 1,
+      "chinesename:guofeng-lexicon.w-05cccae333e8e7e69630": 1,
+      "chinesename:guofeng-lexicon.w-b4abb1ffcfeb0e41f36f": 1,
+      "chinesename:guofeng-lexicon.w-ee222b9d0f8aaab82374": 1,
+      "chinesename:guofeng-lexicon.w-13e3018b48e5bcfce1cd": 1,
+      "chinesename:guofeng-lexicon.w-8a8df676c46b7f354503": 1,
+      "chinesename:guofeng-lexicon.w-4a5ff677e1dbd37c59fe": 1,
+      "chinesename:guofeng-lexicon.w-e6df66d46112600ca97b": 1,
+      "chinesename:guofeng-lexicon.w-86c76e8aa56230689dac": 1,
+      "chinesename:guofeng-lexicon.w-2d518fb7f0a2c8aba3e2": 1,
+      "chinesename:guofeng-lexicon.w-b0a1eab5f902df03059f": 1,
+      "chinesename:guofeng-lexicon.w-52f354ecfccbb8e6c739": 1,
+      "chinesename:guofeng-lexicon.w-8482432c0274b8eefff7": 1,
+      "chinesename:guofeng-lexicon.w-ade370960fa70d09d4c1": 1,
+      "chinesename:guofeng-lexicon.w-3ae2613a80c3e2da7d61": 1,
+      "chinesename:guofeng-lexicon.w-db2442c675892042280c": 1,
+      "chinesename:guofeng-lexicon.w-d49dfdc172d6a3f0ec98": 1,
+      "chinesename:guofeng-lexicon.w-800cb3985451033864ee": 1,
+      "chinesename:guofeng-lexicon.w-6244c4c963a8b55a89cf": 1,
+      "chinesename:guofeng-lexicon.w-13d02782bb6a4598133a": 1,
+      "chinesename:guofeng-lexicon.w-7f77f23af7b0dcc87b5e": 1,
+      "chinesename:guofeng-lexicon.w-7032411fb35a3c9aaa1e": 1,
+      "chinesename:guofeng-lexicon.w-27889fe8a4457ceeaf43": 1,
+      "chinesename:guofeng-lexicon.w-3342f4fb437f82a886c0": 1,
+      "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220": 1,
+      "chinesename:guofeng-lexicon.w-3b17f9fe1656694f2863": 1,
+      "chinesename:guofeng-lexicon.w-360de0f3f0f356331786": 1,
+      "chinesename:guofeng-lexicon.w-6054497e09b08fb6bec0": 1,
+      "chinesename:guofeng-lexicon.w-acf507207473bfe1908d": 1,
+      "chinesename:guofeng-lexicon.w-a70073342238ee86b440": 1,
+      "chinesename:guofeng-lexicon.w-6d321163002e1b4f8737": 1,
+      "chinesename:guofeng-lexicon.w-bdd8ba1ad6ec18894431": 1,
+      "chinesename:guofeng-lexicon.w-9e58283056307a7c674a": 1
+    },
+    "chinesename:guofeng-lexicon.compound-surname": {
+      "chinesename:guofeng-lexicon.w-1340558609b818387d21": 1,
+      "chinesename:guofeng-lexicon.w-be83ceae110e709d25d7": 1,
+      "chinesename:guofeng-lexicon.w-44fb0e31426b3daa9382": 1,
+      "chinesename:guofeng-lexicon.w-ad127d6c29af28cff5b2": 1,
+      "chinesename:guofeng-lexicon.w-5ed94fc5bfa026ad0187": 1,
+      "chinesename:guofeng-lexicon.w-31cd60ce395e46770679": 1,
+      "chinesename:guofeng-lexicon.w-e37530b89c739cadecb4": 1,
+      "chinesename:guofeng-lexicon.w-3d1ce1d34b5e96e2d9eb": 1,
+      "chinesename:guofeng-lexicon.w-9dd1374e3e104a232c76": 1,
+      "chinesename:guofeng-lexicon.w-9c21da9c64b1c072e26e": 1,
+      "chinesename:guofeng-lexicon.w-bbaca97a375de6bdef90": 1,
+      "chinesename:guofeng-lexicon.w-400fd9d1e56f51302c62": 1,
+      "chinesename:guofeng-lexicon.w-4e8fb56f59595778a47f": 1,
+      "chinesename:guofeng-lexicon.w-e63ed3810bf65a40dbbb": 1,
+      "chinesename:guofeng-lexicon.w-3098d9617358626788a6": 1,
+      "chinesename:guofeng-lexicon.w-eeab6a98a62bd0542897": 1,
+      "chinesename:guofeng-lexicon.w-a422cb2909cb0eef8961": 1,
+      "chinesename:guofeng-lexicon.w-0917070a5fa0eec7db0f": 1,
+      "chinesename:guofeng-lexicon.w-0416d3bd90468ac15976": 1,
+      "chinesename:guofeng-lexicon.w-67bad5bd2b80097da3ea": 1,
+      "chinesename:guofeng-lexicon.w-e9b2f1970dee3b7b583d": 1,
+      "chinesename:guofeng-lexicon.w-0a320a6c5ad7365cca17": 1,
+      "chinesename:guofeng-lexicon.w-da149bbe755750b1a669": 1,
+      "chinesename:guofeng-lexicon.w-246ad115c5903a4573ee": 1
+    },
+    "chinesename:guofeng-lexicon.given": {
+      "chinesename:guofeng-lexicon.w-23052a661ccb7fdd3a5d": 1,
+      "chinesename:guofeng-lexicon.w-a3c51c7c97cb9c6fa39d": 1,
+      "chinesename:guofeng-lexicon.w-75b304aa94209920bd06": 1,
+      "chinesename:guofeng-lexicon.w-f3f88ba254edef17095a": 1,
+      "chinesename:guofeng-lexicon.w-c7a40eead85b1927e393": 1,
+      "chinesename:guofeng-lexicon.w-4a43db1b0728d917d631": 1,
+      "chinesename:guofeng-lexicon.w-bdffd44d4bbbbb8e6503": 1,
+      "chinesename:guofeng-lexicon.w-2f2d52a127206061fda6": 1,
+      "chinesename:guofeng-lexicon.w-fa9ef9ee318cd108072d": 1,
+      "chinesename:guofeng-lexicon.w-1781fd9ecfa599a289fb": 1,
+      "chinesename:guofeng-lexicon.w-e7dc6a18127e9e29da4e": 1,
+      "chinesename:guofeng-lexicon.w-f328ca6f1f3104d0a806": 1,
+      "chinesename:guofeng-lexicon.w-7a241ab768f93876420e": 1,
+      "chinesename:guofeng-lexicon.w-55d1bc074b26cd01b8a2": 1,
+      "chinesename:guofeng-lexicon.w-8f69b19ae83093c53b2e": 1,
+      "chinesename:guofeng-lexicon.w-ff86588d79b8bca39087": 1,
+      "chinesename:guofeng-lexicon.w-c50c17439fb3f856f05c": 1,
+      "chinesename:guofeng-lexicon.w-59ddfc35a17ae6c48afd": 1,
+      "chinesename:guofeng-lexicon.w-d381c30be48e9483e840": 1,
+      "chinesename:guofeng-lexicon.w-32808de6cfb16d56cd86": 1,
+      "chinesename:guofeng-lexicon.w-eb4d00bdd678d07b70f3": 1,
+      "chinesename:guofeng-lexicon.w-11beb3cb8af351a7a41f": 1,
+      "chinesename:guofeng-lexicon.w-a5b786d1602b11200f77": 1,
+      "chinesename:guofeng-lexicon.w-ef23d38cd141578e7597": 1,
+      "chinesename:guofeng-lexicon.w-a029ba341e17059c2d25": 1,
+      "chinesename:guofeng-lexicon.w-3ea416f064ac315c89c0": 1,
+      "chinesename:guofeng-lexicon.w-c20e3fee21f1934c5542": 1,
+      "chinesename:guofeng-lexicon.w-d64b97988c0eed129f73": 1,
+      "chinesename:guofeng-lexicon.w-f342b68ada539d6922d5": 1,
+      "chinesename:guofeng-lexicon.w-c829496e7ec26ddd09eb": 1,
+      "chinesename:guofeng-lexicon.w-6637fc93d5b5c9a9f78a": 1,
+      "chinesename:guofeng-lexicon.w-69a8b1cf4afd702f910d": 1,
+      "chinesename:guofeng-lexicon.w-a6b3ab24e74567a345d3": 1,
+      "chinesename:guofeng-lexicon.w-823838f239a1c04805cb": 1,
+      "chinesename:guofeng-lexicon.w-3deb115c1470a0fe9bda": 1,
+      "chinesename:guofeng-lexicon.w-cf556b42fd1e0a271e01": 1,
+      "chinesename:guofeng-lexicon.w-19a38df05fad3dfcd929": 1,
+      "chinesename:guofeng-lexicon.w-cc33aa991e5f3adb5e85": 1,
+      "chinesename:guofeng-lexicon.w-5913c07a4ab3d0086422": 1,
+      "chinesename:guofeng-lexicon.w-17190da88fa1e76c1a4d": 1,
+      "chinesename:guofeng-lexicon.w-94116b03bf953c4ea213": 1,
+      "chinesename:guofeng-lexicon.w-00d5823e47c7c6cf7a7a": 1,
+      "chinesename:guofeng-lexicon.w-e4074b55e72b92463663": 1,
+      "chinesename:guofeng-lexicon.w-7298485cce21a196f65b": 1,
+      "chinesename:guofeng-lexicon.w-60f02bcc2223483efc70": 1,
+      "chinesename:guofeng-lexicon.w-ccdd3e935197df079cf1": 1,
+      "chinesename:guofeng-lexicon.w-49e0ac365019a7727b39": 1,
+      "chinesename:guofeng-lexicon.w-03cc9b6c017cc4308a71": 1,
+      "chinesename:guofeng-lexicon.w-d7f3d656325c04cabeba": 1,
+      "chinesename:guofeng-lexicon.w-4ce22f0d8e70a485c73e": 1,
+      "chinesename:guofeng-lexicon.w-119642bc2e0d6f7f0082": 1,
+      "chinesename:guofeng-lexicon.w-d47d704bab39de522fe7": 1,
+      "chinesename:guofeng-lexicon.w-f151cd1f6be7b82cf68a": 1,
+      "chinesename:guofeng-lexicon.w-6b08c40e2b19e48d14c5": 1,
+      "chinesename:guofeng-lexicon.w-669f8017030cf6394177": 1,
+      "chinesename:guofeng-lexicon.w-5adbc889970129361454": 1,
+      "chinesename:guofeng-lexicon.w-f2a1c32b510f6ea642c6": 1,
+      "chinesename:guofeng-lexicon.w-64a438acb2500901857a": 1,
+      "chinesename:guofeng-lexicon.w-2fde2b673888c55ae688": 1,
+      "chinesename:guofeng-lexicon.w-2dac66c73f33b19529ca": 1
+    },
+    "chinesename:guofeng-lexicon.given-first": {
+      "chinesename:guofeng-lexicon.w-cf5a539d7b65b32b3ad5": 1,
+      "chinesename:guofeng-lexicon.w-b8feccc658745aa0cded": 1,
+      "chinesename:guofeng-lexicon.w-13d240c5bfa9d3d913f9": 1,
+      "chinesename:guofeng-lexicon.w-b59fb74892bec41c21c9": 1,
+      "chinesename:guofeng-lexicon.w-60f13de463447482b8c0": 1,
+      "chinesename:guofeng-lexicon.w-bb3fda11b33e0c397681": 1,
+      "chinesename:guofeng-lexicon.w-a3e857680ce862328cad": 1,
+      "chinesename:guofeng-lexicon.w-bd5d0f6169394c03c96e": 1,
+      "chinesename:guofeng-lexicon.w-2dfb6f5012b3d7640e62": 1,
+      "chinesename:guofeng-lexicon.w-80ed541cd9598f566dd8": 1,
+      "chinesename:guofeng-lexicon.w-9e58283056307a7c674a": 1,
+      "chinesename:guofeng-lexicon.w-3abc957a4e9f5180df61": 1,
+      "chinesename:guofeng-lexicon.w-06052e19691f4aaffa7d": 1,
+      "chinesename:guofeng-lexicon.w-3e99b40c4d396dde49e6": 1,
+      "chinesename:guofeng-lexicon.w-142a111bdbd817ad0e2b": 1,
+      "chinesename:guofeng-lexicon.w-e29819879046dd06a3a9": 1,
+      "chinesename:guofeng-lexicon.w-1f0193a67ca758d59d3e": 1,
+      "chinesename:guofeng-lexicon.w-83e9c51b3d7ade97d596": 1,
+      "chinesename:guofeng-lexicon.w-dc06463a46eb5685ac7a": 1,
+      "chinesename:guofeng-lexicon.w-260bd8046266d9bc9d54": 1,
+      "chinesename:guofeng-lexicon.w-32d42b97294a13655f4c": 1,
+      "chinesename:guofeng-lexicon.w-0cff3c9b1cdea5254ca3": 1,
+      "chinesename:guofeng-lexicon.w-124d60580dfa9072dbea": 1,
+      "chinesename:guofeng-lexicon.w-89c3d5f9c3e582fb599c": 1,
+      "chinesename:guofeng-lexicon.w-86bd01841ad0fd082989": 1,
+      "chinesename:guofeng-lexicon.w-fb82c376e9fbaa5bdb10": 1,
+      "chinesename:guofeng-lexicon.w-80fb34c2cd82723ab137": 1,
+      "chinesename:guofeng-lexicon.w-fc1a6dc7ac704ab829ef": 1,
+      "chinesename:guofeng-lexicon.w-207d9e34c15ca695c17d": 1,
+      "chinesename:guofeng-lexicon.w-ee222b9d0f8aaab82374": 1,
+      "chinesename:guofeng-lexicon.w-9288090c16c9205260f1": 1,
+      "chinesename:guofeng-lexicon.w-1625179badc027f0d0a2": 1
+    },
+    "chinesename:guofeng-lexicon.given-last": {
+      "chinesename:guofeng-lexicon.w-2c881c4923a9863bd06b": 1,
+      "chinesename:guofeng-lexicon.w-3677ef77b1574d162d7c": 1,
+      "chinesename:guofeng-lexicon.w-04a990cfa68416f034dc": 1,
+      "chinesename:guofeng-lexicon.w-f006725b762250a30817": 1,
+      "chinesename:guofeng-lexicon.w-d734dea2e6253abe4239": 1,
+      "chinesename:guofeng-lexicon.w-eeb661df940d88075234": 1,
+      "chinesename:guofeng-lexicon.w-b433a7ea39936c5c706a": 1,
+      "chinesename:guofeng-lexicon.w-7460af6dd6a629bde359": 1,
+      "chinesename:guofeng-lexicon.w-b25471b1ca084b2c95db": 1,
+      "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220": 1,
+      "chinesename:guofeng-lexicon.w-d37a5d0db685a2acd42c": 1,
+      "chinesename:guofeng-lexicon.w-c4d5becf50f379f97a6c": 1,
+      "chinesename:guofeng-lexicon.w-77f34a38180f766e6363": 1,
+      "chinesename:guofeng-lexicon.w-2527ecf9122b145bdd68": 1,
+      "chinesename:guofeng-lexicon.w-3d7114281f5b59d9a7ab": 1,
+      "chinesename:guofeng-lexicon.w-5dc039f2f84bf3866e94": 1,
+      "chinesename:guofeng-lexicon.w-b4abb1ffcfeb0e41f36f": 1,
+      "chinesename:guofeng-lexicon.w-b5aae693581d12c80a2a": 1,
+      "chinesename:guofeng-lexicon.w-9d09e3e0765a2e8dc190": 1,
+      "chinesename:guofeng-lexicon.w-e3f2f3cb990237e92ebe": 1,
+      "chinesename:guofeng-lexicon.w-5d2d0d8422767fc34da7": 1,
+      "chinesename:guofeng-lexicon.w-9c2aa8352e75b16dc646": 1,
+      "chinesename:guofeng-lexicon.w-fe5bbe7905c33c4fdcc0": 1,
+      "chinesename:guofeng-lexicon.w-727cf371de8886247750": 1,
+      "chinesename:guofeng-lexicon.w-5f8e490558897efa493c": 1,
+      "chinesename:guofeng-lexicon.w-f207fe7960fd1f31d5c1": 1,
+      "chinesename:guofeng-lexicon.w-5800cb071050b885e920": 1,
+      "chinesename:guofeng-lexicon.w-0ede0734dd4ab09cf1b1": 1,
+      "chinesename:guofeng-lexicon.w-389a3f1a1da198141936": 1,
+      "chinesename:guofeng-lexicon.w-d88c3023292cc2c7fa93": 1,
+      "chinesename:guofeng-lexicon.w-a5d6966e0e8e902d8ef9": 1
+    },
+    "chinesename:guofeng-lexicon.country-short": {
+      "chinesename:guofeng-lexicon.w-8482432c0274b8eefff7": 1,
+      "chinesename:guofeng-lexicon.w-537ee404352f15afec68": 1,
+      "chinesename:guofeng-lexicon.w-5c553ec3f6db54f0d1eb": 1,
+      "chinesename:guofeng-lexicon.w-861aef24c6507f88ef6a": 1,
+      "chinesename:guofeng-lexicon.w-f77d7d6fdcadc75e03f2": 1,
+      "chinesename:guofeng-lexicon.w-bb1e2a980983d47956fc": 1,
+      "chinesename:guofeng-lexicon.w-197c19bb92cb84f0ee18": 1,
+      "chinesename:guofeng-lexicon.w-a9252925bd57dc1b9ff5": 1,
+      "chinesename:guofeng-lexicon.w-9b56fb9ec265f6fe5f05": 1,
+      "chinesename:guofeng-lexicon.w-c84635f39ee853adb126": 1,
+      "chinesename:guofeng-lexicon.w-c3a05bd5933256c17775": 1,
+      "chinesename:guofeng-lexicon.w-2486504e64ec71940ab0": 1,
+      "chinesename:guofeng-lexicon.w-9971297206c91c865fd6": 1,
+      "chinesename:guofeng-lexicon.w-f3e2433ef9ca89dec348": 1,
+      "chinesename:guofeng-lexicon.w-420831b8176fa513e7bb": 1,
+      "chinesename:guofeng-lexicon.w-0df32dfde3c70a54119c": 1,
+      "chinesename:guofeng-lexicon.w-8a8df676c46b7f354503": 1,
+      "chinesename:guofeng-lexicon.w-612aef6f9a8a5e30234d": 1,
+      "chinesename:guofeng-lexicon.w-63facc0bd935ebca1ed8": 1,
+      "chinesename:guofeng-lexicon.w-dfcd2da79f3c672aae6b": 1,
+      "chinesename:guofeng-lexicon.w-5ca5981535bf3964e62f": 1,
+      "chinesename:guofeng-lexicon.w-80fa989e688472cd956d": 1,
+      "chinesename:guofeng-lexicon.w-c9a85fff13f1e9e39e26": 1,
+      "chinesename:guofeng-lexicon.w-b9e2deead0643716ed78": 1,
+      "chinesename:guofeng-lexicon.w-3f679bff4a5ff733e758": 1,
+      "chinesename:guofeng-lexicon.w-61b8365933063699fa23": 1,
+      "chinesename:guofeng-lexicon.w-d73cabac5d49551be914": 1,
+      "chinesename:guofeng-lexicon.w-f3956d55514d3929d9d8": 1,
+      "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220": 1,
+      "chinesename:guofeng-lexicon.w-7e68a03a3ae48fd04d6a": 1,
+      "chinesename:guofeng-lexicon.w-0eda571dff152d91d6f0": 1,
+      "chinesename:guofeng-lexicon.w-28c005f26cf524f438da": 1
+    },
+    "chinesename:guofeng-lexicon.country-double": {
+      "chinesename:guofeng-lexicon.w-25b778833cd346cf664d": 1,
+      "chinesename:guofeng-lexicon.w-3acf46ced4e9bb802ef5": 1,
+      "chinesename:guofeng-lexicon.w-90ce234cccdcfbed6b7c": 1,
+      "chinesename:guofeng-lexicon.w-7dcf4e07e2f2edf687d4": 1,
+      "chinesename:guofeng-lexicon.w-592a72a61dc9a942b2b8": 1,
+      "chinesename:guofeng-lexicon.w-00764f00183e1962b444": 1,
+      "chinesename:guofeng-lexicon.w-5c6dcbd65c5f2df529d3": 1,
+      "chinesename:guofeng-lexicon.w-1fe9f4e2bffa92657579": 1,
+      "chinesename:guofeng-lexicon.w-d147c72434e4f929a356": 1,
+      "chinesename:guofeng-lexicon.w-dcda65c2ea4727c5fcda": 1,
+      "chinesename:guofeng-lexicon.w-3c9ce47b6287e3a712be": 1,
+      "chinesename:guofeng-lexicon.w-ce12af7383a4ed1e79c6": 1,
+      "chinesename:guofeng-lexicon.w-a2156bdab86643e940db": 1,
+      "chinesename:guofeng-lexicon.w-e610d0e5638f5fe45924": 1,
+      "chinesename:guofeng-lexicon.w-d2a30f484ca8d0dddc21": 1,
+      "chinesename:guofeng-lexicon.w-ca39e4dad2b8ecfecfa0": 1,
+      "chinesename:guofeng-lexicon.w-500100a236169eb3f606": 1,
+      "chinesename:guofeng-lexicon.w-21b6cf38409d7284491b": 1,
+      "chinesename:guofeng-lexicon.w-bdbf32562552ee1e81a0": 1,
+      "chinesename:guofeng-lexicon.w-bdd3c417de747cbb7c7c": 1,
+      "chinesename:guofeng-lexicon.w-3222426abd19b1db6b18": 1,
+      "chinesename:guofeng-lexicon.w-6a730fe37a740e5d426a": 1,
+      "chinesename:guofeng-lexicon.w-2a9d7ff54ac2480d9156": 1,
+      "chinesename:guofeng-lexicon.w-a038e296cf9ee0257048": 1,
+      "chinesename:guofeng-lexicon.w-935e932d1094d3b749b3": 1,
+      "chinesename:guofeng-lexicon.w-e1ea02933f9061be183f": 1,
+      "chinesename:guofeng-lexicon.w-56ee51d6f9089b79c646": 1,
+      "chinesename:guofeng-lexicon.w-913474da373bd003e1ac": 1
+    },
+    "chinesename:guofeng-lexicon.town-root": {
+      "chinesename:guofeng-lexicon.w-c33a810ad9046e79949f": 1,
+      "chinesename:guofeng-lexicon.w-ef994bb7afee54decbba": 1,
+      "chinesename:guofeng-lexicon.w-a27dd09749704c51daa1": 1,
+      "chinesename:guofeng-lexicon.w-74f5702a53fe2205f865": 1,
+      "chinesename:guofeng-lexicon.w-6b1e00ea343b4f6c5227": 1,
+      "chinesename:guofeng-lexicon.w-6b39a0792a73be2c26d5": 1,
+      "chinesename:guofeng-lexicon.w-0e886249e811ecb3aa10": 1,
+      "chinesename:guofeng-lexicon.w-dafc5fdf8d347cb698b6": 1,
+      "chinesename:guofeng-lexicon.w-7565466f804bbdcc4df1": 1,
+      "chinesename:guofeng-lexicon.w-52c1a8d5bdc008b0e5eb": 1,
+      "chinesename:guofeng-lexicon.w-baa7cc087a70e3decc02": 1,
+      "chinesename:guofeng-lexicon.w-7227fea238ff8cafc07e": 1,
+      "chinesename:guofeng-lexicon.w-87209e997d179bde0fcc": 1,
+      "chinesename:guofeng-lexicon.w-8efa8c808aa7d83b680e": 1,
+      "chinesename:guofeng-lexicon.w-f94cb1a20b984a0b6878": 1,
+      "chinesename:guofeng-lexicon.w-4ac7d42b036128ef1c24": 1,
+      "chinesename:guofeng-lexicon.w-5707441041e10790a6eb": 1,
+      "chinesename:guofeng-lexicon.w-71972e2db6360af2b25c": 1,
+      "chinesename:guofeng-lexicon.w-33823a1a7adf2a7a44d8": 1,
+      "chinesename:guofeng-lexicon.w-270717c1b17e88fd01f8": 1,
+      "chinesename:guofeng-lexicon.w-2ec9fd9b09bf4d839195": 1,
+      "chinesename:guofeng-lexicon.w-4b540796df81a3e78a07": 1,
+      "chinesename:guofeng-lexicon.w-08fe893f9f4ac022c410": 1,
+      "chinesename:guofeng-lexicon.w-ecd4c2706eaa3db4c5a3": 1,
+      "chinesename:guofeng-lexicon.w-70c499f90d471b2b3e0f": 1,
+      "chinesename:guofeng-lexicon.w-ccfa6b41b415ffc4550e": 1,
+      "chinesename:guofeng-lexicon.w-441809c30506614b353f": 1,
+      "chinesename:guofeng-lexicon.w-8b97e57f1dbca470d678": 1,
+      "chinesename:guofeng-lexicon.w-fdfe14f767f3582404d4": 1,
+      "chinesename:guofeng-lexicon.w-6507b73849b2470e6008": 1,
+      "chinesename:guofeng-lexicon.w-1cd166a212e64b620e2b": 1,
+      "chinesename:guofeng-lexicon.w-f16a46b1146ed3ac7c0a": 1,
+      "chinesename:guofeng-lexicon.w-6562882729f4b647c95f": 1,
+      "chinesename:guofeng-lexicon.w-c6a5048154977deaef5f": 1,
+      "chinesename:guofeng-lexicon.w-f1ad3500208f8b2d89e9": 1,
+      "chinesename:guofeng-lexicon.w-12f53c23ae1ddc286543": 1,
+      "chinesename:guofeng-lexicon.w-e0291b94a875d8436070": 1,
+      "chinesename:guofeng-lexicon.w-fbac51e8ba324faa3a4f": 1,
+      "chinesename:guofeng-lexicon.w-b658e4d0eee37e4a9fca": 1,
+      "chinesename:guofeng-lexicon.w-7e4a9d9b28f3ffe78388": 1,
+      "chinesename:guofeng-lexicon.w-88e6584ac69e8a4ac1ff": 1,
+      "chinesename:guofeng-lexicon.w-facf1c84f8a10cea0212": 1,
+      "chinesename:guofeng-lexicon.w-1e8d4c16940c2645c2f8": 1,
+      "chinesename:guofeng-lexicon.w-600939157a1ff8db8677": 1,
+      "chinesename:guofeng-lexicon.w-2d84b81eb914ad4209ad": 1,
+      "chinesename:guofeng-lexicon.w-040c894e51b638fe53cd": 1,
+      "chinesename:guofeng-lexicon.w-ec625c027b11ac7d0104": 1,
+      "chinesename:guofeng-lexicon.w-ea4e84a4063f1fb3d3dc": 1,
+      "chinesename:guofeng-lexicon.w-3a04832d4be0c23d3cb5": 1,
+      "chinesename:guofeng-lexicon.w-805c5203bf3d4851aac0": 1,
+      "chinesename:guofeng-lexicon.w-251e34216d7a34555cb8": 1,
+      "chinesename:guofeng-lexicon.w-3d4e2e8187e190d52b95": 1,
+      "chinesename:guofeng-lexicon.w-8f76206a04845db7cd36": 1,
+      "chinesename:guofeng-lexicon.w-16572862d4c0427bb3f8": 1
+    },
+    "chinesename:guofeng-lexicon.town-ending": {
+      "chinesename:guofeng-lexicon.w-2df825fbdaad71be1b3c": 1,
+      "chinesename:guofeng-lexicon.w-73007de2a43139b7555c": 1,
+      "chinesename:guofeng-lexicon.w-a86fa5a1f03eaebef7a7": 1,
+      "chinesename:guofeng-lexicon.w-71acf738115db70c2d16": 1,
+      "chinesename:guofeng-lexicon.w-7eabb36ba1ab565b65e9": 1,
+      "chinesename:guofeng-lexicon.w-f4af4f3ef18a3450e848": 1,
+      "chinesename:guofeng-lexicon.w-b1a6152ed38c74dba6bf": 1,
+      "chinesename:guofeng-lexicon.w-838d805b8ad09c437c44": 1,
+      "chinesename:guofeng-lexicon.w-767c596dbfefebd16ce2": 1,
+      "chinesename:guofeng-lexicon.w-cf662fc92a5bc727cc00": 1,
+      "chinesename:guofeng-lexicon.w-61a401cf32d4f165e993": 1,
+      "chinesename:guofeng-lexicon.w-bd2a01de83f96e506296": 1,
+      "chinesename:guofeng-lexicon.w-e3acd7c95f1c961119f5": 1,
+      "chinesename:guofeng-lexicon.w-eb100cbabc568d535175": 1
+    },
+    "chinesename:guofeng-lexicon.polity-ending": {
+      "chinesename:guofeng-lexicon.w-d1566afa505af0f03b91": 1,
+      "chinesename:guofeng-lexicon.w-e676afc00222404c16bf": 1,
+      "chinesename:guofeng-lexicon.w-419c745398dffb654b26": 1,
+      "chinesename:guofeng-lexicon.w-2c922454f2d631224e14": 1,
+      "chinesename:guofeng-lexicon.w-96da11258bbe0f3cc1c9": 1,
+      "chinesename:guofeng-lexicon.w-7b82f9ac2ef5cf2ea145": 1,
+      "chinesename:guofeng-lexicon.w-77ef5850a8d620fe6278": 1,
+      "chinesename:guofeng-lexicon.w-06630489a687a8480743": 1,
+      "chinesename:guofeng-lexicon.w-b20b6409a86fa843607b": 1,
+      "chinesename:guofeng-lexicon.w-a9d4c8ed424385d72e8d": 1,
+      "chinesename:guofeng-lexicon.w-bbd46e528a69a44df869": 1,
+      "chinesename:guofeng-lexicon.w-3b819393f1542cff9d68": 1
+    },
+    "chinesename:guofeng-lexicon.saying": {
+      "chinesename:guofeng-lexicon.w-2458f9ad1b69e650be56": 1,
+      "chinesename:guofeng-lexicon.w-51c6f609692c6d16abf8": 1,
+      "chinesename:guofeng-lexicon.w-b25c37c6783bcb77f6eb": 1,
+      "chinesename:guofeng-lexicon.w-2e06dabcad52e3dce296": 1,
+      "chinesename:guofeng-lexicon.w-ac5f3ac0ddd84c700029": 1,
+      "chinesename:guofeng-lexicon.w-931b3790a68fa81ab1b3": 1,
+      "chinesename:guofeng-lexicon.w-c1dcf11f363ce0e851b3": 1,
+      "chinesename:guofeng-lexicon.w-514cd3b61a841735d251": 1,
+      "chinesename:guofeng-lexicon.w-b880a6697cc01416383e": 1,
+      "chinesename:guofeng-lexicon.w-c782a9fcd7cd4cfe701b": 1,
+      "chinesename:guofeng-lexicon.w-d95d35a8b55ecac159a6": 1,
+      "chinesename:guofeng-lexicon.w-78bc435913a01914cf09": 1,
+      "chinesename:guofeng-lexicon.w-5e5d71c1cf23021811ee": 1,
+      "chinesename:guofeng-lexicon.w-af1caa1903b188b13a2d": 1,
+      "chinesename:guofeng-lexicon.w-582a64fcbeaa193e9f03": 1,
+      "chinesename:guofeng-lexicon.w-97d4bbf79b67f06e7520": 1,
+      "chinesename:guofeng-lexicon.w-f5b50d1d0ccbbd99f14c": 1,
+      "chinesename:guofeng-lexicon.w-c276b7fdf467b2afc499": 1,
+      "chinesename:guofeng-lexicon.w-e89547e57396b2d29324": 1,
+      "chinesename:guofeng-lexicon.w-a2a4c9ec0057a2e64195": 1,
+      "chinesename:guofeng-lexicon.w-49abba3990b27fd3c340": 1,
+      "chinesename:guofeng-lexicon.w-c8bceee00a03c04a6bbf": 1
+    },
+    "chinesename:guofeng-lexicon.emblem": {
+      "chinesename:guofeng-lexicon.w-c5ea2e8a9f07101836a0": 1,
+      "chinesename:guofeng-lexicon.w-0dcd080a79195926d044": 1,
+      "chinesename:guofeng-lexicon.w-1ba9f7395870582f279d": 1,
+      "chinesename:guofeng-lexicon.w-69dc9d8c5a1f8709a63d": 1,
+      "chinesename:guofeng-lexicon.w-3d2c5360873f87d1c1a0": 1,
+      "chinesename:guofeng-lexicon.w-88f779a684a87ff07dac": 1,
+      "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3": 1,
+      "chinesename:guofeng-lexicon.w-77303e12efe864b6af95": 1,
+      "chinesename:guofeng-lexicon.w-b11e0a306636605684bc": 1,
+      "chinesename:guofeng-lexicon.w-7958f11d5ad3e39f958e": 1,
+      "chinesename:guofeng-lexicon.w-742d6ceec106ca753901": 1,
+      "chinesename:guofeng-lexicon.w-f7031792a74f38064dc2": 1,
+      "chinesename:guofeng-lexicon.w-521f20d39eaf242aaf5d": 1,
+      "chinesename:guofeng-lexicon.w-f42f1fa52b8471b3c48e": 1,
+      "chinesename:guofeng-lexicon.w-afbd1a2f93ea3f39bec1": 1,
+      "chinesename:guofeng-lexicon.w-e42a2fd0637672d36c6c": 1,
+      "chinesename:guofeng-lexicon.w-86dfcde851fb0c0a6224": 1,
+      "chinesename:guofeng-lexicon.w-240ac992f0f479fb0364": 1,
+      "chinesename:guofeng-lexicon.w-447b1c900ea8dfcb2136": 1,
+      "chinesename:guofeng-lexicon.w-abebd14cce842e8fb1b8": 1,
+      "chinesename:guofeng-lexicon.w-cad6ca996f74cf721966": 1,
+      "chinesename:guofeng-lexicon.w-67431a66b8853dba14e3": 1,
+      "chinesename:guofeng-lexicon.w-b711e30c9c4a33fc98b5": 1,
+      "chinesename:guofeng-lexicon.w-03a51c9e87eea69e41e8": 1
+    },
+    "chinesename:guofeng-lexicon.tradition": {
+      "chinesename:guofeng-lexicon.w-05a2a2d9f2d0cf00801b": 1,
+      "chinesename:guofeng-lexicon.w-69aacaf5f3c597f0bb91": 1,
+      "chinesename:guofeng-lexicon.w-53b2ca5109e840fc5596": 1,
+      "chinesename:guofeng-lexicon.w-da2510df7f9708283da6": 1,
+      "chinesename:guofeng-lexicon.w-bdd3c417de747cbb7c7c": 1,
+      "chinesename:guofeng-lexicon.w-adb73eee69098808aee6": 1,
+      "chinesename:guofeng-lexicon.w-18631f025b1eee042c10": 1,
+      "chinesename:guofeng-lexicon.w-534fbaf6b0b59736a025": 1,
+      "chinesename:guofeng-lexicon.w-afbd1a2f93ea3f39bec1": 1,
+      "chinesename:guofeng-lexicon.w-d2bb01a4598d2272e721": 1,
+      "chinesename:guofeng-lexicon.w-894e920ac6c0b3e019d8": 1,
+      "chinesename:guofeng-lexicon.w-609c5ca5daef26ef0667": 1,
+      "chinesename:guofeng-lexicon.w-447b1c900ea8dfcb2136": 1,
+      "chinesename:guofeng-lexicon.w-521f20d39eaf242aaf5d": 1,
+      "chinesename:guofeng-lexicon.w-a5b098dcbd5dd83d29be": 1,
+      "chinesename:guofeng-lexicon.w-4752374e88bd8ea842ec": 1
+    },
+    "chinesename:guofeng-lexicon.speech": {
+      "chinesename:guofeng-lexicon.w-1183e8b2580373f38da4": 1,
+      "chinesename:guofeng-lexicon.w-652a74a71fc517e367dc": 1,
+      "chinesename:guofeng-lexicon.w-17066a3b768ec8ae2fa1": 1,
+      "chinesename:guofeng-lexicon.w-86a65acd594837136dff": 1,
+      "chinesename:guofeng-lexicon.w-42dcf75b077ad97e4c35": 1,
+      "chinesename:guofeng-lexicon.w-7497a8492d489720e92e": 1,
+      "chinesename:guofeng-lexicon.w-1a46dfc5f361340d7f80": 1,
+      "chinesename:guofeng-lexicon.w-81550408cbf8d86a9f88": 1,
+      "chinesename:guofeng-lexicon.w-1269f6b715a80c91fc8b": 1,
+      "chinesename:guofeng-lexicon.w-d5d2106abcd6b8f00414": 1,
+      "chinesename:guofeng-lexicon.w-e43a6b668e568029ddfc": 1,
+      "chinesename:guofeng-lexicon.w-534fbaf6b0b59736a025": 1,
+      "chinesename:guofeng-lexicon.w-0ec13f452d277b72ffe4": 1,
+      "chinesename:guofeng-lexicon.w-53cfd0c433c39d8ec1e9": 1,
+      "chinesename:guofeng-lexicon.w-2ae3a2aeec485e3b3f74": 1,
+      "chinesename:guofeng-lexicon.w-d07e61bdc97f2e1a1946": 1
+    },
+    "chinesename:guofeng-lexicon.hall": {
+      "chinesename:guofeng-lexicon.w-a158376d13f9e518956f": 1,
+      "chinesename:guofeng-lexicon.w-e89cd48249127fca1213": 1,
+      "chinesename:guofeng-lexicon.w-144316ae2d9e57bd34e5": 1,
+      "chinesename:guofeng-lexicon.w-7cac4468f50893586011": 1,
+      "chinesename:guofeng-lexicon.w-e7dc6a18127e9e29da4e": 1,
+      "chinesename:guofeng-lexicon.w-1242ecf53eae72f789ce": 1,
+      "chinesename:guofeng-lexicon.w-67785f927566af542531": 1,
+      "chinesename:guofeng-lexicon.w-6b08c40e2b19e48d14c5": 1,
+      "chinesename:guofeng-lexicon.w-a9c1c333feb532627cc9": 1,
+      "chinesename:guofeng-lexicon.w-6ea56f2b55358e5786c6": 1,
+      "chinesename:guofeng-lexicon.w-288b6adfbb5cbe5f9ae6": 1,
+      "chinesename:guofeng-lexicon.w-487d9550d074dc7547fc": 1,
+      "chinesename:guofeng-lexicon.w-1a641e046df114c02af2": 1,
+      "chinesename:guofeng-lexicon.w-0528030eaff589349131": 1,
+      "chinesename:guofeng-lexicon.w-3a027441f073ebf077eb": 1,
+      "chinesename:guofeng-lexicon.w-91de18f3f689be90915d": 1
+    },
+    "chinesename:guofeng-lexicon.war-ending": {
+      "chinesename:guofeng-lexicon.w-d3f8b380c4cb83b8a3ad": 1,
+      "chinesename:guofeng-lexicon.w-28ba0f82964f7f5a17c7": 1,
+      "chinesename:guofeng-lexicon.w-73aebf2735a961feefbd": 1,
+      "chinesename:guofeng-lexicon.w-5f8f194f035b9a16ddae": 1,
+      "chinesename:guofeng-lexicon.w-a829695c8a4f35cf495b": 1,
+      "chinesename:guofeng-lexicon.w-7ae0219da3aead459434": 1,
+      "chinesename:guofeng-lexicon.w-7ca6f8d2364efaace14c": 1,
+      "chinesename:guofeng-lexicon.w-1201ca2fd3db0434c29d": 1
+    },
+    "chinesename:guofeng-lexicon.alliance-ending": {
+      "chinesename:guofeng-lexicon.w-2ffa5f34893d5751467b": 1,
+      "chinesename:guofeng-lexicon.w-7646fe9d31f603730153": 1,
+      "chinesename:guofeng-lexicon.w-c364274b1124dae57a9d": 1,
+      "chinesename:guofeng-lexicon.w-b3f008771b4d84d5da91": 1,
+      "chinesename:guofeng-lexicon.w-6d8f51d277b33b82a1eb": 1,
+      "chinesename:guofeng-lexicon.w-0c89e1ad1be011eaece8": 1,
+      "chinesename:guofeng-lexicon.w-17ab3aee2159e4348d4e": 1,
+      "chinesename:guofeng-lexicon.w-2007c997e45be86bd0b1": 1
+    },
+    "chinesename:guofeng-lexicon.army-ending": {
+      "chinesename:guofeng-lexicon.w-9971297206c91c865fd6": 1,
+      "chinesename:guofeng-lexicon.w-b650eed6e43ba9821e95": 1,
+      "chinesename:guofeng-lexicon.w-a219458557f0a4858e43": 1,
+      "chinesename:guofeng-lexicon.w-574db1de77f394fc14b9": 1,
+      "chinesename:guofeng-lexicon.w-b51bb5d4b716aa29188c": 1,
+      "chinesename:guofeng-lexicon.w-803940895092389a35df": 1,
+      "chinesename:guofeng-lexicon.w-ab9193c9be88b9c93643": 1,
+      "chinesename:guofeng-lexicon.w-79b392f7beb5f979bdc4": 1
+    },
+    "chinesename:guofeng-lexicon.book-ending": {
+      "chinesename:guofeng-lexicon.w-382557fee2325ffe7486": 1,
+      "chinesename:guofeng-lexicon.w-3b17f9fe1656694f2863": 1,
+      "chinesename:guofeng-lexicon.w-fc72a4479732661f0e5a": 1,
+      "chinesename:guofeng-lexicon.w-9500d0d6a1915de660f4": 1,
+      "chinesename:guofeng-lexicon.w-cf995a6e671576960b43": 1,
+      "chinesename:guofeng-lexicon.w-ccca74461399d2a0c9e3": 1,
+      "chinesename:guofeng-lexicon.w-73108bd2d533b482d401": 1,
+      "chinesename:guofeng-lexicon.w-4ed393a02528cc2aea83": 1
+    },
+    "chinesename:guofeng-lexicon.artifact": {
+      "chinesename:guofeng-lexicon.w-cf34e3dc8424c3ca6b12": 1,
+      "chinesename:guofeng-lexicon.w-3c7856a895fcb19f39f1": 1,
+      "chinesename:guofeng-lexicon.w-fe858983d0e6ab32af32": 1,
+      "chinesename:guofeng-lexicon.w-a22d7a3ad267181487a2": 1,
+      "chinesename:guofeng-lexicon.w-c824daa137707ed91571": 1,
+      "chinesename:guofeng-lexicon.w-73fad7506b3595722c63": 1,
+      "chinesename:guofeng-lexicon.w-7e6809be1b345bbccfb1": 1,
+      "chinesename:guofeng-lexicon.w-6b8e5d20a8e268bf25cc": 1,
+      "chinesename:guofeng-lexicon.w-3c886bdae61b60f5c67c": 1,
+      "chinesename:guofeng-lexicon.w-37f3552266d5b662520f": 1,
+      "chinesename:guofeng-lexicon.w-5a31d99182e2b151beb1": 1,
+      "chinesename:guofeng-lexicon.w-f328ca6f1f3104d0a806": 1
+    }
+  },
+  "poolLabels": {
+    "chinesename:guofeng-lexicon.single-surname": "国风单姓",
+    "chinesename:guofeng-lexicon.compound-surname": "国风复姓",
+    "chinesename:guofeng-lexicon.given": "国风双字名",
+    "chinesename:guofeng-lexicon.given-first": "国风名首字",
+    "chinesename:guofeng-lexicon.given-last": "国风名尾字",
+    "chinesename:guofeng-lexicon.country-short": "国风单字国号",
+    "chinesename:guofeng-lexicon.country-double": "国风双字国号",
+    "chinesename:guofeng-lexicon.town-root": "乡邑地名",
+    "chinesename:guofeng-lexicon.town-ending": "国风城邑后缀",
+    "chinesename:guofeng-lexicon.polity-ending": "国风国号后缀",
+    "chinesename:guofeng-lexicon.saying": "国风格言",
+    "chinesename:guofeng-lexicon.emblem": "国风旗号",
+    "chinesename:guofeng-lexicon.tradition": "国风文化词根",
+    "chinesename:guofeng-lexicon.speech": "国风语言词根",
+    "chinesename:guofeng-lexicon.hall": "国风家族堂号",
+    "chinesename:guofeng-lexicon.war-ending": "国风战事称谓",
+    "chinesename:guofeng-lexicon.alliance-ending": "国风盟约称谓",
+    "chinesename:guofeng-lexicon.army-ending": "国风军号后缀",
+    "chinesename:guofeng-lexicon.book-ending": "国风书名后缀",
+    "chinesename:guofeng-lexicon.artifact": "国风器物名号"
+  },
+  "poolAliases": {
+    "国风单姓": "chinesename:guofeng-lexicon.single-surname",
+    "国风复姓": "chinesename:guofeng-lexicon.compound-surname",
+    "国风双字名": "chinesename:guofeng-lexicon.given",
+    "国风名首字": "chinesename:guofeng-lexicon.given-first",
+    "国风名尾字": "chinesename:guofeng-lexicon.given-last",
+    "国风单字国号": "chinesename:guofeng-lexicon.country-short",
+    "国风双字国号": "chinesename:guofeng-lexicon.country-double",
+    "乡邑地名": "chinesename:guofeng-lexicon.town-root",
+    "国风城名主体": "chinesename:guofeng-lexicon.town-root",
+    "国风城邑后缀": "chinesename:guofeng-lexicon.town-ending",
+    "国风国号后缀": "chinesename:guofeng-lexicon.polity-ending",
+    "国风格言": "chinesename:guofeng-lexicon.saying",
+    "国风旗号": "chinesename:guofeng-lexicon.emblem",
+    "国风文化词根": "chinesename:guofeng-lexicon.tradition",
+    "国风语言词根": "chinesename:guofeng-lexicon.speech",
+    "国风家族堂号": "chinesename:guofeng-lexicon.hall",
+    "国风战事称谓": "chinesename:guofeng-lexicon.war-ending",
+    "国风盟约称谓": "chinesename:guofeng-lexicon.alliance-ending",
+    "国风军号后缀": "chinesename:guofeng-lexicon.army-ending",
+    "国风书名后缀": "chinesename:guofeng-lexicon.book-ending",
+    "国风器物名号": "chinesename:guofeng-lexicon.artifact"
+  },
+  "wordGroups": {
+    "single-surname.common": {
+      "pool": "chinesename:guofeng-lexicon.single-surname",
+      "words": [
+        "chinesename:guofeng-lexicon.w-3399a0e651ad104cd1f5",
+        "chinesename:guofeng-lexicon.w-c16667ca7839a011a548",
+        "chinesename:guofeng-lexicon.w-f56a049fcc23f1ebfce1",
+        "chinesename:guofeng-lexicon.w-b973e260b442e1402e06",
+        "chinesename:guofeng-lexicon.w-c3a05bd5933256c17775",
+        "chinesename:guofeng-lexicon.w-3b4eb1eb439d4f1219ef",
+        "chinesename:guofeng-lexicon.w-c732e4d7e3805bf45ca3",
+        "chinesename:guofeng-lexicon.w-c9a85fff13f1e9e39e26",
+        "chinesename:guofeng-lexicon.w-861aef24c6507f88ef6a",
+        "chinesename:guofeng-lexicon.w-5c553ec3f6db54f0d1eb",
+        "chinesename:guofeng-lexicon.w-75669321492c00ca8379",
+        "chinesename:guofeng-lexicon.w-1d8d64d2825e23903014",
+        "chinesename:guofeng-lexicon.w-a25ee73c98d161721788",
+        "chinesename:guofeng-lexicon.w-9dabef686a60d8db05fb",
+        "chinesename:guofeng-lexicon.w-e5877101f2e3e994f90a",
+        "chinesename:guofeng-lexicon.w-0cff3c9b1cdea5254ca3",
+        "chinesename:guofeng-lexicon.w-d61eecf2edd5350f25a7",
+        "chinesename:guofeng-lexicon.w-c84635f39ee853adb126",
+        "chinesename:guofeng-lexicon.w-3265cdd08afe9532de5f",
+        "chinesename:guofeng-lexicon.w-1932990c7655e6365cd6",
+        "chinesename:guofeng-lexicon.w-197c19bb92cb84f0ee18",
+        "chinesename:guofeng-lexicon.w-63facc0bd935ebca1ed8",
+        "chinesename:guofeng-lexicon.w-70883efd8bcaa95f8329",
+        "chinesename:guofeng-lexicon.w-5ca5981535bf3964e62f",
+        "chinesename:guofeng-lexicon.w-8d3edaa608b7415fed1d",
+        "chinesename:guofeng-lexicon.w-3f679bff4a5ff733e758",
+        "chinesename:guofeng-lexicon.w-9182f5770d6a443fa60c",
+        "chinesename:guofeng-lexicon.w-3e1efbe39a5bd512373b",
+        "chinesename:guofeng-lexicon.w-737b8448fca13c0c52ee",
+        "chinesename:guofeng-lexicon.w-5a8650445fc66c15d36a",
+        "chinesename:guofeng-lexicon.w-10a015c0d1e1cef9d50e",
+        "chinesename:guofeng-lexicon.w-a10ef997bac2e24f4ad2",
+        "chinesename:guofeng-lexicon.w-c313bfaa8f635a30a8c8",
+        "chinesename:guofeng-lexicon.w-bf438051494fe04e72b3",
+        "chinesename:guofeng-lexicon.w-1ee51b6fe1d3547ec12c",
+        "chinesename:guofeng-lexicon.w-ec46c055ab6b5fcc04ac",
+        "chinesename:guofeng-lexicon.w-86b296ab68b632889016",
+        "chinesename:guofeng-lexicon.w-2bdcf003d4c7714b5a00",
+        "chinesename:guofeng-lexicon.w-b9e2deead0643716ed78",
+        "chinesename:guofeng-lexicon.w-b20c19f2398e39261352",
+        "chinesename:guofeng-lexicon.w-6bef7be42424e5d11529"
+      ]
+    },
+    "single-surname.less-common": {
+      "pool": "chinesename:guofeng-lexicon.single-surname",
+      "words": [
+        "chinesename:guofeng-lexicon.w-d92ed84e1f4bc8d070cb",
+        "chinesename:guofeng-lexicon.w-22c418e81adad7f90711",
+        "chinesename:guofeng-lexicon.w-60c41a22aa565fe9535d",
+        "chinesename:guofeng-lexicon.w-02f183bb9133100629bc",
+        "chinesename:guofeng-lexicon.w-7b5a5d75887b37172480",
+        "chinesename:guofeng-lexicon.w-05cccae333e8e7e69630",
+        "chinesename:guofeng-lexicon.w-b4abb1ffcfeb0e41f36f",
+        "chinesename:guofeng-lexicon.w-ee222b9d0f8aaab82374",
+        "chinesename:guofeng-lexicon.w-13e3018b48e5bcfce1cd",
+        "chinesename:guofeng-lexicon.w-8a8df676c46b7f354503",
+        "chinesename:guofeng-lexicon.w-4a5ff677e1dbd37c59fe",
+        "chinesename:guofeng-lexicon.w-e6df66d46112600ca97b",
+        "chinesename:guofeng-lexicon.w-86c76e8aa56230689dac",
+        "chinesename:guofeng-lexicon.w-2d518fb7f0a2c8aba3e2",
+        "chinesename:guofeng-lexicon.w-b0a1eab5f902df03059f",
+        "chinesename:guofeng-lexicon.w-52f354ecfccbb8e6c739",
+        "chinesename:guofeng-lexicon.w-8482432c0274b8eefff7",
+        "chinesename:guofeng-lexicon.w-ade370960fa70d09d4c1",
+        "chinesename:guofeng-lexicon.w-3ae2613a80c3e2da7d61",
+        "chinesename:guofeng-lexicon.w-db2442c675892042280c",
+        "chinesename:guofeng-lexicon.w-d49dfdc172d6a3f0ec98",
+        "chinesename:guofeng-lexicon.w-800cb3985451033864ee",
+        "chinesename:guofeng-lexicon.w-6244c4c963a8b55a89cf",
+        "chinesename:guofeng-lexicon.w-13d02782bb6a4598133a",
+        "chinesename:guofeng-lexicon.w-7f77f23af7b0dcc87b5e",
+        "chinesename:guofeng-lexicon.w-7032411fb35a3c9aaa1e",
+        "chinesename:guofeng-lexicon.w-27889fe8a4457ceeaf43",
+        "chinesename:guofeng-lexicon.w-3342f4fb437f82a886c0",
+        "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220",
+        "chinesename:guofeng-lexicon.w-3b17f9fe1656694f2863",
+        "chinesename:guofeng-lexicon.w-360de0f3f0f356331786",
+        "chinesename:guofeng-lexicon.w-6054497e09b08fb6bec0",
+        "chinesename:guofeng-lexicon.w-acf507207473bfe1908d",
+        "chinesename:guofeng-lexicon.w-a70073342238ee86b440",
+        "chinesename:guofeng-lexicon.w-6d321163002e1b4f8737",
+        "chinesename:guofeng-lexicon.w-bdd8ba1ad6ec18894431",
+        "chinesename:guofeng-lexicon.w-9e58283056307a7c674a"
+      ]
+    },
+    "compound-surname.wide": {
+      "pool": "chinesename:guofeng-lexicon.compound-surname",
+      "words": [
+        "chinesename:guofeng-lexicon.w-1340558609b818387d21",
+        "chinesename:guofeng-lexicon.w-be83ceae110e709d25d7",
+        "chinesename:guofeng-lexicon.w-44fb0e31426b3daa9382",
+        "chinesename:guofeng-lexicon.w-ad127d6c29af28cff5b2",
+        "chinesename:guofeng-lexicon.w-5ed94fc5bfa026ad0187",
+        "chinesename:guofeng-lexicon.w-31cd60ce395e46770679",
+        "chinesename:guofeng-lexicon.w-e37530b89c739cadecb4",
+        "chinesename:guofeng-lexicon.w-3d1ce1d34b5e96e2d9eb",
+        "chinesename:guofeng-lexicon.w-9dd1374e3e104a232c76",
+        "chinesename:guofeng-lexicon.w-9c21da9c64b1c072e26e",
+        "chinesename:guofeng-lexicon.w-bbaca97a375de6bdef90",
+        "chinesename:guofeng-lexicon.w-400fd9d1e56f51302c62"
+      ]
+    },
+    "compound-surname.rare": {
+      "pool": "chinesename:guofeng-lexicon.compound-surname",
+      "words": [
+        "chinesename:guofeng-lexicon.w-4e8fb56f59595778a47f",
+        "chinesename:guofeng-lexicon.w-e63ed3810bf65a40dbbb",
+        "chinesename:guofeng-lexicon.w-3098d9617358626788a6",
+        "chinesename:guofeng-lexicon.w-eeab6a98a62bd0542897",
+        "chinesename:guofeng-lexicon.w-a422cb2909cb0eef8961",
+        "chinesename:guofeng-lexicon.w-0917070a5fa0eec7db0f",
+        "chinesename:guofeng-lexicon.w-0416d3bd90468ac15976",
+        "chinesename:guofeng-lexicon.w-67bad5bd2b80097da3ea",
+        "chinesename:guofeng-lexicon.w-e9b2f1970dee3b7b583d",
+        "chinesename:guofeng-lexicon.w-0a320a6c5ad7365cca17",
+        "chinesename:guofeng-lexicon.w-da149bbe755750b1a669",
+        "chinesename:guofeng-lexicon.w-246ad115c5903a4573ee"
+      ]
+    },
+    "given.literary": {
+      "pool": "chinesename:guofeng-lexicon.given",
+      "words": [
+        "chinesename:guofeng-lexicon.w-23052a661ccb7fdd3a5d",
+        "chinesename:guofeng-lexicon.w-a3c51c7c97cb9c6fa39d",
+        "chinesename:guofeng-lexicon.w-75b304aa94209920bd06",
+        "chinesename:guofeng-lexicon.w-f3f88ba254edef17095a",
+        "chinesename:guofeng-lexicon.w-c7a40eead85b1927e393",
+        "chinesename:guofeng-lexicon.w-4a43db1b0728d917d631",
+        "chinesename:guofeng-lexicon.w-bdffd44d4bbbbb8e6503",
+        "chinesename:guofeng-lexicon.w-2f2d52a127206061fda6",
+        "chinesename:guofeng-lexicon.w-fa9ef9ee318cd108072d",
+        "chinesename:guofeng-lexicon.w-1781fd9ecfa599a289fb",
+        "chinesename:guofeng-lexicon.w-e7dc6a18127e9e29da4e",
+        "chinesename:guofeng-lexicon.w-f328ca6f1f3104d0a806",
+        "chinesename:guofeng-lexicon.w-7a241ab768f93876420e",
+        "chinesename:guofeng-lexicon.w-55d1bc074b26cd01b8a2",
+        "chinesename:guofeng-lexicon.w-8f69b19ae83093c53b2e",
+        "chinesename:guofeng-lexicon.w-ff86588d79b8bca39087",
+        "chinesename:guofeng-lexicon.w-c50c17439fb3f856f05c",
+        "chinesename:guofeng-lexicon.w-59ddfc35a17ae6c48afd",
+        "chinesename:guofeng-lexicon.w-d381c30be48e9483e840",
+        "chinesename:guofeng-lexicon.w-32808de6cfb16d56cd86"
+      ]
+    },
+    "given.landscape": {
+      "pool": "chinesename:guofeng-lexicon.given",
+      "words": [
+        "chinesename:guofeng-lexicon.w-eb4d00bdd678d07b70f3",
+        "chinesename:guofeng-lexicon.w-11beb3cb8af351a7a41f",
+        "chinesename:guofeng-lexicon.w-a5b786d1602b11200f77",
+        "chinesename:guofeng-lexicon.w-ef23d38cd141578e7597",
+        "chinesename:guofeng-lexicon.w-a029ba341e17059c2d25",
+        "chinesename:guofeng-lexicon.w-3ea416f064ac315c89c0",
+        "chinesename:guofeng-lexicon.w-c20e3fee21f1934c5542",
+        "chinesename:guofeng-lexicon.w-d64b97988c0eed129f73",
+        "chinesename:guofeng-lexicon.w-f342b68ada539d6922d5",
+        "chinesename:guofeng-lexicon.w-c829496e7ec26ddd09eb",
+        "chinesename:guofeng-lexicon.w-6637fc93d5b5c9a9f78a",
+        "chinesename:guofeng-lexicon.w-69a8b1cf4afd702f910d",
+        "chinesename:guofeng-lexicon.w-a6b3ab24e74567a345d3",
+        "chinesename:guofeng-lexicon.w-823838f239a1c04805cb",
+        "chinesename:guofeng-lexicon.w-3deb115c1470a0fe9bda",
+        "chinesename:guofeng-lexicon.w-cf556b42fd1e0a271e01",
+        "chinesename:guofeng-lexicon.w-19a38df05fad3dfcd929",
+        "chinesename:guofeng-lexicon.w-cc33aa991e5f3adb5e85",
+        "chinesename:guofeng-lexicon.w-5913c07a4ab3d0086422",
+        "chinesename:guofeng-lexicon.w-17190da88fa1e76c1a4d"
+      ]
+    },
+    "given.household": {
+      "pool": "chinesename:guofeng-lexicon.given",
+      "words": [
+        "chinesename:guofeng-lexicon.w-94116b03bf953c4ea213",
+        "chinesename:guofeng-lexicon.w-00d5823e47c7c6cf7a7a",
+        "chinesename:guofeng-lexicon.w-e4074b55e72b92463663",
+        "chinesename:guofeng-lexicon.w-7298485cce21a196f65b",
+        "chinesename:guofeng-lexicon.w-60f02bcc2223483efc70",
+        "chinesename:guofeng-lexicon.w-ccdd3e935197df079cf1",
+        "chinesename:guofeng-lexicon.w-49e0ac365019a7727b39",
+        "chinesename:guofeng-lexicon.w-03cc9b6c017cc4308a71",
+        "chinesename:guofeng-lexicon.w-d7f3d656325c04cabeba",
+        "chinesename:guofeng-lexicon.w-4ce22f0d8e70a485c73e",
+        "chinesename:guofeng-lexicon.w-119642bc2e0d6f7f0082",
+        "chinesename:guofeng-lexicon.w-d47d704bab39de522fe7",
+        "chinesename:guofeng-lexicon.w-f151cd1f6be7b82cf68a",
+        "chinesename:guofeng-lexicon.w-6b08c40e2b19e48d14c5",
+        "chinesename:guofeng-lexicon.w-669f8017030cf6394177",
+        "chinesename:guofeng-lexicon.w-5adbc889970129361454",
+        "chinesename:guofeng-lexicon.w-f2a1c32b510f6ea642c6",
+        "chinesename:guofeng-lexicon.w-64a438acb2500901857a",
+        "chinesename:guofeng-lexicon.w-2fde2b673888c55ae688",
+        "chinesename:guofeng-lexicon.w-2dac66c73f33b19529ca"
+      ]
+    },
+    "given-first.classical": {
+      "pool": "chinesename:guofeng-lexicon.given-first",
+      "words": [
+        "chinesename:guofeng-lexicon.w-cf5a539d7b65b32b3ad5",
+        "chinesename:guofeng-lexicon.w-b8feccc658745aa0cded",
+        "chinesename:guofeng-lexicon.w-13d240c5bfa9d3d913f9",
+        "chinesename:guofeng-lexicon.w-b59fb74892bec41c21c9",
+        "chinesename:guofeng-lexicon.w-60f13de463447482b8c0",
+        "chinesename:guofeng-lexicon.w-bb3fda11b33e0c397681",
+        "chinesename:guofeng-lexicon.w-a3e857680ce862328cad",
+        "chinesename:guofeng-lexicon.w-bd5d0f6169394c03c96e",
+        "chinesename:guofeng-lexicon.w-2dfb6f5012b3d7640e62",
+        "chinesename:guofeng-lexicon.w-80ed541cd9598f566dd8",
+        "chinesename:guofeng-lexicon.w-9e58283056307a7c674a",
+        "chinesename:guofeng-lexicon.w-3abc957a4e9f5180df61",
+        "chinesename:guofeng-lexicon.w-06052e19691f4aaffa7d",
+        "chinesename:guofeng-lexicon.w-3e99b40c4d396dde49e6",
+        "chinesename:guofeng-lexicon.w-142a111bdbd817ad0e2b",
+        "chinesename:guofeng-lexicon.w-e29819879046dd06a3a9"
+      ]
+    },
+    "given-first.nature": {
+      "pool": "chinesename:guofeng-lexicon.given-first",
+      "words": [
+        "chinesename:guofeng-lexicon.w-1f0193a67ca758d59d3e",
+        "chinesename:guofeng-lexicon.w-83e9c51b3d7ade97d596",
+        "chinesename:guofeng-lexicon.w-dc06463a46eb5685ac7a",
+        "chinesename:guofeng-lexicon.w-260bd8046266d9bc9d54",
+        "chinesename:guofeng-lexicon.w-32d42b97294a13655f4c",
+        "chinesename:guofeng-lexicon.w-0cff3c9b1cdea5254ca3",
+        "chinesename:guofeng-lexicon.w-124d60580dfa9072dbea",
+        "chinesename:guofeng-lexicon.w-89c3d5f9c3e582fb599c",
+        "chinesename:guofeng-lexicon.w-86bd01841ad0fd082989",
+        "chinesename:guofeng-lexicon.w-fb82c376e9fbaa5bdb10",
+        "chinesename:guofeng-lexicon.w-80fb34c2cd82723ab137",
+        "chinesename:guofeng-lexicon.w-fc1a6dc7ac704ab829ef",
+        "chinesename:guofeng-lexicon.w-207d9e34c15ca695c17d",
+        "chinesename:guofeng-lexicon.w-ee222b9d0f8aaab82374",
+        "chinesename:guofeng-lexicon.w-9288090c16c9205260f1",
+        "chinesename:guofeng-lexicon.w-1625179badc027f0d0a2"
+      ]
+    },
+    "given-last.virtue": {
+      "pool": "chinesename:guofeng-lexicon.given-last",
+      "words": [
+        "chinesename:guofeng-lexicon.w-2c881c4923a9863bd06b",
+        "chinesename:guofeng-lexicon.w-3677ef77b1574d162d7c",
+        "chinesename:guofeng-lexicon.w-04a990cfa68416f034dc",
+        "chinesename:guofeng-lexicon.w-f006725b762250a30817",
+        "chinesename:guofeng-lexicon.w-d734dea2e6253abe4239",
+        "chinesename:guofeng-lexicon.w-eeb661df940d88075234",
+        "chinesename:guofeng-lexicon.w-b433a7ea39936c5c706a",
+        "chinesename:guofeng-lexicon.w-7460af6dd6a629bde359",
+        "chinesename:guofeng-lexicon.w-b25471b1ca084b2c95db",
+        "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220",
+        "chinesename:guofeng-lexicon.w-d37a5d0db685a2acd42c",
+        "chinesename:guofeng-lexicon.w-c4d5becf50f379f97a6c",
+        "chinesename:guofeng-lexicon.w-77f34a38180f766e6363",
+        "chinesename:guofeng-lexicon.w-2527ecf9122b145bdd68",
+        "chinesename:guofeng-lexicon.w-3d7114281f5b59d9a7ab",
+        "chinesename:guofeng-lexicon.w-5dc039f2f84bf3866e94"
+      ]
+    },
+    "given-last.image": {
+      "pool": "chinesename:guofeng-lexicon.given-last",
+      "words": [
+        "chinesename:guofeng-lexicon.w-b4abb1ffcfeb0e41f36f",
+        "chinesename:guofeng-lexicon.w-b5aae693581d12c80a2a",
+        "chinesename:guofeng-lexicon.w-9d09e3e0765a2e8dc190",
+        "chinesename:guofeng-lexicon.w-e3f2f3cb990237e92ebe",
+        "chinesename:guofeng-lexicon.w-5d2d0d8422767fc34da7",
+        "chinesename:guofeng-lexicon.w-9c2aa8352e75b16dc646",
+        "chinesename:guofeng-lexicon.w-fe5bbe7905c33c4fdcc0",
+        "chinesename:guofeng-lexicon.w-727cf371de8886247750",
+        "chinesename:guofeng-lexicon.w-5f8e490558897efa493c",
+        "chinesename:guofeng-lexicon.w-f207fe7960fd1f31d5c1",
+        "chinesename:guofeng-lexicon.w-5800cb071050b885e920",
+        "chinesename:guofeng-lexicon.w-0ede0734dd4ab09cf1b1",
+        "chinesename:guofeng-lexicon.w-389a3f1a1da198141936",
+        "chinesename:guofeng-lexicon.w-d88c3023292cc2c7fa93",
+        "chinesename:guofeng-lexicon.w-a5d6966e0e8e902d8ef9"
+      ]
+    },
+    "country-short.eastern": {
+      "pool": "chinesename:guofeng-lexicon.country-short",
+      "words": [
+        "chinesename:guofeng-lexicon.w-8482432c0274b8eefff7",
+        "chinesename:guofeng-lexicon.w-537ee404352f15afec68",
+        "chinesename:guofeng-lexicon.w-5c553ec3f6db54f0d1eb",
+        "chinesename:guofeng-lexicon.w-861aef24c6507f88ef6a",
+        "chinesename:guofeng-lexicon.w-f77d7d6fdcadc75e03f2",
+        "chinesename:guofeng-lexicon.w-bb1e2a980983d47956fc",
+        "chinesename:guofeng-lexicon.w-197c19bb92cb84f0ee18",
+        "chinesename:guofeng-lexicon.w-a9252925bd57dc1b9ff5",
+        "chinesename:guofeng-lexicon.w-9b56fb9ec265f6fe5f05",
+        "chinesename:guofeng-lexicon.w-c84635f39ee853adb126",
+        "chinesename:guofeng-lexicon.w-c3a05bd5933256c17775",
+        "chinesename:guofeng-lexicon.w-2486504e64ec71940ab0",
+        "chinesename:guofeng-lexicon.w-9971297206c91c865fd6",
+        "chinesename:guofeng-lexicon.w-f3e2433ef9ca89dec348",
+        "chinesename:guofeng-lexicon.w-420831b8176fa513e7bb",
+        "chinesename:guofeng-lexicon.w-0df32dfde3c70a54119c"
+      ]
+    },
+    "country-short.inland": {
+      "pool": "chinesename:guofeng-lexicon.country-short",
+      "words": [
+        "chinesename:guofeng-lexicon.w-8a8df676c46b7f354503",
+        "chinesename:guofeng-lexicon.w-612aef6f9a8a5e30234d",
+        "chinesename:guofeng-lexicon.w-63facc0bd935ebca1ed8",
+        "chinesename:guofeng-lexicon.w-dfcd2da79f3c672aae6b",
+        "chinesename:guofeng-lexicon.w-5ca5981535bf3964e62f",
+        "chinesename:guofeng-lexicon.w-80fa989e688472cd956d",
+        "chinesename:guofeng-lexicon.w-c9a85fff13f1e9e39e26",
+        "chinesename:guofeng-lexicon.w-b9e2deead0643716ed78",
+        "chinesename:guofeng-lexicon.w-3f679bff4a5ff733e758",
+        "chinesename:guofeng-lexicon.w-61b8365933063699fa23",
+        "chinesename:guofeng-lexicon.w-d73cabac5d49551be914",
+        "chinesename:guofeng-lexicon.w-f3956d55514d3929d9d8",
+        "chinesename:guofeng-lexicon.w-ed7b13fc9eadc2eee220",
+        "chinesename:guofeng-lexicon.w-7e68a03a3ae48fd04d6a",
+        "chinesename:guofeng-lexicon.w-0eda571dff152d91d6f0",
+        "chinesename:guofeng-lexicon.w-28c005f26cf524f438da"
+      ]
+    },
+    "country-double.historic": {
+      "pool": "chinesename:guofeng-lexicon.country-double",
+      "words": [
+        "chinesename:guofeng-lexicon.w-25b778833cd346cf664d",
+        "chinesename:guofeng-lexicon.w-3acf46ced4e9bb802ef5",
+        "chinesename:guofeng-lexicon.w-90ce234cccdcfbed6b7c",
+        "chinesename:guofeng-lexicon.w-7dcf4e07e2f2edf687d4",
+        "chinesename:guofeng-lexicon.w-592a72a61dc9a942b2b8",
+        "chinesename:guofeng-lexicon.w-00764f00183e1962b444",
+        "chinesename:guofeng-lexicon.w-5c6dcbd65c5f2df529d3",
+        "chinesename:guofeng-lexicon.w-1fe9f4e2bffa92657579",
+        "chinesename:guofeng-lexicon.w-d147c72434e4f929a356",
+        "chinesename:guofeng-lexicon.w-dcda65c2ea4727c5fcda",
+        "chinesename:guofeng-lexicon.w-3c9ce47b6287e3a712be",
+        "chinesename:guofeng-lexicon.w-ce12af7383a4ed1e79c6",
+        "chinesename:guofeng-lexicon.w-a2156bdab86643e940db",
+        "chinesename:guofeng-lexicon.w-e610d0e5638f5fe45924"
+      ]
+    },
+    "country-double.invented": {
+      "pool": "chinesename:guofeng-lexicon.country-double",
+      "words": [
+        "chinesename:guofeng-lexicon.w-d2a30f484ca8d0dddc21",
+        "chinesename:guofeng-lexicon.w-ca39e4dad2b8ecfecfa0",
+        "chinesename:guofeng-lexicon.w-500100a236169eb3f606",
+        "chinesename:guofeng-lexicon.w-21b6cf38409d7284491b",
+        "chinesename:guofeng-lexicon.w-bdbf32562552ee1e81a0",
+        "chinesename:guofeng-lexicon.w-bdd3c417de747cbb7c7c",
+        "chinesename:guofeng-lexicon.w-3222426abd19b1db6b18",
+        "chinesename:guofeng-lexicon.w-6a730fe37a740e5d426a",
+        "chinesename:guofeng-lexicon.w-2a9d7ff54ac2480d9156",
+        "chinesename:guofeng-lexicon.w-a038e296cf9ee0257048",
+        "chinesename:guofeng-lexicon.w-935e932d1094d3b749b3",
+        "chinesename:guofeng-lexicon.w-e1ea02933f9061be183f",
+        "chinesename:guofeng-lexicon.w-56ee51d6f9089b79c646",
+        "chinesename:guofeng-lexicon.w-913474da373bd003e1ac"
+      ]
+    },
+    "town-root.market": {
+      "pool": "chinesename:guofeng-lexicon.town-root",
+      "words": [
+        "chinesename:guofeng-lexicon.w-c33a810ad9046e79949f",
+        "chinesename:guofeng-lexicon.w-ef994bb7afee54decbba",
+        "chinesename:guofeng-lexicon.w-a27dd09749704c51daa1",
+        "chinesename:guofeng-lexicon.w-74f5702a53fe2205f865",
+        "chinesename:guofeng-lexicon.w-6b1e00ea343b4f6c5227",
+        "chinesename:guofeng-lexicon.w-6b39a0792a73be2c26d5",
+        "chinesename:guofeng-lexicon.w-0e886249e811ecb3aa10",
+        "chinesename:guofeng-lexicon.w-dafc5fdf8d347cb698b6",
+        "chinesename:guofeng-lexicon.w-7565466f804bbdcc4df1",
+        "chinesename:guofeng-lexicon.w-52c1a8d5bdc008b0e5eb",
+        "chinesename:guofeng-lexicon.w-baa7cc087a70e3decc02",
+        "chinesename:guofeng-lexicon.w-7227fea238ff8cafc07e",
+        "chinesename:guofeng-lexicon.w-87209e997d179bde0fcc",
+        "chinesename:guofeng-lexicon.w-8efa8c808aa7d83b680e",
+        "chinesename:guofeng-lexicon.w-f94cb1a20b984a0b6878",
+        "chinesename:guofeng-lexicon.w-4ac7d42b036128ef1c24",
+        "chinesename:guofeng-lexicon.w-5707441041e10790a6eb",
+        "chinesename:guofeng-lexicon.w-71972e2db6360af2b25c",
+        "chinesename:guofeng-lexicon.w-33823a1a7adf2a7a44d8"
+      ]
+    },
+    "town-root.village": {
+      "pool": "chinesename:guofeng-lexicon.town-root",
+      "words": [
+        "chinesename:guofeng-lexicon.w-270717c1b17e88fd01f8",
+        "chinesename:guofeng-lexicon.w-2ec9fd9b09bf4d839195",
+        "chinesename:guofeng-lexicon.w-4b540796df81a3e78a07",
+        "chinesename:guofeng-lexicon.w-08fe893f9f4ac022c410",
+        "chinesename:guofeng-lexicon.w-ecd4c2706eaa3db4c5a3",
+        "chinesename:guofeng-lexicon.w-70c499f90d471b2b3e0f",
+        "chinesename:guofeng-lexicon.w-ccfa6b41b415ffc4550e",
+        "chinesename:guofeng-lexicon.w-441809c30506614b353f",
+        "chinesename:guofeng-lexicon.w-8b97e57f1dbca470d678",
+        "chinesename:guofeng-lexicon.w-fdfe14f767f3582404d4",
+        "chinesename:guofeng-lexicon.w-6507b73849b2470e6008",
+        "chinesename:guofeng-lexicon.w-1cd166a212e64b620e2b",
+        "chinesename:guofeng-lexicon.w-f16a46b1146ed3ac7c0a",
+        "chinesename:guofeng-lexicon.w-6562882729f4b647c95f",
+        "chinesename:guofeng-lexicon.w-c6a5048154977deaef5f",
+        "chinesename:guofeng-lexicon.w-f1ad3500208f8b2d89e9",
+        "chinesename:guofeng-lexicon.w-12f53c23ae1ddc286543",
+        "chinesename:guofeng-lexicon.w-e0291b94a875d8436070"
+      ]
+    },
+    "town-root.long-distance": {
+      "pool": "chinesename:guofeng-lexicon.town-root",
+      "words": [
+        "chinesename:guofeng-lexicon.w-fbac51e8ba324faa3a4f",
+        "chinesename:guofeng-lexicon.w-b658e4d0eee37e4a9fca",
+        "chinesename:guofeng-lexicon.w-7e4a9d9b28f3ffe78388",
+        "chinesename:guofeng-lexicon.w-88e6584ac69e8a4ac1ff",
+        "chinesename:guofeng-lexicon.w-facf1c84f8a10cea0212",
+        "chinesename:guofeng-lexicon.w-1e8d4c16940c2645c2f8",
+        "chinesename:guofeng-lexicon.w-600939157a1ff8db8677",
+        "chinesename:guofeng-lexicon.w-2d84b81eb914ad4209ad",
+        "chinesename:guofeng-lexicon.w-040c894e51b638fe53cd",
+        "chinesename:guofeng-lexicon.w-ec625c027b11ac7d0104",
+        "chinesename:guofeng-lexicon.w-ea4e84a4063f1fb3d3dc",
+        "chinesename:guofeng-lexicon.w-3a04832d4be0c23d3cb5",
+        "chinesename:guofeng-lexicon.w-805c5203bf3d4851aac0",
+        "chinesename:guofeng-lexicon.w-251e34216d7a34555cb8",
+        "chinesename:guofeng-lexicon.w-3d4e2e8187e190d52b95",
+        "chinesename:guofeng-lexicon.w-8f76206a04845db7cd36",
+        "chinesename:guofeng-lexicon.w-16572862d4c0427bb3f8"
+      ]
+    },
+    "town-ending.administration": {
+      "pool": "chinesename:guofeng-lexicon.town-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-2df825fbdaad71be1b3c",
+        "chinesename:guofeng-lexicon.w-73007de2a43139b7555c",
+        "chinesename:guofeng-lexicon.w-a86fa5a1f03eaebef7a7",
+        "chinesename:guofeng-lexicon.w-71acf738115db70c2d16",
+        "chinesename:guofeng-lexicon.w-7eabb36ba1ab565b65e9",
+        "chinesename:guofeng-lexicon.w-f4af4f3ef18a3450e848"
+      ]
+    },
+    "town-ending.settlement": {
+      "pool": "chinesename:guofeng-lexicon.town-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-b1a6152ed38c74dba6bf",
+        "chinesename:guofeng-lexicon.w-838d805b8ad09c437c44",
+        "chinesename:guofeng-lexicon.w-767c596dbfefebd16ce2",
+        "chinesename:guofeng-lexicon.w-cf662fc92a5bc727cc00",
+        "chinesename:guofeng-lexicon.w-61a401cf32d4f165e993",
+        "chinesename:guofeng-lexicon.w-bd2a01de83f96e506296",
+        "chinesename:guofeng-lexicon.w-e3acd7c95f1c961119f5",
+        "chinesename:guofeng-lexicon.w-eb100cbabc568d535175"
+      ]
+    },
+    "polity-ending.state": {
+      "pool": "chinesename:guofeng-lexicon.polity-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-d1566afa505af0f03b91",
+        "chinesename:guofeng-lexicon.w-e676afc00222404c16bf",
+        "chinesename:guofeng-lexicon.w-419c745398dffb654b26",
+        "chinesename:guofeng-lexicon.w-2c922454f2d631224e14",
+        "chinesename:guofeng-lexicon.w-96da11258bbe0f3cc1c9",
+        "chinesename:guofeng-lexicon.w-7b82f9ac2ef5cf2ea145"
+      ]
+    },
+    "polity-ending.region": {
+      "pool": "chinesename:guofeng-lexicon.polity-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-77ef5850a8d620fe6278",
+        "chinesename:guofeng-lexicon.w-06630489a687a8480743",
+        "chinesename:guofeng-lexicon.w-b20b6409a86fa843607b",
+        "chinesename:guofeng-lexicon.w-a9d4c8ed424385d72e8d",
+        "chinesename:guofeng-lexicon.w-bbd46e528a69a44df869",
+        "chinesename:guofeng-lexicon.w-3b819393f1542cff9d68"
+      ]
+    },
+    "saying.governance": {
+      "pool": "chinesename:guofeng-lexicon.saying",
+      "words": [
+        "chinesename:guofeng-lexicon.w-2458f9ad1b69e650be56",
+        "chinesename:guofeng-lexicon.w-51c6f609692c6d16abf8",
+        "chinesename:guofeng-lexicon.w-b25c37c6783bcb77f6eb",
+        "chinesename:guofeng-lexicon.w-2e06dabcad52e3dce296",
+        "chinesename:guofeng-lexicon.w-ac5f3ac0ddd84c700029",
+        "chinesename:guofeng-lexicon.w-931b3790a68fa81ab1b3",
+        "chinesename:guofeng-lexicon.w-c1dcf11f363ce0e851b3",
+        "chinesename:guofeng-lexicon.w-514cd3b61a841735d251",
+        "chinesename:guofeng-lexicon.w-b880a6697cc01416383e",
+        "chinesename:guofeng-lexicon.w-c782a9fcd7cd4cfe701b",
+        "chinesename:guofeng-lexicon.w-d95d35a8b55ecac159a6"
+      ]
+    },
+    "saying.conduct": {
+      "pool": "chinesename:guofeng-lexicon.saying",
+      "words": [
+        "chinesename:guofeng-lexicon.w-78bc435913a01914cf09",
+        "chinesename:guofeng-lexicon.w-5e5d71c1cf23021811ee",
+        "chinesename:guofeng-lexicon.w-af1caa1903b188b13a2d",
+        "chinesename:guofeng-lexicon.w-582a64fcbeaa193e9f03",
+        "chinesename:guofeng-lexicon.w-97d4bbf79b67f06e7520",
+        "chinesename:guofeng-lexicon.w-f5b50d1d0ccbbd99f14c",
+        "chinesename:guofeng-lexicon.w-c276b7fdf467b2afc499",
+        "chinesename:guofeng-lexicon.w-e89547e57396b2d29324",
+        "chinesename:guofeng-lexicon.w-a2a4c9ec0057a2e64195",
+        "chinesename:guofeng-lexicon.w-49abba3990b27fd3c340",
+        "chinesename:guofeng-lexicon.w-c8bceee00a03c04a6bbf"
+      ]
+    },
+    "emblem.regions": {
+      "pool": "chinesename:guofeng-lexicon.emblem",
+      "words": [
+        "chinesename:guofeng-lexicon.w-c5ea2e8a9f07101836a0",
+        "chinesename:guofeng-lexicon.w-0dcd080a79195926d044",
+        "chinesename:guofeng-lexicon.w-1ba9f7395870582f279d",
+        "chinesename:guofeng-lexicon.w-69dc9d8c5a1f8709a63d",
+        "chinesename:guofeng-lexicon.w-3d2c5360873f87d1c1a0",
+        "chinesename:guofeng-lexicon.w-88f779a684a87ff07dac",
+        "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3",
+        "chinesename:guofeng-lexicon.w-77303e12efe864b6af95",
+        "chinesename:guofeng-lexicon.w-b11e0a306636605684bc",
+        "chinesename:guofeng-lexicon.w-7958f11d5ad3e39f958e",
+        "chinesename:guofeng-lexicon.w-742d6ceec106ca753901",
+        "chinesename:guofeng-lexicon.w-f7031792a74f38064dc2"
+      ]
+    },
+    "emblem.values": {
+      "pool": "chinesename:guofeng-lexicon.emblem",
+      "words": [
+        "chinesename:guofeng-lexicon.w-521f20d39eaf242aaf5d",
+        "chinesename:guofeng-lexicon.w-f42f1fa52b8471b3c48e",
+        "chinesename:guofeng-lexicon.w-afbd1a2f93ea3f39bec1",
+        "chinesename:guofeng-lexicon.w-e42a2fd0637672d36c6c",
+        "chinesename:guofeng-lexicon.w-86dfcde851fb0c0a6224",
+        "chinesename:guofeng-lexicon.w-240ac992f0f479fb0364",
+        "chinesename:guofeng-lexicon.w-447b1c900ea8dfcb2136",
+        "chinesename:guofeng-lexicon.w-abebd14cce842e8fb1b8",
+        "chinesename:guofeng-lexicon.w-cad6ca996f74cf721966",
+        "chinesename:guofeng-lexicon.w-67431a66b8853dba14e3",
+        "chinesename:guofeng-lexicon.w-b711e30c9c4a33fc98b5",
+        "chinesename:guofeng-lexicon.w-03a51c9e87eea69e41e8"
+      ]
+    },
+    "tradition.regional": {
+      "pool": "chinesename:guofeng-lexicon.tradition",
+      "words": [
+        "chinesename:guofeng-lexicon.w-05a2a2d9f2d0cf00801b",
+        "chinesename:guofeng-lexicon.w-69aacaf5f3c597f0bb91",
+        "chinesename:guofeng-lexicon.w-53b2ca5109e840fc5596",
+        "chinesename:guofeng-lexicon.w-da2510df7f9708283da6",
+        "chinesename:guofeng-lexicon.w-bdd3c417de747cbb7c7c",
+        "chinesename:guofeng-lexicon.w-adb73eee69098808aee6",
+        "chinesename:guofeng-lexicon.w-18631f025b1eee042c10",
+        "chinesename:guofeng-lexicon.w-534fbaf6b0b59736a025"
+      ]
+    },
+    "tradition.customs": {
+      "pool": "chinesename:guofeng-lexicon.tradition",
+      "words": [
+        "chinesename:guofeng-lexicon.w-afbd1a2f93ea3f39bec1",
+        "chinesename:guofeng-lexicon.w-d2bb01a4598d2272e721",
+        "chinesename:guofeng-lexicon.w-894e920ac6c0b3e019d8",
+        "chinesename:guofeng-lexicon.w-609c5ca5daef26ef0667",
+        "chinesename:guofeng-lexicon.w-447b1c900ea8dfcb2136",
+        "chinesename:guofeng-lexicon.w-521f20d39eaf242aaf5d",
+        "chinesename:guofeng-lexicon.w-a5b098dcbd5dd83d29be",
+        "chinesename:guofeng-lexicon.w-4752374e88bd8ea842ec"
+      ]
+    },
+    "speech.river": {
+      "pool": "chinesename:guofeng-lexicon.speech",
+      "words": [
+        "chinesename:guofeng-lexicon.w-1183e8b2580373f38da4",
+        "chinesename:guofeng-lexicon.w-652a74a71fc517e367dc",
+        "chinesename:guofeng-lexicon.w-17066a3b768ec8ae2fa1",
+        "chinesename:guofeng-lexicon.w-86a65acd594837136dff",
+        "chinesename:guofeng-lexicon.w-42dcf75b077ad97e4c35",
+        "chinesename:guofeng-lexicon.w-7497a8492d489720e92e",
+        "chinesename:guofeng-lexicon.w-1a46dfc5f361340d7f80",
+        "chinesename:guofeng-lexicon.w-81550408cbf8d86a9f88"
+      ]
+    },
+    "speech.hill": {
+      "pool": "chinesename:guofeng-lexicon.speech",
+      "words": [
+        "chinesename:guofeng-lexicon.w-1269f6b715a80c91fc8b",
+        "chinesename:guofeng-lexicon.w-d5d2106abcd6b8f00414",
+        "chinesename:guofeng-lexicon.w-e43a6b668e568029ddfc",
+        "chinesename:guofeng-lexicon.w-534fbaf6b0b59736a025",
+        "chinesename:guofeng-lexicon.w-0ec13f452d277b72ffe4",
+        "chinesename:guofeng-lexicon.w-53cfd0c433c39d8ec1e9",
+        "chinesename:guofeng-lexicon.w-2ae3a2aeec485e3b3f74",
+        "chinesename:guofeng-lexicon.w-d07e61bdc97f2e1a1946"
+      ]
+    },
+    "hall.scholarship": {
+      "pool": "chinesename:guofeng-lexicon.hall",
+      "words": [
+        "chinesename:guofeng-lexicon.w-a158376d13f9e518956f",
+        "chinesename:guofeng-lexicon.w-e89cd48249127fca1213",
+        "chinesename:guofeng-lexicon.w-144316ae2d9e57bd34e5",
+        "chinesename:guofeng-lexicon.w-7cac4468f50893586011",
+        "chinesename:guofeng-lexicon.w-e7dc6a18127e9e29da4e",
+        "chinesename:guofeng-lexicon.w-1242ecf53eae72f789ce",
+        "chinesename:guofeng-lexicon.w-67785f927566af542531",
+        "chinesename:guofeng-lexicon.w-6b08c40e2b19e48d14c5"
+      ]
+    },
+    "hall.homeland": {
+      "pool": "chinesename:guofeng-lexicon.hall",
+      "words": [
+        "chinesename:guofeng-lexicon.w-a9c1c333feb532627cc9",
+        "chinesename:guofeng-lexicon.w-6ea56f2b55358e5786c6",
+        "chinesename:guofeng-lexicon.w-288b6adfbb5cbe5f9ae6",
+        "chinesename:guofeng-lexicon.w-487d9550d074dc7547fc",
+        "chinesename:guofeng-lexicon.w-1a641e046df114c02af2",
+        "chinesename:guofeng-lexicon.w-0528030eaff589349131",
+        "chinesename:guofeng-lexicon.w-3a027441f073ebf077eb",
+        "chinesename:guofeng-lexicon.w-91de18f3f689be90915d"
+      ]
+    },
+    "war-ending.chronicle": {
+      "pool": "chinesename:guofeng-lexicon.war-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-d3f8b380c4cb83b8a3ad",
+        "chinesename:guofeng-lexicon.w-28ba0f82964f7f5a17c7",
+        "chinesename:guofeng-lexicon.w-73aebf2735a961feefbd",
+        "chinesename:guofeng-lexicon.w-5f8f194f035b9a16ddae"
+      ]
+    },
+    "war-ending.campaign": {
+      "pool": "chinesename:guofeng-lexicon.war-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-a829695c8a4f35cf495b",
+        "chinesename:guofeng-lexicon.w-7ae0219da3aead459434",
+        "chinesename:guofeng-lexicon.w-7ca6f8d2364efaace14c",
+        "chinesename:guofeng-lexicon.w-1201ca2fd3db0434c29d"
+      ]
+    },
+    "alliance-ending.oath": {
+      "pool": "chinesename:guofeng-lexicon.alliance-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-2ffa5f34893d5751467b",
+        "chinesename:guofeng-lexicon.w-7646fe9d31f603730153",
+        "chinesename:guofeng-lexicon.w-c364274b1124dae57a9d",
+        "chinesename:guofeng-lexicon.w-b3f008771b4d84d5da91"
+      ]
+    },
+    "alliance-ending.neighbors": {
+      "pool": "chinesename:guofeng-lexicon.alliance-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-6d8f51d277b33b82a1eb",
+        "chinesename:guofeng-lexicon.w-0c89e1ad1be011eaece8",
+        "chinesename:guofeng-lexicon.w-17ab3aee2159e4348d4e",
+        "chinesename:guofeng-lexicon.w-2007c997e45be86bd0b1"
+      ]
+    },
+    "army-ending.garrison": {
+      "pool": "chinesename:guofeng-lexicon.army-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-9971297206c91c865fd6",
+        "chinesename:guofeng-lexicon.w-b650eed6e43ba9821e95",
+        "chinesename:guofeng-lexicon.w-a219458557f0a4858e43",
+        "chinesename:guofeng-lexicon.w-574db1de77f394fc14b9"
+      ]
+    },
+    "army-ending.field": {
+      "pool": "chinesename:guofeng-lexicon.army-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-b51bb5d4b716aa29188c",
+        "chinesename:guofeng-lexicon.w-803940895092389a35df",
+        "chinesename:guofeng-lexicon.w-ab9193c9be88b9c93643",
+        "chinesename:guofeng-lexicon.w-79b392f7beb5f979bdc4"
+      ]
+    },
+    "book-ending.records": {
+      "pool": "chinesename:guofeng-lexicon.book-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-382557fee2325ffe7486",
+        "chinesename:guofeng-lexicon.w-3b17f9fe1656694f2863",
+        "chinesename:guofeng-lexicon.w-fc72a4479732661f0e5a",
+        "chinesename:guofeng-lexicon.w-9500d0d6a1915de660f4"
+      ]
+    },
+    "book-ending.studies": {
+      "pool": "chinesename:guofeng-lexicon.book-ending",
+      "words": [
+        "chinesename:guofeng-lexicon.w-cf995a6e671576960b43",
+        "chinesename:guofeng-lexicon.w-ccca74461399d2a0c9e3",
+        "chinesename:guofeng-lexicon.w-73108bd2d533b482d401",
+        "chinesename:guofeng-lexicon.w-4ed393a02528cc2aea83"
+      ]
+    },
+    "artifact.craft": {
+      "pool": "chinesename:guofeng-lexicon.artifact",
+      "words": [
+        "chinesename:guofeng-lexicon.w-cf34e3dc8424c3ca6b12",
+        "chinesename:guofeng-lexicon.w-3c7856a895fcb19f39f1",
+        "chinesename:guofeng-lexicon.w-fe858983d0e6ab32af32",
+        "chinesename:guofeng-lexicon.w-a22d7a3ad267181487a2",
+        "chinesename:guofeng-lexicon.w-c824daa137707ed91571",
+        "chinesename:guofeng-lexicon.w-73fad7506b3595722c63"
+      ]
+    },
+    "artifact.poetic": {
+      "pool": "chinesename:guofeng-lexicon.artifact",
+      "words": [
+        "chinesename:guofeng-lexicon.w-7e6809be1b345bbccfb1",
+        "chinesename:guofeng-lexicon.w-6b8e5d20a8e268bf25cc",
+        "chinesename:guofeng-lexicon.w-3c886bdae61b60f5c67c",
+        "chinesename:guofeng-lexicon.w-37f3552266d5b662520f",
+        "chinesename:guofeng-lexicon.w-5a31d99182e2b151beb1",
+        "chinesename:guofeng-lexicon.w-f328ca6f1f3104d0a806"
+      ]
+    }
+  }
+}

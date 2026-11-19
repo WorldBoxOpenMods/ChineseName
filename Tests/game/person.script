@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const string surnameKey = "chinesename.surname.v1";
+const string marker = "chinesename:smoke";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+string Surname(Actor actor) { actor.data.get(surnameKey, out string value); return value; }
+
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground);
+var father = world.units.createNewUnit("human", tile);
+var mother = world.units.createNewUnit("human", tile);
+father.data.sex = ActorSex.Male;
+mother.data.sex = ActorSex.Female;
+father.data.set(surnameKey, "欧阳");
+mother.data.set(surnameKey, "李");
+var oldName = father.getName();
+var child = BabyMaker.makeBaby(father, mother, ActorSex.Male, pTile: tile);
+var sibling = BabyMaker.makeBaby(father, mother, ActorSex.Female, pTile: tile);
+Check(Surname(child) == "欧阳" && Surname(sibling) == "欧阳", "Full paternal surname must be stored at birth.");
+Check(string.IsNullOrEmpty(child.data.name), "Birth unexpectedly generated the complete name.");
+var service = NamingApi.Current;
+service.InstallPack(new NamingPack {
+    Id = marker, Format = 1, Supplemental = true,
+    Rules = new Dictionary<string, List<Rule>> {
+        ["worldbox:person"] = new List<Rule> {
+            new Rule { Id = "sapient", Priority = 10,
+                When = new Dictionary<string, string> { ["kind"] = "sapient" },
+                Parts = new List<Part> { new Part { Id = "surname", Literal = "赵" },
+                                        new Part { Id = "given", Literal = "澄川" } } } }
+    }
+});
+var draft = service.GetWorld();
+draft.EnabledPacks.Add(marker);
+var inputs = new Dictionary<string, object> { ["kind"] = "sapient" };
+var request = new NameRequest("worldbox:person", 23, inputs: inputs,
+    fixedParts: new Dictionary<string, string> { ["surname"] = "欧阳" });
+Check(service.Preview(request, draft).Text == "欧阳澄川", "Draft preview did not see the pack.");
+Check(!service.GetWorld().EnabledPacks.Contains(marker), "Preview applied the draft.");
+WorldNamingStore.Apply(draft);
+var generated = child.getName();
+Check(generated == "欧阳澄川" && father.getName() == oldName, "New rules must not rename existing units.");
+for (int frame = 0; frame < 120 && !world.units.getSimpleList().Contains(child); frame++) await Game.NextFrame();
+Check(world.units.getSimpleList().Contains(child), "The new unit has not entered the active collection.");
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "save");
+Directory.CreateDirectory(folder);
+var map = SaveManager.saveWorldToDirectory(folder);
+Check(map.actors_data.Any(actor => actor.id == child.getID() && actor.name == generated), "The saved map does not contain the child.");
+return new { generated, father = oldName, child = child.getID(), sisterSurname = Surname(sibling), folder,
+    version = UnityEngine.Application.version };

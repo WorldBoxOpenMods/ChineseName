@@ -1,0 +1,12 @@
+using System;
+using UnityEngine;
+
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+var size = System.IO.File.ReadAllText(System.IO.Path.Combine(output, "editor-size.txt")).Trim().Split('x');
+int width = int.Parse(size[0]);
+int height = int.Parse(size[1]);
+UnityEngine.Screen.SetResolution(width, height, FullScreenMode.Windowed);
+for (int frame = 0; frame < 120 && (UnityEngine.Screen.width != width || UnityEngine.Screen.height != height); frame++) await Game.NextFrame();
+if (UnityEngine.Screen.width != width || UnityEngine.Screen.height != height)
+    throw new InvalidOperationException($"Resolution request failed. Actual {UnityEngine.Screen.width}x{UnityEngine.Screen.height}.");
+return new { UnityEngine.Screen.width, UnityEngine.Screen.height };

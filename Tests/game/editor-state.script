@@ -1,0 +1,13 @@
+using System;
+using System.IO;
+using UnityEngine;
+
+// Capture the visible game after display input.
+var path = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"),
+    "editor-state-" + DateTime.UtcNow.ToString("HHmmssfff") + ".png");
+ScreenCapture.CaptureScreenshot(path);
+for (int i = 0; i < 120 && !File.Exists(path); i++) await Game.NextFrame();
+return new {
+    width = UnityEngine.Screen.width, height = UnityEngine.Screen.height,
+    mouse = Input.mousePosition.ToString(), path
+};

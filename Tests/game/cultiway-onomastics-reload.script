@@ -1,0 +1,46 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Cultiway.Core.SkillLibV3.Utils;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/cultiway-onomastics-save/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt")).Select(long.Parse).ToArray();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1750 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the map.");
+
+var world = World.world;
+var first = world.units.get(ids[4]);
+var second = world.units.get(ids[5]);
+var service = NamingApi.Current;
+var state = service.GetWorld();
+Check(first?.culture?.id == ids[0] && second?.culture?.id == ids[1] &&
+    state.Cultures[ids[0]].Cards["cultiway:spell"].Template == "04|4:诀" &&
+    state.Cultures[ids[1]].Cards["cultiway:spell"].Template == "40|4:引", "The two cultures' spell arrangements did not survive.");
+var asset = Cultiway.Content.SkillEntities.Fireball;
+string Fireball(Actor creator) =>
+    new SkillContainerBuilder(asset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, creator).Name.value;
+Check(Fireball(first) == "炎诀" && Fireball(second) == "引炎", "Real spell generation did not restore both cultures.");
+first.joinLanguage(world.languages.get(ids[3]));
+Check(Fireball(first) == "火诀" && Fireball(second) == "引炎", "The different language pools did not survive.");
+
+world.console.Hide();
+SelectedUnit.select(first);
+SelectedMetas.selected_culture = first.culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_mod_cultiway:spell").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 16; i++) await Game.NextFrame();
+var preview = shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+Check(preview == "火诀" && tab.getOnomasticsData().getShortTemplate() == "04|4:诀",
+    "Reopening the original editor produced " + preview);
+return new { save, preview, switchedLanguage = Fireball(first), secondCulture = Fireball(second) };

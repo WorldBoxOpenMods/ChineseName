@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12) { for (int i = 0; i < count; i++) await Game.NextFrame(); }
+var fixtures = Directory.GetFiles("__LEGACY_PACKS__", "*.naming.json").OrderBy(path => path).ToArray();
+Check(fixtures.Length != 0, "No converted package fixtures.");
+var world = World.world;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(actor);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+var language = world.languages.newLanguage(actor, true);
+actor.joinLanguage(language);
+world.units.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+var service = NamingApi.Current;
+var original = service.GetWorld();
+var installed = new List<string>();
+var results = new List<object>();
+var ids = new List<string>();
+try
+{
+    foreach (string fixture in fixtures)
+    {
+        string destination = Path.Combine(WorldNamingStore.PackageDirectory, "test-converted-" + Path.GetFileName(fixture));
+        File.Copy(fixture, destination);
+        installed.Add(destination);
+        var errors = WorldNamingStore.ReloadPacks();
+        Check(errors.Count == 0, string.Join(" / ", errors));
+        var pack = NamingJson.Read<NamingPack>(File.ReadAllText(fixture));
+        string exported = WorldNamingStore.Export(service.GetPackage(pack.Id));
+        try
+        {
+            Check(NamingJson.Read<NamingPack>(File.ReadAllText(exported)).Words.Count == pack.Words.Count,
+                "Exporting the converted pack lost words.");
+        }
+        finally { File.Delete(exported); }
+        ids.Add(pack.Id);
+        var draft = service.GetWorld();
+        draft.EnabledPacks = new List<string> { pack.Id };
+        WorldNamingStore.Apply(draft);
+        NameResult Draw(string type) => service.Generate(new NameRequest("worldbox:" + type, 0, culture.id, language.id,
+            new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" }));
+        var city = Draw("city");
+        var person = Draw("person");
+        Check(city.Success && person.Success && city.Sources.Values.Any(source => source.Reference?.StartsWith("tests:legacy-") == true) &&
+              person.Sources.Values.Any(source => source.Reference?.StartsWith("tests:legacy-") == true), "Converted rules did not name " + pack.Id);
+        results.Add(new { pack.Id, city = city.Text, person = person.Text, pools = pack.Pools.Count });
+    }
+
+    var choices = service.GetWorld();
+    choices.EnabledPacks = ids;
+    WorldNamingStore.Apply(choices);
+    var candidates = fixtures.Select(file => NamingJson.Read<NamingPack>(File.ReadAllText(file))).ToArray();
+    var collision = candidates.SelectMany(pack => pack.PoolAliases).GroupBy(pair => pair.Key).First(group => group.Count() > 1);
+    string wanted = collision.First().Value;
+    string qualified = wanted.Replace(':', '/');
+    var words = candidates.Single(pack => pack.Pools.ContainsKey(wanted));
+    var expected = new HashSet<string>(words.Words.Where(word => words.Pools[wanted].ContainsKey(word.Id))
+        .Select(word => word.Text), StringComparer.OrdinalIgnoreCase);
+    char marker = AssetManager.onomastics_library.get("chinesename_as_pool").short_id;
+    world.console.Hide();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SelectedUnit.select(actor);
+    SelectedMetas.selected_culture = culture;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+    await Frames();
+    tab.loadTemplate($"0{marker}|0:{collision.Key}");
+    await Frames();
+    Check(shell.GetComponentsInChildren<Text>().Any(label => label.text.Contains("指向多个词库")),
+        "The shared alias did not show its ambiguity.");
+    tab.loadTemplate($"0{marker}|0:{qualified}");
+    await Frames();
+    var preview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
+    Check(expected.Contains(preview), "The qualified pool syntax did not use the selected legacy pool: " + preview);
+    return new { results, sharedAlias = collision.Key, qualified, preview };
+}
+finally
+{
+    WorldNamingStore.Apply(original);
+    foreach (string file in installed) File.Delete(file);
+    WorldNamingStore.ReloadPacks();
+}

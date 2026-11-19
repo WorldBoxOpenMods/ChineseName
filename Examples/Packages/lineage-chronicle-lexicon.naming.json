@@ -1,0 +1,1466 @@
+{
+  "format": 1,
+  "id": "chinesename:lineage-chronicle-lexicon",
+  "label": "宗祧编年词库",
+  "supplemental": true,
+  "words": [
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2f2d52a127206061fda6",
+      "text": "敦仁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-6b08c40e2b19e48d14c5",
+      "text": "崇礼"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2812ef102553de4ca22b",
+      "text": "敬承"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f151cd1f6be7b82cf68a",
+      "text": "守成"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-788eb5b25252674288e9",
+      "text": "和敬"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7848a92275e7720a85d1",
+      "text": "继德"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fe9bd89e82616c0520b2",
+      "text": "永叙"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-0db108ff7360081c7b1f",
+      "text": "承晖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-6a27082556b4a580ca87",
+      "text": "归善"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2792333bbb5e8b248b38",
+      "text": "思诚"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5e8f1debec53947de905",
+      "text": "绍礼"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-abeac5f0f46099836837",
+      "text": "昭德"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9ed736032bbf5d08c225",
+      "text": "洽和"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8df08ca938ab541c06eb",
+      "text": "持正"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a158376d13f9e518956f",
+      "text": "松庭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-bcc5923183b063267f8f",
+      "text": "兰室"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-358b13ec66627796572a",
+      "text": "桂坞"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-db05d0e30845c60b6aca",
+      "text": "冬青"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-75e18af01469d95c8a9f",
+      "text": "听雨"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-11e53eceeb3d2eded680",
+      "text": "溪亭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fef65b05c4dd34505699",
+      "text": "白石"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-aa8fff372543cdd4eb26",
+      "text": "遥山"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-778d3023756703f701a9",
+      "text": "月榭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-06f8be26d9dee0845b6f",
+      "text": "清泉"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a1980ad11f58f185ec7d",
+      "text": "杏园"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a9f9d23a255edaa67cff",
+      "text": "归舟"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7518a3f7edf370402070",
+      "text": "青竹"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-0d79725cd356be7b10f9",
+      "text": "槐门"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-634336b84cbea371e908",
+      "text": "堂"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7f8de7842cf0a424dbf6",
+      "text": "书屋"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d719cf9c877e718bd84f",
+      "text": "书院"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-eaf4089315c76add4dce",
+      "text": "讲舍"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3280aea06b6bf9eb7f1e",
+      "text": "祠"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e26ae98388aab6c99fb5",
+      "text": "宗祠"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a1461e66b55180127966",
+      "text": "家庙"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fa2c495a2c52fa297eef",
+      "text": "祖厅"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8c644c20425833251370",
+      "text": "长房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c94dc38f82e41343a746",
+      "text": "二房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b2edb24b6cb81f64f022",
+      "text": "三房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9dcdb7bcb35d74f06630",
+      "text": "继房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5ef594cf242721190ae9",
+      "text": "旁支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8a64caa9fc9e91a1cf38",
+      "text": "远支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d769b14b9f806502b54b",
+      "text": "东房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c3f8b67f5a053f9db222",
+      "text": "西房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1adfb8cc48857a5c082c",
+      "text": "南支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e42dfea4109c04191465",
+      "text": "北支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8f6f8d553fe33ce18ec6",
+      "text": "山房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1aed1b5c1d65b3d90548",
+      "text": "溪支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7e96f016618f28dbae80",
+      "text": "槐房"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3289e54f052f09c8552a",
+      "text": "梅支"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-13d240c5bfa9d3d913f9",
+      "text": "承"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b59fb74892bec41c21c9",
+      "text": "继"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-60f13de463447482b8c0",
+      "text": "昭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-06052e19691f4aaffa7d",
+      "text": "绍"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2b684a9bc670a7673a8f",
+      "text": "敬"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2dfb6f5012b3d7640e62",
+      "text": "崇"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-80ed541cd9598f566dd8",
+      "text": "维"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4da93783684232663ae1",
+      "text": "教"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d143662f22a0b0f67375",
+      "text": "延"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f67280d612991a2d400e",
+      "text": "广"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-989ca7dbec297b106179",
+      "text": "启"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7f77f23af7b0dcc87b5e",
+      "text": "元"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-246ce4df5c505f579401",
+      "text": "恭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-cf5a539d7b65b32b3ad5",
+      "text": "允"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b25471b1ca084b2c95db",
+      "text": "恒"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b433a7ea39936c5c706a",
+      "text": "仁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-89f44db763d4a43d030c",
+      "text": "义"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-bd5d0f6169394c03c96e",
+      "text": "修"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-04a990cfa68416f034dc",
+      "text": "诚"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-382557fee2325ffe7486",
+      "text": "志"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3abc957a4e9f5180df61",
+      "text": "嘉"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5f5fab4f61c494d628b0",
+      "text": "良"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3d7114281f5b59d9a7ab",
+      "text": "和"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8bd2ce70f64ffd5cee14",
+      "text": "信"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e34600a608d116c197dc",
+      "text": "永和"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fff6bb0636777ed04841",
+      "text": "太宁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-724ec27c2c553ec41b91",
+      "text": "元嘉"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8d86b0e099b8c6c15225",
+      "text": "景明"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fe5bfae9be59f151118c",
+      "text": "咸宁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f9160160e929b60917f5",
+      "text": "元和"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-75bd9cfc0b8ea70f919b",
+      "text": "嘉平"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-bf222cef6f4280623fce",
+      "text": "承安"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-dfed8819962a4cf07e4d",
+      "text": "永宁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5d73eb0abc889fdbef71",
+      "text": "建安"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e8df7f27728132a95b03",
+      "text": "长乐"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-20ad6bbe194deb25a580",
+      "text": "太平"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-848fee0fd75376ac787c",
+      "text": "安祐"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7604eeee0fdca2ff169e",
+      "text": "承元"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-59d5a5c7b67a7a6b268f",
+      "text": "新历"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-dabca3ee65be0e1ee190",
+      "text": "绍明"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-95f08900cb639d0fb4eb",
+      "text": "元启"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-afc01ba58e180896448a",
+      "text": "景祐"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d610dbf5b68388784ed6",
+      "text": "启元"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-ab2ee280f456f04feedb",
+      "text": "居正"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7185fc88c004c3cd1edc",
+      "text": "载宁"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e12a5c7d5394164fe7ab",
+      "text": "弘初"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1e546ced06a9c8ba8aca",
+      "text": "晏开"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4a070da9a32f4ee03e8f",
+      "text": "复昌"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a86df9b7d710eae0299e",
+      "text": "开泰"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5110bdc9f8ce7f4fa7e6",
+      "text": "龙兴"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-17960900235cdaeee7a4",
+      "text": "太祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d3f9d203b978e0881ef3",
+      "text": "高祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3eec672f905860739e41",
+      "text": "世祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5c93403f53dd9aaaacdc",
+      "text": "始祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c325250d1fd1725c4d8b",
+      "text": "烈祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-886bcc74aaaba49254bd",
+      "text": "肇祖"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e64248b18eef291788c7",
+      "text": "太宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2ecd82f3499c04985119",
+      "text": "世宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-fe544c8812f255b9c469",
+      "text": "高宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d5db89dea75943b3b0a9",
+      "text": "睿宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-54fa5624ffaf30531b14",
+      "text": "仁宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9a6094847e1d1718f492",
+      "text": "宣宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-eb4ef8b62af4cf6a5619",
+      "text": "明宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c326e685c41140bf7587",
+      "text": "章宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-716aa4bab3e696593083",
+      "text": "成宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2e3d26c6a6ea562fd623",
+      "text": "德宗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3677ef77b1574d162d7c",
+      "text": "文"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-73b972d71b0aec48bed3",
+      "text": "明"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-55466f4976ec50afbd4f",
+      "text": "成"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-77b8cf2c2dbc6d56d392",
+      "text": "孝"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c4d5becf50f379f97a6c",
+      "text": "忠"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9e58283056307a7c674a",
+      "text": "景"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b5ae5911139825741ab1",
+      "text": "穆"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4e80dcd6e817dba1c6c9",
+      "text": "惠"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2c881c4923a9863bd06b",
+      "text": "德"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f55864ff2b57975c28d0",
+      "text": "武"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-23deabc9aa3e2e8f0111",
+      "text": "烈"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4051f8893e5863397e9d",
+      "text": "毅"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5a3e2cbfb9b755a2695f",
+      "text": "威"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-0f39599be78126385821",
+      "text": "壮"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b8e5e03288d74de0cdc5",
+      "text": "刚"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-cf662fc92a5bc727cc00",
+      "text": "庄"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-0ebc82cbcdd5a1674c31",
+      "text": "宣"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a071406edf016fa0359c",
+      "text": "定"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7b5a5d75887b37172480",
+      "text": "章"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-eae927ccd0818bd231f4",
+      "text": "桓"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-0e1518c6866d96235750",
+      "text": "太祖实录"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-2a1f6cc6d156de6f8013",
+      "text": "新朝初纪"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e52d887f12c8a4257b62",
+      "text": "列国"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c2d8d5579f484f39603b",
+      "text": "封疆"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4e6202597fe33b0e5de5",
+      "text": "王室世次"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-5b671b655a1607816280",
+      "text": "开府"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3fa9581f867f35bc2656",
+      "text": "承统"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-272ce8f5c90377134c22",
+      "text": "改元"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-913a3c877bc1ee78be47",
+      "text": "边事"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9f956bb6245bda2d80f6",
+      "text": "诸藩"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-57e2da99f480b9bef2f6",
+      "text": "诸侯世家"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1df314bdd155e6f584c1",
+      "text": "州郡"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-78464b20767b49eabd9d",
+      "text": "山川"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c40b67039f8e693f4cff",
+      "text": "河渠"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c6cb575d16fc641e41a5",
+      "text": "田亩"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-695f1227c142e22d9cf0",
+      "text": "乡里"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-192763cabee057468640",
+      "text": "舟运"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-771cb567ab38993f8025",
+      "text": "节令"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-897e05b0c86600762144",
+      "text": "郡望"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9c9f8165e884774bb1a1",
+      "text": "乡俗"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4b9ef924dd0868247c89",
+      "text": "关津"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-71e3f756708b33af9b72",
+      "text": "营造"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-53a3dcdded6f1e63f671",
+      "text": "岁时"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3b17f9fe1656694f2863",
+      "text": "纪"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4c0824997ad15aea8b77",
+      "text": "史录"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8ca008b3013d208409cf",
+      "text": "编年"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1f3f283222811479d0cc",
+      "text": "通鉴"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-578e524e59dc4fc84704",
+      "text": "纪年志"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-ba50326fd443e22fa7f2",
+      "text": "实录"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7ae2a98598e082639575",
+      "text": "记"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-043f0974bed7d1611163",
+      "text": "札记"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-358336377d68b70a1b2b",
+      "text": "图志"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-74801a23f4f08432b528",
+      "text": "图经"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-09b7557a8c4a8c9e3bdd",
+      "text": "总录"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-1e773ab784bf301e2a48",
+      "text": "族谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e80612d8591bd71cfe04",
+      "text": "宗谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f8c1663c8a03db3bdbd1",
+      "text": "家谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c69586fa005e6aeba634",
+      "text": "世谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7b988d4c764ad01aa89b",
+      "text": "系谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-19418aea44c781e9a673",
+      "text": "支谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-19d44b647e762cf501d5",
+      "text": "续谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-cdfab4080ada49958dd0",
+      "text": "合谱"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9279d2957d4a59871f8a",
+      "text": "家传"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d91ea3fbfa7ecbc30c2f",
+      "text": "谱纪"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7e0404c02ff8e1f28981",
+      "text": "南浦"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e576b7f4b6912acace67",
+      "text": "东津"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-74571b7cc38f1fbbfcb3",
+      "text": "清沅"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-86b0b72280fb068d3b0e",
+      "text": "桂水"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f16a46b1146ed3ac7c0a",
+      "text": "兰皋"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7cb12388129d9912a247",
+      "text": "春渡"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-60fcc4e1551cb486486e",
+      "text": "栖潮"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4d93ba428613e039fa40",
+      "text": "沧江"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-444df9bd7f0f0daf92ae",
+      "text": "白涛"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-d91f0884205cae90e945",
+      "text": "长溪"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-850447ad4958899fbb68",
+      "text": "北原"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-df75afe75efe02ee5ff2",
+      "text": "雁门"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7701770610c22f20054b",
+      "text": "长垣"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3a04832d4be0c23d3cb5",
+      "text": "井陉"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9836f0efe3beccdb5519",
+      "text": "华阳"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-7ca943d40a0ec986a85a",
+      "text": "河西"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3a3aeef9e3e55a9895ba",
+      "text": "岁岭"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-c16bdc178ab3b309f304",
+      "text": "安边"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-de76625f663f13edb2d4",
+      "text": "归塞"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4794e301f450ac3cefd4",
+      "text": "玉关"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-3399a0e651ad104cd1f5",
+      "text": "王"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9b67720a9243f02a96b1",
+      "text": "公"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-86380ecb952648e0bcf3",
+      "text": "侯"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-08dd064d3bdf4832b311",
+      "text": "伯"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-a6b71dae843e3e0aadbc",
+      "text": "子"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-4e79758a990062236c2f",
+      "text": "男"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-b531a9e69a7099688a08",
+      "text": "君"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-9e32fa2b4f94bff5fa69",
+      "text": "主"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-f4a2987778a264626b69",
+      "text": "节度"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-e025e5d6a0226bf7c047",
+      "text": "留守"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-ccb25ad903dc581eb619",
+      "text": "都护"
+    },
+    {
+      "id": "chinesename:lineage-chronicle-lexicon.w-8e0de82dadbfc427002f",
+      "text": "国尉"
+    }
+  ],
+  "pools": {
+    "chinesename:lineage-chronicle-lexicon.hall": {
+      "chinesename:lineage-chronicle-lexicon.w-2f2d52a127206061fda6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-6b08c40e2b19e48d14c5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2812ef102553de4ca22b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f151cd1f6be7b82cf68a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-788eb5b25252674288e9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7848a92275e7720a85d1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fe9bd89e82616c0520b2": 1,
+      "chinesename:lineage-chronicle-lexicon.w-0db108ff7360081c7b1f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-6a27082556b4a580ca87": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2792333bbb5e8b248b38": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5e8f1debec53947de905": 1,
+      "chinesename:lineage-chronicle-lexicon.w-abeac5f0f46099836837": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9ed736032bbf5d08c225": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8df08ca938ab541c06eb": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a158376d13f9e518956f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-bcc5923183b063267f8f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-358b13ec66627796572a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-db05d0e30845c60b6aca": 1,
+      "chinesename:lineage-chronicle-lexicon.w-75e18af01469d95c8a9f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-11e53eceeb3d2eded680": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fef65b05c4dd34505699": 1,
+      "chinesename:lineage-chronicle-lexicon.w-aa8fff372543cdd4eb26": 1,
+      "chinesename:lineage-chronicle-lexicon.w-778d3023756703f701a9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-06f8be26d9dee0845b6f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a1980ad11f58f185ec7d": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a9f9d23a255edaa67cff": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7518a3f7edf370402070": 1,
+      "chinesename:lineage-chronicle-lexicon.w-0d79725cd356be7b10f9": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.hall-ending": {
+      "chinesename:lineage-chronicle-lexicon.w-634336b84cbea371e908": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7f8de7842cf0a424dbf6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d719cf9c877e718bd84f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-eaf4089315c76add4dce": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3280aea06b6bf9eb7f1e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e26ae98388aab6c99fb5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a1461e66b55180127966": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fa2c495a2c52fa297eef": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.branch": {
+      "chinesename:lineage-chronicle-lexicon.w-8c644c20425833251370": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c94dc38f82e41343a746": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b2edb24b6cb81f64f022": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9dcdb7bcb35d74f06630": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5ef594cf242721190ae9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8a64caa9fc9e91a1cf38": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d769b14b9f806502b54b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c3f8b67f5a053f9db222": 1,
+      "chinesename:lineage-chronicle-lexicon.w-1adfb8cc48857a5c082c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e42dfea4109c04191465": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8f6f8d553fe33ce18ec6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-1aed1b5c1d65b3d90548": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7e96f016618f28dbae80": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3289e54f052f09c8552a": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.generation": {
+      "chinesename:lineage-chronicle-lexicon.w-13d240c5bfa9d3d913f9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b59fb74892bec41c21c9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-60f13de463447482b8c0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-06052e19691f4aaffa7d": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2b684a9bc670a7673a8f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2dfb6f5012b3d7640e62": 1,
+      "chinesename:lineage-chronicle-lexicon.w-80ed541cd9598f566dd8": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4da93783684232663ae1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d143662f22a0b0f67375": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f67280d612991a2d400e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-989ca7dbec297b106179": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7f77f23af7b0dcc87b5e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-246ce4df5c505f579401": 1,
+      "chinesename:lineage-chronicle-lexicon.w-cf5a539d7b65b32b3ad5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b25471b1ca084b2c95db": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b433a7ea39936c5c706a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-89f44db763d4a43d030c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-bd5d0f6169394c03c96e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-04a990cfa68416f034dc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-382557fee2325ffe7486": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3abc957a4e9f5180df61": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5f5fab4f61c494d628b0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3d7114281f5b59d9a7ab": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8bd2ce70f64ffd5cee14": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.era": {
+      "chinesename:lineage-chronicle-lexicon.w-e34600a608d116c197dc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fff6bb0636777ed04841": 1,
+      "chinesename:lineage-chronicle-lexicon.w-724ec27c2c553ec41b91": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8d86b0e099b8c6c15225": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fe5bfae9be59f151118c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f9160160e929b60917f5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-75bd9cfc0b8ea70f919b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-bf222cef6f4280623fce": 1,
+      "chinesename:lineage-chronicle-lexicon.w-dfed8819962a4cf07e4d": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5d73eb0abc889fdbef71": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e8df7f27728132a95b03": 1,
+      "chinesename:lineage-chronicle-lexicon.w-20ad6bbe194deb25a580": 1,
+      "chinesename:lineage-chronicle-lexicon.w-848fee0fd75376ac787c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7604eeee0fdca2ff169e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-59d5a5c7b67a7a6b268f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-dabca3ee65be0e1ee190": 1,
+      "chinesename:lineage-chronicle-lexicon.w-95f08900cb639d0fb4eb": 1,
+      "chinesename:lineage-chronicle-lexicon.w-afc01ba58e180896448a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d610dbf5b68388784ed6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-ab2ee280f456f04feedb": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7185fc88c004c3cd1edc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e12a5c7d5394164fe7ab": 1,
+      "chinesename:lineage-chronicle-lexicon.w-1e546ced06a9c8ba8aca": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4a070da9a32f4ee03e8f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a86df9b7d710eae0299e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5110bdc9f8ce7f4fa7e6": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.temple": {
+      "chinesename:lineage-chronicle-lexicon.w-17960900235cdaeee7a4": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d3f9d203b978e0881ef3": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3eec672f905860739e41": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5c93403f53dd9aaaacdc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c325250d1fd1725c4d8b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-886bcc74aaaba49254bd": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e64248b18eef291788c7": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2ecd82f3499c04985119": 1,
+      "chinesename:lineage-chronicle-lexicon.w-fe544c8812f255b9c469": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d5db89dea75943b3b0a9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-54fa5624ffaf30531b14": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9a6094847e1d1718f492": 1,
+      "chinesename:lineage-chronicle-lexicon.w-eb4ef8b62af4cf6a5619": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c326e685c41140bf7587": 1,
+      "chinesename:lineage-chronicle-lexicon.w-716aa4bab3e696593083": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2e3d26c6a6ea562fd623": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.posthumous": {
+      "chinesename:lineage-chronicle-lexicon.w-3677ef77b1574d162d7c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-73b972d71b0aec48bed3": 1,
+      "chinesename:lineage-chronicle-lexicon.w-55466f4976ec50afbd4f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b433a7ea39936c5c706a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-77b8cf2c2dbc6d56d392": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c4d5becf50f379f97a6c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-246ce4df5c505f579401": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9e58283056307a7c674a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2b684a9bc670a7673a8f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b5ae5911139825741ab1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4e80dcd6e817dba1c6c9": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2c881c4923a9863bd06b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f55864ff2b57975c28d0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-23deabc9aa3e2e8f0111": 1,
+      "chinesename:lineage-chronicle-lexicon.w-60f13de463447482b8c0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4051f8893e5863397e9d": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5a3e2cbfb9b755a2695f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-0f39599be78126385821": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b8e5e03288d74de0cdc5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-cf662fc92a5bc727cc00": 1,
+      "chinesename:lineage-chronicle-lexicon.w-0ebc82cbcdd5a1674c31": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a071406edf016fa0359c": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7b5a5d75887b37172480": 1,
+      "chinesename:lineage-chronicle-lexicon.w-eae927ccd0818bd231f4": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.chronicle-topic": {
+      "chinesename:lineage-chronicle-lexicon.w-0e1518c6866d96235750": 1,
+      "chinesename:lineage-chronicle-lexicon.w-2a1f6cc6d156de6f8013": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e52d887f12c8a4257b62": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c2d8d5579f484f39603b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4e6202597fe33b0e5de5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-5b671b655a1607816280": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3fa9581f867f35bc2656": 1,
+      "chinesename:lineage-chronicle-lexicon.w-272ce8f5c90377134c22": 1,
+      "chinesename:lineage-chronicle-lexicon.w-913a3c877bc1ee78be47": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9f956bb6245bda2d80f6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-57e2da99f480b9bef2f6": 1,
+      "chinesename:lineage-chronicle-lexicon.w-1df314bdd155e6f584c1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-78464b20767b49eabd9d": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c40b67039f8e693f4cff": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c6cb575d16fc641e41a5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-695f1227c142e22d9cf0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-192763cabee057468640": 1,
+      "chinesename:lineage-chronicle-lexicon.w-771cb567ab38993f8025": 1,
+      "chinesename:lineage-chronicle-lexicon.w-897e05b0c86600762144": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9c9f8165e884774bb1a1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4b9ef924dd0868247c89": 1,
+      "chinesename:lineage-chronicle-lexicon.w-71e3f756708b33af9b72": 1,
+      "chinesename:lineage-chronicle-lexicon.w-53a3dcdded6f1e63f671": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.chronicle-ending": {
+      "chinesename:lineage-chronicle-lexicon.w-3b17f9fe1656694f2863": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4c0824997ad15aea8b77": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8ca008b3013d208409cf": 1,
+      "chinesename:lineage-chronicle-lexicon.w-1f3f283222811479d0cc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-578e524e59dc4fc84704": 1,
+      "chinesename:lineage-chronicle-lexicon.w-ba50326fd443e22fa7f2": 1,
+      "chinesename:lineage-chronicle-lexicon.w-382557fee2325ffe7486": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7ae2a98598e082639575": 1,
+      "chinesename:lineage-chronicle-lexicon.w-043f0974bed7d1611163": 1,
+      "chinesename:lineage-chronicle-lexicon.w-358336377d68b70a1b2b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-74801a23f4f08432b528": 1,
+      "chinesename:lineage-chronicle-lexicon.w-09b7557a8c4a8c9e3bdd": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.genealogy": {
+      "chinesename:lineage-chronicle-lexicon.w-1e773ab784bf301e2a48": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e80612d8591bd71cfe04": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f8c1663c8a03db3bdbd1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c69586fa005e6aeba634": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7b988d4c764ad01aa89b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-19418aea44c781e9a673": 1,
+      "chinesename:lineage-chronicle-lexicon.w-19d44b647e762cf501d5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-cdfab4080ada49958dd0": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9279d2957d4a59871f8a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d91ea3fbfa7ecbc30c2f": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.fief": {
+      "chinesename:lineage-chronicle-lexicon.w-7e0404c02ff8e1f28981": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e576b7f4b6912acace67": 1,
+      "chinesename:lineage-chronicle-lexicon.w-74571b7cc38f1fbbfcb3": 1,
+      "chinesename:lineage-chronicle-lexicon.w-86b0b72280fb068d3b0e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f16a46b1146ed3ac7c0a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7cb12388129d9912a247": 1,
+      "chinesename:lineage-chronicle-lexicon.w-60fcc4e1551cb486486e": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4d93ba428613e039fa40": 1,
+      "chinesename:lineage-chronicle-lexicon.w-444df9bd7f0f0daf92ae": 1,
+      "chinesename:lineage-chronicle-lexicon.w-d91f0884205cae90e945": 1,
+      "chinesename:lineage-chronicle-lexicon.w-850447ad4958899fbb68": 1,
+      "chinesename:lineage-chronicle-lexicon.w-df75afe75efe02ee5ff2": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7701770610c22f20054b": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3a04832d4be0c23d3cb5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9836f0efe3beccdb5519": 1,
+      "chinesename:lineage-chronicle-lexicon.w-7ca943d40a0ec986a85a": 1,
+      "chinesename:lineage-chronicle-lexicon.w-3a3aeef9e3e55a9895ba": 1,
+      "chinesename:lineage-chronicle-lexicon.w-c16bdc178ab3b309f304": 1,
+      "chinesename:lineage-chronicle-lexicon.w-de76625f663f13edb2d4": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4794e301f450ac3cefd4": 1
+    },
+    "chinesename:lineage-chronicle-lexicon.title": {
+      "chinesename:lineage-chronicle-lexicon.w-3399a0e651ad104cd1f5": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9b67720a9243f02a96b1": 1,
+      "chinesename:lineage-chronicle-lexicon.w-86380ecb952648e0bcf3": 1,
+      "chinesename:lineage-chronicle-lexicon.w-08dd064d3bdf4832b311": 1,
+      "chinesename:lineage-chronicle-lexicon.w-a6b71dae843e3e0aadbc": 1,
+      "chinesename:lineage-chronicle-lexicon.w-4e79758a990062236c2f": 1,
+      "chinesename:lineage-chronicle-lexicon.w-b531a9e69a7099688a08": 1,
+      "chinesename:lineage-chronicle-lexicon.w-9e32fa2b4f94bff5fa69": 1,
+      "chinesename:lineage-chronicle-lexicon.w-f4a2987778a264626b69": 1,
+      "chinesename:lineage-chronicle-lexicon.w-e025e5d6a0226bf7c047": 1,
+      "chinesename:lineage-chronicle-lexicon.w-ccb25ad903dc581eb619": 1,
+      "chinesename:lineage-chronicle-lexicon.w-8e0de82dadbfc427002f": 1
+    }
+  },
+  "poolLabels": {
+    "chinesename:lineage-chronicle-lexicon.hall": "宗祧堂号",
+    "chinesename:lineage-chronicle-lexicon.hall-ending": "宗祧堂号后缀",
+    "chinesename:lineage-chronicle-lexicon.branch": "宗族支房称谓",
+    "chinesename:lineage-chronicle-lexicon.generation": "宗族字辈",
+    "chinesename:lineage-chronicle-lexicon.era": "编年年号",
+    "chinesename:lineage-chronicle-lexicon.temple": "宗祧庙号",
+    "chinesename:lineage-chronicle-lexicon.posthumous": "宗祧谥号",
+    "chinesename:lineage-chronicle-lexicon.chronicle-topic": "编年史书主题",
+    "chinesename:lineage-chronicle-lexicon.chronicle-ending": "编年题名后缀",
+    "chinesename:lineage-chronicle-lexicon.genealogy": "谱牒后缀",
+    "chinesename:lineage-chronicle-lexicon.fief": "封邑主体",
+    "chinesename:lineage-chronicle-lexicon.title": "宗祧封爵称谓"
+  },
+  "poolAliases": {
+    "宗祧堂号": "chinesename:lineage-chronicle-lexicon.hall",
+    "宗祧堂号后缀": "chinesename:lineage-chronicle-lexicon.hall-ending",
+    "宗族支房称谓": "chinesename:lineage-chronicle-lexicon.branch",
+    "宗族字辈": "chinesename:lineage-chronicle-lexicon.generation",
+    "编年年号": "chinesename:lineage-chronicle-lexicon.era",
+    "宗祧庙号": "chinesename:lineage-chronicle-lexicon.temple",
+    "宗祧谥号": "chinesename:lineage-chronicle-lexicon.posthumous",
+    "编年史书主题": "chinesename:lineage-chronicle-lexicon.chronicle-topic",
+    "编年题名后缀": "chinesename:lineage-chronicle-lexicon.chronicle-ending",
+    "谱牒后缀": "chinesename:lineage-chronicle-lexicon.genealogy",
+    "封邑主体": "chinesename:lineage-chronicle-lexicon.fief",
+    "宗祧封爵称谓": "chinesename:lineage-chronicle-lexicon.title"
+  },
+  "wordGroups": {
+    "hall.virtue": {
+      "pool": "chinesename:lineage-chronicle-lexicon.hall",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-2f2d52a127206061fda6",
+        "chinesename:lineage-chronicle-lexicon.w-6b08c40e2b19e48d14c5",
+        "chinesename:lineage-chronicle-lexicon.w-2812ef102553de4ca22b",
+        "chinesename:lineage-chronicle-lexicon.w-f151cd1f6be7b82cf68a",
+        "chinesename:lineage-chronicle-lexicon.w-788eb5b25252674288e9",
+        "chinesename:lineage-chronicle-lexicon.w-7848a92275e7720a85d1",
+        "chinesename:lineage-chronicle-lexicon.w-fe9bd89e82616c0520b2",
+        "chinesename:lineage-chronicle-lexicon.w-0db108ff7360081c7b1f",
+        "chinesename:lineage-chronicle-lexicon.w-6a27082556b4a580ca87",
+        "chinesename:lineage-chronicle-lexicon.w-2792333bbb5e8b248b38",
+        "chinesename:lineage-chronicle-lexicon.w-5e8f1debec53947de905",
+        "chinesename:lineage-chronicle-lexicon.w-abeac5f0f46099836837",
+        "chinesename:lineage-chronicle-lexicon.w-9ed736032bbf5d08c225",
+        "chinesename:lineage-chronicle-lexicon.w-8df08ca938ab541c06eb"
+      ]
+    },
+    "hall.place": {
+      "pool": "chinesename:lineage-chronicle-lexicon.hall",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-a158376d13f9e518956f",
+        "chinesename:lineage-chronicle-lexicon.w-bcc5923183b063267f8f",
+        "chinesename:lineage-chronicle-lexicon.w-358b13ec66627796572a",
+        "chinesename:lineage-chronicle-lexicon.w-db05d0e30845c60b6aca",
+        "chinesename:lineage-chronicle-lexicon.w-75e18af01469d95c8a9f",
+        "chinesename:lineage-chronicle-lexicon.w-11e53eceeb3d2eded680",
+        "chinesename:lineage-chronicle-lexicon.w-fef65b05c4dd34505699",
+        "chinesename:lineage-chronicle-lexicon.w-aa8fff372543cdd4eb26",
+        "chinesename:lineage-chronicle-lexicon.w-778d3023756703f701a9",
+        "chinesename:lineage-chronicle-lexicon.w-06f8be26d9dee0845b6f",
+        "chinesename:lineage-chronicle-lexicon.w-a1980ad11f58f185ec7d",
+        "chinesename:lineage-chronicle-lexicon.w-a9f9d23a255edaa67cff",
+        "chinesename:lineage-chronicle-lexicon.w-7518a3f7edf370402070",
+        "chinesename:lineage-chronicle-lexicon.w-0d79725cd356be7b10f9"
+      ]
+    },
+    "hall-ending.lecture": {
+      "pool": "chinesename:lineage-chronicle-lexicon.hall-ending",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-634336b84cbea371e908",
+        "chinesename:lineage-chronicle-lexicon.w-7f8de7842cf0a424dbf6",
+        "chinesename:lineage-chronicle-lexicon.w-d719cf9c877e718bd84f",
+        "chinesename:lineage-chronicle-lexicon.w-eaf4089315c76add4dce"
+      ]
+    },
+    "hall-ending.lineage": {
+      "pool": "chinesename:lineage-chronicle-lexicon.hall-ending",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-3280aea06b6bf9eb7f1e",
+        "chinesename:lineage-chronicle-lexicon.w-e26ae98388aab6c99fb5",
+        "chinesename:lineage-chronicle-lexicon.w-a1461e66b55180127966",
+        "chinesename:lineage-chronicle-lexicon.w-fa2c495a2c52fa297eef"
+      ]
+    },
+    "branch.descent": {
+      "pool": "chinesename:lineage-chronicle-lexicon.branch",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-8c644c20425833251370",
+        "chinesename:lineage-chronicle-lexicon.w-c94dc38f82e41343a746",
+        "chinesename:lineage-chronicle-lexicon.w-b2edb24b6cb81f64f022",
+        "chinesename:lineage-chronicle-lexicon.w-9dcdb7bcb35d74f06630",
+        "chinesename:lineage-chronicle-lexicon.w-5ef594cf242721190ae9",
+        "chinesename:lineage-chronicle-lexicon.w-8a64caa9fc9e91a1cf38"
+      ]
+    },
+    "branch.place": {
+      "pool": "chinesename:lineage-chronicle-lexicon.branch",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-d769b14b9f806502b54b",
+        "chinesename:lineage-chronicle-lexicon.w-c3f8b67f5a053f9db222",
+        "chinesename:lineage-chronicle-lexicon.w-1adfb8cc48857a5c082c",
+        "chinesename:lineage-chronicle-lexicon.w-e42dfea4109c04191465",
+        "chinesename:lineage-chronicle-lexicon.w-8f6f8d553fe33ce18ec6",
+        "chinesename:lineage-chronicle-lexicon.w-1aed1b5c1d65b3d90548",
+        "chinesename:lineage-chronicle-lexicon.w-7e96f016618f28dbae80",
+        "chinesename:lineage-chronicle-lexicon.w-3289e54f052f09c8552a"
+      ]
+    },
+    "generation.legacy": {
+      "pool": "chinesename:lineage-chronicle-lexicon.generation",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-13d240c5bfa9d3d913f9",
+        "chinesename:lineage-chronicle-lexicon.w-b59fb74892bec41c21c9",
+        "chinesename:lineage-chronicle-lexicon.w-60f13de463447482b8c0",
+        "chinesename:lineage-chronicle-lexicon.w-06052e19691f4aaffa7d",
+        "chinesename:lineage-chronicle-lexicon.w-2b684a9bc670a7673a8f",
+        "chinesename:lineage-chronicle-lexicon.w-2dfb6f5012b3d7640e62",
+        "chinesename:lineage-chronicle-lexicon.w-80ed541cd9598f566dd8",
+        "chinesename:lineage-chronicle-lexicon.w-4da93783684232663ae1",
+        "chinesename:lineage-chronicle-lexicon.w-d143662f22a0b0f67375",
+        "chinesename:lineage-chronicle-lexicon.w-f67280d612991a2d400e",
+        "chinesename:lineage-chronicle-lexicon.w-989ca7dbec297b106179",
+        "chinesename:lineage-chronicle-lexicon.w-7f77f23af7b0dcc87b5e"
+      ]
+    },
+    "generation.conduct": {
+      "pool": "chinesename:lineage-chronicle-lexicon.generation",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-246ce4df5c505f579401",
+        "chinesename:lineage-chronicle-lexicon.w-cf5a539d7b65b32b3ad5",
+        "chinesename:lineage-chronicle-lexicon.w-b25471b1ca084b2c95db",
+        "chinesename:lineage-chronicle-lexicon.w-b433a7ea39936c5c706a",
+        "chinesename:lineage-chronicle-lexicon.w-89f44db763d4a43d030c",
+        "chinesename:lineage-chronicle-lexicon.w-bd5d0f6169394c03c96e",
+        "chinesename:lineage-chronicle-lexicon.w-04a990cfa68416f034dc",
+        "chinesename:lineage-chronicle-lexicon.w-382557fee2325ffe7486",
+        "chinesename:lineage-chronicle-lexicon.w-3abc957a4e9f5180df61",
+        "chinesename:lineage-chronicle-lexicon.w-5f5fab4f61c494d628b0",
+        "chinesename:lineage-chronicle-lexicon.w-3d7114281f5b59d9a7ab",
+        "chinesename:lineage-chronicle-lexicon.w-8bd2ce70f64ffd5cee14"
+      ]
+    },
+    "era.peace": {
+      "pool": "chinesename:lineage-chronicle-lexicon.era",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-e34600a608d116c197dc",
+        "chinesename:lineage-chronicle-lexicon.w-fff6bb0636777ed04841",
+        "chinesename:lineage-chronicle-lexicon.w-724ec27c2c553ec41b91",
+        "chinesename:lineage-chronicle-lexicon.w-8d86b0e099b8c6c15225",
+        "chinesename:lineage-chronicle-lexicon.w-fe5bfae9be59f151118c",
+        "chinesename:lineage-chronicle-lexicon.w-f9160160e929b60917f5",
+        "chinesename:lineage-chronicle-lexicon.w-75bd9cfc0b8ea70f919b",
+        "chinesename:lineage-chronicle-lexicon.w-bf222cef6f4280623fce",
+        "chinesename:lineage-chronicle-lexicon.w-dfed8819962a4cf07e4d",
+        "chinesename:lineage-chronicle-lexicon.w-5d73eb0abc889fdbef71",
+        "chinesename:lineage-chronicle-lexicon.w-e8df7f27728132a95b03",
+        "chinesename:lineage-chronicle-lexicon.w-20ad6bbe194deb25a580",
+        "chinesename:lineage-chronicle-lexicon.w-848fee0fd75376ac787c"
+      ]
+    },
+    "era.renewal": {
+      "pool": "chinesename:lineage-chronicle-lexicon.era",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-7604eeee0fdca2ff169e",
+        "chinesename:lineage-chronicle-lexicon.w-59d5a5c7b67a7a6b268f",
+        "chinesename:lineage-chronicle-lexicon.w-dabca3ee65be0e1ee190",
+        "chinesename:lineage-chronicle-lexicon.w-95f08900cb639d0fb4eb",
+        "chinesename:lineage-chronicle-lexicon.w-afc01ba58e180896448a",
+        "chinesename:lineage-chronicle-lexicon.w-d610dbf5b68388784ed6",
+        "chinesename:lineage-chronicle-lexicon.w-ab2ee280f456f04feedb",
+        "chinesename:lineage-chronicle-lexicon.w-7185fc88c004c3cd1edc",
+        "chinesename:lineage-chronicle-lexicon.w-e12a5c7d5394164fe7ab",
+        "chinesename:lineage-chronicle-lexicon.w-1e546ced06a9c8ba8aca",
+        "chinesename:lineage-chronicle-lexicon.w-4a070da9a32f4ee03e8f",
+        "chinesename:lineage-chronicle-lexicon.w-a86df9b7d710eae0299e",
+        "chinesename:lineage-chronicle-lexicon.w-5110bdc9f8ce7f4fa7e6"
+      ]
+    },
+    "temple.founding": {
+      "pool": "chinesename:lineage-chronicle-lexicon.temple",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-17960900235cdaeee7a4",
+        "chinesename:lineage-chronicle-lexicon.w-d3f9d203b978e0881ef3",
+        "chinesename:lineage-chronicle-lexicon.w-3eec672f905860739e41",
+        "chinesename:lineage-chronicle-lexicon.w-5c93403f53dd9aaaacdc",
+        "chinesename:lineage-chronicle-lexicon.w-c325250d1fd1725c4d8b",
+        "chinesename:lineage-chronicle-lexicon.w-886bcc74aaaba49254bd"
+      ]
+    },
+    "temple.inheritance": {
+      "pool": "chinesename:lineage-chronicle-lexicon.temple",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-e64248b18eef291788c7",
+        "chinesename:lineage-chronicle-lexicon.w-2ecd82f3499c04985119",
+        "chinesename:lineage-chronicle-lexicon.w-fe544c8812f255b9c469",
+        "chinesename:lineage-chronicle-lexicon.w-d5db89dea75943b3b0a9",
+        "chinesename:lineage-chronicle-lexicon.w-54fa5624ffaf30531b14",
+        "chinesename:lineage-chronicle-lexicon.w-9a6094847e1d1718f492",
+        "chinesename:lineage-chronicle-lexicon.w-eb4ef8b62af4cf6a5619",
+        "chinesename:lineage-chronicle-lexicon.w-c326e685c41140bf7587",
+        "chinesename:lineage-chronicle-lexicon.w-716aa4bab3e696593083",
+        "chinesename:lineage-chronicle-lexicon.w-2e3d26c6a6ea562fd623"
+      ]
+    },
+    "posthumous.civil": {
+      "pool": "chinesename:lineage-chronicle-lexicon.posthumous",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-3677ef77b1574d162d7c",
+        "chinesename:lineage-chronicle-lexicon.w-73b972d71b0aec48bed3",
+        "chinesename:lineage-chronicle-lexicon.w-55466f4976ec50afbd4f",
+        "chinesename:lineage-chronicle-lexicon.w-b433a7ea39936c5c706a",
+        "chinesename:lineage-chronicle-lexicon.w-77b8cf2c2dbc6d56d392",
+        "chinesename:lineage-chronicle-lexicon.w-c4d5becf50f379f97a6c",
+        "chinesename:lineage-chronicle-lexicon.w-246ce4df5c505f579401",
+        "chinesename:lineage-chronicle-lexicon.w-9e58283056307a7c674a",
+        "chinesename:lineage-chronicle-lexicon.w-2b684a9bc670a7673a8f",
+        "chinesename:lineage-chronicle-lexicon.w-b5ae5911139825741ab1",
+        "chinesename:lineage-chronicle-lexicon.w-4e80dcd6e817dba1c6c9",
+        "chinesename:lineage-chronicle-lexicon.w-2c881c4923a9863bd06b"
+      ]
+    },
+    "posthumous.martial": {
+      "pool": "chinesename:lineage-chronicle-lexicon.posthumous",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-f55864ff2b57975c28d0",
+        "chinesename:lineage-chronicle-lexicon.w-23deabc9aa3e2e8f0111",
+        "chinesename:lineage-chronicle-lexicon.w-60f13de463447482b8c0",
+        "chinesename:lineage-chronicle-lexicon.w-4051f8893e5863397e9d",
+        "chinesename:lineage-chronicle-lexicon.w-5a3e2cbfb9b755a2695f",
+        "chinesename:lineage-chronicle-lexicon.w-0f39599be78126385821",
+        "chinesename:lineage-chronicle-lexicon.w-b8e5e03288d74de0cdc5",
+        "chinesename:lineage-chronicle-lexicon.w-cf662fc92a5bc727cc00",
+        "chinesename:lineage-chronicle-lexicon.w-0ebc82cbcdd5a1674c31",
+        "chinesename:lineage-chronicle-lexicon.w-a071406edf016fa0359c",
+        "chinesename:lineage-chronicle-lexicon.w-7b5a5d75887b37172480",
+        "chinesename:lineage-chronicle-lexicon.w-eae927ccd0818bd231f4"
+      ]
+    },
+    "chronicle-topic.dynastic": {
+      "pool": "chinesename:lineage-chronicle-lexicon.chronicle-topic",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-0e1518c6866d96235750",
+        "chinesename:lineage-chronicle-lexicon.w-2a1f6cc6d156de6f8013",
+        "chinesename:lineage-chronicle-lexicon.w-e52d887f12c8a4257b62",
+        "chinesename:lineage-chronicle-lexicon.w-c2d8d5579f484f39603b",
+        "chinesename:lineage-chronicle-lexicon.w-4e6202597fe33b0e5de5",
+        "chinesename:lineage-chronicle-lexicon.w-5b671b655a1607816280",
+        "chinesename:lineage-chronicle-lexicon.w-3fa9581f867f35bc2656",
+        "chinesename:lineage-chronicle-lexicon.w-272ce8f5c90377134c22",
+        "chinesename:lineage-chronicle-lexicon.w-913a3c877bc1ee78be47",
+        "chinesename:lineage-chronicle-lexicon.w-9f956bb6245bda2d80f6",
+        "chinesename:lineage-chronicle-lexicon.w-57e2da99f480b9bef2f6"
+      ]
+    },
+    "chronicle-topic.local": {
+      "pool": "chinesename:lineage-chronicle-lexicon.chronicle-topic",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-1df314bdd155e6f584c1",
+        "chinesename:lineage-chronicle-lexicon.w-78464b20767b49eabd9d",
+        "chinesename:lineage-chronicle-lexicon.w-c40b67039f8e693f4cff",
+        "chinesename:lineage-chronicle-lexicon.w-c6cb575d16fc641e41a5",
+        "chinesename:lineage-chronicle-lexicon.w-695f1227c142e22d9cf0",
+        "chinesename:lineage-chronicle-lexicon.w-192763cabee057468640",
+        "chinesename:lineage-chronicle-lexicon.w-771cb567ab38993f8025",
+        "chinesename:lineage-chronicle-lexicon.w-897e05b0c86600762144",
+        "chinesename:lineage-chronicle-lexicon.w-9c9f8165e884774bb1a1",
+        "chinesename:lineage-chronicle-lexicon.w-4b9ef924dd0868247c89",
+        "chinesename:lineage-chronicle-lexicon.w-71e3f756708b33af9b72",
+        "chinesename:lineage-chronicle-lexicon.w-53a3dcdded6f1e63f671"
+      ]
+    },
+    "chronicle-ending.annals": {
+      "pool": "chinesename:lineage-chronicle-lexicon.chronicle-ending",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-3b17f9fe1656694f2863",
+        "chinesename:lineage-chronicle-lexicon.w-4c0824997ad15aea8b77",
+        "chinesename:lineage-chronicle-lexicon.w-8ca008b3013d208409cf",
+        "chinesename:lineage-chronicle-lexicon.w-1f3f283222811479d0cc",
+        "chinesename:lineage-chronicle-lexicon.w-578e524e59dc4fc84704",
+        "chinesename:lineage-chronicle-lexicon.w-ba50326fd443e22fa7f2"
+      ]
+    },
+    "chronicle-ending.records": {
+      "pool": "chinesename:lineage-chronicle-lexicon.chronicle-ending",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-382557fee2325ffe7486",
+        "chinesename:lineage-chronicle-lexicon.w-7ae2a98598e082639575",
+        "chinesename:lineage-chronicle-lexicon.w-043f0974bed7d1611163",
+        "chinesename:lineage-chronicle-lexicon.w-358336377d68b70a1b2b",
+        "chinesename:lineage-chronicle-lexicon.w-74801a23f4f08432b528",
+        "chinesename:lineage-chronicle-lexicon.w-09b7557a8c4a8c9e3bdd"
+      ]
+    },
+    "genealogy.primary": {
+      "pool": "chinesename:lineage-chronicle-lexicon.genealogy",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-1e773ab784bf301e2a48",
+        "chinesename:lineage-chronicle-lexicon.w-e80612d8591bd71cfe04",
+        "chinesename:lineage-chronicle-lexicon.w-f8c1663c8a03db3bdbd1",
+        "chinesename:lineage-chronicle-lexicon.w-c69586fa005e6aeba634",
+        "chinesename:lineage-chronicle-lexicon.w-7b988d4c764ad01aa89b"
+      ]
+    },
+    "genealogy.secondary": {
+      "pool": "chinesename:lineage-chronicle-lexicon.genealogy",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-19418aea44c781e9a673",
+        "chinesename:lineage-chronicle-lexicon.w-19d44b647e762cf501d5",
+        "chinesename:lineage-chronicle-lexicon.w-cdfab4080ada49958dd0",
+        "chinesename:lineage-chronicle-lexicon.w-9279d2957d4a59871f8a",
+        "chinesename:lineage-chronicle-lexicon.w-d91ea3fbfa7ecbc30c2f"
+      ]
+    },
+    "fief.river": {
+      "pool": "chinesename:lineage-chronicle-lexicon.fief",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-7e0404c02ff8e1f28981",
+        "chinesename:lineage-chronicle-lexicon.w-e576b7f4b6912acace67",
+        "chinesename:lineage-chronicle-lexicon.w-74571b7cc38f1fbbfcb3",
+        "chinesename:lineage-chronicle-lexicon.w-86b0b72280fb068d3b0e",
+        "chinesename:lineage-chronicle-lexicon.w-f16a46b1146ed3ac7c0a",
+        "chinesename:lineage-chronicle-lexicon.w-7cb12388129d9912a247",
+        "chinesename:lineage-chronicle-lexicon.w-60fcc4e1551cb486486e",
+        "chinesename:lineage-chronicle-lexicon.w-4d93ba428613e039fa40",
+        "chinesename:lineage-chronicle-lexicon.w-444df9bd7f0f0daf92ae",
+        "chinesename:lineage-chronicle-lexicon.w-d91f0884205cae90e945"
+      ]
+    },
+    "fief.inland": {
+      "pool": "chinesename:lineage-chronicle-lexicon.fief",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-850447ad4958899fbb68",
+        "chinesename:lineage-chronicle-lexicon.w-df75afe75efe02ee5ff2",
+        "chinesename:lineage-chronicle-lexicon.w-7701770610c22f20054b",
+        "chinesename:lineage-chronicle-lexicon.w-3a04832d4be0c23d3cb5",
+        "chinesename:lineage-chronicle-lexicon.w-9836f0efe3beccdb5519",
+        "chinesename:lineage-chronicle-lexicon.w-7ca943d40a0ec986a85a",
+        "chinesename:lineage-chronicle-lexicon.w-3a3aeef9e3e55a9895ba",
+        "chinesename:lineage-chronicle-lexicon.w-c16bdc178ab3b309f304",
+        "chinesename:lineage-chronicle-lexicon.w-de76625f663f13edb2d4",
+        "chinesename:lineage-chronicle-lexicon.w-4794e301f450ac3cefd4"
+      ]
+    },
+    "title.rank": {
+      "pool": "chinesename:lineage-chronicle-lexicon.title",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-3399a0e651ad104cd1f5",
+        "chinesename:lineage-chronicle-lexicon.w-9b67720a9243f02a96b1",
+        "chinesename:lineage-chronicle-lexicon.w-86380ecb952648e0bcf3",
+        "chinesename:lineage-chronicle-lexicon.w-08dd064d3bdf4832b311",
+        "chinesename:lineage-chronicle-lexicon.w-a6b71dae843e3e0aadbc",
+        "chinesename:lineage-chronicle-lexicon.w-4e79758a990062236c2f"
+      ]
+    },
+    "title.honor": {
+      "pool": "chinesename:lineage-chronicle-lexicon.title",
+      "words": [
+        "chinesename:lineage-chronicle-lexicon.w-b531a9e69a7099688a08",
+        "chinesename:lineage-chronicle-lexicon.w-9e32fa2b4f94bff5fa69",
+        "chinesename:lineage-chronicle-lexicon.w-f4a2987778a264626b69",
+        "chinesename:lineage-chronicle-lexicon.w-e025e5d6a0226bf7c047",
+        "chinesename:lineage-chronicle-lexicon.w-ccb25ad903dc581eb619",
+        "chinesename:lineage-chronicle-lexicon.w-8e0de82dadbfc427002f"
+      ]
+    }
+  }
+}

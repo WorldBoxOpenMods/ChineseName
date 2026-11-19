@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Chinese_Name.Naming;
+using UnityEngine.UI;
+
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+async System.Threading.Tasks.Task<string[]> Load(string scenario)
+{
+    string directory = output.Parent.Parent.FullName;
+    string map = Directory.EnumerateFiles(directory, "map.wbox", SearchOption.AllDirectories)
+        .Where(path => path.EndsWith("/" + scenario + "/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(map));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "Timed out loading " + scenario);
+    Config.paused = true;
+    return File.ReadAllLines(Path.Combine(Path.GetDirectoryName(map), "expected.txt"));
+}
+
+var social = new List<string>();
+foreach (var line in await Load("variant-social"))
+{
+    var row = line.Split(' ');
+    var culture = World.world.cultures.get(long.Parse(row[0]));
+    var founder = World.world.units.get(long.Parse(row[1]));
+    Check(culture.getOnomasticData(MetaType.Language).getGroupString("group_2") == "话" &&
+        founder.language.id == long.Parse(row[2]), "The edited language cards did not survive.");
+    var name = World.world.languages.newLanguage(founder, false).name;
+    Check(name == row[3], "The saved arrangement now named a language " + name);
+    social.Add(name);
+}
+
+var affairs = new List<string>();
+foreach (var line in await Load("variant-affairs"))
+{
+    var row = line.Split(' ');
+    long cultureId = long.Parse(row[0]), actorId = long.Parse(row[1]), warId = long.Parse(row[2]), languageId = long.Parse(row[3]);
+    var world = World.world;
+    var service = NamingApi.Current;
+    var culture = world.cultures.get(cultureId);
+    var founder = world.units.get(actorId);
+    Check(world.wars.get(warId)?.name == row[4], "An already named war changed after reloading.");
+    var cards = service.GetWorld().Cultures[cultureId].Cards["worldbox:book"];
+    Check(cards.Enabled && cards.SourceRule != null, "The edited book cards lost their naming set binding.");
+    var inputs = new Dictionary<string, object> { ["topic"] = "warfare-manual", ["culture-species"] = culture.data.original_actor_asset };
+    var result = service.Generate(new NameRequest("worldbox:book", 0, cultureId, languageId, inputs));
+    Check(result.Text == "守城史略" && result.Diagnostics.Contains("原版命名学"), "Reload did not preserve the book edit.");
+
+    world.console.Hide();
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    SelectedUnit.select(founder);
+    SelectedMetas.selected_culture = culture;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_book").toggle.click();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    shell.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + languageId).onClick.Invoke();
+    for (int frame = 0; frame < 8; frame++) await Game.NextFrame();
+    Check(tab.getOnomasticsData().getGroupString("group_2") == "史略" &&
+        tab.getOnomasticsData().getFullTemplateData().SequenceEqual(new[] { "chinesename:book-topic", "group_2" }) &&
+        Regex.Replace(shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ?? "", "</?color[^>]*>", "") == "列国史略",
+        "The edited book layout did not reopen in vanilla onomastics.");
+    affairs.Add(result.Text);
+}
+return new { social, affairs };

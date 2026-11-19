@@ -1,0 +1,107 @@
+label = "和风人地词库"
+
+[pools.surname]
+label = "和风姓氏"
+aliases = ["日式姓氏"]
+[pools.surname.groups]
+common = "佐藤 铃木 高桥 田中 渡边 伊藤 山本 中村 小林 加藤 吉田 山田 佐佐木 山口 松本 井上 木村 林 清水 斋藤 山崎 森 池田 桥本"
+landscape = "秋山 水野 白川 雪村 星野 石川 竹内 松原 小野 橘 藤原 黑田 岩崎 稻叶 谷口 望月 柴田 长谷川 奥村 平松 北川 川岛"
+
+[pools.given]
+label = "和风给名"
+aliases = ["日式给名"]
+[pools.given.groups]
+traditional = "明美 香织 由美子 和美 真由美 美智子 千代 春子 雪子 直子 清子 凉子 静江 美代 早苗 千鹤子 雅子 小百合"
+vigorous = "健太 太郎 次郎 一郎 大辅 诚司 拓也 直树 武志 清志 康平 和也 智之 悠人 宏一 彰人 真司 亮太"
+natural = "樱 千夏 春奈 若菜 秋穗 冬美 遥 夏树 凉 枫 凛 小雪 明日香 桃花 花音 青叶 光 星乃"
+
+[pools.given-first]
+label = "和风名首字"
+[pools.given-first.groups]
+natural = "春 秋 冬 夏 雪 松 枫 梅 桐 月 星 花"
+plain = "小 武 康 绘 美 直 明 和 健 智 纪 诚"
+
+[pools.given-last]
+label = "和风名尾字"
+[pools.given-last.groups]
+traditional = "子 惠 枝 菜 代 江 穗 绪 美 花"
+vigorous = "勇 英 博 茂 也 一 司 志 介 平 树"
+
+[pools.city-root]
+label = "和风地名主体"
+aliases = ["日式城名主体"]
+[pools.city-root.groups]
+hill = "樱丘 月见 龙崎 星原 桐原 松岭 鹤见 梅岭 青岳 山吹 朝雾 松风 山阴 青松 秋穗"
+water = "若浦 白滨 水镜 海风 鸢池 滨松 白川 潮见 汐见 蓝浦 涟间 清水 石渡 稻川 深浦 鹤浦"
+
+[pools.city-ending]
+label = "和风地名后缀"
+[pools.city-ending.groups]
+urban = "城 府 县 郡 町 村"
+landscape = "泽 原 崎 浦 滨 川 丘 岛"
+
+[pools.province]
+label = "和风国名"
+[pools.province.groups]
+inner = "山城 大和 河内 和泉 摄津 伊贺 近江 美浓 尾张 丹波 越前 若狭 信浓"
+outer = "出云 相模 武藏 安房 安艺 备前 讚岐 肥前 筑前 日向 萨摩 陆奥 出羽 隐岐"
+
+[pools.religion-root]
+label = "和风社寺主体"
+[pools.religion-root.groups]
+shrine = "稻荷 若宫 八幡 天神 日枝 春日 住吉 鹿岛 松尾 盐釜 諏访"
+temple = "清水 明照 净莲 光明 瑞云 松林 灵泉 长乐 法藏 月轮 圆照"
+
+[pools.religion-ending]
+label = "和风社寺后缀"
+[pools.religion-ending.groups]
+shrine = "神社 神宫 大社 社"
+temple = "寺 院 堂 坊"
+
+[pools.saying]
+label = "和风格言"
+[pools.saying.groups]
+discipline = "以和为贵 一期一会 七转八起 质实刚健 勤耕守信 克己尽礼 不忘初志 水滴石穿"
+landscape = "松风照心 明月见志 星河远望 岚起知秋 见花思时 竹节为范 心澄如水 山高有路"
+
+[pools.book-topic]
+label = "和风书名主体"
+[pools.book-topic.groups]
+travel = "山城巡记 海道纪事 花下旅笺 月见游记 梅雨行录 松风手帖 岛上见闻 北浦旧闻"
+arts = "植木小记 荷风诗选 松下茶话 若叶笔谈 清流和歌 月照庭记 窑火手札 野兴随笔"
+
+[pools.clan-root]
+label = "和风氏族词根"
+[pools.clan-root.groups]
+court = "源氏 平氏 藤原 橘氏 物部 苏我 中臣 大伴"
+province = "武田 上杉 北条 伊达 真田 九鬼 长宗我部 岛津"
+
+[pools.war-ending]
+label = "和风战事称谓"
+[pools.war-ending.groups]
+clash = "合战 之战 阵 仗"
+chronicle = "战役 军记 战事 攻防战"
+
+[pools.alliance-ending]
+label = "和风盟约称谓"
+[pools.alliance-ending.groups]
+domains = "诸藩盟 领国盟 邦交约 国众盟"
+mutual = "同盟 和议 连合 联防约"
+
+[pools.army-ending]
+label = "和风军号后缀"
+[pools.army-ending.groups]
+guards = "守备组 番队 城代众 巡守组"
+field = "先阵众 足轻组 骑马众 铁炮队"
+
+[pools.book-ending]
+label = "和风书名后缀"
+[pools.book-ending.groups]
+notebooks = "手帖 物语 见闻录 杂记"
+collections = "抄 卷 考 小记"
+
+[pools.artifact]
+label = "和风器物名号"
+[pools.artifact.groups]
+weather = "月见 朝雾 时雨 白雪 春霞 风花"
+craft = "鹤纹 流水纹 松纹 银杏纹 桔梗纹 七宝纹"

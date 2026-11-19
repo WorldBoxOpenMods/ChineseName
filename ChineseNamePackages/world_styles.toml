@@ -1,0 +1,464 @@
+# "|" separates entries. "=" separates the original spelling and Chinese rendering.
+# Realm pools use historic and geographic roots. The generated polities are fictional.
+[regions.british]
+label = "不列颠"
+register = "europe"
+language = "英语"
+given = { masculine = "John=约翰|Arthur=亚瑟|Edward=爱德华|Oliver=奥利弗|William=威廉|George=乔治", feminine = "Alice=艾丽斯|Eleanor=埃莉诺|Mary=玛丽|Florence=弗洛伦丝|Clara=克拉拉|Emily=艾米莉" }
+surname = { trades = "Smith=史密斯|Miller=米勒|Taylor=泰勒|Cooper=库珀|Clark=克拉克", landscapes = "Hill=希尔|Wood=伍德|Brooks=布鲁克斯|Reed=里德|Wells=韦尔斯" }
+city = { river = "Oxford=牛津|Cambridge=剑桥|York=约克|Durham=达勒姆|Bath=巴斯", maritime = "Bristol=布里斯托尔|Plymouth=普利茅斯|Dover=多佛|Whitby=惠特比|Portsmouth=朴次茅斯" }
+realm = { kingdoms = "Wessex=威塞克斯|Mercia=麦西亚|Northumbria=诺森布里亚|Kent=肯特", borders = "Gwynedd=格温内斯|Powys=波伊斯|Strathclyde=斯特拉斯克莱德|Dumnonia=杜姆诺尼亚" }
+
+[regions.french]
+label = "法语风格"
+register = "europe"
+language = "法语"
+given = { masculine = "Jean=让|Pierre=皮埃尔|Louis=路易|Émile=埃米尔|Henri=亨利", feminine = "Claire=克莱尔|Louise=路易丝|Élise=埃莉丝|Sophie=索菲|Colette=科莱特" }
+surname = { common = "Martin=马丁|Dupont=迪蓬|Bernard=贝尔纳|Laurent=洛朗", other = "Dubois=迪布瓦|Moreau=莫罗|Rousseau=卢梭|Lefèvre=勒费弗尔" }
+city = { inland = "Tours=图尔|Lyon=里昂|Dijon=第戎|Reims=兰斯", ports = "Nantes=南特|Rouen=鲁昂|Bordeaux=波尔多|Marseille=马赛" }
+realm = { inland = "Bourgogne=勃艮第|Auvergne=奥弗涅|Champagne=香槟|Anjou=安茹", coastal = "Bretagne=布列塔尼|Normandie=诺曼底|Aquitaine=阿基坦|Provence=普罗旺斯" }
+
+[regions.german]
+label = "德语风格"
+register = "europe"
+language = "德语"
+given = { masculine = "Friedrich=弗里德里希|Johann=约翰|Wilhelm=威廉|Otto=奥托|Konrad=康拉德", feminine = "Anna=安娜|Klara=克拉拉|Lotte=洛特|Greta=格蕾塔|Hedwig=黑德维希" }
+surname = { trade = "Müller=米勒|Schmidt=施密特|Schneider=施奈德|Fischer=菲舍尔", other = "Weber=韦伯|Wagner=瓦格纳|Hoffmann=霍夫曼|Keller=凯勒" }
+city = { river = "Mainz=美因茨|Köln=科隆|Bonn=波恩|Worms=沃尔姆斯", inland = "Bamberg=班贝格|Erfurt=埃尔福特|Goslar=戈斯拉尔|Augsburg=奥格斯堡" }
+realm = { central = "Franken=法兰克尼亚|Schwaben=施瓦本|Sachsen=萨克森|Thüringen=图林根", frontier = "Bayern=巴伐利亚|Brandenburg=勃兰登堡|Mecklenburg=梅克伦堡|Kärnten=克恩顿" }
+
+[regions.italian]
+label = "意大利语风格"
+register = "mediterranean"
+language = "意大利语"
+given = { masculine = "Lorenzo=洛伦佐|Matteo=马泰奥|Giovanni=乔万尼|Marco=马尔科|Paolo=保罗", feminine = "Lucia=露琪娅|Giulia=朱莉娅|Chiara=基娅拉|Sofia=索菲娅|Beatrice=贝阿特丽切" }
+surname = { common = "Rossi=罗西|Russo=鲁索|Ferrari=费拉里|Bianchi=比安基", landscape = "Fontana=丰塔纳|Greco=格雷科|Conti=孔蒂|Romano=罗马诺" }
+city = { inland = "Siena=锡耶纳|Perugia=佩鲁贾|Lucca=卢卡|Verona=维罗纳", ports = "Genova=热那亚|Venezia=威尼斯|Bari=巴里|Palermo=巴勒莫" }
+realm = { north = "Toscana=托斯卡纳|Lombardia=伦巴第|Piemonte=皮埃蒙特|Liguria=利古里亚", south = "Sicilia=西西里|Sardegna=撒丁|Puglia=普利亚|Calabria=卡拉布里亚" }
+
+[regions.latin]
+label = "古罗马拉丁"
+register = "mediterranean"
+language = "拉丁语"
+given = { common = "Marcus=马库斯|Lucius=卢基乌斯|Gaius=盖乌斯|Publius=普布利乌斯", other = "Titus=提图斯|Quintus=昆图斯|Aulus=奥卢斯|Decimus=德基穆斯" }
+surname = { houses = "Julius=尤利乌斯|Cornelius=科尔内利乌斯|Fabius=法比乌斯|Claudius=克劳狄乌斯", other = "Valerius=瓦莱里乌斯|Aemilius=埃米利乌斯|Flavius=弗拉维乌斯|Junius=尤尼乌斯" }
+city = { italy = "Roma=罗马|Capua=卡普阿|Ostia=奥斯蒂亚|Ravenna=拉文纳", provinces = "Lugdunum=卢格杜努姆|Londinium=伦迪尼乌姆|Emerita=埃梅里塔|Mediolanum=梅迪奥拉努姆" }
+realm = { western = "Gallia=高卢|Hispania=希斯帕尼亚|Lusitania=卢西塔尼亚|Britannia=不列颠尼亚", southern = "Latium=拉丁姆|Sicilia=西西里|Numidia=努米底亚|Dacia=达契亚" }
+
+[regions.greek]
+label = "希腊风格"
+register = "mediterranean"
+language = "希腊语"
+given = { masculine = "Alexandros=亚历山德罗斯|Nikos=尼科斯|Dimitrios=季米特里奥斯|Leonidas=列奥尼达斯", feminine = "Eleni=埃莱妮|Sophia=索菲娅|Katerina=卡泰丽娜|Irene=伊琳妮" }
+surname = { mainland = "Papadopoulos=帕帕多普洛斯|Nikolaidis=尼古拉伊季斯|Georgiadis=耶奥尔伊阿季斯|Pappas=帕帕斯", diaspora = "Karalis=卡拉利斯|Kostas=科斯塔斯|Vlachos=弗拉霍斯|Angelopoulos=安耶洛普洛斯" }
+city = { mainland = "Athína=雅典|Spárti=斯巴达|Thíva=底比斯|Kórinthos=科林斯", coasts = "Thessaloníki=塞萨洛尼基|Chaniá=哈尼亚|Pátra=帕特雷|Kavála=卡瓦拉" }
+realm = { mainland = "Attikí=阿提卡|Thessalía=色萨利|Ipeiros=伊庇鲁斯|Achaía=亚该亚", islands = "Kríti=克里特|Ródos=罗得|Sámos=萨摩斯|Lésvos=莱斯沃斯" }
+
+[regions.nordic]
+label = "北欧风格"
+register = "northern"
+language = "北欧语"
+given = { masculine = "Erik=埃里克|Leif=莱夫|Harald=哈拉尔|Sven=斯文|Einar=埃纳尔", feminine = "Astrid=阿斯特丽德|Ingrid=英格丽德|Sigrid=西格丽德|Solveig=索尔维格|Liv=丽芙" }
+surname = { patrons = "Andersson=安德松|Johansson=约翰松|Eriksson=埃里克松|Larsen=拉森", landscape = "Berg=贝里|Dahl=达尔|Lind=林德|Lund=隆德" }
+city = { mainland = "Uppsala=乌普萨拉|Ribe=里伯|Odense=欧登塞|Lund=隆德", coasts = "Bergen=卑尔根|Trondheim=特隆赫姆|Visby=维斯比|Tromsø=特罗姆瑟" }
+realm = { forest = "Svealand=斯韦阿兰|Götaland=约塔兰|Småland=斯莫兰|Dalarna=达拉纳", coast = "Jylland=日德兰|Sjælland=西兰|Trøndelag=特伦德拉格|Skåne=斯科讷" }
+
+[regions.polish]
+label = "波兰风格"
+register = "northern"
+language = "波兰语"
+given = { masculine = "Jan=扬|Piotr=彼得|Marek=马雷克|Paweł=帕韦乌|Tomasz=托马什", feminine = "Anna=安娜|Zofia=佐菲娅|Maria=玛丽亚|Ewa=埃娃|Jadwiga=雅德维加" }
+surname = { common = "Nowak=诺瓦克|Wójcik=武伊奇克|Mazur=马祖尔|Krawczyk=克拉夫奇克", regions = "Król=克鲁尔|Dudek=杜德克|Lis=利斯|Zając=扎扬茨" }
+city = { inland = "Kraków=克拉科夫|Lublin=卢布林|Kalisz=卡利什|Gniezno=格涅兹诺", river = "Gdańsk=格但斯克|Toruń=托伦|Płock=普沃茨克|Wrocław=弗罗茨瓦夫" }
+realm = { heartland = "Mazowsze=马佐夫舍|Wielkopolska=大波兰|Małopolska=小波兰|Kujawy=库亚维", border = "Pomorze=波美拉尼亚|Śląsk=西里西亚|Podlasie=波德拉谢|Warmia=瓦尔米亚" }
+
+[regions.russian]
+label = "俄语风格"
+register = "northern"
+language = "俄语"
+given = { masculine = "Иван=伊万|Алексей=阿列克谢|Дмитрий=德米特里|Николай=尼古拉|Михаил=米哈伊尔", feminine = "Анна=安娜|Ольга=奥尔加|Наталья=娜塔莉娅|Елена=叶莲娜|Вера=薇拉" }
+surname = { common = "Иванов=伊万诺夫|Смирнов=斯米尔诺夫|Кузнецов=库兹涅佐夫|Попов=波波夫", nature = "Волков=沃尔科夫|Соколов=索科洛夫|Морозов=莫罗佐夫|Орлов=奥尔洛夫" }
+city = { northern = "Псков=普斯科夫|Новгород=诺夫哥罗德|Вологда=沃洛格达|Тверь=特维尔", river = "Казань=喀山|Самара=萨马拉|Ярославль=雅罗斯拉夫尔|Кострома=科斯特罗马" }
+realm = { western = "Карелия=卡累利阿|Ингрия=英格里亚|Смоленщина=斯摩棱斯克地区|Поморье=波莫里耶", eastern = "Урал=乌拉尔|Прикамье=卡马河流域|Поволжье=伏尔加河流域|Алтай=阿尔泰" }
+
+[regions.spanish]
+label = "伊比利亚西语"
+register = "mediterranean"
+language = "西班牙语"
+given = { masculine = "Diego=迭戈|Juan=胡安|Álvaro=阿尔瓦罗|Pablo=巴勃罗|Martín=马丁", feminine = "Isabel=伊莎贝尔|Inés=伊内丝|Lucía=露西亚|Carmen=卡门|Elena=埃莱娜" }
+surname = { patrons = "García=加西亚|López=洛佩斯|Fernández=费尔南德斯|Rodríguez=罗德里格斯", places = "Navarro=纳瓦罗|Castillo=卡斯蒂略|Vega=贝加|Torres=托雷斯" }
+city = { inland = "Toledo=托莱多|León=莱昂|Burgos=布尔戈斯|Segovia=塞哥维亚", maritime = "Cádiz=加的斯|Valencia=巴伦西亚|Santander=桑坦德|Málaga=马拉加" }
+realm = { crowns = "Castilla=卡斯蒂利亚|Aragón=阿拉贡|Navarra=纳瓦拉|León=莱昂", regions = "Galicia=加利西亚|Asturias=阿斯图里亚斯|Andalucía=安达卢西亚|Murcia=穆尔西亚" }
+
+[regions.portuguese]
+label = "伊比利亚葡语"
+register = "mediterranean"
+language = "葡萄牙语"
+given = { masculine = "João=若昂|Miguel=米格尔|Duarte=杜阿尔特|Afonso=阿丰索|Luís=路易斯", feminine = "Ana=安娜|Inês=伊内丝|Leonor=莱昂诺尔|Beatriz=贝亚特丽斯|Teresa=特雷莎" }
+surname = { common = "Silva=席尔瓦|Santos=桑托斯|Pereira=佩雷拉|Fernandes=费尔南德斯", landscape = "Costa=科斯塔|Ribeiro=里贝罗|Rocha=罗沙|Sousa=索萨" }
+city = { inland = "Coimbra=科英布拉|Évora=埃武拉|Viseu=维塞乌|Braga=布拉加", maritime = "Porto=波尔图|Lisboa=里斯本|Aveiro=阿威罗|Faro=法鲁" }
+realm = { mainland = "Minho=米尼奥|Beira=贝拉|Alentejo=阿连特茹|Algarve=阿尔加维", islands = "Madeira=马德拉|Açores=亚速尔|Porto Santo=圣港|Terceira=特塞拉" }
+
+[regions.turkish]
+label = "安纳托利亚土耳其语"
+register = "west-asia"
+language = "土耳其语"
+given = { masculine = "Mehmet=穆罕默德|Kemal=凯末尔|Murat=穆拉特|Orhan=奥尔汗|Selim=塞利姆", feminine = "Ayşe=艾谢|Zeynep=泽伊内普|Elif=埃利夫|Leyla=莱拉|Deniz=德尼兹" }
+surname = { landscape = "Kaya=卡亚|Yıldız=耶尔德兹|Deniz=德尼兹|Koç=科奇", modern = "Demir=德米尔|Çelik=切利克|Aydın=艾登|Arslan=阿尔斯兰" }
+city = { inland = "Konya=科尼亚|Kayseri=开塞利|Sivas=锡瓦斯|Ankara=安卡拉", coasts = "İzmir=伊兹密尔|Antalya=安塔利亚|Sinop=锡诺普|Trabzon=特拉布宗" }
+realm = { anatolia = "Anadolu=安纳托利亚|Kapadokya=卡帕多基亚|Kilikya=奇里乞亚|Bithynia=比提尼亚", coasts = "Likya=利基亚|Pontus=本都|Trakya=色雷斯|Marmara=马尔马拉" }
+
+[regions.arabic]
+label = "阿拉伯语风格"
+register = "west-asia"
+language = "阿拉伯语"
+given = { masculine = "علي=阿里|حسن=哈桑|يوسف=优素福|عمر=奥马尔|سليم=萨利姆", feminine = "ليلى=莱拉|مريم=玛丽亚姆|نور=努尔|سلمى=萨尔玛|زينب=宰娜卜" }
+surname = { cities = "الدمشقي=迪马什基|البغدادي=巴格达迪|المصري=米斯里|التونسي=突尼斯尼", families = "الهاشمي=哈希米|الخطيب=哈提卜|الحسيني=侯赛尼|النجار=纳贾尔" }
+city = { mashriq = "دمشق=大马士革|حلب=阿勒颇|بغداد=巴格达|الموصل=摩苏尔", maghreb = "فاس=非斯|مراكش=马拉喀什|القيروان=凯鲁万|طرابلس=的黎波里" }
+realm = { peninsula = "نجد=内志|الحجاز=汉志|تهامة=蒂哈迈|حضرموت=哈德拉毛", mediterranean = "الشام=沙姆|إفريقية=伊弗里基亚|برقة=昔兰尼加|الأندلس=安达卢斯" }
+
+[regions.persian]
+label = "波斯语风格"
+register = "west-asia"
+language = "波斯语"
+given = { masculine = "داریوش=大流士|آرش=阿拉什|بهرام=巴赫拉姆|سامان=萨曼|کاوه=卡韦", feminine = "شیرین=希琳|آناهیتا=阿娜希塔|پریسا=帕丽萨|مینا=米娜|روشنک=罗珊娜" }
+surname = { places = "شیرازی=设拉子人|تبریزی=大不里士人|اصفهانی=伊斯法哈尼|کرمانی=克尔马尼", families = "نوری=努里|رستمی=鲁斯塔米|مرادی=穆拉迪|فرهمند=法尔哈曼德" }
+city = { plateau = "شیراز=设拉子|یزد=亚兹德|اصفهان=伊斯法罕|کرمان=克尔曼", mountains = "تبریز=大不里士|همدان=哈马丹|نیشابور=内沙布尔|هرات=赫拉特" }
+realm = { south = "فارس=法尔斯|کرمان=克尔曼|سیستان=锡斯坦|خوزستان=胡齐斯坦", north = "خراسان=呼罗珊|گیلان=吉兰|طبرستان=塔巴里斯坦|مازندران=马赞德兰" }
+
+[regions.mongolian]
+label = "蒙古草原"
+register = "steppe"
+language = "蒙古语"
+given = { heritage = "Тэмүжин=铁木真|Бат=巴特|Эрдэнэ=额尔德尼|Алтан=阿勒坦|Төмөр=特木尔", nature = "Наран=那仁|Саруул=萨如拉|Цэцэг=其其格|Оюун=奥云|Сувд=苏布德" }
+city = { old = "Хархорум=哈拉和林|Өргөө=库伦|Улиастай=乌里雅苏台|Ховд=科布多", modern = "Мөрөн=木伦|Дархан=达尔汗|Эрдэнэт=额尔登特|Чойбалсан=乔巴山" }
+realm = { steppe = "Халх=喀尔喀|Ордос=鄂尔多斯|Цахар=察哈尔|Хорчин=科尔沁", forest = "Ойрад=卫拉特|Дөрвөд=杜尔伯特|Баяд=巴牙惕|Барга=巴尔虎" }
+
+[regions.kazakh]
+label = "哈萨克草原"
+register = "steppe"
+language = "哈萨克语"
+given = { masculine = "Абай=阿拜|Ержан=叶尔詹|Нұрлан=努尔兰|Арман=阿尔曼|Әли=阿里", feminine = "Айгүл=艾古丽|Айнұр=艾努尔|Дана=达娜|Аружан=阿鲁詹|Сәуле=萨乌列" }
+city = { silk = "Тараз=塔拉兹|Түркістан=图尔克斯坦|Сайрам=赛拉姆|Шымкент=奇姆肯特", steppe = "Алматы=阿拉木图|Ақтөбе=阿克托别|Қарағанды=卡拉干达|Павлодар=巴甫洛达尔" }
+realm = { steppe = "Сарыарқа=萨雷阿尔卡|Ұлытау=乌勒套|Жетісу=杰特苏|Торғай=图尔盖", edge = "Маңғыстау=曼格斯套|Алтай=阿尔泰|Сырдария=锡尔河|Ертіс=额尔齐斯河" }
+
+[regions.uzbek]
+label = "乌兹别克绿洲"
+register = "steppe"
+language = "乌兹别克语"
+given = { masculine = "Temur=帖木儿|Ulugʻbek=兀鲁伯|Rustam=鲁斯塔姆|Jasur=贾苏尔", feminine = "Dilnoza=迪尔诺扎|Gulnoza=古尔诺扎|Malika=玛莉卡|Nodira=娜迪拉" }
+city = { oasis = "Samarqand=撒马尔罕|Buxoro=布哈拉|Xiva=希瓦|Shahrisabz=沙赫里萨布兹", valleys = "Andijon=安集延|Namangan=纳曼干|Qoʻqon=浩罕|Toshkent=塔什干" }
+realm = { valleys = "Fargʻona=费尔干纳|Zarafshon=泽拉夫尚|Qashqadaryo=卡什卡达里亚|Surxondaryo=苏尔汉河", historical = "Xorazm=花剌子模|Sugʻd=粟特|Movarounnahr=河中|Choch=赭时" }
+
+[regions.korean]
+label = "朝鲜语风格"
+register = "east-asia"
+language = "朝鲜语"
+name_order = "surname-first"
+original_separator = ""
+given = { masculine = "민준=敏俊|지훈=志勋|현우=贤宇|도윤=道允", feminine = "서연=瑞妍|지우=智友|하은=夏恩|수민=秀敏" }
+surname = { frequent = "김=金|이=李|박=朴|최=崔", other = "정=郑|강=姜|조=赵|윤=尹" }
+city = { historic = "경주=庆州|개성=开城|전주=全州|공주=公州", port = "부산=釜山|인천=仁川|목포=木浦|원산=元山" }
+realm = { dynasties = "신라=新罗|백제=百济|가야=伽倻|고려=高丽", regions = "경상=庆尚|전라=全罗|평안=平安|함경=咸镜" }
+
+[regions.vietnamese]
+label = "越南语风格"
+register = "east-asia"
+language = "越南语"
+name_order = "surname-first"
+given = { virtues = "Minh=明|Hùng=雄|Thiện=善|An=安", nature = "Lan=兰|Mai=梅|Hương=香|Ngọc=玉" }
+surname = { frequent = "Nguyễn=阮|Trần=陈|Lê=黎|Phạm=范", other = "Hoàng=黄|Phan=潘|Vũ=武|Đỗ=杜" }
+city = { north = "Hà Nội=河内|Hải Phòng=海防|Bắc Ninh=北宁|Nam Định=南定", south = "Huế=顺化|Hội An=会安|Đà Nẵng=岘港|Cần Thơ=芹苴" }
+realm = { historical = "Đại Việt=大越|Đại Cồ Việt=大瞿越|Vạn Xuân=万春|Âu Lạc=瓯雒", regions = "Kinh Bắc=京北|Thuận Hóa=顺化|Quảng Nam=广南|Champa=占城" }
+
+[regions.thai]
+label = "泰语风格"
+register = "monsoon"
+language = "泰语"
+given = { masculine = "Somchai=颂猜|Wichai=威猜|Anan=阿南|Prasert=巴色", feminine = "Siriporn=诗丽蓬|Kanya=甘雅|Malee=玛丽|Suda=苏达" }
+city = { inland = "Chiang Mai=清迈|Lampang=南邦|Sukhothai=素可泰|Ayutthaya=大城", rivers = "Phitsanulok=彭世洛|Lop Buri=华富里|Nakhon Pathom=佛统|Songkhla=宋卡" }
+realm = { kingdoms = "Lan Na=兰纳|Sukhothai=素可泰|Ayutthaya=阿瑜陀耶|Thonburi=吞武里", regions = "Isan=依善|Phayao=帕尧|Nan=难府|Pattani=北大年" }
+
+[regions.malay]
+label = "马来群岛风格"
+register = "monsoon"
+language = "马来语"
+given = { masculine = "Iskandar=伊斯坎达尔|Hakim=哈基姆|Rizal=里扎尔|Adnan=阿德南", feminine = "Siti=西蒂|Aisyah=艾莎|Intan=英坦|Melati=默拉蒂" }
+city = { peninsula = "Melaka=马六甲|Kota Bharu=哥打巴鲁|Kuala Terengganu=瓜拉登嘉楼|Klang=巴生", islands = "Pontianak=坤甸|Palembang=巨港|Jambi=占碑|Banjarmasin=马辰" }
+realm = { peninsula = "Johor=柔佛|Kedah=吉打|Perak=霹雳|Pahang=彭亨", islands = "Riau=廖内|Brunei=文莱|Sambas=三发|Siak=锡亚克" }
+
+[regions.javanese]
+label = "爪哇风格"
+register = "monsoon"
+language = "爪哇语"
+given = { masculine = "Sukarno=苏加诺|Sutrisno=苏特里斯诺|Wibowo=维博沃|Nugroho=努格罗霍", feminine = "Sulastri=苏拉斯特里|Rahayu=拉哈尤|Kartini=卡蒂尼|Indri=英德丽" }
+city = { interior = "Yogyakarta=日惹|Surakarta=梭罗|Magelang=马格朗|Kediri=谏义里", port = "Semarang=三宝垄|Surabaya=泗水|Jepara=哲帕拉|Gresik=锦石" }
+realm = { courts = "Mataram=马塔兰|Majapahit=满者伯夷|Singhasari=信诃沙里|Demak=淡目", other = "Pajang=巴章|Kediri=谏义里|Kahuripan=卡胡里潘|Blambangan=布兰邦岸" }
+
+[regions.hindustani]
+label = "印度斯坦风格"
+register = "south-asia"
+language = "印度斯坦语"
+given = { masculine = "Arjun=阿琼|Rohan=罗汉|Dev=德夫|Vikram=维克拉姆|Amit=阿米特", feminine = "Meera=米拉|Priya=普里娅|Kavita=卡维塔|Nisha=妮莎|Anjali=安贾莉" }
+surname = { general = "Sharma=夏尔马|Verma=维尔马|Singh=辛格|Gupta=古普塔", other = "Joshi=乔希|Kapoor=卡普尔|Mehta=梅塔|Rao=拉奥" }
+city = { river = "Varanasi=瓦拉纳西|Patna=巴特那|Kanpur=坎普尔|Prayagraj=普拉亚格拉杰", upland = "Jaipur=斋浦尔|Udaipur=乌代布尔|Jodhpur=焦特布尔|Ajmer=阿杰梅尔" }
+realm = { historic = "Magadha=摩揭陀|Kosala=拘萨罗|Avanti=阿槃提|Malwa=马尔瓦", plains = "Awadh=阿瓦德|Marwar=马尔瓦尔|Mewar=梅瓦尔|Bundelkhand=本德尔坎德" }
+
+[regions.bengali]
+label = "孟加拉语风格"
+register = "south-asia"
+language = "孟加拉语"
+given = { masculine = "Arindam=阿林达姆|Anirban=阿尼尔班|Suman=苏曼|Gopal=戈帕尔", feminine = "Aditi=阿迪蒂|Madhuri=马杜丽|Rina=丽娜|Ananya=阿南娅" }
+surname = { general = "Das=达斯|Dutta=杜塔|Sen=森|Ghosh=戈什", other = "Mitra=米特拉|Roy=罗伊|Bose=鲍斯|Sarkar=萨卡尔" }
+city = { west = "Kolkata=加尔各答|Murshidabad=穆尔希达巴德|Bardhaman=巴尔达曼|Nabadwip=纳巴德维普", east = "Dhaka=达卡|Sylhet=锡尔赫特|Rajshahi=拉杰沙希|Sonargaon=索纳尔冈" }
+realm = { delta = "Vanga=旁伽|Samatata=萨摩呾吒|Banga=孟加拉|Chandradwip=钱德拉德维普", inland = "Gauda=乔荼|Varendra=伐连陀罗|Rarh=拉尔|Pundra=奔那伐弹那" }
+
+[regions.tamil]
+label = "泰米尔风格"
+register = "south-asia"
+language = "泰米尔语"
+given = { masculine = "Arul=阿鲁尔|Kannan=坎南|Karthik=卡尔蒂克|Selvan=塞尔万", feminine = "Meena=米娜|Kavitha=卡维塔|Valli=瓦莉|Amudha=阿穆达" }
+city = { plains = "Madurai=马杜赖|Thanjavur=坦贾武尔|Tiruchirappalli=蒂鲁吉拉帕利|Kanchipuram=甘吉布勒姆", coasts = "Chennai=金奈|Nagapattinam=纳加帕蒂南|Rameswaram=拉梅斯沃勒姆|Puducherry=本地治里" }
+realm = { dynasties = "Chola=朱罗|Pandya=潘地亚|Chera=哲罗|Pallava=帕拉瓦", regions = "Kongu=孔古|Tondai=通代|Nanjil=南吉尔|Eelam=伊拉姆" }
+
+[regions.egyptian]
+label = "古埃及风格"
+register = "nile"
+language = "古埃及语"
+given = { royal = "Ahmose=雅赫摩斯|Thutmose=图特摩斯|Ramesses=拉美西斯|Seti=塞提|Khufu=胡夫", other = "Nefertari=奈菲尔塔莉|Hatshepsut=哈特谢普苏特|Meritamen=梅丽塔蒙|Tiye=泰伊|Ahmose-Nefertari=雅赫摩斯奈菲尔塔莉" }
+city = { delta = "Memphis=孟菲斯|Iunu=伊乌努|Bubastis=布巴斯提斯|Sais=赛斯", upriver = "Waset=瓦塞特|Abdju=阿卜朱|Nekhen=涅肯|Elephantine=象岛" }
+realm = { nile = "Kemet=凯梅特|Ta-Mehu=下埃及|Ta-Shemau=上埃及|Ta-Seti=塔塞提", south = "Kush=库施|Wawat=瓦瓦特|Irem=伊雷姆|Yam=亚姆" }
+
+[regions.ethiopian]
+label = "埃塞高原"
+register = "nile"
+language = "阿姆哈拉语"
+given = { masculine = "Dawit=达维特|Tewodros=特沃德罗斯|Haile=海尔|Kebede=凯贝德|Tesfaye=特斯法耶", feminine = "Mulu=穆卢|Almaz=阿尔马兹|Aster=阿斯特|Tigist=蒂吉斯特|Selam=塞拉姆" }
+city = { north = "Axum=阿克苏姆|Gondar=贡德尔|Lalibela=拉利贝拉|Adwa=阿杜瓦", south = "Addis Ababa=亚的斯亚贝巴|Harar=哈勒尔|Debre Birhan=德布雷比尔汉|Jimma=季马" }
+realm = { upland = "Shewa=绍阿|Tigray=提格雷|Gojjam=戈贾姆|Wollo=沃洛", historical = "Axum=阿克苏姆|Adal=阿达尔|Damot=达莫特|Kaffa=卡法" }
+
+[regions.yoruba]
+label = "约鲁巴风格"
+register = "africa"
+language = "约鲁巴语"
+given = { blessings = "Adéọlá=阿德奥拉|Ayọ̀=阿约|Olúwatóbilọ́ba=奥卢瓦托比洛巴|Bọ́lá=博拉", other = "Adébáyọ̀=阿德巴约|Ọláwálé=奥拉瓦莱|Túndé=通德|Ayọ̀délé=阿约德莱" }
+surname = { lineage = "Adéyẹmí=阿德耶米|Ọlátúnjí=奥拉通吉|Fálọlá=法洛拉|Akíntọ́lá=阿金托拉", other = "Adéyẹ́lẹ́=阿德耶莱|Adéyínká=阿德因卡|Abíọ́dún=阿比奥敦|Ọláníyì=奥拉尼伊" }
+city = { inland = "Ilé-Ifẹ̀=伊莱伊费|Ọ̀yọ́=奥约|Ilọrin=伊洛林|Ogbomoso=奥格博莫绍", coast = "Èkó=埃科|Ìbàdàn=伊巴丹|Abẹ́òkúta=阿贝奥库塔|Ìjẹ̀bú Òde=伊杰布奥德" }
+realm = { courts = "Ọ̀yọ́=奥约|Ifẹ̀=伊费|Ìjẹ̀ṣà=伊杰沙|Kétu=凯图", federations = "Ẹ̀gbá=埃格巴|Ìjẹ̀bú=伊杰布|Èkìtì=埃基蒂|Òǹdó=翁多" }
+
+[regions.swahili]
+label = "斯瓦希里海岸"
+register = "africa"
+language = "斯瓦希里语"
+given = { masculine = "Juma=朱马|Hamisi=哈米西|Hassan=哈桑|Bakari=巴卡里|Salim=萨利姆", feminine = "Amina=阿米娜|Zawadi=扎瓦迪|Neema=妮玛|Asha=阿莎|Nuru=努鲁" }
+city = { north = "Lamu=拉穆|Mombasa=蒙巴萨|Malindi=马林迪|Gede=盖德", south = "Kilwa=基尔瓦|Bagamoyo=巴加莫约|Pangani=潘加尼|Tanga=坦噶" }
+realm = { islands = "Unguja=温古贾|Pemba=奔巴|Mafia=马菲亚|Zanzibar=桑给巴尔", coast = "Kilwa=基尔瓦|Pate=帕泰|Siyu=锡尤|Vumba=温巴" }
+
+[regions.zulu]
+label = "祖鲁风格"
+register = "africa"
+language = "祖鲁语"
+given = { praise = "Sibusiso=西布西索|Bhekizizwe=贝基齐兹韦|Thabo=塔博|Siyabonga=西亚邦加", nature = "Nomvula=诺姆武拉|Zanele=扎内莱|Thandiwe=坦迪韦|Lindiwe=林迪韦" }
+surname = { general = "Dlamini=德拉米尼|Khumalo=库马洛|Mthembu=姆滕布|Zulu=祖鲁", other = "Buthelezi=布特莱齐|Ndlovu=恩德洛武|Mkhize=姆基泽|Nkosi=恩科西" }
+city = { valley = "Ulundi=乌伦迪|Nongoma=农戈马|Eshowe=埃绍韦|Melmoth=梅尔莫斯", coast = "eThekwini=埃特奎尼|Mtubatuba=姆图巴图巴|Empangeni=恩潘盖尼|Mandeni=曼德尼" }
+realm = { territories = "KwaZulu=夸祖鲁|Zululand=祖鲁兰|Natal=纳塔尔|Maputaland=马普塔兰", rivers = "uThukela=图盖拉河|uMfolozi=姆福洛齐河|uMkhomazi=姆科马齐河|uMzimkhulu=姆齐姆库卢河" }
+
+[regions.north-american]
+label = "北美英语"
+register = "americas"
+language = "北美英语"
+given = { masculine = "James=詹姆斯|Benjamin=本杰明|Jack=杰克|Ethan=伊桑|Noah=诺亚", feminine = "Abigail=阿比盖尔|Harper=哈珀|Amelia=阿米莉亚|Grace=格蕾丝|Charlotte=夏洛特" }
+surname = { common = "Johnson=约翰逊|Williams=威廉斯|Brown=布朗|Harris=哈里斯", landscape = "Brooks=布鲁克斯|Reed=里德|Parker=帕克|Morgan=摩根" }
+city = { east = "Boston=波士顿|Albany=奥尔巴尼|Halifax=哈利法克斯|Montreal=蒙特利尔", west = "Salem=塞勒姆|Victoria=维多利亚|Tacoma=塔科马|Santa Fe=圣菲" }
+realm = { rivers = "Acadia=阿卡迪亚|Hudson=哈得孙|Virginia=弗吉尼亚|Louisiana=路易斯安那", west = "Cascadia=卡斯卡迪亚|Oregon=俄勒冈|Sonora=索诺拉|Columbia=哥伦比亚" }
+
+[regions.mexican]
+label = "墨西哥西语"
+register = "americas"
+language = "墨西哥西班牙语"
+given = { masculine = "Miguel=米格尔|José=何塞|Emilio=埃米利奥|Ignacio=伊格纳西奥|Mateo=马特奥", feminine = "Guadalupe=瓜达卢佩|Luz=卢斯|Elena=埃莱娜|Ximena=希梅娜|Sofía=索菲娅" }
+surname = { general = "Hernández=埃尔南德斯|García=加西亚|Mendoza=门多萨|Flores=弗洛雷斯", other = "Salgado=萨尔加多|Vargas=巴尔加斯|Rivera=里韦拉|Cortés=科尔特斯" }
+city = { plateau = "Puebla=普埃布拉|Toluca=托卢卡|Querétaro=克雷塔罗|Zacatecas=萨卡特卡斯", coastal = "Veracruz=韦拉克鲁斯|Mazatlán=马萨特兰|Campeche=坎佩切|Acapulco=阿卡普尔科" }
+realm = { valleys = "Anáhuac=阿纳瓦克|Mixteca=米斯特克|Tlaxcala=特拉斯卡拉|Bajío=巴希奥", maritime = "Yucatán=尤卡坦|Sonora=索诺拉|Sinaloa=锡那罗亚|Oaxaca=瓦哈卡" }
+
+[regions.nahuatl]
+label = "纳瓦特尔风格"
+register = "americas"
+language = "纳瓦特尔语"
+given = { documented = "Cuauhtémoc=夸乌特莫克|Cuitláhuac=奎特拉瓦克|Itzcóatl=伊茨科阿特尔|Axayácatl=阿沙亚卡特尔", nature = "Xóchitl=索奇特尔|Citlali=西特拉莉|Cuāuhtli=夸乌特利|Tochtli=托奇特利" }
+city = { valley = "Tenochtitlan=特诺奇蒂特兰|Texcoco=特斯科科|Tlacopan=特拉科潘|Tlatelolco=特拉特洛尔科", outside = "Cholollan=乔卢拉|Tlaxcallan=特拉斯卡拉|Huexotzinco=韦霍钦戈|Cuauhnahuac=夸乌纳瓦克" }
+realm = { valley = "Anāhuac=阿纳瓦克|Acolhuacan=阿科尔瓦坎|Tepanecapan=特帕内卡潘|Culhuacan=库尔瓦坎", frontier = "Chalco=查尔科|Xochimilco=霍奇米尔科|Cuetlaxtlan=奎特拉斯特兰|Coixtlahuaca=科伊斯特拉瓦卡" }
+
+[regions.brazilian]
+label = "巴西葡语"
+register = "americas"
+language = "巴西葡萄牙语"
+given = { masculine = "João=若昂|Pedro=佩德罗|Gabriel=加布里埃尔|Lucas=卢卡斯|Rafael=拉斐尔", feminine = "Maria=玛丽亚|Ana=安娜|Camila=卡米拉|Letícia=莱蒂西娅|Helena=埃莱娜" }
+surname = { frequent = "Silva=席尔瓦|Santos=桑托斯|Oliveira=奥利韦拉|Souza=索萨", other = "Almeida=阿尔梅达|Lima=利马|Costa=科斯塔|Ramos=拉莫斯" }
+city = { coasts = "Recife=累西腓|Salvador=萨尔瓦多|Olinda=奥林达|Santos=桑托斯", inland = "Ouro Preto=欧鲁普雷图|Goiás=戈亚斯|Manaus=马瑙斯|Belém=贝伦" }
+realm = { coast = "Bahia=巴伊亚|Pernambuco=伯南布哥|Paraná=巴拉那|Paraíba=帕拉伊巴", interior = "Minas Gerais=米纳斯吉拉斯|Amazônia=亚马孙|Mato Grosso=马托格罗索|Tocantins=托坎廷斯" }
+
+[regions.andean]
+label = "安第斯克丘亚"
+register = "americas"
+language = "克丘亚语"
+given = { historical = "Tupaq=图帕克|Pachakutiq=帕查库蒂|Atawallpa=阿塔瓦尔帕|Manku=曼科", nature = "Killa=基利亚|Sisa=西萨|Ch'aska=恰斯卡|Mayu=马尤" }
+city = { highland = "Qusqu=库斯科|Punu=普诺|Wamanga=瓦曼加|Hatun Qulla=哈通科利亚", valley = "Urupampa=乌鲁班巴|Pisaq=皮萨克|Ullantaytampu=奥扬泰坦博|Abancay=阿班凯" }
+realm = { suyu = "Chinchaysuyu=钦察苏尤|Antisuyu=安蒂苏尤|Qullasuyu=科利亚苏尤|Kuntisuyu=孔蒂苏尤", other = "Tawantinsuyu=塔万廷苏尤|Chanka=昌卡|Wanka=万卡|Vilcabamba=比尔卡班巴" }
+
+[regions.rioplatense]
+label = "拉普拉塔西语"
+register = "americas"
+language = "拉普拉塔西班牙语"
+given = { masculine = "Martín=马丁|Joaquín=华金|Santiago=圣地亚哥|Mateo=马特奥", feminine = "Lucía=露西亚|Camila=卡米拉|Valentina=巴伦蒂娜|Agustina=阿古斯蒂娜" }
+surname = { frequent = "Fernández=费尔南德斯|Gómez=戈麦斯|Suárez=苏亚雷斯|Álvarez=阿尔瓦雷斯", other = "Pereyra=佩雷拉|Sosa=索萨|Aguirre=阿吉雷|Acosta=阿科斯塔" }
+city = { river = "Buenos Aires=布宜诺斯艾利斯|Rosario=罗萨里奥|Montevideo=蒙得维的亚|Paraná=巴拉那", interior = "Córdoba=科尔多瓦|Mendoza=门多萨|Salta=萨尔塔|Tucumán=图库曼" }
+realm = { grasslands = "La Pampa=潘帕|Entre Ríos=恩特雷里奥斯|Banda Oriental=东岸|Chaco=查科", mountains = "Cuyo=库约|Patagonia=巴塔哥尼亚|Neuquén=内乌肯|Jujuy=胡胡伊" }
+
+[regions.maori]
+label = "毛利风格"
+register = "pacific"
+language = "毛利语"
+given = { nature = "Moana=莫阿娜|Kiri=基丽|Aroha=阿罗哈|Anahera=阿纳赫拉|Marama=马拉马", other = "Hemi=赫米|Wiremu=维雷穆|Tāne=塔内|Matiu=马蒂乌|Rangi=兰吉" }
+city = { north = "Rotorua=罗托鲁瓦|Taupō=陶波|Tauranga=陶朗阿|Whangārei=旺阿雷", south = "Ōamaru=奥马鲁|Wānaka=瓦纳卡|Waitaki=怀塔基|Kaikōura=凯库拉" }
+realm = { islands = "Aotearoa=奥特亚罗瓦|Te Ika-a-Māui=特伊卡阿毛伊|Te Waipounamu=特怀普纳穆|Rakiura=拉基乌拉", regions = "Taranaki=塔拉纳基|Te Tai Tokerau=特泰托克劳|Waikato=怀卡托|Murihiku=穆里希库" }
+
+[regions.samoan]
+label = "萨摩亚风格"
+register = "pacific"
+language = "萨摩亚语"
+given = { masculine = "Sione=西奥内|Mika=米卡|Tanielu=塔涅卢|Iosefa=约塞法|Peni=佩尼", feminine = "Mele=梅莱|Lina=莉娜|Luisa=路易萨|Sina=西娜|Fia=菲娅" }
+city = { upolu = "Apia=阿皮亚|Falefa=法莱法|Lufilufi=卢菲卢菲|Falealili=法莱阿利利", savaii = "Salelologa=萨莱洛洛阿|Safotu=萨福图|Saleaula=萨莱奥拉|Falealupo=法莱阿卢波" }
+realm = { islands = "Upolu=乌波卢|Savaiʻi=萨瓦伊|Manono=马诺诺|Apolima=阿波利马", districts = "Ātua=阿图阿|Aʻana=阿阿纳|Tuamasaga=图阿马萨加|Palauli=帕劳利" }
+
+[registers.europe]
+label = "西欧"
+realm_ending = "公国"
+pools.war-ending = ["之战 会战", "争夺战 远征"]
+pools.alliance-ending = ["同盟 联盟", "议盟 协约"]
+pools.army-ending = ["王家卫队 长弓队", "近卫团 骑士团"]
+pools.book-ending = ["编年史 手稿", "纪事 考略"]
+pools.artifact = ["黎明 银蔷薇 曙光", "炉心 长夜 铜狮"]
+pools.motto = ["守信如守城 王冠当为民", "盐风知归途 长路不弃友"]
+pools.creed = ["守灯会 晨钟教团", "谷穗会 盟誓堂"]
+
+[registers.mediterranean]
+label = "地中海"
+realm_ending = "邦"
+pools.war-ending = ["海战 之战", "战役 港口争夺战"]
+pools.alliance-ending = ["列邦盟 商港同盟", "城邦协约 船盟"]
+pools.army-ending = ["近卫队 长矛队", "舰队 城防军"]
+pools.book-ending = ["列传 航海志", "考据 记事"]
+pools.artifact = ["橄榄纹 紫帆 海晖", "铜冠 白石 赤陶"]
+pools.motto = ["风浪同舟 海路相通", "石城因守约而立 人以善行传世"]
+pools.creed = ["晴海会 灯塔礼会", "石庭祭会 明炬堂"]
+
+[registers.northern]
+label = "欧陆北方"
+realm_ending = "领"
+pools.war-ending = ["边境战 决战", "远征 会战"]
+pools.alliance-ending = ["诸领盟 条约同盟", "守望盟 联合议会"]
+pools.army-ending = ["霜卫 边防团", "长斧团 近卫营"]
+pools.book-ending = ["传说集 长卷", "冬日纪事 手录"]
+pools.artifact = ["霜纹 松脂 星斧", "北光 臂环 冬辉"]
+pools.motto = ["守住炉火 莫负旧约", "雪路共行 海归有灯"]
+pools.creed = ["长夜守灯会 星冠会", "松庭礼团 冬至堂"]
+
+[registers.west-asia]
+label = "西亚绿洲"
+realm_ending = "国"
+pools.war-ending = ["会战 争夺战", "交锋 远征"]
+pools.alliance-ending = ["商路盟 诸城盟", "绿洲协约 互守盟"]
+pools.army-ending = ["宫卫 驼骑队", "城门卫队 边关营"]
+pools.book-ending = ["见闻录 传记", "历法书 长卷"]
+pools.artifact = ["青金 星纹 流沙", "赤玉 石榴纹 绿洲"]
+pools.motto = ["井水当共饮 驼铃引归客", "旧约重如山 远行不忘灯"]
+pools.creed = ["晨星礼会 清泉守望会", "星台会 流泉堂"]
+
+[registers.steppe]
+label = "草原丝路"
+realm_ending = "国"
+pools.war-ending = ["逐原之战 会战", "长途远征 边关战"]
+pools.alliance-ending = ["营帐盟 诸部之约", "商旅协约 绿洲盟"]
+pools.army-ending = ["铁骑 弓骑队", "帐卫 先锋旗"]
+pools.book-ending = ["行记 驿路志", "草原纪 谱录"]
+pools.artifact = ["风纹 金蹄 苍鹰", "白鬃 沙金 长风"]
+pools.motto = ["逐水而居 守约如守火", "相逢先问安 夜路共享帐"]
+pools.creed = ["望天会 火种集会", "白帐礼团 山风祭会"]
+
+[registers.east-asia]
+label = "东亚山海"
+realm_ending = "国"
+pools.war-ending = ["之战 交兵", "会战 战役"]
+pools.alliance-ending = ["守望盟 通好盟", "诸邦盟 会盟"]
+pools.army-ending = ["巡山营 城卫", "弓骑队 水师"]
+pools.book-ending = ["志 记", "图录 杂考"]
+pools.artifact = ["松纹 越水 霜竹", "山岚 青玉 白露"]
+pools.motto = ["信义传家 安民守土", "山海相望 同行有伴"]
+pools.creed = ["松庭礼会 十灯会", "青丘礼堂 朔月会"]
+
+[registers.monsoon]
+label = "季风海路"
+realm_ending = "国"
+pools.war-ending = ["海隘之战 渡口战", "雨季远征 会战"]
+pools.alliance-ending = ["河港盟 商路盟", "海峡协约 诸岛盟"]
+pools.army-ending = ["河口卫 港防队", "宫门卫队 前舟营"]
+pools.book-ending = ["海道记 行旅录", "叶书 图记"]
+pools.artifact = ["雨纹 莲灯 柚木", "象纹 季风 潮歌"]
+pools.motto = ["得水先敬客 逆风也归舟", "分灯照行路 同心过雨季"]
+pools.creed = ["雨灯会 白莲礼会", "渡海祈愿团 河源会"]
+
+[registers.south-asia]
+label = "南亚河谷"
+realm_ending = "国"
+pools.war-ending = ["原野之战 远征", "河渡会战 战事"]
+pools.alliance-ending = ["诸城盟 河谷同盟", "商旅协约 联防盟"]
+pools.army-ending = ["象卫 弓卫", "骑兵团 城门卫"]
+pools.book-ending = ["论 书", "注疏 纪事"]
+pools.artifact = ["孔雀纹 红莲纹 流金", "日轮 青黛 珍珠纹"]
+pools.motto = ["公平分水 为来客留灯", "共守渡口 让长者先行"]
+pools.creed = ["朝阳灯会 河畔礼会", "四方莲会 白石堂"]
+
+[registers.nile]
+label = "尼罗河与高原"
+realm_ending = "王国"
+pools.war-ending = ["河谷之战 河门会战", "山路远征 战役"]
+pools.alliance-ending = ["高原盟 水道协约", "沿河盟 谷仓同盟"]
+pools.army-ending = ["河岸卫 宫卫", "高地军 盾卫队"]
+pools.book-ending = ["铭册 长卷", "纪年 河道志"]
+pools.artifact = ["日轮 乌木 青石", "红陶 星舟 沙羽"]
+pools.motto = ["河水养万家 以秤守公平", "谷仓留余粮 以灯迎行旅"]
+pools.creed = ["河灯会 星昼礼团", "青石礼会 日影堂"]
+
+[registers.africa]
+label = "非洲草原与海岸"
+realm_ending = "邦"
+pools.war-ending = ["渡口之战 山岗会战", "平原战 海岸战"]
+pools.alliance-ending = ["河岸盟 港市盟", "渡口协约 聚落同盟"]
+pools.army-ending = ["渡口卫 港湾卫队", "岭地军 盾卫队"]
+pools.book-ending = ["口述纪 民谣录", "航行记 村史"]
+pools.artifact = ["赤土 木纹 铜铃", "海铜 星砂 鼓纹"]
+pools.motto = ["邻人先于高墙 一树难成林", "途远同舟 盐水有终归岸"]
+pools.creed = ["海风礼会 河树会", "长鼓会 星岸堂"]
+
+[registers.americas]
+label = "美洲山河"
+realm_ending = "联邦"
+pools.war-ending = ["峡谷战 边境会战", "河口争夺战 战事"]
+pools.alliance-ending = ["诸河盟 山地联约", "海湾协约 港市联盟"]
+pools.army-ending = ["山路卫 旷野骑队", "渡口兵团 河湾守军"]
+pools.book-ending = ["山河志 远行记", "见闻札 编年史"]
+pools.artifact = ["雪岭 日石 湖光", "赤羽 山铜 风纹"]
+pools.motto = ["两岸同舟 为后来者留路", "愿山路平安 共守泉源"]
+pools.creed = ["山风会 河源礼会", "日石礼团 北岸堂"]
+
+[registers.pacific]
+label = "太平洋海岛"
+realm_ending = "群岛邦"
+pools.war-ending = ["湾口会战 海峡之战", "岛岸战 海隘远征"]
+pools.alliance-ending = ["岛群盟 航路协约", "珊瑚海盟 舟队联约"]
+pools.army-ending = ["湾口卫 领航队", "守礁队 舟卫"]
+pools.book-ending = ["海路记 岛志", "星航札 口述录"]
+pools.artifact = ["海纹 星航 白贝", "潮木 黑曜 珊瑚纹"]
+pools.motto = ["循星归家 大海通诸岛", "海路共守 为夜航留灯"]
+pools.creed = ["潮灯礼会 海路守望会", "星帆会 白贝堂"]

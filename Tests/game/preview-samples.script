@@ -1,0 +1,200 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 18)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(actor);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+var common = world.languages.newLanguage(actor, true);
+for (int i = 0; i < 10; i++) world.languages.newLanguage(actor, false).setName("试验语言" + i);
+var locked = world.languages.newLanguage(actor, false);
+common.setName("中原话");
+locked.setName("蓝田河谷话");
+actor.joinLanguage(common);
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var config = service.GetWorld();
+const string places = "chinesename:places";
+var pack = service.GetPackage(service.DefaultPack);
+var fixedWord = pack.Words.First(word => pack.Pools[places].ContainsKey(word.Id) && word.Text == "蓝田");
+if (!config.Languages.TryGetValue(locked.id, out var profile))
+    config.Languages[locked.id] = profile = new LanguageNaming();
+profile.Pools[places] = new PoolEdit { ExcludeIds = pack.Pools[places].Keys.Where(id => id != fixedWord.Id).ToList() };
+WorldNamingStore.Apply(config);
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+world.console.Hide();
+
+var exchange = "__EXCHANGE__";
+int seq = 0;
+string Position(Component component)
+{
+    var rect = (RectTransform)component.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+}
+async System.Threading.Tasks.Task Mouse(string action, Component component, Component destination = null)
+{
+    var path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + Position(component) + (destination == null ? "" : Position(destination)));
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Mouse action did not complete.");
+    await Frames();
+}
+
+T Find<T>(string name) where T : Component => shell.GetComponentsInChildren<T>().Single(item => item.name == name);
+Text[] Samples()
+{
+    var preview = shell.transform.FindRecursive("ChineseName.Examples");
+    var texts = preview.GetComponentsInChildren<Text>();
+    var names = texts.Where(text => text.name is "PreviewName" or "PreviewSample").ToArray();
+    Check(texts.All(text => text.text != "取名预览") && names.All(text => !text.raycastTarget), "Preview text was not read-only or no longer title-free.");
+    var bounds = (RectTransform)preview;
+    Check(names.All(text =>
+    {
+        var rect = RectTransformUtility.CalculateRelativeRectTransformBounds(bounds, text.transform);
+        return rect.min.x >= bounds.rect.xMin - 1 && rect.max.x <= bounds.rect.xMax + 1 &&
+            rect.min.y >= bounds.rect.yMin - 1 && rect.max.y <= bounds.rect.yMax + 1;
+    }), "Preview examples exceeded the original illustration.");
+    Check(names.All(text => text.fontSize == names[0].fontSize && text.color == names[0].color),
+        "The preview names still have different visual weights.");
+    return names;
+}
+string[] Batch() => Samples().Select(text => text.text).ToArray();
+
+var initial = Batch();
+Check(initial.Length == 12 && initial.Distinct().Count() == 12, "Expected twelve distinct city names, got " + initial.Length);
+await Mouse("click", Find<Button>("Resample"));
+var next = Batch();
+Check(next.Length == 12 && !next.SequenceEqual(initial), "The dice did not replace the batch.");
+
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+var screenshots = new string[4];
+await Mouse("move", Find<Text>("PreviewName"));
+screenshots[0] = Path.Combine(output, "name-preview-1280.png");
+ScreenCapture.CaptureScreenshot(screenshots[0]);
+await Frames();
+
+Button Flag(Language language) => Find<Button>("PreviewLanguage." + (language?.id.ToString() ?? "Default"));
+Button[] VisibleFlags(ScrollRect scroll) => scroll.content.GetComponentsInChildren<Button>()
+    .Where(flag => flag.name.StartsWith("PreviewLanguage.", StringComparison.Ordinal))
+    .Where(flag =>
+    {
+        var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(scroll.viewport, flag.transform);
+        return bounds.min.x >= scroll.viewport.rect.xMin - .5f && bounds.max.x <= scroll.viewport.rect.xMax + .5f;
+    }).ToArray();
+async System.Threading.Tasks.Task Choose(Language language)
+{
+    var button = Flag(language);
+    Check(language == null || button.GetComponentInChildren<LanguageBanner>()?.GetNanoObject() == language,
+        "The button has no original language flag.");
+    await Mouse("click", button);
+    Check(ScrollWindow.isCurrentWindow("culture") && Flag(language).image.sprite == SpriteTextureLoader.getSprite("ui/tab_button_sort_selected"),
+        "The flag did not select a preview language in the culture window.");
+}
+
+Check(!shell.GetComponentsInChildren<Dropdown>().Any(item => item.name == "PreviewLanguage"), "The old dropdown is still visible.");
+var scroll = Find<ScrollRect>("PreviewLanguageScroll");
+var visible = VisibleFlags(scroll);
+Check(!visible.Contains(Flag(locked)), "Expected the last flag to require scrolling.");
+await Mouse("drag", visible.Last(), visible.First());
+Check(VisibleFlags(scroll).Contains(Flag(locked)), "Dragging did not reveal the other languages.");
+await Choose(locked);
+Check(Batch().SequenceEqual(new[] { "蓝田" }), "A single-name pool was repeated.");
+Check(VisibleFlags(Find<ScrollRect>("PreviewLanguageScroll")).Contains(Flag(locked)), "Selecting the language reset the flag row.");
+await Mouse("move", Find<Text>("PreviewName"));
+screenshots[1] = Path.Combine(output, "name-preview-language-selected.png");
+ScreenCapture.CaptureScreenshot(screenshots[1]);
+await Frames();
+scroll = Find<ScrollRect>("PreviewLanguageScroll");
+visible = VisibleFlags(scroll);
+await Mouse("drag", visible.First(), visible.Last());
+await Choose(null);
+await Choose(common);
+Check(Batch().SequenceEqual(next), "Switching back to the same language changed the preview seeds.");
+
+UnityEngine.Screen.SetResolution(960, 540, FullScreenMode.Windowed);
+for (int i = 0; i < 175 && UnityEngine.Screen.width != 960; i++) await Game.NextFrame();
+await Frames();
+Check(UnityEngine.Screen.width == 960 && UnityEngine.Screen.height == 540, "Could not resize WorldBox.");
+Check(Batch().SequenceEqual(next), "The smaller window damaged the batch.");
+await Mouse("move", Find<Text>("PreviewName"));
+screenshots[2] = Path.Combine(output, "name-preview-960.png");
+ScreenCapture.CaptureScreenshot(screenshots[2]);
+await Frames();
+
+OnomasticsAssetButton[] Cards() => tab.parent_name_variation_1.GetComponentsInChildren<OnomasticsAssetButton>();
+string Colored(string value) => "<color=#FFDC6C>" + value + "</color>";
+await Mouse("move", Cards().Single().button);
+Check(Batch().SequenceEqual(next.Select(Colored)), "The arranged word group did not highlight the complete batch.");
+await Mouse("move", tab.parent_asset_groups.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(card => card.onomastics_asset.id == "group_1").button);
+Check(Batch().SequenceEqual(next), "Hovering a word group in the palette highlighted the preview.");
+
+string Short(params string[] ids) =>
+    string.Concat(ids.Select(id => AssetManager.onomastics_library.get(id).short_id));
+tab.loadTemplate(Short("group_1", "hyphen", "group_1", "divider", "group_2", "hyphen", "group_1") + "|0:澄江;1:白岳");
+await Frames();
+var branches = Batch();
+Check(branches.ToHashSet().SetEquals(new[] { "澄江-澄江", "白岳-澄江" }), "The two arrangements were not both sampled.");
+await Mouse("move", Cards()[0].button);
+Check(Batch().SequenceEqual(branches.Select(name => name == "澄江-澄江" ? Colored("澄江") + "-澄江" : name)),
+    "Hovering the first group colored another occurrence or branch: " + string.Join(", ", Batch()));
+await Mouse("move", Cards()[2].button);
+Check(Batch().SequenceEqual(branches.Select(name => name == "澄江-澄江" ? "澄江-" + Colored("澄江") : name)),
+    "Hovering the repeated group did not isolate its own position: " + string.Join(", ", Batch()));
+await Mouse("move", Cards()[6].button);
+Check(Batch().SequenceEqual(branches.Select(name => name == "白岳-澄江" ? "白岳-" + Colored("澄江") : name)),
+    "Hovering the same group in the second branch highlighted the wrong name: " + string.Join(", ", Batch()));
+await Mouse("move", Find<Text>("PreviewName"));
+Check(Batch().SequenceEqual(branches) && Samples().All(label => !label.supportRichText), "Moving away did not clear the highlight.");
+
+tab.loadTemplate("01|0:澄江 蓝田 临川 白岳 云津;1:府 州 县");
+await Frames();
+var cities = Batch();
+Check(cities.Length == 12 && cities.Contains("澄江府"), "Expected twelve names with distinct roots and suffixes.");
+await Mouse("move", Cards()[1].button);
+Check(Batch().SequenceEqual(cities.Select(name => name.Substring(0, name.Length - 1) + Colored(name.Substring(name.Length - 1)))),
+    "Hovering the suffix group did not highlight only the suffix in each sample.");
+screenshots[3] = Path.Combine(output, "name-preview-hover-960.png");
+ScreenCapture.CaptureScreenshot(screenshots[3]);
+await Frames();
+
+actor.data.sex = ActorSex.Male;
+actor.data.set("chinesename.surname.v1", "欧阳");
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_unit").toggle.click();
+await Frames();
+tab.loadTemplate(Short("group_1", "chinesename_keep_surname", "group_2") + "|0:林;1:青");
+await Frames();
+await Mouse("move", Cards()[0].button);
+Check(Batch().SequenceEqual(new[] { Colored("欧阳") + "青" }), "The word group did not highlight the inherited surname.");
+await Mouse("move", Cards()[2].button);
+Check(Batch().SequenceEqual(new[] { "欧阳" + Colored("青") }), "The given name hover also colored the surname.");
+return new { samples = next, single = "蓝田", mouseActions = seq, screenshots };

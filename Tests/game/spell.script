@@ -1,0 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var result = ChineseNameExample.SpellNames.Generate("fire", "blade", 42);
+if (!result.Success || result.Text != "炎刃诀" || result.Parts["form"] != "刃")
+    throw new InvalidOperationException("Independent spell mod failed to use the registered type.");
+var type = NamingApi.Current.Types.Single(value => value.Id == ChineseNameExample.SpellNames.TypeId);
+var request = new NameRequest(type.Id, 42, inputs: new Dictionary<string, object> { ["element"] = "fire", ["form"] = "blade" });
+if (NamingApi.Current.Preview(request).Text != result.Text || !type.Fields["element"].Required)
+    throw new InvalidOperationException("The editor cannot discover or preview the extension schema.");
+return new { type = type.Id, result.Text, declared = type.Fields.Keys.ToArray() };

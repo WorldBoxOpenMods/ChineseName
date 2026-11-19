@@ -1,0 +1,125 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Core.SkillLibV3.Utils;
+
+const string cityType = "worldbox:city", spellType = "cultiway:spell";
+const string cityPool = "chinesename:river-places", firePool = "cultiway:spell-element.semantic.element.fire";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var root = world.languages.newLanguage(founder, true);
+founder.joinLanguage(root);
+
+var service = NamingApi.Current;
+var basePack = service.GetPackage(service.DefaultPack);
+var spellPack = service.GetPackage("cultiway:spell-defaults");
+Check(spellPack.WordGroups.Values.Count(group => group.Pool == firePool) == 2, "Cultiway did not register its own fire word groups.");
+var worldNaming = service.GetWorld();
+var rootProfile = worldNaming.Languages[root.id];
+rootProfile.Pack = basePack.Id;
+foreach (var pool in basePack.WordGroups.Where(entry => entry.Value.Pool != cityPool).GroupBy(entry => entry.Value.Pool))
+    rootProfile.Pools[pool.Key] = new PoolEdit { Group = basePack.Id + "/" + pool.First().Key };
+foreach (var pool in spellPack.WordGroups.Where(entry => entry.Value.Pool != firePool).GroupBy(entry => entry.Value.Pool))
+    rootProfile.Pools[pool.Key] = new PoolEdit { Group = spellPack.Id + "/" + pool.First().Key };
+rootProfile.Groups[cityPool] = basePack.Id + "/river-streams";
+rootProfile.Groups[firePool] = spellPack.Id + "/fire-plain";
+var fixedWord = basePack.Words.Single(word => word.Text == "澄江" && basePack.Pools[cityPool].ContainsKey(word.Id)).Id;
+rootProfile.Pools[cityPool] = new PoolEdit { ExcludeText = new List<string> { "平津" },
+    Bias = new Dictionary<string, double> { [fixedWord] = 1.6 } };
+worldNaming.Cultures[culture.id] = new CultureNaming { Cards = new Dictionary<string, CardNaming> {
+    [cityType] = new CardNaming { Enabled = true, SourceRule = "places", ExplicitSeparators = true,
+        Roles = new Dictionary<string, string> { ["group_1"] = "name" } }
+}};
+char poolGlyph = AssetManager.onomastics_library.get("chinesename_as_pool").short_id;
+culture.getOnomasticData(MetaType.City).loadFromShortTemplate($"0{poolGlyph}1|0:江河地名;1:府");
+WorldNamingStore.Apply(worldNaming);
+
+var city = world.cities.buildNewCity(founder, tile.zone);
+string initialCity = city.name;
+var asset = Cultiway.Content.SkillEntities.Fireball;
+var initialSpell = new SkillContainerBuilder(asset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, founder);
+string initialSpellName = initialSpell.Name.value;
+string[] BuildFireballs() => Enumerable.Range(0, asset.Animations.Count).Select(animation =>
+    new SkillContainerBuilder(asset).UseAnimation(animation).Build(SkillContainerBuildMode.RuleOnly, founder).Name.value).ToArray();
+var spellInputs = new Dictionary<string, object> { ["element"] = "semantic.element.fire", ["form"] = "semantic.form.ball" };
+string[] CityNames(Language language) => Enumerable.Range(1, 256).Select(seed =>
+    service.Generate(new NameRequest(cityType, (ulong)seed, culture.id, language.id)).Text).ToArray();
+string[] SpellStems(Language language) => Enumerable.Range(1, 256).Select(seed =>
+    service.Generate(new NameRequest(spellType, (ulong)seed, culture.id, language.id, spellInputs)).Parts["element"]).ToArray();
+
+var firstCity = CityNames(root);
+var firstSpell = SpellStems(root);
+var savedEdits = NamingJson.Write(rootProfile.Pools);
+var reports = new List<object>();
+var parent = root;
+var oldCity = firstCity;
+var oldFire = firstSpell;
+var oldFireballs = BuildFireballs();
+long originalSeed = world.map_stats.life_dna;
+var plot = AssetManager.plots_library.get("language_divergence");
+try
+{
+    // Exercise both eligible pools on the same three-generation line with a reproducible plot seed.
+    foreach (var step in new[] { (Seed: 3L, Pool: cityPool), (Seed: 0L, Pool: firePool), (Seed: 3L, Pool: cityPool) })
+    {
+        world.map_stats.life_dna = world.map_stats.id_language ^ step.Seed;
+        var previous = service.GetWorld().Languages[parent.id];
+        string parentSnapshot = NamingJson.Write(previous);
+        Check(plot.action(founder), "The original language divergence plot did not run.");
+        var child = founder.language;
+        world.languages.checkLists();
+        var state = service.GetWorld();
+        var profile = state.Languages[child.id];
+        Check(state.LanguageParents[child.id] == parent.id && profile.BiasOrigin == root.id && founder.culture == culture &&
+            NamingJson.Write(state.Languages[parent.id]) == parentSnapshot, "The split did not preserve the parent and its language bias.");
+        Check(profile.Pack == rootProfile.Pack && NamingJson.Write(profile.Pools) == savedEdits,
+            "The language lost its locked groups, excluded word or custom weight.");
+
+        var changed = profile.GroupPreferences.Where(pair =>
+            !previous.GroupPreferences.TryGetValue(pair.Key, out var prior) ||
+            NamingJson.Write(prior) != NamingJson.Write(pair.Value)).ToArray();
+        Check(changed.Length == 1 && changed[0].Key == step.Pool, "A split changed the wrong number of pools: " + string.Join(",", changed.Select(x => x.Key)));
+        var mix = changed[0].Value;
+        var inherited = previous.GroupPreferences.TryGetValue(step.Pool, out var shares) ? shares
+            : new Dictionary<string, double> { [previous.Groups[step.Pool]] = 1 };
+        Check(inherited.All(pair => mix[pair.Key] >= pair.Value * .8 - 1e-10) &&
+            Math.Abs(mix.Sum(pair => pair.Value) - 1) < 1e-10,
+            "More than twenty percent of the source preference was replaced.");
+
+        var newCity = CityNames(child);
+        var newFire = SpellStems(child);
+        Check(oldCity.SequenceEqual(newCity) == (step.Pool != cityPool) &&
+            oldFire.SequenceEqual(newFire) == (step.Pool != firePool),
+            "The selected pool did not change naming, or the unselected pool drifted.");
+        Check(newCity.All(name => name.EndsWith("府") && !name.Contains("平津")) &&
+            new HashSet<string>(newCity).SetEquals(firstCity) && new HashSet<string>(newFire).SetEquals(firstSpell),
+            "Drift changed the candidate set or the culture's hand-filled suffix.");
+        string currentCity = founder.generateName(MetaType.City, 139);
+        var fireballs = BuildFireballs();
+        Check(newCity.Contains(currentCity) && fireballs.All(name => newFire.Any(stem => name.StartsWith(stem))),
+            "Real city or Fireball generation did not use this language's candidates.");
+        var fireballChanges = fireballs.Zip(oldFireballs, (after, before) =>
+            before == after ? null : $"{before} → {after}").Where(change => change != null).ToArray();
+        Check(step.Pool == firePool || fireballChanges.Length == 0, "Real Fireball names drifted when only the city pool changed.");
+        reports.Add(new { parent = parent.id, child = child.id, step.Pool, mix, city = currentCity, fireballChanges,
+            cityDrawsChanged = newCity.Zip(oldCity, (a, b) => a != b).Count(changed => changed),
+            fireDrawsChanged = newFire.Zip(oldFire, (a, b) => a != b).Count(changed => changed) });
+        parent = child;
+        oldCity = newCity;
+        oldFire = newFire;
+        oldFireballs = fireballs;
+    }
+}
+finally
+{
+    world.map_stats.life_dna = originalSeed;
+}
+Check(city.name == initialCity && initialSpell.Name.value == initialSpellName, "An existing city or spell was renamed.");
+return new { initialCity, initialSpellName, heldEdits = new { excluded = "平津", weight = 1.6, lockedPools = rootProfile.Pools.Count - 1 }, reports };

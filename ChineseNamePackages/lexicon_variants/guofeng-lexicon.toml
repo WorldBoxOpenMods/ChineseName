@@ -1,0 +1,124 @@
+label = "国风乡土词库"
+
+[pools.single-surname]
+label = "国风单姓"
+[pools.single-surname.groups]
+common = "王 李 张 刘 陈 杨 黄 赵 吴 周 徐 孙 马 朱 胡 林 郭 郑 何 罗 宋 梁 谢 唐 许 韩 邓 曹 彭 曾 萧 潘 田 董 袁 于 余 叶 魏 苏 蒋"
+less-common = "沈 俞 傅 姜 章 陆 岳 柳 顾 秦 方 石 晏 阮 花 蓝 夏 祁 甘 梅 乔 骆 应 钟 元 温 戴 池 宁 纪 翟 奚 孟 颜 裴 霍 景"
+
+[pools.compound-surname]
+label = "国风复姓"
+[pools.compound-surname.groups]
+wide = "欧阳 司马 诸葛 上官 夏侯 皇甫 公孙 司徒 司空 百里 尉迟 慕容"
+rare = "令狐 长孙 宇文 赫连 闻人 端木 南宫 东方 太史 公羊 呼延 单于"
+
+[pools.given]
+label = "国风双字名"
+[pools.given.groups]
+literary = "景行 怀瑾 正则 灵均 知新 知远 明德 敦仁 允恭 德明 守拙 含章 修远 君实 季良 思齐 成文 维桢 怀信 允和"
+landscape = "云舟 晏清 青岚 安澜 望舒 雨棠 清越 汀兰 听松 竹深 晚晴 松月 归鸿 千岭 林泉 朝雨 涵秋 念川 鹭明 雁行"
+household = "孝诚 仁辅 淑贞 贞吉 承宗 延福 长宁 安和 怀安 景福 安生 庆余 守成 崇礼 继明 嘉顺 云生 兰心 安平 宜年"
+
+[pools.given-first]
+label = "国风名首字"
+[pools.given-first.groups]
+classical = "允 怀 承 继 昭 敦 尚 修 崇 维 景 嘉 绍 守 知 敏"
+nature = "溪 星 青 望 云 林 雨 汀 兰 松 岫 初 棠 柳 雁 月"
+
+[pools.given-last]
+label = "国风名尾字"
+[pools.given-last.groups]
+virtue = "德 文 诚 贞 宗 辅 仁 礼 恒 宁 谦 忠 安 平 和 实"
+image = "岳 川 舟 岚 泉 霁 霖 砚 森 桐 野 竹 霞 羽 荷"
+
+[pools.country-short]
+label = "国风单字国号"
+[pools.country-short.groups]
+eastern = "夏 商 周 吴 越 楚 宋 齐 鲁 郑 陈 蔡 卫 燕 闽 粤"
+inland = "秦 晋 梁 隋 唐 汉 赵 魏 韩 陇 蜀 凉 宁 雍 代 岐"
+
+[pools.country-double]
+label = "国风双字国号"
+[pools.country-double.groups]
+historic = "安陵 孤竹 陆浑 中山 新蔡 下邳 彭城 南阳 北凉 后赵 东晋 南唐 西凉 南梁"
+invented = "青云 云岫 长川 澄海 玉衡 朔原 瑞庭 苍陵 光原 衡泽 晴川 栖原 临水 东宸"
+
+[pools.town-root]
+label = "乡邑地名"
+aliases = ["国风城名主体"]
+[pools.town-root.groups]
+market = "南市 东桥 青石 槐安 宛渠 西汀 柳桥 杨埠 白圩 江口 枫渡 陆桥 长埠 徐桥 古埠 桃溪 平桥 青塘 盐浦"
+village = "杏林 溪源 桃坞 石陌 梅溪 青田 竹里 稻岭 杏坞 藕塘 东堰 松冈 兰皋 山阳 赤陶 双槐 禾亭 芦荡"
+long-distance = "驿柳 关山 朔门 雁回 落石 悬谷 玉泉 陇西 回岭 岩梁 龙脊 井陉 黄沙 幔山 堡原 三岔 白垣"
+
+[pools.town-ending]
+label = "国风城邑后缀"
+[pools.town-ending.groups]
+administration = "府 州 县 郡 都 邑"
+settlement = "镇 坊 市 庄 堡 寨 津 渡"
+
+[pools.polity-ending]
+label = "国风国号后缀"
+[pools.polity-ending.groups]
+state = "国 邦 朝 王朝 王国 侯国"
+region = "诸州 诸邦 群邑 列城 联邦 都护府"
+
+[pools.saying]
+label = "国风格言"
+[pools.saying.groups]
+governance = "与民同心 协和万邦 崇实黜浮 任贤使能 守法安民 邦本在民 以公正治国 德以绥远 居安思危 勤政爱民 审名实定赏罚"
+conduct = "兼爱非攻 厚德载物 格物致知 慎终如始 和而不同 言必有信 见贤思齐 修身立德 君子怀德 勤以持家 见利思义"
+
+[pools.emblem]
+label = "国风旗号"
+[pools.emblem.groups]
+regions = "青禾 玉垣 沧浪 朔风 海桑 桂舟 白鹭 赤松 明汀 野梅 长河 槐月"
+values = "守土 同舟 礼耕 守信 承志 秉义 清议 守约 勤民 保境 崇贤 信和"
+
+[pools.tradition]
+label = "国风文化词根"
+[pools.tradition.groups]
+regional = "河洛 云泽 岭南 海隅 朔原 江淮 岱麓 关陇"
+customs = "礼耕 尚文 崇工 重诺 清议 守土 崇学 敬山"
+
+[pools.speech]
+label = "国风语言词根"
+[pools.speech.groups]
+river = "江渚 南音 吴越 淮川 泽口 临溪 海东 越音"
+hill = "陇原 塞音 山右 关陇 朔方 西岫 岭上 秦声"
+
+[pools.hall]
+label = "国风家族堂号"
+[pools.hall.groups]
+scholarship = "松庭 敦睦 积善 明训 守拙 谦德 耕读 崇礼"
+homeland = "兰溪 枫桥 水竹 白沙 槐里 柳塘 青溪 棠阴"
+
+[pools.war-ending]
+label = "国风战事称谓"
+[pools.war-ending.groups]
+chronicle = "之战 兵事 战纪 交兵"
+campaign = "会战 战役 边战 攻防战"
+
+[pools.alliance-ending]
+label = "国风盟约称谓"
+[pools.alliance-ending.groups]
+oath = "会盟 同盟 共约 歃血之盟"
+neighbors = "诸邦盟 守望盟 联防约 通好盟"
+
+[pools.army-ending]
+label = "国风军号后缀"
+[pools.army-ending.groups]
+garrison = "卫 戍军 边军 城防营"
+field = "骁骑 神策军 锐士 先锋营"
+
+[pools.book-ending]
+label = "国风书名后缀"
+[pools.book-ending.groups]
+records = "志 纪 录 鉴"
+studies = "略 说 通编 疏义"
+
+[pools.artifact]
+label = "国风器物名号"
+[pools.artifact.groups]
+craft = "百炼 玄纹 龙纹 素纹 云篆 星纹"
+poetic = "照雪 青冥 临渊 长明 怀光 含章"

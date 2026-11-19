@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Core.AIGCLib;
+using Cultiway.Core.SkillLibV3.Utils;
+
+void Check(bool condition, string issue)
+{
+    if (!condition) throw new InvalidOperationException(issue);
+}
+
+var service = NamingApi.Current;
+Check(service.Types.Any(type => type.Id == "cultiway:spell"), "Cultiway did not register its spell type.");
+var spellAsset = Cultiway.Content.SkillEntities.Fireball;
+var firstSpell = new SkillContainerBuilder(spellAsset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly);
+var runtimeName = firstSpell.Name.value;
+Check(runtimeName.Length is >= 2 and <= 6, "The real spell build did not store a valid name.");
+
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
+var founder = world.units.createNewUnit("Cultiway.EasternHuman", tile);
+founder.data.set("chinesename.surname.v1", "欧阳");
+var firstPerson = founder.getName();
+var eastern = service.GetPackage("cultiway:eastern-human");
+Check(eastern.Words.Any(word => firstPerson == "欧阳" + word.Text), "The real Eastern Human missed its own given-name pool.");
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+var city = world.cities.buildNewCity(founder, tile.zone);
+Check(kingdom.name.EndsWith("国") && culture.name.EndsWith("文脉") &&
+    language.name.EndsWith("话") && city.name.EndsWith("府"), "An Eastern Human society object missed its own rules.");
+
+var initial = service.GetWorld();
+var draft = service.GetWorld();
+var overridePack = new NamingPack { Format = 1, Id = "tests:cultiway-bridge", Supplemental = true, Priority = 1000 };
+overridePack.Rules["cultiway:spell"] = new List<Rule>
+{
+    new Rule { Id = "bridge-check", Priority = 1000, When = new() { ["element"] = "semantic.element.fire" },
+        Parts = new() { new Part { Id = "name", Literal = "观火试诀" } } }
+};
+draft.EnabledPacks.Add(overridePack.Id);
+draft.Cultures[culture.id] = new CultureNaming
+{
+    Rules = new()
+    {
+        ["cultiway:spell/bridge-check"] = new RuleEdit
+        {
+            Fields = new() { ["name"] = new PartEdit { Operation = new Part { Id = "name", Literal = "归舟火诀" } } }
+        },
+        ["worldbox:person/cultiway-eastern-human"] = new RuleEdit
+        {
+            Fields = new() { ["given"] = new PartEdit { Operation = new Part { Id = "given", Literal = "临川" } } }
+        }
+    }
+};
+service.InstallPack(overridePack);
+try
+{
+    WorldNamingStore.Apply(draft);
+    var secondSpell = new SkillContainerBuilder(spellAsset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly);
+    Check(secondSpell.Name.value == "观火试诀", "The real spell builder bypassed the enabled framework rule.");
+    var personalSpell = new SkillContainerBuilder(spellAsset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, founder);
+    Check(personalSpell.Name.value == "归舟火诀", "The creator's spell did not use the culture override.");
+    Check(firstSpell.Name.value == runtimeName, "Existing spell names changed after applying a pack.");
+    var child = BabyMaker.makeBaby(founder, null, ActorSex.Female, pTile: tile);
+    Check(child.culture == culture && child.getName() == "欧阳临川", "The Eastern Human child lost culture, surname or edited part.");
+    Check(founder.getName() == firstPerson, "Existing Eastern Human name changed.");
+
+    world.console.Hide();
+    SelectedUnit.select(founder);
+    SelectedMetas.selected_culture = culture;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_kingdom").toggle.click();
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+    var nativePreview = shell.transform.FindRecursive("PreviewName")?.GetComponent<UnityEngine.UI.Text>()?.text;
+    Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(new[] { "group_1", "group_2" }) &&
+        eastern.Words.Any(word => eastern.Pools["cultiway:eastern-local"].ContainsKey(word.Id) && nativePreview == word.Text + "国"),
+        "The native country preview did not use Cultiway's place and ending parts: " + nativePreview);
+    return new { spell = spellAsset.id, runtimeName, editedSpell = secondSpell.Name.value, personalSpell = personalSpell.Name.value, firstPerson,
+        child = child.getName(), kingdom = kingdom.name, culture = culture.name, language = language.name, city = city.name, nativePreview };
+}
+finally
+{
+    WorldNamingStore.Apply(initial);
+    service.UninstallPack(overridePack.Id);
+}

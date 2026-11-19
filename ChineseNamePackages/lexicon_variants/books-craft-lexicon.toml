@@ -1,0 +1,103 @@
+label = "书志与器物词库"
+
+[pools.history-ending]
+label = "史书题名尾字"
+[pools.history-ending.groups]
+chronicles = "史录 纪年志 通鉴 王朝录 世纪 长编 帝纪 诸国记"
+local = "郡志 山川记 卷考 旧闻 图经 纪略 江海志 岁时记"
+
+[pools.biology-ending]
+label = "博物书题名尾字"
+[pools.biology-ending.groups]
+catalogues = "博物志 生灵录 草木经 万类鉴 羽族图谱 水族志 药草谱"
+notes = "田野笔记 观兽札记 虫草考辨 栖地观察 山野录 湖泽调查 栖地纪"
+
+[pools.strategy-ending]
+label = "兵书题名尾字"
+[pools.strategy-ending.groups]
+field = "兵书 战策 阵图 军略 边防考 征行纪 兵家要诀"
+garrison = "守城要略 关津案卷 烽燧令 斥候手记 筑营法 军储志"
+
+[pools.scholar-ending]
+label = "学术书题名尾字"
+[pools.scholar-ending.groups]
+theory = "算经 数术录 演算志 天元谱 经世篇 邦交录 使略"
+practice = "富国策 商道录 候水记 安邦志 田赋考 和议篇 测绘记"
+
+[pools.fiction-ending]
+label = "故事题名尾字"
+[pools.fiction-ending.groups]
+personal = "情缘录 相思记 恋歌 遗恨篇 旧约书 来信 夜记"
+fable = "寓言 喻世篇 镜鉴 训诫录 野谈 小记 行旅异闻"
+
+[pools.author-ending]
+label = "著述题名尾字"
+[pools.author-ending.groups]
+archives = "遗篇 家传 秘录 编年 札记 续编"
+notations = "手著 见闻录 校注 释义 遗稿 拾遗"
+
+[pools.military-token]
+label = "军号主体"
+[pools.military-token.groups]
+station = "镇边 守隘 边防 卫河 渡守 烽燧 青旌 驻云 守城 关防"
+expedition = "天策 玄甲 赤羽 长锋 骁卫 横江 飞骑 鹰旗 凌霄 追霞"
+
+[pools.military-ending]
+label = "军号后缀"
+[pools.military-ending.groups]
+army = "军 军团 营 旅 兵团"
+guard = "卫 卫队 哨 戍 团"
+
+[pools.alliance-token]
+label = "盟约主体"
+[pools.alliance-token.groups]
+place = "诸国 众城 山河 北境 四水 三川 白塔 岛链 银湾 东陆"
+aim = "和平 自由 秩序 守约 同心 共同防备 互市 三方共议 护商 一水同源"
+
+[pools.alliance-ending]
+label = "盟约后缀"
+[pools.alliance-ending.groups]
+institution = "盟 会 联盟 同盟 协会 联邦"
+agreement = "盟约 会盟 条约 公约 协定 共约"
+
+[pools.blade]
+label = "刃器名号"
+[pools.blade.groups]
+natural = "霜镜 藏雷 枯潮 裂月 照水 耀星 掠风 雨过 青焰 寒泉 青岫"
+craft = "承影 双铸 龙纹 八锻 破妄 守誓 金鳞 黎明 九炼 断锁 素光"
+
+[pools.staff]
+label = "法器名号"
+[pools.staff.groups]
+elements = "凝冰 玄水 赤霞 流风 悬星 雾灯 沈雷 暮焰 夜阑 定潮 青焱 流光"
+craft = "轮印 归契 天枢 景曜 镜花 五衡 云纹 万象 鹿骨 书青 问象 划界"
+
+[pools.armor]
+label = "甲衣名号"
+[pools.armor.groups]
+appearance = "云纹 玄鳞 鹰羽 暗金 赤羽 夜纹 白霜 星痕 玉鳞 青纹 苍缨"
+protection = "守门 磐岩 朔盾 镇关 坚阵 拒浪 守夜 铁幕 护行 壁垒 沉山"
+
+[pools.ornament]
+label = "饰物名号"
+[pools.ornament.groups]
+light = "镜光 照月 岁星 银虹 白虹 浅辉 烛明 青晶 玄晶 夕照 照夜"
+meaning = "同心 守誓 长安 宁神 福泽 留思 盼归 相合 归来 鸿信 守信"
+
+[pools.metal]
+label = "器物金材"
+[pools.metal.groups]
+plain = "生铁 熟铁 花纹钢 青铜 赤铜 银铜 锡铜 精钢"
+fantasy = "星金 月银 玄铁 乌金 青纹钢 黯铜 流银 冷银"
+
+[pools.jade]
+label = "器物玉材"
+[pools.jade.groups]
+stone = "白玉 碧玉 青玉 墨玉 黄玉 绿松石 青金石 玛瑙"
+fantasy = "星纹玉 冰玉 云髓 石魄 日辉晶 深渊玉 月璃 暮翠"
+
+[pools.wood-bone]
+label = "器物木骨材"
+[pools.wood-bone.groups]
+wood = "松木 山榆 青竹 檀木 樟木 红枫 铁木 桐木 橡木"
+bone = "鲸骨 鹿角 象牙 龟甲 干骨 鱼骨 狼牙 羊角"

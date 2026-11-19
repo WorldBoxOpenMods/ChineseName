@@ -1,0 +1,288 @@
+# Each theme describes visible traits, habitat and institutions. "members" uses game asset IDs.
+[themes.human]
+label = "人族"
+members = "human bandit greg"
+given = ["修桥 工匠 晓风 远灯 砚清 青梧", "守谷 鹿鸣 石舟 临川 云程 松墨"]
+place = ["河桥 榆湾 青禾 松埠", "白石 风谷 槐市 川口"]
+motto = ["人以守约立 城以共济兴", "留灯照归客 力协耕与织"]
+
+[themes.elf]
+city_suffix = "庭"
+realm_suffix = "王庭"
+label = "精灵"
+members = "elf fairy druid"
+given = ["月弦 银叶 星露 藤灯", "风栖 鹿语 林绒 蕨月"]
+place = ["绿影 银柳 雨杉 枝泉", "风潭 露湾 月林 星谷"]
+motto = ["星与林同在 松影知归路", "护树如护火 守望至晨光"]
+
+[themes.dwarf]
+city_suffix = "堡"
+realm_suffix = "王国"
+label = "矮人"
+members = "dwarf"
+given = ["铜砧 金铎 玄锤 锻星", "凿岩 银炉 石炉 火铆"]
+place = ["铁脊 铜脉 银砾 矿脊", "赤炉 玄晶 岩心 深砧"]
+motto = ["炉火不熄 誓重如铁", "山下共守门 洞中共举灯"]
+
+[themes.orc]
+city_suffix = "寨"
+realm_suffix = "部族"
+label = "兽人"
+members = "orc"
+given = ["雷角 岩戈 灰鬃 长牙", "裂崖 燧斧 赤牙 沙棘"]
+place = ["断岩 逐水 赤砾 草庭", "荒垣 斧峡 野炬 狼原"]
+motto = ["战鼓前同心 炉边皆是客", "承诺借山记 路远分一食"]
+
+[themes.cat]
+city_suffix = "庭"
+realm_suffix = "领"
+label = "灵猫"
+members = "cat civ_cat"
+given = ["夜瞳 玄尾 墨须 暮翎", "月爪 白袜 琥珀 虎斑"]
+place = ["猫眼台 月瓦 谧檐 眠窗", "长尾湾 银须巷 暖庭 柔丘"]
+motto = ["月下行无声 时至自跃墙", "暖窗共眠 登高须稳"]
+
+[themes.dog]
+label = "犬族"
+members = "dog civ_dog"
+given = ["铃耳 闻迹 松鬃 追风", "花鼻 白爪 添柴 雪团"]
+place = ["铃坡 稻径 闻风埠 篱门", "暖炉巷 足迹谷 归犬坪 犬渡"]
+motto = ["闻铃便归 逆风不弃伴", "门庭守望 客来相迎"]
+
+[themes.wolf]
+city_suffix = "营"
+realm_suffix = "诸部"
+label = "狼族"
+members = "wolf civ_wolf"
+given = ["望月 灰脊 苍牙 霜嗥", "北爪 长嚎 夜踪 银毫"]
+place = ["月牙领 狼渡 寒松原 雪嗥岭", "群狼谷 白崖 霜泉 逐风径"]
+motto = ["群行不落伴 守夜同望月", "长途同归 守住雪谷"]
+
+[themes.fox]
+label = "狐族"
+members = "fox civ_fox"
+given = ["赤尾 晚霞 火尖 金耳", "霜尖 银髯 踏雪 伏影"]
+place = ["红叶湾 晚枫谷 赤尾台 深篱", "白原 狐灯坡 雾岭 夜径"]
+motto = ["尾灯引归 雪地留路", "轻足穿林 看路听风"]
+
+[themes.bear]
+label = "熊族"
+members = "bear civ_bear"
+given = ["蜜掌 铁肩 厚鬃 山臂", "松眠 白爪 冬足 圆耳"]
+place = ["蜜坡 梁松 熊穴 蜜林", "巨岩 冬窟 霜爪岭 山背"]
+motto = ["冬眠也守约 蜜得要均分", "山厚有根 起身护林"]
+
+[themes.hyena]
+label = "鬣狗"
+members = "hyena civ_hyena"
+given = ["灰鬣 黄牙 斑肩 长笑", "暮鬃 松爪 尘足 风背"]
+place = ["斑崖 笑谷 灰营 尘渡", "干河 岩穴 长原 沙界"]
+motto = ["笑声聚同伴 长原认足迹", "共守营火 过旱不弃粮"]
+
+[themes.herd]
+label = "角蹄"
+members = "buffalo civ_buffalo cow civ_cow goat civ_goat sheep civ_sheep alpaca civ_alpaca rhino civ_rhino"
+given = ["曲角 蹄音 牧歌 长鬃", "白角 毛团 雨蹄 原心"]
+place = ["牧歌原 蹄泉 长草台 铃谷", "曲角岭 暖原 风草川 回牧道"]
+motto = ["择水而居 同牧不离群", "风行草伏 秋来归坡"]
+
+[themes.burrow]
+label = "穴居"
+members = "armadillo civ_armadillo rabbit civ_rabbit rat civ_rat"
+given = ["疾足 长耳 小钥 须梢", "砂壳 滚甲 掘砂 土轮"]
+place = ["柳穴 新土坡 三洞 长沙脊", "浅埋沟 防雨窟 落石道 砂门"]
+motto = ["洞通诸邻 冬前存粮", "闻雨修堤 知路留记"]
+
+[themes.grove]
+label = "树栖"
+members = "monkey civ_monkey raccoon"
+given = ["长臂 尾旋 伸枝 跃冠", "摘桃 果爪 树影 花面"]
+place = ["树冠坪 藤桥 长枝坡 悬果岭", "老桐 树径 梨谷 青果湾"]
+motto = ["护老树 留半枝给友", "枝间互照应 再高也知根"]
+
+[themes.wetland]
+city_suffix = "埠"
+realm_suffix = "泽国"
+label = "水泽"
+members = "capybara civ_capybara frog civ_frog crocodile civ_crocodile turtle civ_turtle piranha civ_piranha"
+given = ["蹼溪 沉鳞 浅吻 雨鼓", "灰背 浮萍 慢甲 鸣塘"]
+place = ["睡莲埠 蹼溪 芦苇湾 泥塘", "盘水坳 沉鳞泽 白沼 归潮川"]
+motto = ["共守浅滩 深水有路", "雨至先听塘 水落共护堤"]
+
+[themes.shore]
+city_suffix = "港"
+realm_suffix = "潮邦"
+label = "潮壳"
+members = "crab civ_crab crabzilla"
+given = ["横行 钳响 红甲 拔礁", "潮壳 白须 钳灯 伏沙"]
+place = ["双钳港 壳滩 暗礁岭 潮门", "横行径 白沙埠 石罅 沉甲湾"]
+motto = ["身披甲壳心如水 潮涨护幼", "过礁留路 听涛知归"]
+
+[themes.frost]
+city_suffix = "港"
+realm_suffix = "领"
+label = "冰原"
+members = "penguin civ_penguin seal civ_seal cold_one snowman"
+given = ["冰须 雪翅 踏冰 白绒", "霜足 斑雪 冷鳍 望冰"]
+place = ["裂冰湾 极昼港 白帆川 冻洋", "雪栖坳 寒湾 霜梁 冰脊"]
+motto = ["相依御风 雪夜留灯", "冰厚方行 聚而抗寒"]
+
+[themes.fowl]
+label = "羽禽"
+members = "chicken civ_chicken ostrich"
+given = ["晨啼 风翎 赤冠 长趾", "蛋圆 金羽 飞沙 疾腿"]
+place = ["晨啼台 彩羽原 旱草坡 荒羽径", "旧巢台 赤冠谷 沙奔岭 白羽丘"]
+motto = ["破晓呼群 风高先伏", "草尽迁原 回望旧巢"]
+
+[themes.swarm]
+city_suffix = "巢"
+realm_suffix = "巢群"
+label = "虫群"
+members = "ant_black ant_blue ant_green ant_red bee beetle civ_beetle butterfly fly grasshopper worm"
+given = ["金翅 花针 花铃 采蜜 铜甲", "蚁锋 树铠 震翅 草笛 泥线"]
+place = ["蜂环 花粉坳 翼原 蜜路", "甲林 巢道 板栗丘 草笛洲"]
+motto = ["百翅同起 巢中众心", "归巢相引 小力成林"]
+
+[themes.venom]
+city_suffix = "寨"
+realm_suffix = "领"
+label = "沙针"
+members = "scorpion civ_scorpion sand_spider snake civ_snake"
+given = ["蜿砂 玄鳞 潜石 裂尾", "刺梢 沙网 伏缝 尘钩"]
+place = ["沙针窝 岩隙 长砂脊 落日沟", "蛛丝谷 风蚀壁 石罅寨 蜿径"]
+motto = ["寸影可藏身 避热守石", "路随星定 不争无水地"]
+
+[themes.radiant]
+label = "角兽"
+members = "unicorn civ_unicorn angle"
+given = ["月角 雪鬃 云蹄 晨星", "银穗 长音 雾行 燕羽"]
+place = ["晨光原 翼台 独角泉 云丘", "白泽 雾薇谷 幻铃 莹石庭"]
+motto = ["以光引人 守望勿疑", "泉边同饮 天明归途"]
+
+[themes.ember]
+city_suffix = "关"
+realm_suffix = "火领"
+label = "火脉"
+members = "dragon demon fire_skull fire_elemental"
+prefixes = "fire_elemental_"
+given = ["烛鳞 烬翼 苍焰 龙烟", "燎角 熔核 焰心 赤星"]
+place = ["烬峰 红岩 熔炉口 烈脊", "火泉 灰舌 原火谷 炉底"]
+motto = ["不忘初火 承热不焚邻", "烬下有种 夜里有光"]
+
+[themes.undead]
+city_suffix = "塔"
+realm_suffix = "域"
+label = "亡灵"
+members = "ghost jumpy_skull skeleton necromancer zombie"
+prefixes = "zombie_"
+given = ["余声 白骨 灰灯 寒髓", "慢足 浮影 空眼 夜钟"]
+place = ["幽门 静碑 原灰岗 寒墓", "旧塔 黄泉渡 骨台 朽木庭"]
+motto = ["旧誓未散 夜钟有回声", "归者记路 旧碑护名"]
+
+[themes.spore]
+city_suffix = "庭"
+realm_suffix = "菌庭"
+label = "菌丝"
+members = "mush_animal mush_unit living_plants"
+given = ["菌冠 白伞 孢星 苔芽", "灰蕈 鳞伞 叶语 根行"]
+place = ["菌环 孢雾湖 白伞窟 湿根坡", "苔腔 叶层 坟木林 潮菌谷"]
+motto = ["孢落生新林 苔下有路", "根须相通 雨来同长"]
+
+[themes.growth]
+label = "异殖"
+members = "tumor_monster_animal tumor_monster_unit lil_pumpkin assimilator bioblob acid_blob civ_acid_gentleman"
+given = ["雾蚀 酸心 橙核 绿蚀", "脉芽 春瘤 胶环 潮胞"]
+place = ["溶池 酸塘 缠脉谷 橙湾", "孽枝坡 湿胞穴 绿泉 胶沼"]
+motto = ["遇雨共生 林不独长", "根返深土 水随枝流"]
+
+[themes.sugar]
+city_suffix = "镇"
+realm_suffix = "邦"
+label = "糖裔"
+members = "smore civ_candy_man"
+given = ["焦糖 炉绒 糖芯 烘云", "蜜晶 软糕 雪糖 甜笺"]
+place = ["糖丘 烤炉口 棉云谷 蜜沼", "雪糖岸 热炉道 脆片滩 红枫浆"]
+motto = ["共分甜味 火候贵慢", "先凉后糖 软硬相济"]
+
+[themes.allium]
+label = "蒜裔"
+members = "garl civ_garlic_man"
+given = ["蒜衣 霜头 白瓣 清辛", "紫皮 辛芽 萌须 蒜花"]
+place = ["紫皮坡 白瓣原 蒜薹川 行蒜埠", "辛芽丘 青蒜垄 根须谷 分瓣台"]
+motto = ["分瓣亦同根 香从辛里出", "皮厚能越冬 根深好生芽"]
+
+[themes.citrus]
+label = "柑橘"
+members = "lemon_snail civ_lemon_man"
+given = ["酸壳 柠心 柚籽 慢露", "青檬 皮香 金瓣 橘露"]
+place = ["柚坡 黄檬原 香籽湾 柑雨", "橙陇 柠坡 蜗径 芳潮"]
+motto = ["酸甜皆有时 香自谷底来", "壳中护果籽 果熟留一半"]
+
+[themes.bloom]
+label = "花裔"
+members = "flower_bud civ_liliar"
+given = ["花信 琉蕊 晨蕾 萼星", "露枝 芽心 绒瓣 青兰"]
+place = ["露台 晨花庭 蕊坡 芳汀", "芽溪 绿枝庭 白萼泉 花雨谷"]
+motto = ["露来伸新叶 花开引长风", "藏籽过长夜 花期自会来"]
+
+[themes.crystal]
+city_suffix = "关"
+realm_suffix = "晶庭"
+label = "晶铸"
+members = "crystal_sword civ_crystal_golem"
+given = ["晶刃 镜脊 折光 青晶", "紫棱 玉锋 星棱 锐砾"]
+place = ["棱镜庭 晶谷 白晶矿 星核坡", "琉光阶 棱塔 凝玉港 明晶关"]
+motto = ["裂纹也藏光 棱多方聚彩", "硬玉需慢磨 清光照长路"]
+
+[themes.star]
+city_suffix = "站"
+realm_suffix = "星盟"
+label = "星旅"
+members = "alien UFO"
+given = ["星巡 银碟 天梭 光轮", "远炬 穹息 射线 雾航"]
+place = ["环形港 星砂谷 彗核台 空盘原", "轨道岸 陨石营 天镜区 星辉湾"]
+motto = ["星图照还路 万空皆有邻", "遇讯息则回应 远行留信标"]
+
+[themes.construct]
+label = "造物"
+members = "god_finger printer living_house"
+given = ["复写 拓影 机械 门枢", "星键 墨轮 印工 铜节"]
+place = ["铸工台 印章坡 图纸谷 青铜炉", "拓片壁 齿轮室 图谱门 石板关"]
+motto = ["不废旧图纸 开门存尺度", "先校量后装配 一齿连一齿"]
+
+[themes.mystic]
+label = "秘法"
+members = "plague_doctor white_mage evil_mage"
+given = ["药灯 灰诊 远杖 明咒", "黑披 霜字 照符 星诊"]
+place = ["符塔 抄经房 诊院 燃灯谷", "空星庭 夜炉 门径塔 回声巷"]
+motto = ["术有度 助人先问", "观灯知路 学艺守诚"]
+
+[themes.fishing]
+label = "渔船"
+members = "boat_fishing"
+given = ["潮网 晨笛 网灯 银鳞", "翎汛 晓浪 归舟 浮标"]
+place = ["渔湾 浅滩 银沙 藻汀", "长潮岸 浪口 渔灯湾 白礁"]
+motto = ["潮落知深浅 鱼汛留有余", "听风归港 夜航留灯"]
+
+[themes.merchant]
+label = "商船"
+prefixes = "boat_trading"
+given = ["盐帆 金舷 桅信 通济", "海栈 银号 累货 远市"]
+place = ["盐码头 商埠 银票港 香料湾", "海栈岸 三桅港 长运港 帆关"]
+motto = ["货真价平 老航路共走", "先平衡再启航 倾囊不负约"]
+
+[themes.transport]
+label = "渡船"
+prefixes = "boat_transport"
+given = ["安渡 横江 载云 浅舷", "平波 渡岸 两岸 双桨"]
+place = ["转运港 跨湾埠 同舟岸 长渡城", "双桨埠 横江湾 引潮渡 平潮港"]
+motto = ["慢泊稳渡 共护两岸", "等到顺风 平载同行"]
+
+[affairs]
+label = "物种通用"
+pools.war-ending = ["之战 守地战", "领地争夺战 远征"]
+pools.alliance-ending = ["共栖盟 守望盟", "行路协约 合族盟"]
+pools.army-ending = ["巡界队 守巢卫", "前哨营 原野队"]
+pools.book-ending = ["纪 见闻册", "野外记 图录"]
+pools.artifact = ["地脉 星纹", "爪痕 斑岩"]
+pools.creed = ["承光会 归巢礼团", "守泉会 同行礼堂"]

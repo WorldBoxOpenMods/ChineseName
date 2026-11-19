@@ -1,0 +1,13 @@
+using System;
+using System.Linq;
+using Cultiway.Content;
+using Cultiway.Core.SkillLibV3.Utils;
+
+var mods = NeoModLoader.WorldBoxMod.LoadedMods.Select(mod => mod.GetDeclaration().UID).ToArray();
+if (mods.Contains("CHINESENAME")) throw new InvalidOperationException("The optional dependency is present.");
+var spell = new SkillContainerBuilder(SkillEntities.Fireball).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly);
+if (string.IsNullOrWhiteSpace(spell.Name.value)) throw new InvalidOperationException("Cultiway's original spell name is empty.");
+var tile = World.world.tiles_list.First(tile => tile.Type.ground);
+var eastern = World.world.units.createNewUnit("Cultiway.EasternHuman", tile);
+if (string.IsNullOrWhiteSpace(eastern.getName())) throw new InvalidOperationException("Original Eastern Human naming failed.");
+return new { mods, spell = spell.Name.value, eastern = eastern.getName() };

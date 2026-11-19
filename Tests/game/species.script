@@ -1,0 +1,29 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var service = NamingApi.Current;
+var species = AssetManager.actor_library.list.OrderBy(asset => asset.id, StringComparer.Ordinal).ToArray();
+var validated = new List<object>();
+var fallback = new List<string>();
+var timing = Stopwatch.StartNew();
+int checks = 0;
+foreach (var asset in species)
+{
+    string kind = asset.is_boat ? "boat" : asset.civ ? "sapient" : "creature";
+    var inputs = new Dictionary<string, object> { ["species"] = asset.id, ["kind"] = kind };
+    var examples = new HashSet<string>(StringComparer.Ordinal);
+    for (ulong seed = 0; seed < 32; seed++)
+    {
+        var result = service.Preview(new NameRequest("worldbox:person", seed, inputs: inputs));
+        if (!result.Success || result.Text.Length > 24 || result.Text.Any(char.IsControl))
+            throw new InvalidOperationException($"Invalid name for {asset.id}, seed {seed}: {string.Join(", ", result.Diagnostics)}");
+        examples.Add(result.Text);
+        checks++;
+    }
+    if (examples.Contains("团子")) fallback.Add(asset.id);
+    validated.Add(new { asset.id, kind, unique = examples.Count, examples = examples.Take(3).ToArray() });
+}
+return new { species = species.Length, checks, elapsedMs = timing.Elapsed.TotalMilliseconds, generic = fallback, validated };

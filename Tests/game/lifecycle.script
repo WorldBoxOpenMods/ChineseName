@@ -1,0 +1,57 @@
+using System;
+using System.Linq;
+
+void Check(bool condition, string message)
+{
+    if (!condition) throw new InvalidOperationException(message);
+}
+string Surname(Actor actor)
+{
+    actor.data.get("chinesename.surname.v1", out string surname);
+    return surname;
+}
+
+var world = World.world;
+var tile = world.tiles_list.First(t => t.Type.ground && t.x > 15 && t.y > 15 &&
+    t.x < MapBox.width - 15 && t.y < MapBox.height - 15);
+var original = world.units.createNewUnit("human", tile);
+original.data.set("chinesename.surname.v1", "上官");
+var name = original.getName();
+var originalId = original.getID();
+Check(world.units.cloneUnit(original, tile), "WorldBox declined to clone a human.");
+Actor clone = null;
+for (int frame = 0; frame < 120 && clone == null; frame++)
+{
+    await Game.NextFrame();
+    clone = world.units.getSimpleList().FirstOrDefault(actor => actor.data.parent_id_1 == originalId && actor.hasTrait("clone"));
+}
+Check(clone != null && clone.getName() == name && Surname(clone) == "上官", "Clone did not preserve the name and surname.");
+
+original.addTrait("infected");
+long lastId = world.units.getSimpleList().Max(actor => actor.getID());
+Check(ActionLibrary.turnIntoZombie(original), "WorldBox declined the infected human transformation.");
+Actor undead = null;
+for (int frame = 0; frame < 120 && undead == null; frame++)
+{
+    await Game.NextFrame();
+    undead = world.units.getSimpleList().FirstOrDefault(actor => actor.getID() > lastId && actor.asset.id == "zombie_human");
+}
+Check(undead != null && undead.getName() == name && Surname(undead) == "上官",
+    "The zombie did not preserve the source human's identity.");
+
+var source = world.units.createNewUnit("human", tile);
+source.data.set("chinesename.surname.v1", "司马");
+string before = source.getName();
+lastId = world.units.getSimpleList().Max(actor => actor.getID());
+source.addStatusEffect("cursed");
+Check(ActionLibrary.turnIntoSkeleton(source), "WorldBox declined the cursed human transformation.");
+Actor skeleton = null;
+for (int frame = 0; frame < 120 && skeleton == null; frame++)
+{
+    await Game.NextFrame();
+    skeleton = world.units.getSimpleList().FirstOrDefault(actor => actor.getID() > lastId && actor.asset.id == "skeleton");
+}
+Check(skeleton != null && skeleton.getName() == before && Surname(skeleton) == "司马",
+    "The skeleton did not preserve the source human's identity.");
+return new { clone = clone.getName(), undead = undead.getName(), skeleton = skeleton.getName(),
+    subspecies = skeleton.subspecies.name };

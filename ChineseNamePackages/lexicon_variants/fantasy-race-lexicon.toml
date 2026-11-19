@@ -1,0 +1,147 @@
+label = "西幻诸族词库"
+
+[pools.elf-person]
+label = "精灵给名"
+[pools.elf-person.groups]
+woodland = "洛榆薇 艾莎林 岚维雅 柳薇娜 米蕾拉 艾斐琳 希露维 伊澜雅 瑟洛薇 翠伊莎 绿茵娜 诺薇安"
+celestial = "瑟琳雅 艾芙蕾 洛妮缇 苏蕾安 暮伊莎 星蕾维 安妮露 希缇拉 伊露希 艾兰弥 露弥缇 西莱雅"
+
+[pools.elf-house]
+label = "精灵氏族名"
+aliases = ["精灵家族名"]
+[pools.elf-house.groups]
+woodland = "绿叶 晨露 风歌 银枝 翠叶 夏槐 露藤 白桦 轻羽 松语 清泉 兰芒"
+celestial = "星落 月影 银月 霜星 星眸 暮星 夜露 冷辉 晨辉 月弦 流辉 晨雾"
+
+[pools.elf-place]
+label = "精灵地名主体"
+[pools.elf-place.groups]
+woodland = "银柳 青梣 翠蕨 清藤 桃雾 沉松 琴木 绿荫 鸿叶 岚杉 露杉 青苔"
+water = "微澜 银溪 黎泉 浅汀 清沅 银芦 碧涛 霜渡 叶湾 青渊 曙浦 凝辉"
+
+[pools.elf-ending]
+label = "精灵地名后缀"
+[pools.elf-ending.groups]
+nature = "林 谷 泉 泽 丘 湾"
+civic = "庭 塔 苑 港 城 殿"
+
+[pools.elf-language]
+label = "精灵语言词根"
+[pools.elf-language.groups]
+natural = "风吟 叶语 鸟鸣 林声 溪唱 春潮 春岫"
+poetic = "银弦 星咏 月韵 雪吟 夜歌 晨音 曙韵"
+
+[pools.elf-book]
+label = "精灵文献"
+[pools.elf-book.groups]
+history = "星光纪年 森林秘史 远古誓约录 银枝家纪 青梣编年 翠藤先王传 晨泉旧约"
+arts = "银月之歌 月下弦谱 清流曲集 夏槐歌册 林途诗选 星弦琴谱 寻露小记"
+
+[pools.dwarf-person]
+label = "矮人给名"
+[pools.dwarf-person.groups]
+forge = "博格 巴尔德 格鲁姆 卡斯博 布伦塔 锡格洛 瓦铎恩 奥斯铎 布洛岩 铁博森 赫鲁铎 扎尔钦"
+miners = "卡尔岩 多姆克 葛里石 岩戈斯 欧德岩 莫兰塔 凿格林 索米克 巴尔岩 洛穆山 铁格纳 贝尔铎"
+
+[pools.dwarf-house]
+label = "矮人氏族名"
+[pools.dwarf-house.groups]
+forge = "铁砧 铜须 银炉 火锤 钢纹 赤砧 铜铆 铜链 冷锤 钢盾 银锻 黑铁"
+miners = "石盾 岩斧 铜脉 铁山 玄盐 深岩 石眼 金隧 鹰脊 云砾 白岩 岩髓"
+
+[pools.dwarf-place]
+label = "矮人城塞主体"
+[pools.dwarf-place.groups]
+mines = "铜脉 铁脊 金隧 银砾 赭岩 深矿 铁砂 玄晶 锡岭 煤脊 岩髓 砾岗"
+forges = "铁山 石炉 岩心 铜砧 赤炉 钢轮 星铸 锤鸣 岩铎 火岩 金熔 冷锤"
+
+[pools.dwarf-ending]
+label = "矮人城塞后缀"
+[pools.dwarf-ending.groups]
+defense = "堡 垒 关 门 磐 城"
+work = "矿 坑 炉 井 厅 窟"
+
+[pools.dwarf-book]
+label = "矮人文献"
+[pools.dwarf-book.groups]
+craft = "锻炉秘典 铁砧铭文 矿脉探秘录 砧纹工谱 深层矿图 熔金方册 钢火手记"
+annals = "山岳法典 雷锤史诗 先祖锤音 矿道族纪 石厅盟约 炉心列传 铜脉旧札"
+
+[pools.orc-person]
+label = "兽人给名"
+[pools.orc-person.groups]
+steppe = "格伦 卡尔 卡扎 格鲁 布塔 赫扎 罗葛 阿鲁班 乌泽 阿戈拉 巴喀乌 瓦洛"
+mountain = "岩扎 歌尔 斧洛 格岩 罗铁 卡洛格 乌根 布格 苏岩塔 额鲁 哲勾 赤赫"
+
+[pools.orc-house]
+label = "兽人部族名"
+aliases = ["兽人氏族名"]
+[pools.orc-house.groups]
+beast = "钢牙 血爪 雷角 白鬃 铁鬃 赤羽 灰狼 獠角 长牙 碎蹄 黑蹄 苍皮"
+land = "山崩 林吼 河怒 岩裂 冰咆 火翼 黑棘 岩桥 燧崖 狂风 断牙 沙脊"
+
+[pools.orc-place]
+label = "兽人地名主体"
+[pools.orc-place.groups]
+camp = "逐水 长原 野炬 老牧 狼行 荒垣 烈草 低原 银鬃 东牧 听鼓 鹰旗"
+fort = "断岩 红石 灰脊 斧痕 黑林 巨骨 赤砾 石牙 荒岸 风峡 战骨 乌岭"
+
+[pools.orc-ending]
+label = "兽人领地后缀"
+[pools.orc-ending.groups]
+camp = "部 部族 营 猎场 大帐 牧场"
+fort = "寨 堡 壁 关 王庭 领地"
+
+[pools.orc-book]
+label = "兽人文献"
+[pools.orc-book.groups]
+ancestors = "先祖咆哮录 荒野法则 灰鬃传说 旧营火谣 狼群之约 长原族谱 风峡迁徙歌"
+warfare = "血怒战歌 铁骨训诫 雷霆战术 战旗史书 斧锋图谱 守岩军略 首领誓词"
+
+[pools.frontier-oaths]
+label = "西幻边地格言"
+[pools.frontier-oaths.groups]
+kinship = "守住炉火 血亲同心 星与林同在 长路共享粮 盟中之言当信 将火种传下去 守约方可进门 共守一墙"
+frontier = "风下立誓 群山知承诺 值守到天明 以盾护归途 誓不弃行旅 矿灯照归路 草原容来客 石垣不弃城"
+
+[pools.dwarf-language]
+label = "矮人语言词根"
+[pools.dwarf-language.groups]
+forge = "锤鸣 炉嗡 铁韵 砧音 铸声 火吼"
+mine = "岩吟 隧语 锡鸣 石纹 深谷 铜响"
+
+[pools.orc-language]
+label = "兽人语言词根"
+[pools.orc-language.groups]
+camp = "逐风 长啸 鼓律 苍吼 荒语 牧音"
+fort = "岩啸 斧鸣 燧音 山吼 铁喉 乌调"
+
+[pools.war-ending]
+label = "西幻战事称谓"
+[pools.war-ending.groups]
+campaign = "之战 会战 争夺战 远征"
+chronicle = "交锋 战役 战事 纷争"
+
+[pools.alliance-ending]
+label = "西幻盟约称谓"
+[pools.alliance-ending.groups]
+council = "议会 诸领协约 领主议盟 联盟"
+oath = "守望盟 共同誓约 防卫同盟 联军协定"
+
+[pools.army-ending]
+label = "西幻军号后缀"
+[pools.army-ending.groups]
+guard = "卫队 守望者 巡防团 边境卫"
+field = "军团 先锋团 骑士团 旗团"
+
+[pools.book-ending]
+label = "西幻书名后缀"
+[pools.book-ending.groups]
+records = "编年史 见闻录 记事卷 古卷"
+study = "论 指南 秘典 图录"
+
+[pools.artifact]
+label = "西幻器物名号"
+[pools.artifact.groups]
+celestial = "晨辉 暮星 星铸 月铸 晨曦 霜辉"
+forge = "深炉 龙纹 灰烬 誓纹 狼牙 古锻"

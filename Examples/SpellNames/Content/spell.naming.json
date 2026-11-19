@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "id": "spell-example:defaults",
+  "label": "法术命名示例",
+  "supplemental": true,
+  "rules": {
+    "spell-example:spell": [
+      {
+        "id": "fire",
+        "priority": 10,
+        "when": { "element": "fire" },
+        "parts": [
+          { "id": "element", "pool": "spell-example:fire" },
+          { "id": "form", "provider": "spell-example:form" },
+          { "id": "ending", "literal": "诀" }
+        ]
+      },
+      {
+        "id": "other",
+        "parts": [
+          { "id": "element", "literal": "玄" },
+          { "id": "form", "provider": "spell-example:form" },
+          { "id": "ending", "literal": "诀" }
+        ]
+      }
+    ]
+  },
+  "words": [{ "id": "spell-example:flame", "text": "炎" }],
+  "pools": { "spell-example:fire": { "spell-example:flame": 1 } }
+}
