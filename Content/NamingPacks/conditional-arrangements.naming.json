@@ -1,0 +1,412 @@
+{
+  "format": 1,
+  "id": "chinesename:conditional-arrangements",
+  "label": "条件排列示例",
+  "requires": {
+    "chinesename:classic": 1
+  },
+  "arrangements": {
+    "worldbox:person": [
+      {
+        "id": "inherited-single-given",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "sapient"
+              ]
+            },
+            {
+              "field": "sex",
+              "test": "Equal",
+              "values": [
+                "female"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|",
+          "pools": {
+            "group_1": "chinesename:surname",
+            "group_2": "chinesename:given-first"
+          },
+          "roles": {
+            "group_1": "surname",
+            "group_2": "first"
+          },
+          "inheritance": "Father"
+        }
+      }
+    ],
+    "worldbox:city": [
+      {
+        "id": "desert-frontier",
+        "expression": {
+          "children": [
+            {
+              "field": "biome",
+              "test": "Equal",
+              "values": [
+                "biome_desert",
+                "biome_sand"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:关 堡 城",
+          "pools": {
+            "group_1": "chinesename:frontier-places"
+          }
+        }
+      }
+    ],
+    "worldbox:kingdom": [
+      {
+        "id": "cats-court",
+        "expression": {
+          "children": [
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "civ_cat"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:灵廷 灵邦 灵国",
+          "pools": {
+            "group_1": "chinesename:country-root"
+          }
+        }
+      }
+    ],
+    "worldbox:family": [
+      {
+        "id": "founder-house",
+        "expression": {
+          "children": [
+            {
+              "field": "founder-surname",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:一门 世家 堂"
+        }
+      }
+    ],
+    "worldbox:clan": [
+      {
+        "id": "city-clan",
+        "expression": {
+          "children": [
+            {
+              "field": "origin",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:一支 氏族 宗族",
+          "pools": {
+            "group_1": "chinesename:clan-name"
+          }
+        }
+      }
+    ],
+    "worldbox:culture": [
+      {
+        "id": "related-culture",
+        "expression": {
+          "children": [
+            {
+              "field": "origin",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:新风 一脉 新俗",
+          "pools": {
+            "group_1": "chinesename:culture-name"
+          }
+        }
+      }
+    ],
+    "worldbox:language": [
+      {
+        "id": "related-language",
+        "expression": {
+          "children": [
+            {
+              "field": "origin",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:新语 土语 方言",
+          "pools": {
+            "group_1": "chinesename:language-name"
+          }
+        }
+      }
+    ],
+    "worldbox:religion": [
+      {
+        "id": "new-faith",
+        "expression": {
+          "children": [
+            {
+              "field": "origin",
+              "test": "Absent"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:神教 圣宗 信会",
+          "pools": {
+            "group_1": "chinesename:religion-name"
+          }
+        }
+      }
+    ],
+    "worldbox:alliance": [
+      {
+        "id": "two-founders",
+        "expression": {
+          "children": [
+            {
+              "field": "founder-short",
+              "test": "Present"
+            },
+            {
+              "field": "partner-short",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:同盟 共约 联盟"
+        }
+      }
+    ],
+    "worldbox:army": [
+      {
+        "id": "garrison",
+        "expression": {
+          "children": [
+            {
+              "field": "station",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:守军 驻军 镇军"
+        }
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "war-between-kingdoms",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "normal"
+              ]
+            },
+            {
+              "field": "defender",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "-0|0:之战 会战 鏖战"
+        }
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "historical-chronicle",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:记 志 纪略",
+          "pools": {
+            "group_1": "chinesename:book-history"
+          }
+        }
+      }
+    ],
+    "worldbox:motto": [
+      {
+        "id": "national-motto",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "kingdom"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|",
+          "pools": {
+            "group_1": "chinesename:motto-kingdom"
+          }
+        }
+      }
+    ],
+    "worldbox:item": [
+      {
+        "id": "reforged-weapon",
+        "expression": {
+          "children": [
+            {
+              "field": "stage",
+              "test": "Equal",
+              "values": [
+                "reforge"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:新铸 重铸 复锋",
+          "pools": {
+            "group_1": "chinesename:equipment"
+          }
+        }
+      }
+    ],
+    "worldbox:plot": [
+      {
+        "id": "language-divergence",
+        "expression": {
+          "children": [
+            {
+              "field": "plot",
+              "test": "Equal",
+              "values": [
+                "language-divergence"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:另立新语 分立乡音 编订新文 重写乡音"
+        }
+      }
+    ],
+    "worldbox:subspecies": [
+      {
+        "id": "desert-lineage",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "biome_desert"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:系 谱系 一脉",
+          "pools": {
+            "group_1": "chinesename:subspecies-biome-desert"
+          }
+        }
+      }
+    ],
+    "worldbox:world": [
+      {
+        "id": "small-world",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "tiny",
+                "small"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:小界 洞天",
+          "pools": {
+            "group_1": "chinesename:world-name"
+          }
+        }
+      }
+    ],
+    "worldbox:player": [
+      {
+        "id": "small-world-creator",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "tiny",
+                "small"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|1:界主 小界君",
+          "pools": {
+            "group_1": "chinesename:player-name"
+          }
+        }
+      }
+    ]
+  }
+}

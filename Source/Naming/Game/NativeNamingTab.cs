@@ -169,6 +169,8 @@ internal static class NativeNamingTab
         private static bool IsEmptyInEditor(OnomasticsData data, string group)
         {
             if (!data.isGroupEmpty(group)) return false;
+            if (OnomasticsEditor.IsConditionalDraft(data, out var choice))
+                return !choice.Roles.ContainsKey(group) && !choice.Pools.ContainsKey(group);
             if (SelectedMetas.selected_culture is not { } culture) return true;
             foreach (var item in Drafts)
             {
@@ -183,6 +185,8 @@ internal static class NativeNamingTab
     {
         string id = CurrentType(tab);
         if (id == null) return culture.getOnomasticData(type, reset);
+        if (tab.GetComponent<OnomasticsEditor>()?.ConditionalDraft(culture, id) is { } conditional)
+            return conditional;
         Sync();
         var key = (culture.id, id);
         if (reset || !Drafts.TryGetValue(key, out var existing))

@@ -28,6 +28,7 @@ public static class WorldNamingStore
         _service = new NamingService(defaultPack.Id);
         _service.GameRule = NativeOnomastics.Generate;
         foreach (var type in VanillaNames.Types) _service.RegisterType(type);
+        VanillaNamingConditions.Register(_service);
         _service.InstallPack(defaultPack);
         var species = ReadPack(Path.Combine(modFolder, "Content", "species-defaults.naming.json"));
         _service.RegisterDefaultPack(species);
@@ -250,6 +251,8 @@ public static class WorldNamingStore
         if (!world.Cultures.TryGetValue(culture, out var settings))
             world.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
+        if (snapshot != null)
+            foreach (string type in snapshot.Arrangements.Keys) settings.Arrangements.Remove(type);
         if (snapshot != null && !world.AppliedPresets.ContainsKey(pack))
             world.AppliedPresets.Add(pack, snapshot);
         var used = new HashSet<string>(world.Cultures.Values.Select(value => value.Pack), StringComparer.Ordinal);
@@ -261,6 +264,8 @@ public static class WorldNamingStore
         if (!draft.Cultures.TryGetValue(culture, out settings))
             draft.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
+        if (snapshot != null)
+            foreach (string type in snapshot.Arrangements.Keys) settings.Arrangements.Remove(type);
         SaveDraft(draft);
         return pack;
     }

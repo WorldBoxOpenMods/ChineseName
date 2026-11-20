@@ -21,6 +21,7 @@ public sealed class NamingPack
     public List<string> CultureBases { get; set; } = new();
     public List<string> LanguageBases { get; set; } = new();
     public Dictionary<string, List<Rule>> Rules { get; set; } = new();
+    public Dictionary<string, List<ConditionalArrangement>> Arrangements { get; set; } = new();
     public List<Word> Words { get; set; } = new();
     public Dictionary<string, Dictionary<string, double>> Pools { get; set; } = new();
     public List<PoolPatch> PoolPatches { get; set; } = new();
@@ -76,9 +77,92 @@ public sealed class CultureNaming
     public string Pack { get; set; }
     public Dictionary<string, RuleEdit> Rules { get; set; } = new();
     public Dictionary<string, CardNaming> Cards { get; set; } = new();
+    public Dictionary<string, List<ConditionalArrangement>> Arrangements { get; set; } = new();
     public Dictionary<string, string> Presets { get; set; } = new();
     public long? Parent { get; set; }
     public Dictionary<string, string> Variants { get; set; } = new();
+}
+
+public sealed class ConditionalArrangement
+{
+    public string Id { get; set; }
+    public bool Disabled { get; set; }
+    public ArrangementCondition Expression { get; set; } = new() { Children = new() };
+    public CardNaming Cards { get; set; }
+    internal bool IsConfigured => Expression?.IsConfigured == true;
+
+    [JsonProperty("conditions")]
+    private Dictionary<string, ArrangementCondition> LegacyConditions
+    {
+        set
+        {
+            if (value == null) return;
+            foreach (var entry in value)
+            {
+                if (entry.Value == null) continue;
+                var condition = entry.Value;
+                condition.Field = entry.Key;
+                Expression.Children.RemoveAll(child => child.Field == entry.Key);
+                Expression.Children.Add(condition);
+            }
+        }
+    }
+
+    [JsonProperty("when")]
+    private Dictionary<string, List<string>> LegacyWhen
+    {
+        set
+        {
+            if (value == null) return;
+            foreach (var entry in value.Where(entry => Expression.Children.All(child => child.Field != entry.Key)))
+                Expression.Children.Add(new ArrangementCondition
+                {
+                    Field = entry.Key, Test = ArrangementTest.Registered, Values = entry.Value
+                });
+        }
+    }
+}
+
+public enum ArrangementTest { Equal, Prefix, Present, Absent, Registered, Contains, Suffix, Greater, AtLeast, Less, AtMost }
+
+public sealed class ArrangementCondition
+{
+    internal const int MaxDepth = 6;
+    internal const int MaxNodes = 256;
+
+    public List<ArrangementCondition> Children { get; set; }
+    public bool Any { get; set; }
+    public bool Negated { get; set; }
+    public string Field { get; set; }
+    public ArrangementTest Test { get; set; }
+    public List<string> Values { get; set; } = new();
+
+    internal bool IsConfigured => Children != null
+        ? Children.Count != 0 && Children.All(child => child?.IsConfigured == true)
+        : Field != null && (Test is ArrangementTest.Present or ArrangementTest.Absent || Values is { Count: > 0 });
+
+    internal IEnumerable<ArrangementCondition> Leaves() => Children == null
+        ? new[] { this } : Children.SelectMany(child => child.Leaves());
+    internal int NodeCount => 1 + (Children?.Sum(child => child.NodeCount) ?? 0);
+
+    internal bool? Evaluate(Func<ArrangementCondition, bool?> leaf)
+    {
+        bool? outcome = Children == null ? leaf(this) : !Any;
+        if (Children != null)
+        {
+            foreach (var child in Children)
+            {
+                bool? result = child.Evaluate(leaf);
+                if (result == Any)
+                {
+                    outcome = Any;
+                    break;
+                }
+                if (result == null) outcome = null;
+            }
+        }
+        return Negated ? !outcome : outcome;
+    }
 }
 
 public sealed class CardNaming
@@ -141,6 +225,7 @@ public sealed class PoolEdit
 
 internal sealed class EffectiveNames
 {
+    internal IReadOnlyList<ConditionalArrangement> Arrangements { get; set; } = Array.Empty<ConditionalArrangement>();
     internal Rule[] Rules { get; set; }
     internal Rule[] AvailableRules { get; set; }
     internal Rule SelectedPreset { get; set; }
@@ -272,7 +357,30 @@ internal static partial class Configuration
                 type.Value.Select(rule => rule.Id).Distinct().Count() != type.Value.Count)
                 throw new FormatException("Invalid rules for " + type.Key + " in " + pack.Id);
         }
+        foreach (var type in pack.Arrangements)
+            if (!Ids.Qualified(type.Key) || type.Value == null || type.Value.Count > 256 ||
+                type.Value.Any(item => item == null || !Ids.Local(item.Id) || !ValidCards(item.Cards) ||
+                    item.Expression?.Children == null || !ValidExpression(item.Expression)) ||
+                type.Value.Select(item => item.Id).Distinct(StringComparer.Ordinal).Count() != type.Value.Count)
+                throw new FormatException("Invalid arrangements for " + type.Key + " in " + pack.Id);
         ValidateEvolution(pack);
+    }
+
+    private static bool ValidExpression(ArrangementCondition expression)
+    {
+        int remaining = ArrangementCondition.MaxNodes;
+        return ValidNode(expression, 0);
+
+        bool ValidNode(ArrangementCondition node, int depth)
+        {
+            if (node == null || remaining-- == 0 || depth > ArrangementCondition.MaxDepth) return false;
+            if (node.Children != null)
+                return node.Field == null && node.Children.All(child => ValidNode(child, depth + 1));
+            return Ids.Local(node.Field) && Enum.IsDefined(typeof(ArrangementTest), node.Test) &&
+                node.Values is { Count: <= 256 } &&
+                node.Values.All(value => Ids.Text(value, 256) && !string.IsNullOrWhiteSpace(value)) &&
+                node.Values.Distinct(StringComparer.Ordinal).Count() == node.Values.Count;
+        }
     }
 
     private static void ValidatePool(string id, Dictionary<string, double> words)
@@ -282,22 +390,27 @@ internal static partial class Configuration
             throw new FormatException("Invalid pool: " + id);
     }
 
+    private static bool ValidCards(CardNaming cards) =>
+        cards?.Enabled == true && Ids.Text(cards.Template, 16384) &&
+        cards.Template.IndexOf('|') is >= 1 and <= 30 && cards.Template.IndexOf('|') == cards.Template.LastIndexOf('|') &&
+        cards.DraftTemplate == null && cards.SourceRule == null && Enum.IsDefined(typeof(SurnameOrder), cards.Inheritance) &&
+        cards.Roles.Values.All(Ids.Local) && cards.Pools.Values.All(Ids.Qualified);
+
+    private static bool ValidTerms(Dictionary<string, List<string>> terms) =>
+        terms.All(pair => Ids.Local(pair.Key) && pair.Value is { Count: > 0 and <= 256 } &&
+            pair.Value.All(value => Ids.Text(value, 256)) && pair.Value.Distinct(StringComparer.Ordinal).Count() == pair.Value.Count);
+
     private static bool Valid(Rule rule)
     {
         if (rule == null || !Ids.Local(rule.Id) || rule.Parts.Count is < 1 or > 32 ||
             !Enum.IsDefined(typeof(SurnameOrder), rule.Inheritance) ||
             !Enum.IsDefined(typeof(NameWriting), rule.Writing) ||
-            rule.NativeCards is { } cards && (!cards.Enabled || !Ids.Text(cards.Template, 16384) ||
-                cards.Template.IndexOf('|') is < 1 or > 30 || cards.Template.IndexOf('|') != cards.Template.LastIndexOf('|') ||
-                cards.DraftTemplate != null || cards.SourceRule != null ||
-                !Enum.IsDefined(typeof(SurnameOrder), cards.Inheritance) ||
-                cards.Roles.Values.Any(role => !Ids.Local(role)) || cards.Pools.Values.Any(pool => !Ids.Qualified(pool))) ||
+            rule.NativeCards != null && !ValidCards(rule.NativeCards) ||
             (rule.ChineseSeparator != null && !Ids.Text(rule.ChineseSeparator, 4)) ||
             (rule.OriginalSeparator != null && !Ids.Text(rule.OriginalSeparator, 4)) ||
             rule.When.Any(pair => !Ids.Local(pair.Key) || !Ids.Text(pair.Value, 256)) ||
             rule.WhenStartsWith.Any(pair => !Ids.Local(pair.Key) || !Ids.Text(pair.Value, 256) || pair.Value.Length == 0) ||
-            rule.WhenOneOf.Any(pair => !Ids.Local(pair.Key) || pair.Value is not { Count: > 0 and <= 256 } ||
-                pair.Value.Any(value => !Ids.Text(value, 256)) || pair.Value.Distinct(StringComparer.Ordinal).Count() != pair.Value.Count))
+            !ValidTerms(rule.WhenOneOf))
             return false;
         var ids = new HashSet<string>(StringComparer.Ordinal);
         foreach (var part in rule.Parts)
@@ -336,6 +449,9 @@ internal static partial class Configuration
         var culturePack = SelectCulturePack(active, diagnostics, world, culture, defaultPack);
         var languagePack = SelectLanguagePack(active, diagnostics, world, languageEdit, culturePack, defaultPack);
         var rules = ResolveRules(type, active, culturePack, defaultPack, cultureEdit, world.PackPriorities, diagnostics, snapshot);
+        var arrangements = cultureEdit?.Arrangements.TryGetValue(type.Id, out var customArrangements) == true
+            ? customArrangements : ((snapshot ?? (culturePack == null ? null : active[culturePack]))?.Arrangements
+                .TryGetValue(type.Id, out var packArrangements) == true ? packArrangements : null);
         var poolIds = active.Values.SelectMany(pack => pack.Pools.Keys
             .Concat(pack.PoolPatches.Select(patch => patch.Pool))).Distinct(StringComparer.Ordinal).ToArray();
         var boundPools = cultureEdit != null && cultureEdit.Cards.TryGetValue(type.Id, out var cards) && cards.Enabled
@@ -352,6 +468,7 @@ internal static partial class Configuration
                 poolIds.Where(id => id.StartsWith(NameEngine.PoolPrefix(part.Pool), StringComparison.Ordinal)))
             .Concat(allParts.Select(part => part.FallbackPool).Where(id => id != null))
             .Concat(boundPools.Where(Ids.Qualified))
+            .Concat((arrangements ?? new List<ConditionalArrangement>()).SelectMany(item => item.Cards.Pools.Values))
             .Distinct(StringComparer.Ordinal).ToArray();
         long? biasLanguage = baseVocabulary ? null : languageEdit?.BiasOrigin ?? language;
         long? parentLanguage = biasLanguage.HasValue && world.LanguageParents.TryGetValue(biasLanguage.Value, out long parent)
@@ -369,6 +486,7 @@ internal static partial class Configuration
         return new EffectiveNames
         {
             Rules = rules,
+            Arrangements = arrangements ?? (IReadOnlyList<ConditionalArrangement>)Array.Empty<ConditionalArrangement>(),
             AvailableRules = availableRules,
             SelectedPreset = selectedPreset,
             PoolIds = poolIds.OrderBy(id => id, StringComparer.Ordinal).ToArray(),

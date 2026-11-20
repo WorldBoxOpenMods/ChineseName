@@ -36,8 +36,9 @@ public sealed partial class OnomasticsEditor
             return;
         }
 
-        RenderSamples(poolIssue == null ? 3 : 2);
-        if (poolIssue != null) PreviewLine("PreviewIssue", poolIssue, 10, 8, IssueColor);
+        var issueLabel = poolIssue ?? ConditionalPreviewNotice(result);
+        RenderSamples(issueLabel == null ? 3 : 2);
+        if (issueLabel != null) PreviewLine("PreviewIssue", issueLabel, 10, 8, IssueColor);
     }
 
     private void PreviewLine(string id, string value, float height, int size, Color color)

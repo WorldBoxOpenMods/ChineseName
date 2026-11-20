@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Core.SkillLibV3.Utils;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
+const string type = "cultiway:spell";
+const string firePool = "cultiway:spell-element.semantic.element.fire";
+const string button = "tab_onomastics_mod_cultiway:spell";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+var spellAsset = Cultiway.Content.SkillEntities.Fireball;
+string Fireball(Actor actor = null) =>
+    new SkillContainerBuilder(spellAsset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, actor).Name.value;
+string originalName = Fireball();
+
+var world = World.world;
+var tile = world.tiles_list.First(candidate => candidate.Type.ground && candidate.zone.city == null);
+var otherTile = world.tiles_list.First(other => other.Type.ground && other.zone.city == null &&
+    Math.Abs(other.x - tile.x) + Math.Abs(other.y - tile.y) > 40);
+var first = world.units.createNewUnit("Cultiway.EasternHuman", tile);
+var second = world.units.createNewUnit("Cultiway.EasternHuman", otherTile);
+world.kingdoms.makeNewCivKingdom(first);
+world.kingdoms.makeNewCivKingdom(second);
+var firstCulture = world.cultures.newCulture(first, true);
+var secondCulture = world.cultures.newCulture(second, true);
+first.setCulture(firstCulture);
+second.setCulture(secondCulture);
+var firstLanguage = world.languages.newLanguage(first, true);
+firstLanguage.setName("炎语");
+var secondLanguage = world.languages.newLanguage(first, false);
+secondLanguage.setName("火语");
+first.joinLanguage(firstLanguage);
+second.joinLanguage(firstLanguage);
+first.joinCity(world.cities.buildNewCity(first, tile.zone));
+second.joinCity(world.cities.buildNewCity(second, otherTile.zone));
+var speaker = world.units.createNewUnit("Cultiway.EasternHuman", tile);
+speaker.joinCity(first.city);
+speaker.setCulture(firstCulture);
+speaker.joinLanguage(secondLanguage);
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var pack = service.GetPackage("cultiway:spell-defaults");
+var worldNaming = service.GetWorld();
+void Restrict(Language language, string text)
+{
+    var word = pack.Words.Single(entry => entry.Text == text && pack.Pools[firePool].ContainsKey(entry.Id));
+    if (!worldNaming.Languages.TryGetValue(language.id, out var profile))
+        worldNaming.Languages[language.id] = profile = new LanguageNaming();
+    profile.Pools[firePool] = new PoolEdit { ExcludeIds = pack.Pools[firePool].Keys.Where(id => id != word.Id).ToList() };
+}
+Restrict(firstLanguage, "炎");
+Restrict(secondLanguage, "火");
+WorldNamingStore.Apply(worldNaming);
+string secondBefore = Fireball(second);
+
+async System.Threading.Tasks.Task<OnomasticsTab> Open(Actor actor)
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    world.console.Hide();
+    SelectedUnit.select(actor);
+    SelectedMetas.selected_culture = actor.culture;
+    ScrollWindow.showWindow("culture");
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.tabs.showTab("Onomastics");
+    var tab = shell.GetComponentInChildren<OnomasticsTab>();
+    var spell = tab._tab_groups._toggles.Single(toggle => toggle.name == button);
+    Check(spell.gameObject.activeInHierarchy && spell.toggle.icon.sprite != null &&
+        spell.transform.parent == tab._tab_groups.transform,
+        "The spell was not added to the original category container.");
+    spell.toggle.click();
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    await Frames();
+    return tab;
+}
+
+string Preview()
+{
+    var shell = ScrollWindow.getCurrentWindow();
+    var preview = shell.transform.FindRecursive("PreviewName");
+    Check(ScrollWindow.isCurrentWindow("culture") && preview != null && preview.GetComponent<Selectable>() == null,
+        "The spell must use the read-only preview inside the original culture window.");
+    return preview.GetComponent<Text>().text;
+}
+
+async System.Threading.Tasks.Task PreviewLanguage(Language language)
+{
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.GetComponentsInChildren<Button>().Single(item => item.name == "PreviewLanguage." + language.id).onClick.Invoke();
+    await Frames();
+}
+
+const string fire = "semantic.element.fire", ball = "semantic.form.ball", slash = "semantic.form.slash";
+var firstTab = await Open(first);
+async System.Threading.Tasks.Task Click(string id)
+{
+    var shell = ScrollWindow.getCurrentWindow();
+    shell.GetComponentsInChildren<Button>().Single(item => item.name == id).onClick.Invoke();
+    await Frames();
+}
+async System.Threading.Tasks.Task Set(string suffix)
+{
+    char glyph = AssetManager.onomastics_library.get("cultiway:spell-element").short_id;
+    firstTab.loadTemplate(glyph + "4|4:" + suffix);
+    await Frames();
+}
+ConditionalArrangement[] Saved() => service.GetWorld().Cultures[firstCulture.id].Arrangements[type].ToArray();
+
+async System.Threading.Tasks.Task ChoosePreset(string field, string value)
+{
+    if (ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>().Any(item => item.name == "ConditionPresetField." + field))
+        await Click("ConditionPresetField." + field);
+    string preset = "ConditionPreset." + field + "." + value;
+    var button = ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>().Single(item => item.name == preset);
+    var art = field == "element" ? "cultiway/icons/element_root/fire" : "ui/chinesename/conditions/ball";
+    Check(button.transform.Find("Icon").GetComponent<Image>().sprite is { } icon &&
+        SpriteTextureLoader.getSprite(art) is { } source && source.texture == icon.texture, "Missing artwork for " + value);
+    await Click(preset);
+}
+await Click("ArrangementAdd");
+await ChoosePreset("element", fire);
+await Click("ConditionToken.0");
+var presetPanel = ScrollWindow.getCurrentWindow().transform.FindRecursive("ConditionPresets");
+Check(presetPanel.GetComponentsInChildren<Button>().All(item => item.name.StartsWith("ConditionPreset")) &&
+      presetPanel.GetComponentsInChildren<Button>().Any(item => item.name == "ConditionPreset.element." + fire) &&
+      presetPanel.GetComponentInChildren<UnityEngine.UI.InputField>() == null,
+    "The registered spell presets should remain available after selecting a condition.");
+string broadId = Saved().Single().Id;
+await Set("诀");
+Check(Preview() == "炎诀", "The fire preview did not follow the language.");
+await Click("ArrangementAdd");
+string ballId = Saved().Last().Id;
+await ChoosePreset("element", fire);
+await Click("ConditionSymbol.And");
+await Click("ConditionSymbol.Open");
+await ChoosePreset("form", ball);
+await Click("ConditionSymbol.Close");
+await Set("珠");
+Check(Preview() == "炎诀" && Fireball(first) == "炎诀", "A later matching row bypassed the first one.");
+var note = ScrollWindow.getCurrentWindow().transform.FindRecursive("PreviewIssue")?.GetComponent<Text>();
+Check(note != null && note.text.Contains("此情境使用"), "An overlapping row did not report the arrangement used.");
+var shell = ScrollWindow.getCurrentWindow();
+var broad = (RectTransform)shell.GetComponentsInChildren<Button>().Single(item => item.name == "Arrangement." + broadId).transform;
+var drag = shell.GetComponentsInChildren<ArrangementGrip>().Single(item => item.name == "Arrangement." + ballId);
+drag.OnEndDrag(new PointerEventData(EventSystem.current) { position = (Vector2)broad.TransformPoint(broad.rect.center) });
+await Frames();
+Check(Saved().Select(row => row.Id).SequenceEqual(new[] { ballId, broadId }) &&
+      Preview() == "炎珠" && Fireball(first) == "炎珠", "Reordering did not let the fire-and-ball arrangement win.");
+
+await PreviewLanguage(secondLanguage);
+first.joinLanguage(secondLanguage);
+Check(Preview() == "火珠" && Fireball(first) == "火珠", "The runtime spell did not follow its language profile.");
+var otherForm = service.Generate(new NameRequest(type, 7, firstCulture.id, first.language.id,
+    new Dictionary<string, object> { ["element"] = fire, ["form"] = slash }));
+Check(otherForm.Text == "火诀" && otherForm.Sources["element"].Reference == firePool,
+    "A fire spell with a different form did not use the broader arrangement.");
+Check(Fireball(second) == secondBefore && Fireball() == originalName,
+    "This culture's conditions leaked into another culture or into a shared spell.");
+return new { fireBall = Fireball(first), otherForm = otherForm.Text, secondCulture = Fireball(second), rows = Saved().Length };

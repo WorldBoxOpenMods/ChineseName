@@ -37,6 +37,15 @@ public sealed partial class OnomasticsEditor
         page.Samples["species"] = example?.asset.id ?? culture.data.original_actor_asset ?? "human";
         if (type.Fields.ContainsKey(VanillaNames.CultureSpecies) && culture.data.original_actor_asset is string origin)
             page.Samples[VanillaNames.CultureSpecies] = origin;
+        if (type.Fields.ContainsKey("origin") && type.Id is ("worldbox:clan" or "worldbox:culture" or
+                "worldbox:language" or "worldbox:religion" or NativeOnomastics.City) && example != null)
+        {
+            var sample = VanillaNames.Request(type.Id, example, 0);
+            if (sample.Inputs.TryGetValue("origin", out var name) && name is string source) page.Samples["origin"] = source;
+        }
+        if (type.Id == NativeOnomastics.City && SelectedMetas.selected_city is { } namingCity && namingCity.culture == culture &&
+            VanillaNames.CityInputs(namingCity).TryGetValue("biome", out var terrain) && terrain is string biome)
+            page.Samples["biome"] = biome;
         string exampleKind = NativeOnomastics.Meta(type.Id).HasValue ? "sapient" :
             NativeOnomastics.AdditionalCategories.FirstOrDefault(category => category.Type == type.Id).ExampleKind;
         if (exampleKind != null) page.Samples["kind"] = exampleKind;

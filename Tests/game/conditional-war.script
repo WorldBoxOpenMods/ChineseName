@@ -1,0 +1,448 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string warType = "worldbox:war";
+const string attacker = "chinesename_war_attacker", defender = "chinesename_war_defender";
+const string asPool = "chinesename_as_pool";
+const string revenge = "chinesename:war-vengeance";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+var world = World.world;
+Config.paused = true;
+Config.tooltips_active = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var distant = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null &&
+    Math.Abs(cell.x - tile.x) + Math.Abs(cell.y - tile.y) > 40);
+var founder = world.units.createNewUnit("human", tile);
+var rival = world.units.createNewUnit("human", distant);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var rivalKingdom = world.kingdoms.makeNewCivKingdom(rival);
+var culture = world.cultures.newCulture(founder, true);
+var rivalCulture = world.cultures.newCulture(rival, true);
+founder.setCulture(culture);
+rival.setCulture(rivalCulture);
+kingdom.setCulture(culture);
+rivalKingdom.setCulture(rivalCulture);
+kingdom.setName("临川国");
+rivalKingdom.setName("松岭国");
+var parent = world.languages.newLanguage(founder, true);
+var other = world.languages.newLanguage(rival, true);
+founder.joinLanguage(parent);
+rival.joinLanguage(other);
+kingdom.setLanguage(parent);
+rivalKingdom.setLanguage(other);
+world.units.checkLists();
+world.kingdoms.checkLists();
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var pack = service.GetPackage(service.DefaultPack);
+var config = new WorldNaming();
+foreach (var (language, text) in new[] { (parent, "雪耻之役"), (other, "复仇之战") })
+{
+    var candidate = pack.Words.Single(word => word.Text == text && pack.Pools[revenge].ContainsKey(word.Id));
+    var profile = new LanguageNaming();
+    profile.Pools[revenge] = new PoolEdit { ExcludeIds = pack.Pools[revenge].Keys.Where(id => id != candidate.Id).ToList() };
+    config.Languages[language.id] = profile;
+}
+WorldNamingStore.Apply(config);
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+
+var exchange = "__EXCHANGE__";
+int seq = 0;
+string Position(Component component, int verticalOffset = 0)
+{
+    var rect = (RectTransform)component.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
+    return $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y + verticalOffset}";
+}
+async System.Threading.Tasks.Task Mouse(string action, Component target = null, Component destination = null, int dropOffset = 0)
+{
+    string path = Path.Combine(exchange, ++seq + ".mouse");
+    File.WriteAllText(path + ".tmp", action + (target == null ? "" : Position(target)) + (destination == null ? "" : Position(destination, dropOffset)));
+    File.Move(path + ".tmp", path);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(path + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(path + ".done"), "Timed out dispatching " + action);
+    await Frames();
+}
+T Find<T>(string name) where T : Component => shell.GetComponentsInChildren<T>().Single(item => item.name == name);
+OnomasticsAssetButton Card(Transform parentTransform, string id) =>
+    parentTransform.GetComponentsInChildren<OnomasticsAssetButton>().Single(item => item.onomastics_asset.id == id);
+Button Placed(string id) => Card(tab.parent_name_variation_1, id).button;
+Button Group(string id) => Card(tab.parent_asset_groups, id).button;
+async System.Threading.Tasks.Task Select(string id)
+{
+    var category = tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + id);
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames(6);
+    await Mouse("click", (RectTransform)category.transform);
+}
+async System.Threading.Tasks.Task Words(string id, string value)
+{
+    if (tab._selected_editor_group?.id != id)
+    {
+        await ScrollTo(Group(id));
+        await Mouse("click", Group(id));
+    }
+    Check(tab._selected_editor_group?.id == id, "Native word editor did not open for " + id);
+    shell.scrollRect.verticalNormalizedPosition = 0;
+    await Frames(8);
+    var input = tab._editor_input.inputField;
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = value;
+    await Mouse("paste");
+    Check(input.isFocused && input.text.Trim() == value, $"Expected '{value}' in {id}, got '{input.text}' (focused={input.isFocused}).");
+    await Mouse("enter");
+    shell.scrollRect.verticalNormalizedPosition = 1;
+    await Frames(8);
+}
+async System.Threading.Tasks.Task ScrollTo(Component button)
+{
+    var rect = (RectTransform)button.transform;
+    var scroll = shell.scrollRect;
+    var viewport = scroll.viewport;
+    if (!rect.IsChildOf(tab.transform)) return;
+    var fixedPreview = tab.text_name_examples.transform.parent;
+    float top = Mathf.Min(viewport.rect.yMax, RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, fixedPreview).min.y);
+    var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, rect);
+    float range = scroll.content.rect.height - viewport.rect.height;
+    if (range > 0)
+    {
+        if (bounds.max.y > top - 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.max.y - top + 3) / range);
+        else if (bounds.min.y < viewport.rect.yMin + 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.min.y - viewport.rect.yMin - 3) / range);
+    }
+    await Frames(6);
+}
+async System.Threading.Tasks.Task Click(string name)
+{
+    var button = Find<Button>(name);
+    await ScrollTo(button);
+    await Mouse("click", button);
+}
+async System.Threading.Tasks.Task<Tooltip> HoverArrangement(string id)
+{
+    var button = Find<Button>("Arrangement." + id);
+    await ScrollTo(button);
+    await Mouse("move", button);
+    var tip = Tooltip.findActive(item => item.asset.id == "chinesename_arrangement");
+    Check(tip != null, "Hovering the arrangement did not open its tooltip.");
+    return tip;
+}
+Sprite[] TooltipIcons(Tooltip tip, string row) =>
+    tip.transform.Find(row).GetComponent<TooltipIconsRow>().items_parent
+        .GetComponentsInChildren<Image>().Select(icon => icon.sprite).ToArray();
+string Preview() => Find<Text>("PreviewName").text;
+char Code(string id) => AssetManager.onomastics_library.get(id).short_id;
+async System.Threading.Tasks.Task SetCards(string[] order, string groups)
+{
+    tab.loadTemplate(new string(order.Select(Code).ToArray()) + "|" + groups);
+    await Frames();
+    Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(order), "Native import did not load the selected arrangement.");
+}
+ConditionalArrangement[] Saved() => service.GetWorld().Cultures[culture.id].Arrangements[warType].ToArray();
+
+await Select("war");
+Check(Find<Button>("Arrangement.Default").transform.parent.name == "ArrangementGrid" && tab.parent_name_variation_1.parent.parent == tab.transform,
+    "The default was not visible in the row layout.");
+await SetCards(new[] { "group_1", "group_2" }, "0:白石关;1:之战");
+
+async System.Threading.Tasks.Task<string> AddWarType(string war)
+{
+    await Click("ArrangementAdd");
+    string id = Saved().Last().Id;
+    await Click("ConditionPreset.kind." + war);
+    return id;
+}
+
+string conquestId = await AddWarType("normal");
+var caret = Find<RectTransform>("ConditionCaret");
+var upperArrow = caret.Find("UpperArrow").GetComponent<Image>();
+var lowerArrow = caret.Find("LowerArrow").GetComponent<Image>();
+var cursorLine = caret.Find("Line").GetComponent<Image>();
+float endCursor = caret.anchoredPosition.x;
+var loneToken = (RectTransform)Find<Button>("ConditionToken.0").transform;
+float tokenX = loneToken.anchoredPosition.x;
+Check(upperArrow.sprite == tab.selected_icon_effect_2.sprite && lowerArrow.sprite == upperArrow.sprite &&
+    upperArrow.rectTransform.anchoredPosition.y < 0 && lowerArrow.rectTransform.anchoredPosition.y > 0 &&
+    Vector3.Dot(upperArrow.transform.up, lowerArrow.transform.up) < -.99f &&
+    cursorLine.rectTransform.rect.height > 0 && cursorLine.color.r > .9f && cursorLine.color.b < .3f &&
+    caret.GetComponentsInChildren<Image>().All(part => !part.raycastTarget) &&
+    caret.GetComponent<LayoutElement>().ignoreLayout && endCursor > tokenX &&
+    Find<Button>("ConditionLeft").interactable && !Find<Button>("ConditionRight").interactable,
+    "The cursor and the right boundary do not match the native selection behavior.");
+await Click("ConditionLeft");
+Check(Find<RectTransform>("ConditionCaret") == caret && caret.anchoredPosition.x < tokenX &&
+    loneToken.anchoredPosition.x == tokenX && !Find<Button>("ConditionLeft").interactable &&
+    Find<Button>("ConditionRight").interactable && !Find<Button>("ConditionRemove").interactable,
+    "Left must move the marker to the preceding gap without moving the condition.");
+await Click("ConditionRight");
+Check(caret.anchoredPosition.x == endCursor && Find<Button>("ConditionRemove").interactable,
+    "Right did not move the marker back after the condition.");
+await Click("ConditionRemove");
+Check(Saved().Single().Expression.Children.Count == 0 &&
+    new[] { "ConditionLeft", "ConditionRight", "ConditionRemove" }.All(id => !Find<Button>(id).interactable),
+    "Backspace did not empty the line and disable the unavailable actions.");
+await Click("ConditionPreset.kind.normal");
+await SetCards(new[] { attacker, defender, "hyphen", "group_2" }, "1:之战");
+await ScrollTo(Placed("hyphen"));
+await Mouse("drag", Placed("hyphen"), Placed(defender));
+string[] conquestOrder = { attacker, "hyphen", defender, "group_2" };
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(conquestOrder), "Real mouse drag did not reorder the conquest glyphs.");
+Check(Find<Button>("Arrangement." + conquestId).transform.Find("ArrangementIcon").GetComponent<Image>().sprite.rect.height < 80,
+    "The conquest icon is still padded.");
+await Click("ConditionLeft");
+await Click("ConditionSymbol.Open");
+Check(Saved().Single().Expression.Children.Single().Field == "kind",
+    "An unfinished expression displaced the last saved condition.");
+await Click("ConditionToken.1");
+Check(Find<RectTransform>("ConditionPresets").GetComponentsInChildren<Button>().Select(button => button.name).SequenceEqual(new[]
+{
+    "ConditionPreset.kind.normal", "ConditionPreset.kind.spite", "ConditionPreset.kind.inspire",
+    "ConditionPreset.kind.rebellion", "ConditionPreset.kind.whisper_of_war",
+    "ConditionPreset.defender.present", "ConditionPreset.defender.absent"
+}), "Selecting a condition should leave the preset-only palette in place.");
+await Click("ConditionSymbol.Or");
+await Click("ConditionPreset.kind.whisper_of_war");
+await Click("ConditionSymbol.Close");
+
+await Click("ConditionSymbol.And");
+await Click("ConditionSymbol.Not");
+await Click("ConditionSymbol.Open");
+await Click("ConditionPreset.defender.absent");
+await Click("ConditionSymbol.Close");
+var conditions = Find<RectTransform>("NamingConditions");
+var editTitle = Find<RectTransform>("ArrangementEditTitle");
+var arrangementTitle = Find<RectTransform>("AllArrangementsTitle");
+var conditionTitle = Find<RectTransform>("ArrangementConditionsTitle");
+var conditionLine = Find<RectTransform>("ConditionLine");
+var nativeLine = (RectTransform)tab.parent_name_variation_1.parent;
+var nativeHeading = tab.transform.Find("tab_title_container_onomastics");
+var nativeHeadingText = nativeHeading.GetComponentInChildren<Text>();
+var headings = new[] { arrangementTitle, conditionTitle, editTitle };
+Check(headings.Select(title => title.GetComponentInChildren<Text>().text)
+    .SequenceEqual(new[] { "所有排列", "排列条件", "排列编辑" }) &&
+    headings.All(title => title.GetComponent<Image>().sprite == nativeHeading.GetComponent<Image>().sprite) &&
+    arrangementTitle.transform.GetSiblingIndex() < Find<RectTransform>("ArrangementGrid").GetSiblingIndex() &&
+    arrangementTitle.transform.parent.GetSiblingIndex() < conditions.GetSiblingIndex() &&
+    conditions.GetSiblingIndex() < editTitle.transform.GetSiblingIndex() && editTitle.transform.GetSiblingIndex() < nativeLine.GetSiblingIndex() &&
+    conditionTitle.GetSiblingIndex() < conditionLine.GetSiblingIndex() &&
+    conditionLine.GetSiblingIndex() < Find<RectTransform>("ConditionOperators").GetSiblingIndex() &&
+    Find<RectTransform>("ConditionOperators").GetSiblingIndex() < Find<RectTransform>("ConditionPresets").GetSiblingIndex(),
+    "The headings, condition controls, and native glyph row did not follow the requested order.");
+Check(headings.Select(heading => heading.GetComponentInChildren<Text>()).All(label =>
+    label.font == nativeHeadingText.font && label.fontStyle == nativeHeadingText.fontStyle &&
+    label.fontSize == nativeHeadingText.fontSize && label.resizeTextMaxSize == nativeHeadingText.resizeTextMaxSize),
+    "The headings did not match the native Chinese title typography.");
+var toggle = Find<Button>("ArrangementEnabled." + conquestId);
+var delete = Find<Button>("ArrangementDelete." + conquestId);
+Check(arrangementTitle.Find("icon_left").GetComponent<Image>().sprite == SpriteTextureLoader.getSprite("ui/Icons/iconBooks") &&
+    editTitle.Find("icon_left").GetComponent<Image>().sprite == SpriteTextureLoader.getSprite("ui/Icons/iconBooksWritten") &&
+    toggle.image.sprite == SpriteTextureLoader.getSprite("ui/Icons/iconOn") && toggle.transform.parent == conditionTitle &&
+    delete.image.sprite == SpriteTextureLoader.getSprite("ui/Icons/iconOff") && delete.transform.parent == conditionTitle &&
+    ((RectTransform)toggle.transform).anchorMin.x == 0 && ((RectTransform)delete.transform).anchorMin.x == 1,
+    "The headings used the wrong icons or moved the actions out of the native slots.");
+var panelCaptions = new (Transform Panel, string Caption)[]
+{
+    (conditionLine, "条件行"), (Find<RectTransform>("ConditionOperators"), "运算符盘"),
+    (Find<RectTransform>("ConditionPresets"), "预制条件盘"), (nativeLine, "排列行"),
+    (tab.parent_asset_specials.parent, "字形盘"), (tab.parent_asset_groups.parent, "词组盘")
+};
+foreach (var (panel, caption) in panelCaptions)
+{
+    var label = panel.Find("NamingPanelCaption").GetComponent<Text>();
+    Check(label.text == caption && label.transform.GetSiblingIndex() == 0 && !label.raycastTarget &&
+        label.GetComponent<LayoutElement>().ignoreLayout && label.color.a < .2f && label.enabled,
+        "The panel does not have the native-style background caption: " + caption);
+}
+Check(Find<ScrollRect>("ConditionLineScroll").horizontal &&
+    conditionLine.GetComponent<Image>().sprite == nativeLine.GetComponent<Image>().sprite &&
+    Mathf.Approximately(conditionLine.rect.height, nativeLine.rect.height),
+    "The condition line did not reuse the native glyph row appearance.");
+Sprite TileSprite(string name, string child = "Icon") =>
+    Find<Button>(name).transform.Find(child).GetComponent<Image>().sprite;
+bool UsesArt(string button, string path) => TileSprite(button) is { } icon &&
+    SpriteTextureLoader.getSprite(path) is { } asset && icon.texture == asset.texture;
+Check(UsesArt("ConditionSymbol.And", "ui/chinesename/conditions/and") &&
+    UsesArt("ConditionToken.1", "wars/war_conquest") &&
+    UsesArt("ConditionPreset.kind.inspire", "ui/chinesename/conditions/independence") &&
+    UsesArt("ConditionPreset.defender.absent", "ui/chinesename/conditions/no_defender"),
+    "The condition cards are missing their own art.");
+var conditionScroll = Find<ScrollRect>("ConditionLineScroll");
+var longCaret = Find<RectTransform>("ConditionCaret");
+float longEnd = longCaret.anchoredPosition.x;
+Check(conditionScroll.content.anchoredPosition.x < 0 &&
+    UsesArt("ConditionLeft", "ui/Icons/iconArrowMetaLeft") && UsesArt("ConditionRight", "ui/Icons/iconArrowMetaRight") &&
+    TileSprite("ConditionRemove").texture == AssetManager.onomastics_library.get("backspace").getSprite().texture,
+    "The long line did not scroll to the cursor or its controls did not use native art.");
+Check(Find<Button>("ConditionLeft").GetComponent<Image>().color.a == 1 &&
+    Find<Button>("ConditionRight").GetComponent<Image>().color.a < 1,
+    "The navigation button backgrounds did not distinguish the available actions.");
+await Click("ConditionLeft");
+Check(Find<RectTransform>("ConditionCaret") == longCaret && longCaret.anchoredPosition.x < longEnd,
+    "Moving within a scrolled expression rebuilt the row or left the cursor at the end.");
+await Click("ConditionRight");
+Check(longCaret.anchoredPosition.x == longEnd && !Find<Button>("ConditionRight").interactable,
+    "The last gap was not reachable again after moving the cursor.");
+var expression = Saved().Single().Expression;
+Check(!expression.Any && expression.Children[0].Any && expression.Children[0].Children.Count == 2 &&
+    expression.Children[1].Negated && expression.Children[1].Children.Single().Test == ArrangementTest.Absent &&
+    Preview() == "临川国-松岭国之战", "The editor did not compose the nested expression or derive its preview.");
+NameResult Sample(string country, string target = "松岭国", string warTypeId = "normal") =>
+    service.Generate(new NameRequest(warType, 0, culture.id, parent.id,
+        new Dictionary<string, object> { ["kind"] = warTypeId, ["attacker"] = country, ["defender"] = target }));
+Check(Sample("石港国").Text == "石港国-松岭国之战" &&
+    Sample("青原国", warTypeId: "whisper_of_war").Text == "青原国-松岭国之战" &&
+    Sample("石港国", warTypeId: "inspire").Text == "白石关之战",
+    "The runtime did not apply AND, OR, parentheses, and NOT with the correct scope.");
+await Click("ArrangementEnabled." + conquestId);
+Check(Saved().Single().Disabled && Sample("临川国").Text == "白石关之战" &&
+    Find<Button>("ArrangementEnabled." + conquestId).image.color.r < 1,
+    "Disabling the arrangement did not dim the check or fall back to the default name.");
+await Click("ArrangementEnabled." + conquestId);
+Check(Sample("临川国").Text == "临川国-松岭国之战", "Restoring the row lost its conditions or cards.");
+
+await Click("Arrangement.Default");
+string spiteId = await AddWarType("spite");
+await Click("ConditionSymbol.And");
+await Click("ConditionPreset.defender.absent");
+await SetCards(new[] { attacker, "group_2", asPool }, "1:复仇战称谓");
+Check(Preview() == "临川国雪耻之役", "Wrong spite preview: " + Preview());
+await Click("PreviewLanguage." + other.id);
+Check(Preview() == "临川国复仇之战", "Language did not change the spite title: " + Preview());
+Check((await HoverArrangement(spiteId)).description.text == "临川国复仇之战",
+    "The arrangement tooltip did not use the selected language.");
+await Click("PreviewLanguage." + parent.id);
+
+await Click("Arrangement.Default");
+string rebellionId = await AddWarType("rebellion");
+await SetCards(new[] { defender, "group_2" }, "1:起事");
+await Words("group_2", "之乱");
+Check(Preview() == "松岭国之乱", "Wrong rebellion preview after a native word edit: " + Preview());
+await Click("Arrangement." + spiteId);
+await ScrollTo(Group("group_2"));
+await Mouse("click", Group("group_2"));
+Check(tab._selected_editor_group?.id == "group_2" && tab._editor_input.inputField.text == "复仇战称谓",
+    "Clicking a word group in an inactive row did not open that row in the native word editor.");
+Check(tab.parent_name_variation_1.parent.parent == tab.transform,
+    "The selected icon did not keep the native glyph area in place.");
+
+var firstTile = Find<Button>("Arrangement." + conquestId);
+var secondTile = Find<Button>("Arrangement." + spiteId);
+shell.scrollRect.verticalNormalizedPosition = 1;
+await Frames();
+await Mouse("drag", secondTile, firstTile);
+var arrangements = Saved();
+Check(arrangements.Select(item => item.Id).SequenceEqual(new[] { spiteId, conquestId, rebellionId }),
+    "Dragging the grid icon did not reorder the arrangement.");
+Check(Find<RectTransform>("ArrangementGrid").childCount == 5,
+    "The conditional icons, default and add target were not in one grid.");
+var previews = new[] { "临川国-松岭国之战", "临川国雪耻之役", "松岭国之乱" };
+var war = world.wars.newWar(kingdom, rivalKingdom, AssetManager.war_types_library.get("normal"));
+var spite = world.wars.newWar(kingdom, null, AssetManager.war_types_library.get("spite"));
+var revolt = world.wars.newWar(rivalKingdom, kingdom, AssetManager.war_types_library.get("rebellion"));
+Check(war.name == previews[0] && spite.name == previews[1] && revolt.name == "临川国之乱",
+    $"Actual names diverged: {war.name} / {spite.name} / {revolt.name}");
+var empty = service.Generate(new NameRequest(warType, 0, culture.id, parent.id,
+    new Dictionary<string, object> { ["kind"] = "normal", ["attacker"] = kingdom.name, ["origin"] = kingdom.name }));
+Check(empty.Success && empty.Text == "白石关之战", "Missing defender did not fall through to the default: " + empty.Text);
+
+string output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+string screenshot = Path.Combine(output, "war-arrangements.png");
+var scrollRect = shell.scrollRect;
+var view = scrollRect.viewport;
+float previewBottom = RectTransformUtility.CalculateRelativeRectTransformBounds(view,
+    tab.text_name_examples.transform.parent).min.y;
+float headingTop = RectTransformUtility.CalculateRelativeRectTransformBounds(view, Find<RectTransform>("AllArrangementsTitle")).max.y;
+float scrollRange = scrollRect.content.rect.height - view.rect.height;
+if (scrollRange > 0)
+{
+    scrollRect.StopMovement();
+    scrollRect.verticalNormalizedPosition = Mathf.Clamp01(scrollRect.verticalNormalizedPosition +
+        (headingTop - Mathf.Min(view.rect.yMax, previewBottom) + 3) / scrollRange);
+}
+await Frames();
+await Click("ConditionLeft");
+await Mouse("move", Find<Text>("PreviewName"));
+ScreenCapture.CaptureScreenshot(screenshot);
+await Frames(2);
+var defaultTip = await HoverArrangement("Default");
+Check(defaultTip.name.text == "默认排列" && defaultTip.description.text == "白石关之战" &&
+    TooltipIcons(defaultTip, "ConditionIcons").Length == 0 &&
+    defaultTip.transform.Find("ConditionIcons/Empty").GetComponent<Text>().text == "无条件" &&
+    TooltipIcons(defaultTip, "ArrangementGlyphs").Length == 2,
+    "The default tooltip did not show the default arrangement independently of the matching rows.");
+var conquestTip = await HoverArrangement(conquestId);
+var conditionIcons = TooltipIcons(conquestTip, "ConditionIcons");
+var glyphIcons = TooltipIcons(conquestTip, "ArrangementGlyphs");
+Check(conquestTip == defaultTip && conquestTip.description.text == "临川国-松岭国之战" && Preview() == "临川国雪耻之役" &&
+    conquestTip.description.fontSize == conquestTip.name.fontSize &&
+    conditionIcons.Length == 10 && conditionIcons[1].texture == SpriteTextureLoader.getSprite("wars/war_conquest").texture &&
+    glyphIcons.Select(icon => icon.texture).SequenceEqual(
+        conquestOrder.Select(id => AssetManager.onomastics_library.get(id).getSprite().texture)) &&
+    conquestTip.transform.Find("ConditionIcons/Traits").GetComponent<FlexibleOneRowGrid>() != null,
+    "The hovered row did not show its own name and its condition and glyph icons in order.");
+
+await Mouse("move", Find<Text>("PreviewName"));
+var originalWorld = service.GetWorld();
+var sampleWorld = service.GetWorld();
+var suffixes = new[] { "之战", "之役", "会战", "鏖战", "争战", "大战", "决战", "连战", "交锋", "对阵",
+    "追击战", "夺城战", "渡河战", "平原战", "边境战", "关隘战", "攻城战", "围城战", "山口战", "破阵战" };
+sampleWorld.Cultures[culture.id].Arrangements[warType].Single(item => item.Id == conquestId).Cards.Template =
+    new string(conquestOrder.Select(Code).ToArray()) + "|1:" + string.Join(" ", suffixes);
+WorldNamingStore.Apply(sampleWorld);
+await Frames();
+var variedTip = await HoverArrangement(conquestId);
+var names = variedTip.description.text.Split(new[] { '\n', '　' }, StringSplitOptions.RemoveEmptyEntries);
+Check(names.Length == 12 && names.Distinct().Count() == names.Length &&
+    names.All(name => suffixes.Contains(name.Replace("临川国-松岭国", "")) && name.StartsWith("临川国-松岭国")) &&
+    variedTip.description.text.Contains('\n') && Preview() == "临川国雪耻之役",
+    "The tooltip did not lay out twelve distinct samples from the hovered arrangement.");
+string tooltipScreenshot = Path.Combine(output, "war-arrangement-tooltip.png");
+ScreenCapture.CaptureScreenshot(tooltipScreenshot);
+await Frames(2);
+await Mouse("move", Find<Text>("PreviewName"));
+WorldNamingStore.Apply(originalWorld);
+await Frames();
+await ScrollTo((RectTransform)tab.parent_asset_groups.parent);
+string paletteScreenshot = Path.Combine(output, "war-arrangement-palettes.png");
+ScreenCapture.CaptureScreenshot(paletteScreenshot);
+await Frames(2);
+await Click("ArrangementAdd");
+string temporaryId = Saved().Last().Id;
+await Click("ArrangementDelete." + temporaryId);
+Check(NamingJson.Write(Saved()) == NamingJson.Write(arrangements),
+    "The title's delete button did not remove only the selected arrangement.");
+var folder = Path.Combine(output, "conditional-war-save");
+Directory.CreateDirectory(folder);
+world.units.checkLists(); world.languages.checkLists(); world.cultures.checkLists(); world.kingdoms.checkLists();
+world.wars.checkLists();
+SaveManager.saveWorldToDirectory(folder);
+File.WriteAllLines(Path.Combine(folder, "ids.txt"), new[] { culture.id, founder.getID(), kingdom.id, rivalKingdom.id,
+    war.id, spite.id, revolt.id }.Select(id => id.ToString()));
+File.WriteAllText(Path.Combine(folder, "arrangements.json"), NamingJson.Write(arrangements));
+return new { previews, actual = new[] { war.name, spite.name, revolt.name }, fallback = empty.Text,
+    mouseEvents = seq, screenshot, paletteScreenshot, tooltipScreenshot, folder };

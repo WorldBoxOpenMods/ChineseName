@@ -1,0 +1,100 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/conditional-war-save/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+string folder = Path.GetDirectoryName(save);
+var ids = File.ReadAllLines(Path.Combine(folder, "ids.txt")).Select(long.Parse).ToArray();
+var original = NamingJson.Write(NamingJson.Read<List<ConditionalArrangement>>(
+    File.ReadAllText(Path.Combine(folder, "arrangements.json"))));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the test world.");
+
+var world = World.world;
+Config.paused = true;
+var culture = world.cultures.get(ids[0]);
+var founder = world.units.get(ids[1]);
+var kingdom = world.kingdoms.get(ids[2]);
+var rival = world.kingdoms.get(ids[3]);
+const string kind = "worldbox:war";
+var expected = new[] { "临川国-松岭国之战", "临川国雪耻之役", "临川国之乱" };
+var applied = NamingApi.Current.GetWorld();
+var arrangements = applied.Cultures[culture.id].Arrangements[kind];
+Check(NamingJson.Write(arrangements) == original, "Saved conditions, ordering, or word groups changed.");
+Check(ids.Skip(4).Select(id => world.wars.get(id)?.name).SequenceEqual(expected),
+    "Existing war names changed after restarting.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_war").toggle.click();
+await Frames();
+T Find<T>(string name) where T : UnityEngine.Component => shell.GetComponentsInChildren<T>().Single(item => item.name == name);
+async System.Threading.Tasks.Task Click(string name)
+{
+    Find<Button>(name).onClick.Invoke();
+    await Frames();
+}
+Check(Find<Button>("ArrangementAdd") != null && !shell.GetComponentsInChildren<RectTransform>().Any(item => item.name == "ConditionLine"),
+    "The grid did not reopen with the default selected.");
+string[] previews = arrangements.Select(item => FirstWarKind(item.Expression) switch
+{
+    "normal" => expected[0],
+    "spite" => expected[1],
+    _ => "松岭国之乱"
+}).ToArray();
+string FirstWarKind(ArrangementCondition expression) =>
+    expression.Children == null ? expression.Values.Single() : FirstWarKind(expression.Children[0]);
+for (int i = 0; i < arrangements.Count; i++)
+{
+    var item = arrangements[i];
+    await Click("Arrangement." + item.Id);
+    Check(tab.getOnomasticsData().getShortTemplate() == item.Cards.Template && Find<Text>("PreviewName").text == previews[i],
+        "Arrangement " + i + " did not reopen with its actual preview.");
+}
+
+var fresh = new[]
+{
+    world.wars.newWar(kingdom, rival, AssetManager.war_types_library.get("normal")).name,
+    world.wars.newWar(kingdom, null, AssetManager.war_types_library.get("spite")).name,
+    world.wars.newWar(rival, kingdom, AssetManager.war_types_library.get("rebellion")).name
+};
+Check(fresh.SequenceEqual(expected), "New war names changed after reading the save.");
+
+var export = WorldNamingStore.ExportCombination("local:conditional-war-" + Guid.NewGuid().ToString("N"),
+    culture.id, founder.language.id);
+var pack = NamingJson.Read<NamingPack>(File.ReadAllText(export));
+Check(NamingJson.Write(pack.Arrangements[kind]) == original && pack.Pools.ContainsKey("chinesename:war-vengeance") &&
+      pack.PoolAliases.ContainsKey("复仇战称谓"),
+    "The exported pack lost arrangements or their language pool.");
+var service = NamingApi.Current;
+service.InstallPack(pack);
+var imported = service.GetWorld();
+imported.EnabledPacks.Add(pack.Id);
+if (!imported.Cultures.TryGetValue(rival.culture.id, out var settings))
+    imported.Cultures[rival.culture.id] = settings = new CultureNaming();
+settings.Pack = pack.Id;
+WorldNamingStore.Apply(imported);
+var importedName = service.Generate(new NameRequest(kind, 0, rival.culture.id,
+    inputs: new Dictionary<string, object> { ["kind"] = "spite", ["attacker"] = kingdom.name }));
+Check(importedName.Text == expected[1], "The imported condition and aliases did not name wars: " + importedName.Text);
+return new { previews, fresh, imported = importedName.Text, save, export };

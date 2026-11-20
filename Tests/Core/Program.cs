@@ -48,6 +48,82 @@ Check(service.Generate(new NameRequest(type, 0)).Status == GenerationStatus.Inva
 Check(service.Generate(new NameRequest("tests:unknown", 0)).Status == GenerationStatus.UnknownType, "Report missing type.");
 Check(service.Generate(Request(), _ => false).Status == GenerationStatus.Exhausted, "Bound rejected names.");
 
+service.RegisterCultureCondition(type, "kind", "类别", new Dictionary<string, string> { ["sapient"] = "生物" });
+service.RegisterCultureCondition(type, "kind", "其他模组的类别", new Dictionary<string, string> { ["spirit"] = "灵体" });
+Check(service.Conditions(type)["kind"].Label == "类别" &&
+      service.Conditions(type)["kind"].Values.Keys.ToHashSet().SetEquals(new[] { "sapient", "spirit" }),
+    "Another mod should be able to extend a registered condition field without replacing its original choices.");
+var legacyArrangement = NamingJson.Read<ConditionalArrangement>("""
+    {"id":"arrangement-old","when":{"kind":["sapient"]}}
+    """);
+Check(service.Matches(legacyArrangement, Request()) &&
+      service.Matches(NamingJson.Copy(legacyArrangement), Request()),
+    "The previous arrangement condition must still match after a JSON round trip.");
+legacyArrangement.Disabled = true;
+Check(!service.Matches(NamingJson.Copy(legacyArrangement), Request()),
+    "An arrangement must stay disabled after a JSON round trip.");
+
+const string logicType = "tests:logic";
+var logic = new NameType(logicType, "条件", new[]
+{
+    new InputField("kind", InputKind.Text, true),
+    new InputField("town", InputKind.Text, example: "西城"),
+    new InputField("size", InputKind.Integer, example: 3)
+});
+service.RegisterType(logic);
+var grouping = NamingJson.Read<ConditionalArrangement>("""
+    {"expression":{"children":[
+        {"field":"kind","values":["normal"]},
+        {"any":true,"children":[
+            {"field":"town","test":"Prefix","values":["临"]},
+            {"field":"town","test":"Suffix","values":["港"]}]},
+        {"negated":true,"children":[
+            {"field":"town","test":"Contains","values":["南岭"]},
+            {"field":"size","test":"Less","values":["5"]}],"any":true}]}}
+    """);
+NameRequest Logic(string kind, string town, int size) =>
+    new(logicType, 0, inputs: new Dictionary<string, object> { ["kind"] = kind, ["town"] = town, ["size"] = size });
+Check(service.Matches(grouping, Logic("normal", "临安", 5)) &&
+      service.Matches(grouping, Logic("normal", "石港", 6)) &&
+      !service.Matches(grouping, Logic("other", "石港", 5)) &&
+      !service.Matches(grouping, Logic("normal", "石南岭港", 5)) &&
+      !service.Matches(grouping, Logic("normal", "石港", 4)),
+    "Parentheses and negation must preserve their scope over repeated fields and typed comparisons.");
+var groupedTokens = ArrangementSyntax.Tokens(grouping.Expression);
+var fromLine = new ConditionalArrangement { Expression = ArrangementSyntax.Parse(groupedTokens) };
+Check(service.Matches(fromLine, Logic("normal", "石港", 5)) &&
+      !service.Matches(fromLine, Logic("normal", "南岭港", 5)) &&
+      ArrangementSyntax.Parse(groupedTokens.Take(groupedTokens.Count - 1).ToArray()) == null,
+    "The editable token line must preserve grouping and reject incomplete input.");
+var example = new Dictionary<string, object> { ["kind"] = "other", ["town"] = "西城", ["size"] = 3 };
+Check(ArrangementExamples.TryApply(service, logic, grouping, example) &&
+      service.Matches(grouping, new NameRequest(logicType, 0, inputs: example)),
+    "The preview scenario must satisfy the same grouped condition as generation.");
+var legacyClauses = NamingJson.Read<ConditionalArrangement>("""
+    {"conditions":{"kind":{"values":["normal"]},"size":{"test":"Present"}}}
+    """);
+Check(service.Matches(NamingJson.Copy(legacyClauses), Logic("normal", "西城", 3)) &&
+      !service.Matches(legacyClauses, Logic("other", "西城", 3)),
+    "The former flat list must still require all its conditions.");
+var deepest = new ArrangementCondition { Field = "kind", Values = new() { "normal" } };
+for (int depth = 0; depth < ArrangementCondition.MaxDepth; depth++)
+    deepest = new ArrangementCondition { Children = new() { deepest } };
+var deepPack = new NamingPack
+{
+    Format = 1, Id = "tests:grouped", Arrangements =
+    {
+        [logicType] = new() { new ConditionalArrangement
+        {
+            Id = "deep", Expression = deepest, Cards = new CardNaming { Enabled = true, Template = "0|0:关" }
+        } }
+    }
+};
+var deepWorld = new WorldNaming { AppliedPresets = { [deepPack.Id] = deepPack } };
+var restoredPack = NamingJson.Read<WorldNaming>(NamingJson.Write(deepWorld)).AppliedPresets[deepPack.Id];
+service.InstallPack(restoredPack);
+Check(service.Matches(restoredPack.Arrangements[logicType].Single(), Logic("normal", "西城", 3)),
+    "The deepest supported expression must survive preset validation and the world JSON depth limit.");
+
 var draft = service.GetWorld();
 draft.EnabledPacks.Add("tests:append");
 draft.EnabledPacks.Add("tests:missing");

@@ -193,6 +193,7 @@ internal static class NativeOnomastics
             string kind = AdditionalCategories.FirstOrDefault(category => category.Type == type.Id).ExampleKind;
             var request = VanillaNames.Request(type.Id, founder, 0, kind: kind);
             var effective = service.Inspect(request, null);
+            result.UnionWith(ConditionalPools(type.Id, effective, activeOnly: true));
             var choice = Selection(service.ActiveWorld, culture, type.Id);
             var source = BoundRule(choice, request, effective);
             if (choice?.Enabled == true && (choice.SourceRule == null || source != null))
@@ -230,6 +231,7 @@ internal static class NativeOnomastics
             var rules = choice?.SourceRule == null ? effective.Rules :
                 effective.AvailableRules.Where(rule => rule.Id == choice.SourceRule).ToArray();
             var pools = new HashSet<string>(StringComparer.Ordinal);
+            pools.UnionWith(ConditionalPools(type.Id, effective));
             CardNaming snapshot = null;
             if (choice?.Enabled == true && rules.Length != 0)
             {
@@ -248,6 +250,21 @@ internal static class NativeOnomastics
             if (snapshot != null || pools.Count > 0) arrangements.Add(type.Id, (snapshot, pools.ToArray()));
         }
         return arrangements;
+    }
+
+    private static IEnumerable<string> ConditionalPools(string type, EffectiveNames effective, bool activeOnly = false)
+    {
+        foreach (var arrangement in effective.Arrangements)
+        {
+            if (activeOnly && (arrangement.Disabled || !arrangement.IsConfigured)) continue;
+            using var cards = NativeNamingArrangement.ReadPackaged(type, arrangement.Cards);
+            if (cards == null) continue;
+            foreach (var pool in ArrangementPools(cards, arrangement.Cards, null, effective)) yield return pool;
+            var roles = arrangement.Cards.Roles.Values.ToHashSet();
+            foreach (var pool in effective.AvailableRules.SelectMany(rule => rule.Parts)
+                .Where(part => roles.Contains(part.Id)).SelectMany(effective.ReferencedPools))
+                yield return pool;
+        }
     }
 
     internal static bool UsesSurname(Culture culture, CardNaming choice)
@@ -270,10 +287,13 @@ internal static class NativeOnomastics
     internal static NameResult Generate(NameType type, NameRequest request, WorldNaming world, EffectiveNames effective,
         Func<string, bool> accept)
     {
-        if (!request.Culture.HasValue || !Supports(type.Id)) return null;
+        var culture = request.Culture.HasValue ? World.world?.cultures.get(request.Culture.Value) : null;
         if (Meta(type.Id) == null && request.FixedParts.Count > 0) return null;
-        var culture = World.world?.cultures.get(request.Culture.Value);
-        if (culture == null) return null;
+        if (culture == null || VanillaNamingConditions.WorldScoped(type.Id))
+            return GenerateConditional(type, request, effective, accept);
+        if (!Supports(type.Id)) return null;
+        var conditional = GenerateConditional(type, request, effective, accept);
+        if (conditional != null) return conditional;
         var choice = Selection(world, culture, type.Id);
         var sourceRule = BoundRule(choice, request, effective);
         using var cards = choice?.Enabled == true && (choice.SourceRule == null || sourceRule != null)
@@ -286,8 +306,54 @@ internal static class NativeOnomastics
             if (!NativeNamingArrangement.FillDefault(cards, type.Id, sourceRule, effective, out _)) return null;
             choice = NativeNamingArrangement.ForRule(type.Id, sourceRule);
         }
+        return GenerateCards(type, request, effective, accept, choice, sourceRule, cards);
+    }
+
+    internal static OnomasticsData ReadConditionalSurnameCards(NameRequest request, EffectiveNames effective, out CardNaming choice)
+    {
+        foreach (var (arrangement, _) in ConditionalCards(request, effective))
+        {
+            var data = NativeNamingArrangement.ReadPackaged(request.Type, arrangement.Cards);
+            if (data == null) continue;
+            choice = arrangement.Cards;
+            return data;
+        }
+        choice = null;
+        return null;
+    }
+
+    private static IEnumerable<(ConditionalArrangement Arrangement, Rule Rule)> ConditionalCards(
+        NameRequest request, EffectiveNames effective)
+    {
+        foreach (var arrangement in effective.Arrangements)
+        {
+            if (!NamingApi.Current.Matches(arrangement, request)) continue;
+            var branch = arrangement.Cards;
+            var rule = BoundRule(branch, request, effective);
+            if (!branch.Enabled || branch.Template == null || branch.SourceRule != null && rule == null) continue;
+            yield return (arrangement, rule);
+        }
+    }
+
+    private static NameResult GenerateConditional(NameType type, NameRequest request, EffectiveNames effective, Func<string, bool> accept)
+    {
+        foreach (var (arrangement, rule) in ConditionalCards(request, effective))
+        {
+            var branch = arrangement.Cards;
+            using var data = NativeNamingArrangement.ReadPackaged(type.Id, branch);
+            if (data == null) continue;
+            var result = GenerateCards(type, request, effective, accept, branch, rule, data, arrangement.Id);
+            if (result.Success) return result;
+        }
+        return null;
+    }
+
+    internal static NameResult GenerateCards(NameType type, NameRequest request, EffectiveNames effective,
+        Func<string, bool> accept, CardNaming choice, Rule sourceRule, OnomasticsData cards, string arrangement = null)
+    {
         if (NativeNamingArrangement.TryUpgrade(type.Id, cards, sourceRule, choice, out var upgraded)) choice = upgraded;
         var diagnostics = new List<string>(effective.Diagnostics) { "原版命名学" };
+        if (arrangement != null) diagnostics.Add("排列:" + arrangement);
         var layout = cards.getFullTemplateData();
         var writing = request.Writing ?? sourceRule?.Writing ?? NameWriting.Original;
         bool explicitSeparators = choice.ExplicitSeparators || layout.Contains(NativeNamingGlyphs.RuleSeparator);

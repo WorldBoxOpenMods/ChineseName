@@ -293,8 +293,13 @@ public sealed partial class OnomasticsEditor
         long id = _culture.id;
         Change(() =>
         {
+            if (_commitPending) Render();
             DraftCulture(id).Pack = WorldNamingStore.ApplyCultureStyle(id, pack, snapshot);
             _draft.AppliedPresets = NamingApi.Current.ActiveWorld.AppliedPresets;
+            if (snapshot != null)
+                foreach (string type in snapshot.Arrangements.Keys) DraftCulture(id).Arrangements.Remove(type);
+            CloseArrangements();
+            SelectArrangement(null);
             CloseStylePicker();
             RefreshStyleLabel();
             ScrollWindow.getCurrentWindow().resetScroll();

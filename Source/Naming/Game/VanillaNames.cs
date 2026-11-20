@@ -57,6 +57,7 @@ internal static class VanillaNames
                     }),
                     MetaType.Army => Fields.Append(new("station", InputKind.Text, label: "驻地城市", example: "澄江")),
                     MetaType.Family => Fields.Append(new("founder-surname", InputKind.Text, label: "创始人姓氏", example: "欧阳")),
+                    MetaType.City => Fields.Append(new("biome", InputKind.Text, label: "建城地貌", example: "biome_grass")),
                     MetaType.Item => Fields.Concat(new[] {
                         new InputField("equipment", InputKind.Text, label: "装备种类", example: "sword"),
                         new InputField("material", InputKind.Text, label: "材质", example: "iron"),
@@ -104,6 +105,16 @@ internal static class VanillaNames
         if (sex != ActorSex.None) inputs["sex"] = sex == ActorSex.Male ? "male" : "female";
         if (type == "worldbox:family" && actor != null && SurnameOf(actor) is { Length: > 0 } surname)
             inputs["founder-surname"] = surname;
+        string parent = type switch
+        {
+            NativeOnomastics.City => actor?.kingdom?.name,
+            "worldbox:clan" => actor?.city?.name,
+            "worldbox:culture" => actor?.culture?.name,
+            "worldbox:language" => actor?.language?.name,
+            "worldbox:religion" => actor?.religion?.name,
+            _ => null
+        };
+        if (!string.IsNullOrWhiteSpace(parent) && parent.Length <= 256) inputs.TryAdd("origin", parent);
         return new NameRequest(type, seed, culture ?? actor?.culture?.id, language ?? actor?.language?.id, inputs, fixedParts);
     }
 
@@ -173,13 +184,15 @@ internal static class VanillaNames
         ulong seed = PersonSeed(child);
         var request = Request(Person, child, seed, child.data.sex);
         var service = NamingApi.Current;
-        var cards = NativeOnomastics.Selection(service.ActiveWorld, child.culture, Person);
         var effective = service.Inspect(request, null);
+        using var conditional = NativeOnomastics.ReadConditionalSurnameCards(request, effective, out var branch);
+        var cards = branch ?? NativeOnomastics.Selection(service.ActiveWorld, child.culture, Person);
         bool usesCards = cards?.Enabled == true && (cards.SourceRule == null || NativeOnomastics.BoundRule(cards, request, effective) != null);
         var rule = usesCards ? null : NativeOnomastics.MatchedRule(request, effective);
         if (!usesCards && rule == null) return;
         using var packaged = NativeNamingArrangement.ReadPackaged(Person, rule?.NativeCards);
-        bool usesSurname = usesCards ? NativeOnomastics.UsesSurname(child.culture, cards) :
+        bool usesSurname = conditional != null ? NativeOnomastics.UsesSurname(conditional, branch) :
+            usesCards ? NativeOnomastics.UsesSurname(child.culture, cards) :
             packaged != null ? NativeOnomastics.UsesSurname(packaged, rule.NativeCards) :
             rule.Parts.Exists(part => part.Id == Surname && NativeNamingArrangement.Visible(part));
         if (!usesSurname)
@@ -216,6 +229,28 @@ internal static class VanillaNames
     internal static class FirstName
     {
         private static bool Prefix(Actor __instance) => !TryNamePerson(__instance);
+    }
+
+    [HarmonyPatch(typeof(City), nameof(City.generateName))]
+    internal static class CityName
+    {
+        private static bool Prefix(City __instance, Actor pActor)
+        {
+            long seed = unchecked(World.world.map_stats.life_dna + __instance.id);
+            string name = Generate(NativeOnomastics.City, pActor, seed, inputs: CityInputs(__instance));
+            if (name == null) return true;
+            __instance.setName(name);
+            __instance.data.name_culture_id = __instance.culture?.id ?? -1;
+            return false;
+        }
+    }
+
+    internal static Dictionary<string, object> CityInputs(City city)
+    {
+        var inputs = new Dictionary<string, object>();
+        if (city.getTile()?.Type?.biome_asset?.id is string biome) inputs["biome"] = biome;
+        if (city.kingdom?.name is { Length: > 0 and <= 256 } country) inputs["origin"] = country;
+        return inputs;
     }
 
     internal static bool TryNamePerson(Actor actor, Func<string, bool> accept = null)

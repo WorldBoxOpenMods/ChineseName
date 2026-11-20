@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Chinese_Name.Naming;
@@ -9,6 +10,7 @@ public sealed class NamingService
     private readonly Dictionary<string, NameType> _types = new(StringComparer.Ordinal);
     private readonly Dictionary<string, (string Icon, string Description)> _cultureOnomastics = new(StringComparer.Ordinal);
     private readonly Dictionary<string, CultureNameGlyph> _cultureGlyphs = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Dictionary<string, CultureCondition>> _conditions = new(StringComparer.Ordinal);
     private readonly Dictionary<string, NamingPack> _packs = new(StringComparer.Ordinal);
     private readonly Dictionary<string, Func<NameRequest, IEnumerable<Word>>> _providers = new(StringComparer.Ordinal);
     private readonly HashSet<string> _modDefaults = new(StringComparer.Ordinal);
@@ -31,6 +33,125 @@ public sealed class NamingService
     internal Dictionary<string, NamingPack> ActivePacks(WorldNaming world) =>
         Configuration.ResolveDependencies(_packs, world, _defaultPack, _modDefaults, new List<string>());
     internal IReadOnlyDictionary<string, (string Icon, string Description)> CultureOnomastics => _cultureOnomastics;
+
+    internal sealed class CultureCondition(string field, string label, IReadOnlyDictionary<string, string> values, bool presence)
+    {
+        internal string Field { get; } = field;
+        internal string Label { get; } = label;
+        internal IReadOnlyDictionary<string, string> Values { get; } = values;
+        internal bool Presence { get; } = presence;
+
+        internal string Read(string value) => Presence ? (value == null ? "absent" : "present") : value;
+    }
+
+    /// <summary>Expose stable choices for a field. A later registration may add new IDs to that field.</summary>
+    public void RegisterCultureCondition(string type, string field, string label, IReadOnlyDictionary<string, string> values)
+    {
+        if (values == null || values.Count == 0 || values.Any(value => string.IsNullOrWhiteSpace(value.Key) ||
+                string.IsNullOrWhiteSpace(value.Value)))
+            throw new ArgumentException("Supply stable values and their labels.", nameof(values));
+        AddCondition(type, new CultureCondition(field, label,
+            values.ToDictionary(value => value.Key, value => value.Value, StringComparer.Ordinal), false));
+    }
+
+    /// <summary>Expose whether the request carries a value for this field.</summary>
+    public void RegisterCulturePresence(string type, string field, string label, string present, string absent) =>
+        AddCondition(type, new CultureCondition(field, label, new Dictionary<string, string>
+        {
+            ["present"] = present,
+            ["absent"] = absent
+        }, true));
+
+    private void AddCondition(string type, CultureCondition condition)
+    {
+        if (type == null || !_types.TryGetValue(type, out var registered) || condition.Field == null ||
+            !registered.Fields.TryGetValue(condition.Field, out var field) ||
+            !condition.Presence && field.Kind != InputKind.Text || string.IsNullOrWhiteSpace(condition.Label))
+            throw new ArgumentException("Register a naming type and compatible field first.");
+        if (!_conditions.TryGetValue(type, out var fields))
+            _conditions[type] = fields = new(StringComparer.Ordinal);
+        if (fields.TryGetValue(condition.Field, out var existing))
+        {
+            if (existing.Presence || condition.Presence)
+                throw new ArgumentException("A field already uses a presence or a value condition.");
+            var values = new Dictionary<string, string>(existing.Values, StringComparer.Ordinal);
+            foreach (var value in condition.Values)
+                if (!values.TryAdd(value.Key, value.Value))
+                    throw new ArgumentException("Duplicate condition value: " + value.Key);
+            condition = new CultureCondition(condition.Field, existing.Label, values, false);
+        }
+        fields[condition.Field] = condition;
+    }
+
+    internal IReadOnlyDictionary<string, CultureCondition> Conditions(string type) =>
+        _conditions.TryGetValue(type, out var fields) ? fields : EmptyConditions;
+
+    private static readonly Dictionary<string, CultureCondition> EmptyConditions = new(StringComparer.Ordinal);
+
+    internal bool Matches(ConditionalArrangement arrangement, NameRequest request) =>
+        !arrangement.Disabled && MatchesExpression(arrangement, request);
+
+    internal bool MatchesExpression(ConditionalArrangement arrangement, NameRequest request) =>
+        CanMatch(arrangement, _types[request.Type]) &&
+        arrangement.Expression.Evaluate(term => MatchesCondition(request.Type, term.Field, term,
+            request.Inputs.TryGetValue(term.Field, out var value) ? NameEngine.Value(value) : null)) == true;
+
+    internal bool CanMatch(ConditionalArrangement arrangement, NameType type) =>
+        arrangement.IsConfigured && arrangement.Expression.Leaves().All(term => ValidTerm(type, term));
+
+    private bool ValidTerm(NameType type, ArrangementCondition term)
+    {
+        if (!type.Fields.TryGetValue(term.Field, out var field)) return false;
+        if (term.Test == ArrangementTest.Registered) return Conditions(type.Id).ContainsKey(term.Field);
+        if (!ConditionTests(field.Kind).Contains(term.Test)) return false;
+        return term.Test is ArrangementTest.Present or ArrangementTest.Absent || field.Kind == InputKind.Text ||
+            term.Values.All(value => ArrangementExamples.Input(field, value) != null);
+    }
+
+    private static readonly ArrangementTest[] TextTests = [ArrangementTest.Equal, ArrangementTest.Prefix,
+        ArrangementTest.Suffix, ArrangementTest.Contains, ArrangementTest.Present, ArrangementTest.Absent];
+    private static readonly ArrangementTest[] NumberTests = [ArrangementTest.Equal, ArrangementTest.Greater, ArrangementTest.AtLeast,
+        ArrangementTest.Less, ArrangementTest.AtMost, ArrangementTest.Present, ArrangementTest.Absent];
+    private static readonly ArrangementTest[] FlagTests = [ArrangementTest.Equal, ArrangementTest.Present, ArrangementTest.Absent];
+
+    internal static IReadOnlyList<ArrangementTest> ConditionTests(InputKind kind) => kind switch
+    {
+        InputKind.Text => TextTests,
+        InputKind.Integer => NumberTests,
+        _ => FlagTests
+    };
+
+    internal bool MatchesCondition(string type, string field, ArrangementCondition condition, string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) text = null;
+        switch (condition.Test)
+        {
+            case ArrangementTest.Present: return text != null;
+            case ArrangementTest.Absent: return text == null;
+            case ArrangementTest.Equal: return text != null && condition.Values.Contains(text);
+            case ArrangementTest.Prefix: return text != null &&
+                condition.Values.Any(prefix => prefix.Length != 0 && text.StartsWith(prefix, StringComparison.Ordinal));
+            case ArrangementTest.Suffix: return text != null &&
+                condition.Values.Any(suffix => suffix.Length != 0 && text.EndsWith(suffix, StringComparison.Ordinal));
+            case ArrangementTest.Contains: return text != null &&
+                condition.Values.Any(value => value.Length != 0 && text.IndexOf(value, StringComparison.Ordinal) >= 0);
+            case ArrangementTest.Registered:
+                return Conditions(type).TryGetValue(field, out var registered) && registered.Read(text) is string value &&
+                    registered.Values.ContainsKey(value) && condition.Values.Contains(value);
+            default: return Number(text) is int actual && condition.Values.Any(value => Number(value) is int limit &&
+                (condition.Test switch
+                {
+                    ArrangementTest.Greater => actual > limit,
+                    ArrangementTest.AtLeast => actual >= limit,
+                    ArrangementTest.Less => actual < limit,
+                    ArrangementTest.AtMost => actual <= limit,
+                    _ => false
+                }));
+        }
+    }
+
+    internal static int? Number(string text) =>
+        int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value) ? value : null;
 
     public void RegisterType(NameType type, NamingPack defaults = null)
     {
@@ -152,6 +273,8 @@ public sealed class NamingService
                 : Inspect(new NameRequest(type.Id, 0, culture, language), draft);
             languagePools ??= effective;
             var rules = effective.Rules.ToList();
+            if (effective.Arrangements.Count > 0)
+                pack.Arrangements[type.Id] = effective.Arrangements.Select(item => NamingJson.Copy(item)).ToList();
             if (arrangements != null && arrangements.TryGetValue(type.Id, out var arrangement))
             {
                 if (arrangement.Cards is { } cards)
