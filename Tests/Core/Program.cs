@@ -103,12 +103,22 @@ Check(lexicons.Length != 0, "Optional lexicon fixtures must be present.");
 var catalog = new NamingService(bundled.Id);
 const string city = "worldbox:city";
 var context = new[] { "species", "kind", "culture-species", "founder-surname", "attacker", "defender",
-    "origin", "station", "topic", "material", "equipment", "stage" }.Select(id => new InputField(id, InputKind.Text)).ToArray();
+    "origin", "station", "topic", "material", "equipment", "stage", "plot" }.Select(id => new InputField(id, InputKind.Text)).ToArray();
 catalog.RegisterType(new NameType("worldbox:person", "姓名", context, fixedParts: new[] { "surname" }));
 var societyCategories = new[] { "city", "kingdom", "culture", "language", "family", "clan", "war", "alliance", "army", "book", "motto", "item" };
-foreach (string category in societyCategories.Concat(new[] { "religion", "subspecies" }))
+foreach (string category in societyCategories.Concat(new[] { "religion", "subspecies", "plot" }))
     catalog.RegisterType(new NameType("worldbox:" + category, category, context));
 catalog.InstallPack(bundled);
+var languagePlot = catalog.Generate(new NameRequest("worldbox:plot", 7, inputs: new Dictionary<string, object>
+{
+    ["plot"] = "language-divergence"
+}));
+Check(languagePlot.Success && languagePlot.Text is "语言分化" or "乡音分支", "A named plot should retain its actual action.");
+var unknownPlot = catalog.Generate(new NameRequest("worldbox:plot", 7, inputs: new Dictionary<string, object>
+{
+    ["plot"] = "custom-action"
+}));
+Check(unknownPlot.Success && unknownPlot.Text is "筹议" or "密议" or "合谋", "An unknown plot should have a Chinese fallback.");
 var cityRequest = new NameRequest(city, 7);
 string baselineCity = catalog.Generate(cityRequest).Text;
 var enabledLexicons = catalog.GetWorld();

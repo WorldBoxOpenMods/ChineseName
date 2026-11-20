@@ -1,0 +1,153 @@
+using System;
+using System.Linq;
+using System.IO;
+using System.Collections.Generic;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string nordic = "chinesename:world-nordic-set";
+const string atlas = "chinesename:world-styles-lexicon";
+const string cityPool = atlas + ".nordic.city";
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+bool Han(string text) => text?.Any(c => c is >= '\u3400' and <= '\u9fff') == true;
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 10; i++) await Game.NextFrame();
+}
+ScrollWindow Window() => ScrollWindow.getCurrentWindow();
+int step = 0;
+async System.Threading.Tasks.Task Mouse(Selectable control = null)
+{
+    string command = "paste";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+            rect.TransformPoint(rect.rect.center));
+        command = $"click {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+    }
+    string file = Path.Combine(exchange, ++step + ".mouse");
+    File.WriteAllText(file + ".tmp", command);
+    File.Move(file + ".tmp", file);
+    float deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(file + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(file + ".done"), "Input timed out: " + command);
+    await Settle();
+}
+KeyValueField Row(string name) => Window().GetComponentsInChildren<KeyValueField>().Single(row => row.name == name);
+System.Threading.Tasks.Task SelectRow(string name) => Mouse(Row(name).value.GetComponent<Button>());
+async System.Threading.Tasks.Task OpenPage()
+{
+    ScrollWindow.showWindow("world_info");
+    await Settle();
+    Window().tabs.showTab("chinesename_packs");
+    await Settle();
+    Window().scrollRect.verticalNormalizedPosition = 1;
+    await Settle();
+}
+
+var map = World.world;
+var service = NamingApi.Current;
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "world-reassignment");
+SaveManager.loadMapFromResources("mapTemplates/map_dragon");
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The original opening map did not load.");
+Config.paused = true;
+map.console.Hide();
+string templateTitle = map.map_stats.name;
+var sample = map.units.FirstOrDefault(unit => !unit.data.custom_name && !string.IsNullOrEmpty(unit.data.name) && !Han(unit.data.name));
+Check(sample != null && !Han(templateTitle), "Start in the original opening map.");
+await OpenPage();
+await SelectRow("WorldNamingReassignment");
+await SelectRow("WorldNamingSpecies");
+await SelectRow("WorldNamingTitles");
+await SelectRow("WorldNamingObjects");
+Check(Han(map.map_stats.name) && Han(map.map_stats.player_name) && Han(sample.data.name), "The opening map was not reassigned.");
+string reassignedTitle = map.map_stats.name;
+long sampleId = sample.id;
+map.units.checkContainer();
+map.units.checkLists();
+SaveManager.saveWorldToDirectory(Path.Combine(output, "opening"));
+File.WriteAllLines(Path.Combine(output, "opening-expected.txt"),
+    new[] { reassignedTitle, map.map_stats.player_name, sampleId.ToString(), sample.data.name });
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+var previous = map.map_stats;
+map.generateNewMap();
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && map.map_stats != previous, "Cannot create the legacy fixture.");
+Config.paused = true;
+var tile = map.tiles_list.First(t => t.Type.ground && t.zone.isGoodForNewCity());
+var founder = map.units.createNewUnit("human", tile);
+var culture = map.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = map.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+var kingdom = map.kingdoms.makeNewCivKingdom(founder);
+var city = map.cities.buildNewCity(founder, tile.zone);
+founder.joinCity(city);
+city.setCulture(culture);
+city.setLanguage(language);
+var custom = map.units.createNewUnit("human", tile);
+custom.setCulture(culture);
+custom.joinLanguage(language);
+custom.joinCity(city);
+custom.setName("Named by player");
+custom.data.custom_name = true;
+founder.setName("Legacy Founder");
+founder.data.set("chinesename.surname.v1", "欧阳");
+city.setName("Legacy City");
+culture.getOnomasticData(MetaType.City).loadFromShortTemplate("0|0:Oldtown");
+map.units.checkContainer(); map.units.checkLists(); map.cultures.checkLists(); map.languages.checkLists();
+map.kingdoms.checkLists(); map.cities.checkLists();
+long founderId = founder.id, customId = custom.id, cityId = city.id;
+map.map_stats.custom_data.removeString("chinesename.rules.v1");
+SaveManager.saveWorldToDirectory(Path.Combine(output, "vanilla"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(output, "vanilla", "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+founder = map.units.get(founderId);
+city = map.cities.get(cityId);
+language = founder.language;
+Check(service.GetWorld().UseSavedVanillaCards && !Han(founder.generateName(MetaType.City, 7)), "Legacy native cards did not load.");
+
+var world = service.GetWorld();
+var words = service.GetPackage(atlas);
+var approved = words.Words.Single(word => word.Text == "Uppsala" && words.Pools[cityPool].ContainsKey(word.Id));
+world.Languages[language.id] = new LanguageNaming();
+world.Languages[language.id].Pools[cityPool] = new PoolEdit
+{
+    ExcludeIds = words.Pools[cityPool].Keys.Where(id => id != approved.Id).ToList()
+};
+WorldNamingStore.Apply(world);
+string languageBefore = NamingJson.Write(service.GetWorld().Languages[language.id]);
+await OpenPage();
+await SelectRow("WorldNamingReassignment");
+await SelectRow("WorldNamingSpecies");
+await SelectRow("WorldNamingCancel");
+Check(service.GetWorld().UseSavedVanillaCards && city.name == "Legacy City", "Cancel changed the world.");
+await SelectRow("WorldNamingReassignment");
+await SelectRow("WorldNamingSpecies");
+await SelectRow("WorldNamingRules");
+Check(!service.GetWorld().UseSavedVanillaCards && city.name == "Legacy City" &&
+    Han(founder.generateName(MetaType.City, 7)), "Rules-only reassignment renamed old objects or retained vanilla cards.");
+
+await SelectRow("WorldNamingReassignment");
+var search = Window().GetComponentsInChildren<NameInput>().Single(item => item.name == "WorldNamingStyleSearch");
+await Mouse(search.inputField);
+GUIUtility.systemCopyBuffer = "北欧";
+await Mouse();
+await SelectRow("WorldNamingStyle." + nordic);
+await SelectRow("WorldNamingObjects");
+Check(service.GetWorld().CulturePack == nordic && city.name == "乌普萨拉" && Han(founder.data.name) &&
+    map.units.get(customId).data.name == "Named by player" && NamingJson.Write(service.GetWorld().Languages[language.id]) == languageBefore,
+    "Global style did not preserve the player name and language restrictions or did not rename the city.");
+founder.data.get("chinesename.surname.v1", out string surname);
+Check(surname == "欧阳", "Reassignment did not preserve the recorded surname.");
+SaveManager.saveWorldToDirectory(Path.Combine(output, "renamed"));
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] { founderId.ToString(), customId.ToString(), cityId.ToString(), founder.data.name });
+return new { templateTitle, reassignedTitle, region = city.name, founder = founder.data.name, surname, output };

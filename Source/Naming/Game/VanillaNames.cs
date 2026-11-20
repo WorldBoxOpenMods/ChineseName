@@ -9,6 +9,7 @@ internal static class VanillaNames
 {
     internal const string Person = "worldbox:person";
     internal const string War = "worldbox:war";
+    internal const string Plot = "worldbox:plot";
     internal const string Surname = "surname";
     internal const string CultureSpecies = "culture-species";
     private const string SurnameKey = "chinesename.surname.v1";
@@ -62,6 +63,8 @@ internal static class VanillaNames
             yield return new NameType("worldbox:motto", "格言", Fields, maxLength: 64);
             yield return new NameType("worldbox:book", "书籍",
                 Fields.Append(new("topic", InputKind.Text, label: "书籍题材", example: "history")));
+            yield return new NameType(Plot, "谋划",
+                Fields.Append(new("plot", InputKind.Text, label: "谋划类型", example: "language-divergence")));
             yield return new NameType("worldbox:player", "造物主", Fields);
         }
     }
@@ -206,23 +209,25 @@ internal static class VanillaNames
     [HarmonyPatch(typeof(Actor), nameof(Actor.generateNewName))]
     internal static class FirstName
     {
-        private static bool Prefix(Actor __instance)
-        {
-            IReadOnlyDictionary<string, string> fixedParts = null;
-            if (ReadSurname(__instance, out var surname))
-                fixedParts = new Dictionary<string, string> { [Surname] = surname };
-            var result = NamingApi.Current.Generate(Request(Person, __instance, PersonSeed(__instance),
-                __instance.data.sex, fixedParts: fixedParts));
-            if (!result.Success) return true;
-            __instance.setName(result.Text);
-            __instance.data.name_culture_id = __instance.culture?.id ?? -1L;
-            if (result.Parts.TryGetValue(Surname, out var part)) __instance.data.set(SurnameKey, part);
-            else if (surname == null) __instance.data.set(SurnameKey, "");
-            __instance.data.set(LayoutKey, NamingJson.Write(result.PartOrder.Select(id =>
-                new KeyValuePair<string, string>(id, result.Parts[id])).ToArray()));
-            __instance.data.set(SeparatorKey, result.Separator ?? "");
-            return false;
-        }
+        private static bool Prefix(Actor __instance) => !TryNamePerson(__instance);
+    }
+
+    internal static bool TryNamePerson(Actor actor)
+    {
+        IReadOnlyDictionary<string, string> fixedParts = null;
+        if (ReadSurname(actor, out var surname))
+            fixedParts = new Dictionary<string, string> { [Surname] = surname };
+        var result = NamingApi.Current.Generate(Request(Person, actor, PersonSeed(actor),
+            actor.data.sex, fixedParts: fixedParts));
+        if (!result.Success) return false;
+        actor.setName(result.Text);
+        actor.data.name_culture_id = actor.culture?.id ?? -1L;
+        if (result.Parts.TryGetValue(Surname, out var part)) actor.data.set(SurnameKey, part);
+        else if (surname == null) actor.data.set(SurnameKey, "");
+        actor.data.set(LayoutKey, NamingJson.Write(result.PartOrder.Select(id =>
+            new KeyValuePair<string, string>(id, result.Parts[id])).ToArray()));
+        actor.data.set(SeparatorKey, result.Separator ?? "");
+        return true;
     }
 
     [HarmonyPatch(typeof(BabyMaker), nameof(BabyMaker.makeBaby))]
