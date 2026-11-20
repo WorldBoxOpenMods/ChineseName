@@ -88,7 +88,7 @@ internal static class NativeNamingGlyphs
             fallbackPool: "chinesename:family-name");
         service.RegisterCultureGlyph("worldbox:army", "chinesename:station-city", '\uE11C', "station",
             "驻地城市", "ui/Icons/iconCityList");
-        service.RegisterCultureGlyph("worldbox:alliance", "chinesename:founding-kingdom", '\uE11D', "origin",
+        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:founding-kingdom", '\uE11D', "origin",
             "发起国", "ui/Icons/iconKingdomList");
         service.RegisterCultureGlyph("worldbox:book", "chinesename:book-topic", '\uE11E', "topic",
             "书籍题材", "ui/Icons/iconBooks", "chinesename:book-", "按书籍题材和当前语言抽取一个主题词。",
@@ -100,6 +100,10 @@ internal static class NativeNamingGlyphs
         service.RegisterCultureGlyph(VanillaNames.Plot, "chinesename:plot-action", '\uE121', "plot",
             "谋划类型", "ui/Icons/iconDiplomacy", "chinesename:plot-action", "按实际谋划类型和当前语言取称谓。",
             fallbackPool: "chinesename:plot-action");
+        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:alliance-founder-short", '\uE122', "founder-short",
+            "发起国简称", "ui/Icons/iconKingdomList", description: "取建立联盟的一方的国名简称。");
+        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:alliance-partner-short", '\uE123', "partner-short",
+            "缔约国简称", "ui/Icons/iconAlliance", description: "取共同建立联盟的另一方的国名简称。");
         if (library.getByShortId(KeepSurnameCode.ToString()) == null && !library.dict.ContainsKey(KeepSurname))
         {
             var asset = library.add(new OnomasticsAsset

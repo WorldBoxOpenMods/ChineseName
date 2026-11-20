@@ -20,7 +20,7 @@ internal static class NativeOnomastics
     internal static readonly (string Type, string Icon, string Description, string ExampleKind)[] AdditionalCategories =
     {
         (VanillaNames.War, "iconWar", "由战争类型指定的国家取名", "normal"),
-        ("worldbox:alliance", "iconAlliance", "由联盟发起国取名", null),
+        (VanillaNames.Alliance, "iconAlliance", "由发起国取名，可使用缔约双方的简称", "founding-pair"),
         ("worldbox:army", "iconArmy", "由驻地城市取名", null),
         ("worldbox:book", "iconBooks", "由作者取名，预览示例为史书", "book_name_history"),
         (VanillaNames.Plot, "iconDiplomacy", "由发起者取名，预览示例为语言分化", "language_divergence"),

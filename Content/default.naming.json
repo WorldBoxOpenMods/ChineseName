@@ -4901,6 +4901,28 @@
             "literal": "盟"
           }
         ]
+      },
+      {
+        "id": "founding-pair",
+        "parts": [
+          {
+            "id": "founder-short",
+            "input": "founder-short"
+          },
+          {
+            "id": "partner-short",
+            "input": "partner-short"
+          },
+          {
+            "id": "suffix",
+            "pool": "chinesename:alliance-ending"
+          }
+        ],
+        "priority": 5,
+        "when": {
+          "kind": "founding-pair"
+        },
+        "useNativeWordGroups": true
       }
     ],
     "worldbox:world": [

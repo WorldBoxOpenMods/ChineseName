@@ -78,10 +78,13 @@ internal sealed class NativePackagePage : MonoBehaviour
     {
         Clear(_reassignment);
         bool renameWorld = false;
+        bool repairOnly = false;
         Row(_reassignment, "WorldNamingRules", label, "仅重配规则", () => Apply(renew: false),
             tooltip: "重置本世界各文化的原版类别排列、规则和预设，保留各语言的用词设置。");
         var worldTitle = Row(_reassignment, "WorldNamingTitles", "世界与造物主", "保留");
         Bind(worldTitle, ToggleTitles, "开启后会重取这两个名称，原版存档没有记录它们是否经过手动编辑。");
+        var scope = Row(_reassignment, "WorldNamingScope", "重取范围", "全部自动命名");
+        Bind(scope, ToggleScope, "可只修英文名和空白名，同时保护手改名。所选预设仍会用于重配文化规则。");
         Row(_reassignment, "WorldNamingObjects", "已有对象", "重配并重取", () => Apply(renew: true),
             tooltip: "重配文化规则，然后重取自动命名对象。保留已标记的手改名和已有姓氏。");
         Row(_reassignment, "WorldNamingCancel", "", "取消", CloseReassignment);
@@ -93,6 +96,16 @@ internal sealed class NativePackagePage : MonoBehaviour
             SetActionText(worldTitle, renameWorld ? "重取" : "保留");
         }
 
+        void ToggleScope()
+        {
+            repairOnly = !repairOnly;
+            SetActionText(scope, repairOnly ? "仅英文和空白" : "全部自动命名");
+            worldTitle.gameObject.SetActive(!repairOnly);
+            if (!repairOnly)
+                Bind(worldTitle, ToggleTitles, "开启后会重取这两个名称，原版存档没有记录它们是否经过手动编辑。");
+            RebuildLayout();
+        }
+
         void Apply(bool renew)
         {
             CloseReassignment();
@@ -102,8 +115,8 @@ internal sealed class NativePackagePage : MonoBehaviour
                 WorldNamingReassignment.ApplyStyle(pack);
                 if (renew)
                 {
-                    var result = WorldNamingReassignment.RenameExisting(renameWorld);
-                    if (renameWorld) GetComponentInParent<WorldWindow>()?.nameInput.setText(map.name);
+                    var result = WorldNamingReassignment.RenameExisting(renameWorld, repairOnly);
+                    if (renameWorld && !repairOnly) GetComponentInParent<WorldWindow>()?.nameInput.setText(map.name);
                     Status("已改名 " + result.Changed + (result.Failed == 0 ? "" : " · 未取到新名 " + result.Failed));
                 }
                 else Status("已重配文化命名规则");

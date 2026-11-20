@@ -12,12 +12,12 @@ internal static class IndependentNames
     internal static long Seed(long id) => unchecked((World.world?.map_stats?.life_dna ?? 0) + id * 543);
 
     internal static string FromKingdom(string type, Kingdom kingdom, long id, string kind = null,
-        Dictionary<string, object> inputs = null)
+        Dictionary<string, object> inputs = null, Func<string, bool> accept = null)
     {
         inputs ??= new Dictionary<string, object>();
         AddName(inputs, "origin", kingdom);
         var result = NamingApi.Current.Generate(VanillaNames.Request(type, kingdom?.king, unchecked((ulong)Seed(id)),
-            kind: kind, culture: kingdom?.culture?.id, language: kingdom?.language?.id, inputs: inputs));
+            kind: kind, culture: kingdom?.culture?.id, language: kingdom?.language?.id, inputs: inputs), accept);
         return result.Success ? result.Text : null;
     }
 
@@ -71,21 +71,6 @@ internal static class IndependentNames
         return changed;
     }
 
-    [HarmonyPatch(typeof(AllianceManager), nameof(AllianceManager.newAlliance))]
-    internal static class AllianceName
-    {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) =>
-            ReplaceCall(codes, AccessTools.Method(typeof(Alliance), nameof(Alliance.createNewAlliance)), nameof(NewAlliance), 1);
-    }
-
-    private static void NewAlliance(Alliance alliance, Kingdom founder)
-    {
-        var name = FromKingdom("worldbox:alliance", founder, alliance.id);
-        if (name == null) { alliance.createNewAlliance(); return; }
-        alliance.setName(name);
-        alliance.generateNewMetaObject();
-    }
-
     [HarmonyPatch(typeof(WarManager), nameof(WarManager.newWar))]
     internal static class WarName
     {
@@ -98,14 +83,15 @@ internal static class IndependentNames
         GenerateWar(attacker, defender, war, unchecked((long)NamingRandom.Hash(template) + World.world.map_stats.warsStarted))
         ?? NameGenerator.generateNameFromTemplate(template, actor, kingdom, legacy);
 
-    internal static string GenerateWar(Kingdom attacker, Kingdom defender, WarTypeAsset war, long seed)
+    internal static string GenerateWar(Kingdom attacker, Kingdom defender, WarTypeAsset war, long seed,
+        Func<string, bool> accept = null)
     {
         if (war == null) return null;
         var inputs = new Dictionary<string, object>();
         AddName(inputs, "attacker", attacker);
         AddName(inputs, "defender", defender);
         var kingdom = war.kingdom_for_name_attacker ? attacker : defender;
-        return FromKingdom(VanillaNames.War, kingdom ?? attacker ?? defender, seed, war.id, inputs);
+        return FromKingdom(VanillaNames.War, kingdom ?? attacker ?? defender, seed, war.id, inputs, accept);
     }
 
     [HarmonyPatch(typeof(Book), nameof(Book.newBook))]
@@ -118,14 +104,15 @@ internal static class IndependentNames
     private static string NameBook(string template, Actor author, Kingdom kingdom, bool legacy, Book book) =>
         GenerateBook(template, book, author) ?? NameGenerator.generateNameFromTemplate(template, author, kingdom, legacy);
 
-    internal static string GenerateBook(string template, Book book, Actor author, long? culture = null, long? language = null)
+    internal static string GenerateBook(string template, Book book, Actor author, long? culture = null,
+        long? language = null, Func<string, bool> accept = null)
     {
         const string prefix = "book_name_";
         var inputs = new Dictionary<string, object>();
         if (template?.StartsWith(prefix, StringComparison.Ordinal) == true)
             inputs["topic"] = template.Substring(prefix.Length).Replace('_', '-');
         return VanillaNames.Generate("worldbox:book", author, Seed(book.id), kind: template, inputs: inputs,
-            culture: culture, language: language);
+            culture: culture, language: language, accept: accept);
     }
 
     [HarmonyPatch(typeof(Plot), nameof(Plot.newPlot))]
@@ -143,14 +130,14 @@ internal static class IndependentNames
         plot.setName(GeneratePlot(plot, author, asset) ?? vanilla, track);
     }
 
-    internal static string GeneratePlot(Plot plot, Actor author, PlotAsset asset)
+    internal static string GeneratePlot(Plot plot, Actor author, PlotAsset asset, Func<string, bool> accept = null)
     {
         if (asset == null) return null;
         var inputs = new Dictionary<string, object> { ["plot"] = asset.id.ToLowerInvariant().Replace('_', '-') };
         plot.data.get("chinesename.plot-language.v1", out long language, -1L);
         return VanillaNames.Generate(VanillaNames.Plot, author, Seed(plot.id), kind: asset.id, inputs: inputs,
             culture: author?.culture?.id ?? (plot.data.name_culture_id >= 0 ? plot.data.name_culture_id : null),
-            language: author?.language?.id ?? (language >= 0 ? language : null));
+            language: author?.language?.id ?? (language >= 0 ? language : null), accept: accept);
     }
 
     [HarmonyPatch(typeof(Army), nameof(Army.generateName))]
@@ -168,7 +155,7 @@ internal static class IndependentNames
             return !TryAssign(army, kingdom);
         }
 
-        internal static bool TryAssign(Army army, Kingdom kingdom)
+        internal static bool TryAssign(Army army, Kingdom kingdom, Func<string, bool> accept = null)
         {
             if (kingdom == null)
             {
@@ -184,7 +171,7 @@ internal static class IndependentNames
                 other.getKingdom() == kingdom).Select(other => other.name), StringComparer.Ordinal);
             string name = VanillaNames.Generate("worldbox:army", null, Seed(army.id ^ kingdom.id),
                 culture: city?.culture?.id ?? kingdom.culture?.id, language: city?.language?.id ?? kingdom.language?.id,
-                accept: candidate => !taken.Contains(candidate), inputs: inputs);
+                accept: candidate => !taken.Contains(candidate) && (accept == null || accept(candidate)), inputs: inputs);
             if (name == null) return false;
             if (army.name != name) army.setName(name);
             army.data.set(Source, kingdom.id);
@@ -198,7 +185,7 @@ internal static class IndependentNames
         private static bool Prefix(Subspecies __instance, ActorAsset pAsset, WorldTile pTile)
             => !TryAssign(__instance, pAsset, pTile?.Type?.biome_asset?.id);
 
-        internal static bool TryAssign(Subspecies subspecies, ActorAsset asset, string biome)
+        internal static bool TryAssign(Subspecies subspecies, ActorAsset asset, string biome, Func<string, bool> accept = null)
         {
             if (asset == null) return false;
             var used = new HashSet<string>(World.world.subspecies.Where(other => other != subspecies)
@@ -206,7 +193,7 @@ internal static class IndependentNames
             var inputs = new Dictionary<string, object> { ["species"] = asset.id };
             if (biome != null) inputs["kind"] = biome;
             var result = NamingApi.Current.Generate(new NameRequest("worldbox:subspecies", unchecked((ulong)Seed(subspecies.id)),
-                inputs: inputs), name => !used.Contains(name));
+                inputs: inputs), name => !used.Contains(name) && (accept == null || accept(name)));
             if (!result.Success) return false;
             if (subspecies.name != result.Text) subspecies.setName(result.Text);
             return true;
@@ -281,13 +268,13 @@ internal static class IndependentNames
             culture: maker?.culture?.id ?? origin?.culture?.id, language: maker?.language?.id ?? origin?.language?.id);
     }
 
-    internal static string GenerateExistingItem(Item item)
+    internal static string GenerateExistingItem(Item item, Func<string, bool> accept = null)
     {
         var maker = World.world.units.get(item.data.creator_id);
         item.data.get("chinesename.reforges.v1", out int reforges);
         if (reforges <= 0)
-            return EquipmentName(item, item.asset, maker, Seed(item.id), "legendary");
-        return EquipmentName(item, item.asset, maker, Seed(item.id + reforges), "reforge");
+            return EquipmentName(item, item.asset, maker, Seed(item.id), "legendary", accept);
+        return EquipmentName(item, item.asset, maker, Seed(item.id + reforges), "reforge", accept);
     }
 
     [HarmonyPatch]
