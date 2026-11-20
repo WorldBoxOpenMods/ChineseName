@@ -63,8 +63,9 @@ internal static class IndependentNames
 
     internal static int AssignWorldNames(MapStats map)
     {
-        string worldName = VanillaNames.Generate("worldbox:world", null, map.life_dna);
-        string creator = VanillaNames.Generate("worldbox:player", null, map.life_dna);
+        string size = MapSizeLibrary.getPreset(Math.Max(Config.ZONE_AMOUNT_X, Config.ZONE_AMOUNT_Y));
+        string worldName = VanillaNames.Generate("worldbox:world", null, map.life_dna, kind: size);
+        string creator = VanillaNames.Generate("worldbox:player", null, map.life_dna, kind: size);
         int changed = 0;
         if (worldName != null && map.name != worldName) { map.name = worldName; changed++; }
         if (creator != null && map.player_name != creator) { map.player_name = creator; changed++; }

@@ -29,6 +29,7 @@ internal static class WorldNamingReassignment
         {
             culture.Pack = null;
             ClearVanilla(culture.Cards);
+            ClearVanilla(culture.Arrangements);
             ClearVanilla(culture.Rules);
             ClearVanilla(culture.Presets);
             ClearVanilla(culture.Variants);
@@ -89,9 +90,9 @@ internal static class WorldNamingReassignment
             Record(subject, before, after != null);
         }
         string Generate(string type, BaseSystemData data, Actor actor = null, Culture culture = null,
-            Language language = null, string species = null)
+            Language language = null, string species = null, Dictionary<string, object> inputs = null)
         {
-            var inputs = new Dictionary<string, object>();
+            inputs ??= new Dictionary<string, object>();
             if (species != null) inputs["species"] = inputs[VanillaNames.CultureSpecies] = species;
             return VanillaNames.Generate(type, actor, IndependentNames.Seed(data.id),
                 culture: culture?.id ?? actor?.culture?.id ?? (data.name_culture_id >= 0 ? data.name_culture_id : null),
@@ -116,7 +117,7 @@ internal static class WorldNamingReassignment
         }
         foreach (var city in world.cities)
             Assign(city, city.data, () => Generate("worldbox:city", city.data, city.leader ?? world.units.get(city.data.founder_id),
-                city.culture, city.language, city.data.original_actor_asset));
+                city.culture, city.language, city.data.original_actor_asset, VanillaNames.CityInputs(city)));
         foreach (var kingdom in world.kingdoms)
             Assign(kingdom, kingdom.data, () => KingdomNames.Generate(kingdom, kingdom.king, IndependentNames.Seed(kingdom.id),
                 kingdom.culture?.id ?? kingdom.king?.culture?.id ?? (kingdom.data.name_culture_id >= 0 ? kingdom.data.name_culture_id : null),

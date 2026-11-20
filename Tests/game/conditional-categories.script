@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool condition, string message)
+{
+    if (!condition) throw new InvalidOperationException(message);
+}
+async System.Threading.Tasks.Task Frames(int count = 10)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+
+const string package = "chinesename:conditional-arrangements";
+var service = NamingApi.Current;
+var pack = service.GetPackage(package);
+Check(pack != null && pack.Arrangements.Keys.ToHashSet().SetEquals(service.Types.Select(type => type.Id)),
+    "The bundled examples do not cover all registered stock types.");
+var world = World.world;
+Config.paused = true;
+Config.tooltips_active = true;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+kingdom.setCulture(culture);
+var language = world.languages.newLanguage(actor, true);
+actor.joinLanguage(language);
+kingdom.setLanguage(language);
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var config = service.GetWorld();
+if (!config.EnabledPacks.Contains(package)) config.EnabledPacks.Add(package);
+config.CulturePack = package;
+WorldNamingStore.Apply(config);
+
+var examples = new Dictionary<string, string>();
+var worldTypes = new HashSet<string> { "worldbox:subspecies", "worldbox:world", "worldbox:player" };
+foreach (var type in service.Types)
+{
+    var item = pack.Arrangements[type.Id].Single();
+    var inputs = type.Fields.Values.Where(field => field.Example != null).ToDictionary(field => field.Id, field => field.Example);
+    foreach (var condition in item.Expression.Children)
+    {
+        if (condition.Test == ArrangementTest.Absent) inputs.Remove(condition.Field);
+        else if (condition.Test == ArrangementTest.Present)
+            inputs.TryAdd(condition.Field, "临川");
+        else inputs[condition.Field] = condition.Values[0];
+    }
+    var result = service.Generate(new NameRequest(type.Id, 0, worldTypes.Contains(type.Id) ? null : culture.id, language.id, inputs));
+    Check(result.Success && result.Diagnostics.Contains("排列:" + item.Id), $"{type.Id} did not use {item.Id}: {result.Text}");
+    examples[type.Id] = result.Text;
+}
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var visited = new List<string>();
+foreach (var type in service.Types.Where(type => !worldTypes.Contains(type.Id)))
+{
+    string id = type.Id == "worldbox:person" ? "unit" : type.Id.Substring("worldbox:".Length);
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_" + id).toggle.click();
+    await Frames();
+    var item = pack.Arrangements[type.Id].Single();
+    var tileButton = shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + item.Id);
+    tileButton.onClick.Invoke();
+    await Frames();
+    Check(shell.transform.FindRecursive("ConditionPresets") != null &&
+        shell.GetComponentsInChildren<Button>().Any(button => button.name.StartsWith("ConditionPreset.")),
+        "The original editor is missing condition presets for " + type.Id);
+    var hover = shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + item.Id);
+    Tooltip.hideTooltipNow();
+    hover.GetComponent<TipButton>().hoverAction.Invoke();
+    await Frames(2);
+    var tip = Tooltip.findActive(value => value.asset.id == "chinesename_arrangement");
+    Check(tip != null && !string.IsNullOrWhiteSpace(tip.description.text) && !tip.description.text.Contains("命名样例"),
+        "The arrangement tooltip could not preview " + type.Id + ": " + tip?.description.text);
+    visited.Add(type.Id);
+}
+Tooltip.hideTooltipNow();
+
+tile.zone.centerTile.setTopTileType(TopTileLibrary.desert_low);
+var city = world.cities.buildNewCity(actor, tile.zone);
+Check(city.getTile()?.Type?.biome_asset?.id == "biome_desert" &&
+    (city.name.EndsWith("关") || city.name.EndsWith("堡") || city.name.EndsWith("城")),
+    "The real city naming entry did not pick the desert arrangement: " + city.name);
+return new { examples, editorCategories = visited.Count, actualDesertCity = city.name };

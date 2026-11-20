@@ -10,4 +10,4 @@
 
 ## 给接入模组的 Agent
 
-在 NML 清单声明 `CHINESENAME` 依赖，从 `NamingApi.Current` 和 `NameRequest` 查找入口。可以为已有类别或新物种补规则、词库及候选来源，也可以接入法术、功法等新类别，并在原版「命名学」中注册分类和字形。[API 实现](Source/Naming/NamingService.cs) · [请求与结果](Source/Naming/Contracts.cs) · [接入示例和包格式](Doc/命名框架重构/实现与验证.md#其他模组接入)
+在 NML 清单声明 `CHINESENAME` 依赖，从 `NamingApi.Current` 和 `NameRequest` 查找入口。可以为已有类别或新物种补规则、词库及候选来源，也可以接入法术、功法等新类别，并在原版「命名学」中注册分类、字形和预制条件。[API 实现](Source/Naming/NamingService.cs) · [请求与结果](Source/Naming/Contracts.cs) · [接入示例和包格式](Doc/命名框架重构/实现与验证.md#其他模组接入)

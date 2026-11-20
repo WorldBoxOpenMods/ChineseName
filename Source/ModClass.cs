@@ -16,6 +16,7 @@ internal sealed class ModClass : BasicMod<ModClass>
         Type[] patches =
         {
             typeof(WorldNamingStore.NewWorld), typeof(VanillaNames.ActorNames), typeof(VanillaNames.FirstName),
+            typeof(VanillaNames.CityName),
             typeof(VanillaNames.Birth), typeof(VanillaNames.CopyIdentity), typeof(VanillaNames.MaterializeIdentity),
             typeof(IndependentNames.WorldNames), typeof(KingdomNames.Founding), typeof(AllianceNames.ManagedCreation),
             typeof(AllianceNames.DirectCreation), typeof(AllianceNames.Founders), typeof(AllianceNames.MemberFallback),
@@ -50,5 +51,6 @@ internal sealed class ModClass : BasicMod<ModClass>
         base.PostInit();
         NamingLineage.ConnectLanguageSplit();
         NativeNamingSettings.Register();
+        OnomasticsEditor.RegisterArrangementTooltip();
     }
 }

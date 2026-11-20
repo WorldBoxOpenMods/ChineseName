@@ -93,6 +93,23 @@ string Position(Component component)
 }
 async System.Threading.Tasks.Task Mouse(string action, Component target = null, Component destination = null)
 {
+    var scroll = shell.scrollRect;
+    if (action == "click" && target != null && target.transform.IsChildOf(scroll.content))
+    {
+        var viewport = scroll.viewport;
+        var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, target.transform);
+        float range = scroll.content.rect.height - viewport.rect.height;
+        if (range > 0)
+        {
+            float delta = bounds.max.y > viewport.rect.yMax ? bounds.max.y - viewport.rect.yMax + 3 :
+                bounds.min.y < viewport.rect.yMin ? bounds.min.y - viewport.rect.yMin - 3 : 0;
+            if (delta != 0)
+            {
+                scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + delta / range);
+                await Frames(6);
+            }
+        }
+    }
     string path = Path.Combine(exchange, ++seq + ".mouse");
     File.WriteAllText(path + ".tmp", action + (target == null ? "" : Position(target)) + (destination == null ? "" : Position(destination)));
     File.Move(path + ".tmp", path);

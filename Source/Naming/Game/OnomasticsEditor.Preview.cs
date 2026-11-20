@@ -20,7 +20,12 @@ public sealed partial class OnomasticsEditor
         }
         if (page.PreviewRevision == page.RenderedRevision) return;
         page.RenderedRevision = page.PreviewRevision;
-        var world = PartsWorld(type, culture, rule, choice);
+        var request = PartPreviewRequest(type, culture, page, rule, choice);
+        CollectPreview(service, request, PartsWorld(type, culture, rule, choice), rule.Id, page);
+    }
+
+    private static NameRequest PartPreviewRequest(NameType type, Culture culture, PartsPage page, Rule rule, CardNaming choice)
+    {
         var inputs = new Dictionary<string, object>();
         foreach (var field in type.Fields.Values)
         {
@@ -46,9 +51,13 @@ public sealed partial class OnomasticsEditor
                 _ => null
             };
         var fixedParts = surname == null ? null : new Dictionary<string, string> { [VanillaNames.Surname] = surname };
-        var request = new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage, inputs, fixedParts);
+        return new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage, inputs, fixedParts);
+    }
+
+    private static void CollectPreview(NamingService service, NameRequest request, WorldNaming world, string rule, PartsPage page)
+    {
         page.PreviewSamples.Clear();
-        using var draws = service.PreviewRule(request, world, rule.Id, PreviewDraws).GetEnumerator();
+        using var draws = service.PreviewRule(request, world, rule, PreviewDraws).GetEnumerator();
         draws.MoveNext();
         page.Result = draws.Current;
         if (!IsPreviewName(page.Result)) return;

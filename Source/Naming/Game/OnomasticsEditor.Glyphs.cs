@@ -167,6 +167,14 @@ public sealed partial class OnomasticsEditor
 
     internal bool ResetArrangement()
     {
+        if (Visible && CurrentContext && _editingArrangement != null)
+        {
+            _conditionalDraft.loadFromShortTemplate(_editingArrangement.Cards.Template);
+            _page.Message = null;
+            _page.PreviewRevision++;
+            _tab.loadFromTemplate();
+            return true;
+        }
         if (!Visible || _rule == null || _culture != SelectedMetas.selected_culture ||
             _type.Id != NativeNamingTab.CurrentType(_tab) ||
             NativeNamingArrangement.Default(_type.Id, _rule) == null) return false;

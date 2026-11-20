@@ -61,6 +61,7 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         _tab = tab;
         AttachCultureStyle();
         AttachCultureExport();
+        AttachArrangements();
         _palette = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>(true);
         AttachPalette();
 
@@ -97,6 +98,8 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         _inputWasFocused = false;
         CloseStylePicker();
         CloseCultureExport();
+        CloseArrangements();
+        ClearConditionalDraft();
         _culture = null;
         _page = null;
         _type = null;
@@ -118,11 +121,14 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         }
         if (!ReferenceEquals(map, _map) || _culture != culture || _type?.Id != id)
         {
+            if (!ReferenceEquals(map, _map)) _unfinishedConditions.Clear();
             _map = map;
             _culture = culture;
             LoadDraft();
             _type = NamingApi.Current.Types.First(type => type.Id == id);
             _page = Page(culture, _type);
+            CloseArrangements();
+            ClearConditionalDraft();
             CloseStylePicker();
             CloseCultureExport();
             RefreshStyleLabel();
@@ -173,9 +179,12 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         if (_integrated == integrated) return;
         _integrated = integrated;
         _preview.gameObject.SetActive(integrated);
+        _arrangementPanel.gameObject.SetActive(integrated && NamingApi.Current.Conditions(_type.Id).Count != 0);
         _tab.text_name_examples.enabled = !integrated;
         if (!integrated)
         {
+            _conditionPanel.gameObject.SetActive(false);
+            _arrangementEditTitle.gameObject.SetActive(false);
             _hoveredWordGroup = null;
             FitPalette();
         }
@@ -199,6 +208,11 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
             _page.PreviewRevision++;
         }
         RefreshRule();
+        if (_editingArrangement != null)
+        {
+            RenderConditional();
+            return;
+        }
         bool raw = UsesCards(_card, _rule);
         if (!raw && NativeNamingArrangement.Default(_type.Id, _rule) == null)
         {
@@ -211,6 +225,7 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
             raw ? _card : NativeNamingArrangement.ForRule(_type.Id, _rule));
         RefreshPartPreview(NamingApi.Current, _type, _culture, _page, _rule, _card);
         UpdatePalette();
+        RefreshArrangements();
         if (_commitPending)
         {
             _commitPending = false;
@@ -225,6 +240,11 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
             }
         }
 
+        DrawPreview();
+    }
+
+    private void DrawPreview()
+    {
         var selected = EventSystem.current?.currentSelectedGameObject;
         string focusedName = selected != null && selected.transform.IsChildOf(_preview) ? selected.name : null;
         Clear(_preview);
