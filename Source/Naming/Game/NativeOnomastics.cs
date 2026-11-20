@@ -23,6 +23,7 @@ internal static class NativeOnomastics
         ("worldbox:alliance", "iconAlliance", "由联盟发起国取名", null),
         ("worldbox:army", "iconArmy", "由驻地城市取名", null),
         ("worldbox:book", "iconBooks", "由作者取名，预览示例为史书", "book_name_history"),
+        (VanillaNames.Plot, "iconDiplomacy", "由发起者取名，预览示例为语言分化", "language_divergence"),
         ("worldbox:motto", "iconDiplomacy", "用于国家、氏族和联盟，预览示例为国家格言", "kingdom"),
         ("worldbox:item", "iconItemType", "由制作者取名，用于传奇装备和重铸", null)
     };

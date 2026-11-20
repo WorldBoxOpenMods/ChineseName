@@ -59,7 +59,7 @@ def word_group(id, ref, terms):
     pack["wordGroups"][id] = {"pool": ref, "words": members}
 
 
-def rule(type_id, id, parts, priority=0, starts_with=None, **conditions):
+def rule(type_id, id, parts, priority=0, starts_with=None, use_native_word_groups=False, **conditions):
     value = {"id": id, "parts": parts}
     if priority:
         value["priority"] = priority
@@ -67,6 +67,8 @@ def rule(type_id, id, parts, priority=0, starts_with=None, **conditions):
         value["when"] = conditions
     if starts_with:
         value["whenStartsWith"] = starts_with
+    if use_native_word_groups:
+        value["useNativeWordGroups"] = True
     pack["rules"].setdefault("worldbox:" + type_id, []).append(value)
 
 
@@ -79,7 +81,7 @@ english_given = bilingual("John=约翰|Mary=玛丽|Alice=艾丽斯|Arthur=亚瑟
 french_given = bilingual("Jean=让|Marie=玛丽|Pierre=皮埃尔|Camille=卡米耶|Claire=克莱尔|Émile=埃米尔|Élise=埃莉丝|Henri=亨利|Jacques=雅克|Julien=朱利安|Louise=路易丝|Luc=吕克|Madeleine=玛德莱娜|René=勒内|Sophie=索菲")
 english_surnames = bilingual("Smith=史密斯|Miller=米勒|Brown=布朗|Clarke=克拉克|Cooper=库珀|Hill=希尔|Reed=里德|Taylor=泰勒|Walker=沃克|Ward=沃德|Wells=韦尔斯|Wood=伍德")
 french_surnames = bilingual("Martin=马丁|Dupont=迪蓬|Bernard=贝尔纳|Dubois=迪布瓦|Fournier=富尼耶|Laurent=洛朗|Lefèvre=勒费弗尔|Moreau=莫罗|Petit=珀蒂|Rousseau=卢梭|Roux=鲁|Simon=西蒙")
-western_given = pool("western-given", english_given + french_given + [("Ainsley", None)], "西式给名")
+western_given = pool("western-given", english_given + french_given + [("Ainsley", "安斯利")], "西式给名")
 western_surname = pool("western-surname", english_surnames + french_surnames, "西式姓氏")
 western_middle = pool("western-middle", bilingual("James=詹姆斯|Anne=安娜|Rose=罗丝|Grace=格蕾丝|Louis=路易|Paul=保罗|Hélène=埃莱娜|Noël=诺埃尔"), "西式中间名")
 for kind, ref, pairs in [
@@ -343,6 +345,43 @@ for kind, label, stems, other, suffix in [
     word_group("early-" + key + "-titles", ref, stems.split())
     word_group("alternate-" + key + "-titles", ref, other.split())
     rule("book", key, [part("name", ref), text("suffix", suffix)], 5, kind="book_name_" + kind)
+
+plot_action = pool("plot-action", "筹议 密议 合谋".split(), "通用谋划称谓")
+for kind, names in {
+    "rebellion": "举旗起事 联众起义",
+    "new-war": "起兵谋议 议定出征",
+    "alliance-create": "筹立盟约 议结同盟",
+    "alliance-join": "商议入盟 请入盟约",
+    "alliance-destroy": "谋解盟约 商议退盟",
+    "attacker-stop-war": "商议停战 议定休兵",
+    "new-book": "立说著书 编撰新篇",
+    "new-language": "创制新语 创立新话",
+    "new-religion": "立教传信 创立新教",
+    "new-culture": "立制兴俗 肇建新俗",
+    "clan-ascension": "擢升氏族 谋立族望",
+    "culture-divide": "文化分支 另立新俗",
+    "religion-schism": "教派分裂 宗教分支",
+    "language-divergence": "语言分化 乡音分支",
+    "summon-meteor-rain": "唤落星雨 引降流星",
+    "summon-earthquake": "引发地震 祈动山川",
+    "summon-thunderstorm": "召来雷暴 引动风雷",
+    "summon-stormfront": "召来风暴 引风成暴",
+    "summon-hellstorm": "招引炼狱风暴 召来地狱风暴",
+    "summon-demons": "召来恶魔 招引魔众",
+    "summon-angles": "召来四角生灵 招引四角生灵",
+    "summon-skeletons": "召来骷髅 招引白骨",
+    "summon-living-plants": "唤醒草木 招引活化草木",
+    "big-cast-coffee": "广施醒神 咖啡赐福",
+    "big-cast-bubble-shield": "广施气泡护盾 召来护身气泡",
+    "big-cast-madness": "播下癫狂 广施狂乱",
+    "big-cast-slowness": "广施迟缓 缓行咒仪",
+    "cause-rebellion": "策动叛乱 煽动起事",
+}.items():
+    options = names.split()
+    ref = pool("plot-action." + kind, options, options[0] + "称谓")
+    word_group("plot-" + kind, ref, options[:1])
+rule("plot", "action", [part("name", plot_action, poolInput="plot", fallbackPool=plot_action)],
+     use_native_word_groups=True)
 
 for kind, label, endings, names in [
     ("sword", "剑", "剑 长剑", "断潮 照雪 藏锋 龙渊 青锋 逐月 承影"),

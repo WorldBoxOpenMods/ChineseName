@@ -68,8 +68,8 @@ await Frames();
 var tab = shell.GetComponentInChildren<OnomasticsTab>();
 var toggles = tab._tab_groups._toggles.Where(toggle => toggle.gameObject.activeInHierarchy).ToArray();
 var categoryPanel = (RectTransform)tab._tab_groups.transform;
-Check(toggles.Length == 14 && toggles.All(toggle => toggle.transform.parent == categoryPanel && toggle.toggle.icon.sprite != null),
-    "All 14 icons should share the original category container.");
+Check(toggles.Length == 15 && toggles.All(toggle => toggle.transform.parent == categoryPanel && toggle.toggle.icon.sprite != null),
+    "All 15 icons should share the original category container.");
 var screen = (UnityEngine.Screen.width, UnityEngine.Screen.height, UnityEngine.Screen.fullScreenMode);
 int CountRows()
 {

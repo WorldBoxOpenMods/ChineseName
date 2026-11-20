@@ -5271,6 +5271,20 @@
         ]
       }
     ],
+    "worldbox:plot": [
+      {
+        "id": "action",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:plot-action",
+            "poolInput": "plot",
+            "fallbackPool": "chinesename:plot-action"
+          }
+        ],
+        "useNativeWordGroups": true
+      }
+    ],
     "worldbox:city": [
       {
         "id": "places",
@@ -7153,7 +7167,8 @@
     },
     {
       "id": "chinesename:western-given.41-69-6e-73-6c-65-79",
-      "text": "Ainsley"
+      "text": "Ainsley",
+      "chinese": "安斯利"
     },
     {
       "id": "chinesename:western-surname.53-6d-69-74-68",
@@ -17892,6 +17907,242 @@
       "text": "诸侯"
     },
     {
+      "id": "chinesename:plot-action.7b79-8bae",
+      "text": "筹议"
+    },
+    {
+      "id": "chinesename:plot-action.5bc6-8bae",
+      "text": "密议"
+    },
+    {
+      "id": "chinesename:plot-action.5408-8c0b",
+      "text": "合谋"
+    },
+    {
+      "id": "chinesename:plot-action.rebellion.4e3e-65d7-8d77-4e8b",
+      "text": "举旗起事"
+    },
+    {
+      "id": "chinesename:plot-action.rebellion.8054-4f17-8d77-4e49",
+      "text": "联众起义"
+    },
+    {
+      "id": "chinesename:plot-action.new-war.8d77-5175-8c0b-8bae",
+      "text": "起兵谋议"
+    },
+    {
+      "id": "chinesename:plot-action.new-war.8bae-5b9a-51fa-5f81",
+      "text": "议定出征"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-create.7b79-7acb-76df-7ea6",
+      "text": "筹立盟约"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-create.8bae-7ed3-540c-76df",
+      "text": "议结同盟"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-join.5546-8bae-5165-76df",
+      "text": "商议入盟"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-join.8bf7-5165-76df-7ea6",
+      "text": "请入盟约"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-destroy.8c0b-89e3-76df-7ea6",
+      "text": "谋解盟约"
+    },
+    {
+      "id": "chinesename:plot-action.alliance-destroy.5546-8bae-9000-76df",
+      "text": "商议退盟"
+    },
+    {
+      "id": "chinesename:plot-action.attacker-stop-war.5546-8bae-505c-6218",
+      "text": "商议停战"
+    },
+    {
+      "id": "chinesename:plot-action.attacker-stop-war.8bae-5b9a-4f11-5175",
+      "text": "议定休兵"
+    },
+    {
+      "id": "chinesename:plot-action.new-book.7acb-8bf4-8457-4e66",
+      "text": "立说著书"
+    },
+    {
+      "id": "chinesename:plot-action.new-book.7f16-64b0-65b0-7bc7",
+      "text": "编撰新篇"
+    },
+    {
+      "id": "chinesename:plot-action.new-language.521b-5236-65b0-8bed",
+      "text": "创制新语"
+    },
+    {
+      "id": "chinesename:plot-action.new-language.521b-7acb-65b0-8bdd",
+      "text": "创立新话"
+    },
+    {
+      "id": "chinesename:plot-action.new-religion.7acb-6559-4f20-4fe1",
+      "text": "立教传信"
+    },
+    {
+      "id": "chinesename:plot-action.new-religion.521b-7acb-65b0-6559",
+      "text": "创立新教"
+    },
+    {
+      "id": "chinesename:plot-action.new-culture.7acb-5236-5174-4fd7",
+      "text": "立制兴俗"
+    },
+    {
+      "id": "chinesename:plot-action.new-culture.8087-5efa-65b0-4fd7",
+      "text": "肇建新俗"
+    },
+    {
+      "id": "chinesename:plot-action.clan-ascension.64e2-5347-6c0f-65cf",
+      "text": "擢升氏族"
+    },
+    {
+      "id": "chinesename:plot-action.clan-ascension.8c0b-7acb-65cf-671b",
+      "text": "谋立族望"
+    },
+    {
+      "id": "chinesename:plot-action.culture-divide.6587-5316-5206-652f",
+      "text": "文化分支"
+    },
+    {
+      "id": "chinesename:plot-action.culture-divide.53e6-7acb-65b0-4fd7",
+      "text": "另立新俗"
+    },
+    {
+      "id": "chinesename:plot-action.religion-schism.6559-6d3e-5206-88c2",
+      "text": "教派分裂"
+    },
+    {
+      "id": "chinesename:plot-action.religion-schism.5b97-6559-5206-652f",
+      "text": "宗教分支"
+    },
+    {
+      "id": "chinesename:plot-action.language-divergence.8bed-8a00-5206-5316",
+      "text": "语言分化"
+    },
+    {
+      "id": "chinesename:plot-action.language-divergence.4e61-97f3-5206-652f",
+      "text": "乡音分支"
+    },
+    {
+      "id": "chinesename:plot-action.summon-meteor-rain.5524-843d-661f-96e8",
+      "text": "唤落星雨"
+    },
+    {
+      "id": "chinesename:plot-action.summon-meteor-rain.5f15-964d-6d41-661f",
+      "text": "引降流星"
+    },
+    {
+      "id": "chinesename:plot-action.summon-earthquake.5f15-53d1-5730-9707",
+      "text": "引发地震"
+    },
+    {
+      "id": "chinesename:plot-action.summon-earthquake.7948-52a8-5c71-5ddd",
+      "text": "祈动山川"
+    },
+    {
+      "id": "chinesename:plot-action.summon-thunderstorm.53ec-6765-96f7-66b4",
+      "text": "召来雷暴"
+    },
+    {
+      "id": "chinesename:plot-action.summon-thunderstorm.5f15-52a8-98ce-96f7",
+      "text": "引动风雷"
+    },
+    {
+      "id": "chinesename:plot-action.summon-stormfront.53ec-6765-98ce-66b4",
+      "text": "召来风暴"
+    },
+    {
+      "id": "chinesename:plot-action.summon-stormfront.5f15-98ce-6210-66b4",
+      "text": "引风成暴"
+    },
+    {
+      "id": "chinesename:plot-action.summon-hellstorm.62db-5f15-70bc-72f1-98ce-66b4",
+      "text": "招引炼狱风暴"
+    },
+    {
+      "id": "chinesename:plot-action.summon-hellstorm.53ec-6765-5730-72f1-98ce-66b4",
+      "text": "召来地狱风暴"
+    },
+    {
+      "id": "chinesename:plot-action.summon-demons.53ec-6765-6076-9b54",
+      "text": "召来恶魔"
+    },
+    {
+      "id": "chinesename:plot-action.summon-demons.62db-5f15-9b54-4f17",
+      "text": "招引魔众"
+    },
+    {
+      "id": "chinesename:plot-action.summon-angles.53ec-6765-56db-89d2-751f-7075",
+      "text": "召来四角生灵"
+    },
+    {
+      "id": "chinesename:plot-action.summon-angles.62db-5f15-56db-89d2-751f-7075",
+      "text": "招引四角生灵"
+    },
+    {
+      "id": "chinesename:plot-action.summon-skeletons.53ec-6765-9ab7-9ac5",
+      "text": "召来骷髅"
+    },
+    {
+      "id": "chinesename:plot-action.summon-skeletons.62db-5f15-767d-9aa8",
+      "text": "招引白骨"
+    },
+    {
+      "id": "chinesename:plot-action.summon-living-plants.5524-9192-8349-6728",
+      "text": "唤醒草木"
+    },
+    {
+      "id": "chinesename:plot-action.summon-living-plants.62db-5f15-6d3b-5316-8349-6728",
+      "text": "招引活化草木"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-coffee.5e7f-65bd-9192-795e",
+      "text": "广施醒神"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-coffee.5496-5561-8d50-798f",
+      "text": "咖啡赐福"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-bubble-shield.5e7f-65bd-6c14-6ce1-62a4-76fe",
+      "text": "广施气泡护盾"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-bubble-shield.53ec-6765-62a4-8eab-6c14-6ce1",
+      "text": "召来护身气泡"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-madness.64ad-4e0b-766b-72c2",
+      "text": "播下癫狂"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-madness.5e7f-65bd-72c2-4e71",
+      "text": "广施狂乱"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-slowness.5e7f-65bd-8fdf-7f13",
+      "text": "广施迟缓"
+    },
+    {
+      "id": "chinesename:plot-action.big-cast-slowness.7f13-884c-5492-4eea",
+      "text": "缓行咒仪"
+    },
+    {
+      "id": "chinesename:plot-action.cause-rebellion.7b56-52a8-53db-4e71",
+      "text": "策动叛乱"
+    },
+    {
+      "id": "chinesename:plot-action.cause-rebellion.717d-52a8-8d77-4e8b",
+      "text": "煽动起事"
+    },
+    {
       "id": "chinesename:equipment-kind.sword.5251",
       "text": "剑"
     },
@@ -22972,6 +23223,123 @@
       "chinesename:book-history.6d77-90a6": 1,
       "chinesename:book-history.8bf8-4faf": 1
     },
+    "chinesename:plot-action": {
+      "chinesename:plot-action.7b79-8bae": 1,
+      "chinesename:plot-action.5bc6-8bae": 1,
+      "chinesename:plot-action.5408-8c0b": 1
+    },
+    "chinesename:plot-action.rebellion": {
+      "chinesename:plot-action.rebellion.4e3e-65d7-8d77-4e8b": 1,
+      "chinesename:plot-action.rebellion.8054-4f17-8d77-4e49": 1
+    },
+    "chinesename:plot-action.new-war": {
+      "chinesename:plot-action.new-war.8d77-5175-8c0b-8bae": 1,
+      "chinesename:plot-action.new-war.8bae-5b9a-51fa-5f81": 1
+    },
+    "chinesename:plot-action.alliance-create": {
+      "chinesename:plot-action.alliance-create.7b79-7acb-76df-7ea6": 1,
+      "chinesename:plot-action.alliance-create.8bae-7ed3-540c-76df": 1
+    },
+    "chinesename:plot-action.alliance-join": {
+      "chinesename:plot-action.alliance-join.5546-8bae-5165-76df": 1,
+      "chinesename:plot-action.alliance-join.8bf7-5165-76df-7ea6": 1
+    },
+    "chinesename:plot-action.alliance-destroy": {
+      "chinesename:plot-action.alliance-destroy.8c0b-89e3-76df-7ea6": 1,
+      "chinesename:plot-action.alliance-destroy.5546-8bae-9000-76df": 1
+    },
+    "chinesename:plot-action.attacker-stop-war": {
+      "chinesename:plot-action.attacker-stop-war.5546-8bae-505c-6218": 1,
+      "chinesename:plot-action.attacker-stop-war.8bae-5b9a-4f11-5175": 1
+    },
+    "chinesename:plot-action.new-book": {
+      "chinesename:plot-action.new-book.7acb-8bf4-8457-4e66": 1,
+      "chinesename:plot-action.new-book.7f16-64b0-65b0-7bc7": 1
+    },
+    "chinesename:plot-action.new-language": {
+      "chinesename:plot-action.new-language.521b-5236-65b0-8bed": 1,
+      "chinesename:plot-action.new-language.521b-7acb-65b0-8bdd": 1
+    },
+    "chinesename:plot-action.new-religion": {
+      "chinesename:plot-action.new-religion.7acb-6559-4f20-4fe1": 1,
+      "chinesename:plot-action.new-religion.521b-7acb-65b0-6559": 1
+    },
+    "chinesename:plot-action.new-culture": {
+      "chinesename:plot-action.new-culture.7acb-5236-5174-4fd7": 1,
+      "chinesename:plot-action.new-culture.8087-5efa-65b0-4fd7": 1
+    },
+    "chinesename:plot-action.clan-ascension": {
+      "chinesename:plot-action.clan-ascension.64e2-5347-6c0f-65cf": 1,
+      "chinesename:plot-action.clan-ascension.8c0b-7acb-65cf-671b": 1
+    },
+    "chinesename:plot-action.culture-divide": {
+      "chinesename:plot-action.culture-divide.6587-5316-5206-652f": 1,
+      "chinesename:plot-action.culture-divide.53e6-7acb-65b0-4fd7": 1
+    },
+    "chinesename:plot-action.religion-schism": {
+      "chinesename:plot-action.religion-schism.6559-6d3e-5206-88c2": 1,
+      "chinesename:plot-action.religion-schism.5b97-6559-5206-652f": 1
+    },
+    "chinesename:plot-action.language-divergence": {
+      "chinesename:plot-action.language-divergence.8bed-8a00-5206-5316": 1,
+      "chinesename:plot-action.language-divergence.4e61-97f3-5206-652f": 1
+    },
+    "chinesename:plot-action.summon-meteor-rain": {
+      "chinesename:plot-action.summon-meteor-rain.5524-843d-661f-96e8": 1,
+      "chinesename:plot-action.summon-meteor-rain.5f15-964d-6d41-661f": 1
+    },
+    "chinesename:plot-action.summon-earthquake": {
+      "chinesename:plot-action.summon-earthquake.5f15-53d1-5730-9707": 1,
+      "chinesename:plot-action.summon-earthquake.7948-52a8-5c71-5ddd": 1
+    },
+    "chinesename:plot-action.summon-thunderstorm": {
+      "chinesename:plot-action.summon-thunderstorm.53ec-6765-96f7-66b4": 1,
+      "chinesename:plot-action.summon-thunderstorm.5f15-52a8-98ce-96f7": 1
+    },
+    "chinesename:plot-action.summon-stormfront": {
+      "chinesename:plot-action.summon-stormfront.53ec-6765-98ce-66b4": 1,
+      "chinesename:plot-action.summon-stormfront.5f15-98ce-6210-66b4": 1
+    },
+    "chinesename:plot-action.summon-hellstorm": {
+      "chinesename:plot-action.summon-hellstorm.62db-5f15-70bc-72f1-98ce-66b4": 1,
+      "chinesename:plot-action.summon-hellstorm.53ec-6765-5730-72f1-98ce-66b4": 1
+    },
+    "chinesename:plot-action.summon-demons": {
+      "chinesename:plot-action.summon-demons.53ec-6765-6076-9b54": 1,
+      "chinesename:plot-action.summon-demons.62db-5f15-9b54-4f17": 1
+    },
+    "chinesename:plot-action.summon-angles": {
+      "chinesename:plot-action.summon-angles.53ec-6765-56db-89d2-751f-7075": 1,
+      "chinesename:plot-action.summon-angles.62db-5f15-56db-89d2-751f-7075": 1
+    },
+    "chinesename:plot-action.summon-skeletons": {
+      "chinesename:plot-action.summon-skeletons.53ec-6765-9ab7-9ac5": 1,
+      "chinesename:plot-action.summon-skeletons.62db-5f15-767d-9aa8": 1
+    },
+    "chinesename:plot-action.summon-living-plants": {
+      "chinesename:plot-action.summon-living-plants.5524-9192-8349-6728": 1,
+      "chinesename:plot-action.summon-living-plants.62db-5f15-6d3b-5316-8349-6728": 1
+    },
+    "chinesename:plot-action.big-cast-coffee": {
+      "chinesename:plot-action.big-cast-coffee.5e7f-65bd-9192-795e": 1,
+      "chinesename:plot-action.big-cast-coffee.5496-5561-8d50-798f": 1
+    },
+    "chinesename:plot-action.big-cast-bubble-shield": {
+      "chinesename:plot-action.big-cast-bubble-shield.5e7f-65bd-6c14-6ce1-62a4-76fe": 1,
+      "chinesename:plot-action.big-cast-bubble-shield.53ec-6765-62a4-8eab-6c14-6ce1": 1
+    },
+    "chinesename:plot-action.big-cast-madness": {
+      "chinesename:plot-action.big-cast-madness.64ad-4e0b-766b-72c2": 1,
+      "chinesename:plot-action.big-cast-madness.5e7f-65bd-72c2-4e71": 1
+    },
+    "chinesename:plot-action.big-cast-slowness": {
+      "chinesename:plot-action.big-cast-slowness.5e7f-65bd-8fdf-7f13": 1,
+      "chinesename:plot-action.big-cast-slowness.7f13-884c-5492-4eea": 1
+    },
+    "chinesename:plot-action.cause-rebellion": {
+      "chinesename:plot-action.cause-rebellion.7b56-52a8-53db-4e71": 1,
+      "chinesename:plot-action.cause-rebellion.717d-52a8-8d77-4e8b": 1
+    },
     "chinesename:equipment-kind.sword": {
       "chinesename:equipment-kind.sword.5251": 1,
       "chinesename:equipment-kind.sword.957f-5251": 1
@@ -23515,6 +23883,35 @@
     "chinesename:book-math": "算学著作",
     "chinesename:book-biology": "博物著作",
     "chinesename:book-history": "史书",
+    "chinesename:plot-action": "通用谋划称谓",
+    "chinesename:plot-action.rebellion": "举旗起事称谓",
+    "chinesename:plot-action.new-war": "起兵谋议称谓",
+    "chinesename:plot-action.alliance-create": "筹立盟约称谓",
+    "chinesename:plot-action.alliance-join": "商议入盟称谓",
+    "chinesename:plot-action.alliance-destroy": "谋解盟约称谓",
+    "chinesename:plot-action.attacker-stop-war": "商议停战称谓",
+    "chinesename:plot-action.new-book": "立说著书称谓",
+    "chinesename:plot-action.new-language": "创制新语称谓",
+    "chinesename:plot-action.new-religion": "立教传信称谓",
+    "chinesename:plot-action.new-culture": "立制兴俗称谓",
+    "chinesename:plot-action.clan-ascension": "擢升氏族称谓",
+    "chinesename:plot-action.culture-divide": "文化分支称谓",
+    "chinesename:plot-action.religion-schism": "教派分裂称谓",
+    "chinesename:plot-action.language-divergence": "语言分化称谓",
+    "chinesename:plot-action.summon-meteor-rain": "唤落星雨称谓",
+    "chinesename:plot-action.summon-earthquake": "引发地震称谓",
+    "chinesename:plot-action.summon-thunderstorm": "召来雷暴称谓",
+    "chinesename:plot-action.summon-stormfront": "召来风暴称谓",
+    "chinesename:plot-action.summon-hellstorm": "招引炼狱风暴称谓",
+    "chinesename:plot-action.summon-demons": "召来恶魔称谓",
+    "chinesename:plot-action.summon-angles": "召来四角生灵称谓",
+    "chinesename:plot-action.summon-skeletons": "召来骷髅称谓",
+    "chinesename:plot-action.summon-living-plants": "唤醒草木称谓",
+    "chinesename:plot-action.big-cast-coffee": "广施醒神称谓",
+    "chinesename:plot-action.big-cast-bubble-shield": "广施气泡护盾称谓",
+    "chinesename:plot-action.big-cast-madness": "播下癫狂称谓",
+    "chinesename:plot-action.big-cast-slowness": "广施迟缓称谓",
+    "chinesename:plot-action.cause-rebellion": "策动叛乱称谓",
     "chinesename:equipment-kind.sword": "剑类称谓",
     "chinesename:equipment-name.sword": "剑类名号",
     "chinesename:equipment-kind.axe": "斧类称谓",
@@ -24452,6 +24849,174 @@
         "chinesename:book-history.8fdc-5f81",
         "chinesename:book-history.6d77-90a6",
         "chinesename:book-history.8bf8-4faf"
+      ]
+    },
+    "plot-rebellion": {
+      "pool": "chinesename:plot-action.rebellion",
+      "words": [
+        "chinesename:plot-action.rebellion.4e3e-65d7-8d77-4e8b"
+      ]
+    },
+    "plot-new-war": {
+      "pool": "chinesename:plot-action.new-war",
+      "words": [
+        "chinesename:plot-action.new-war.8d77-5175-8c0b-8bae"
+      ]
+    },
+    "plot-alliance-create": {
+      "pool": "chinesename:plot-action.alliance-create",
+      "words": [
+        "chinesename:plot-action.alliance-create.7b79-7acb-76df-7ea6"
+      ]
+    },
+    "plot-alliance-join": {
+      "pool": "chinesename:plot-action.alliance-join",
+      "words": [
+        "chinesename:plot-action.alliance-join.5546-8bae-5165-76df"
+      ]
+    },
+    "plot-alliance-destroy": {
+      "pool": "chinesename:plot-action.alliance-destroy",
+      "words": [
+        "chinesename:plot-action.alliance-destroy.8c0b-89e3-76df-7ea6"
+      ]
+    },
+    "plot-attacker-stop-war": {
+      "pool": "chinesename:plot-action.attacker-stop-war",
+      "words": [
+        "chinesename:plot-action.attacker-stop-war.5546-8bae-505c-6218"
+      ]
+    },
+    "plot-new-book": {
+      "pool": "chinesename:plot-action.new-book",
+      "words": [
+        "chinesename:plot-action.new-book.7acb-8bf4-8457-4e66"
+      ]
+    },
+    "plot-new-language": {
+      "pool": "chinesename:plot-action.new-language",
+      "words": [
+        "chinesename:plot-action.new-language.521b-5236-65b0-8bed"
+      ]
+    },
+    "plot-new-religion": {
+      "pool": "chinesename:plot-action.new-religion",
+      "words": [
+        "chinesename:plot-action.new-religion.7acb-6559-4f20-4fe1"
+      ]
+    },
+    "plot-new-culture": {
+      "pool": "chinesename:plot-action.new-culture",
+      "words": [
+        "chinesename:plot-action.new-culture.7acb-5236-5174-4fd7"
+      ]
+    },
+    "plot-clan-ascension": {
+      "pool": "chinesename:plot-action.clan-ascension",
+      "words": [
+        "chinesename:plot-action.clan-ascension.64e2-5347-6c0f-65cf"
+      ]
+    },
+    "plot-culture-divide": {
+      "pool": "chinesename:plot-action.culture-divide",
+      "words": [
+        "chinesename:plot-action.culture-divide.6587-5316-5206-652f"
+      ]
+    },
+    "plot-religion-schism": {
+      "pool": "chinesename:plot-action.religion-schism",
+      "words": [
+        "chinesename:plot-action.religion-schism.6559-6d3e-5206-88c2"
+      ]
+    },
+    "plot-language-divergence": {
+      "pool": "chinesename:plot-action.language-divergence",
+      "words": [
+        "chinesename:plot-action.language-divergence.8bed-8a00-5206-5316"
+      ]
+    },
+    "plot-summon-meteor-rain": {
+      "pool": "chinesename:plot-action.summon-meteor-rain",
+      "words": [
+        "chinesename:plot-action.summon-meteor-rain.5524-843d-661f-96e8"
+      ]
+    },
+    "plot-summon-earthquake": {
+      "pool": "chinesename:plot-action.summon-earthquake",
+      "words": [
+        "chinesename:plot-action.summon-earthquake.5f15-53d1-5730-9707"
+      ]
+    },
+    "plot-summon-thunderstorm": {
+      "pool": "chinesename:plot-action.summon-thunderstorm",
+      "words": [
+        "chinesename:plot-action.summon-thunderstorm.53ec-6765-96f7-66b4"
+      ]
+    },
+    "plot-summon-stormfront": {
+      "pool": "chinesename:plot-action.summon-stormfront",
+      "words": [
+        "chinesename:plot-action.summon-stormfront.53ec-6765-98ce-66b4"
+      ]
+    },
+    "plot-summon-hellstorm": {
+      "pool": "chinesename:plot-action.summon-hellstorm",
+      "words": [
+        "chinesename:plot-action.summon-hellstorm.62db-5f15-70bc-72f1-98ce-66b4"
+      ]
+    },
+    "plot-summon-demons": {
+      "pool": "chinesename:plot-action.summon-demons",
+      "words": [
+        "chinesename:plot-action.summon-demons.53ec-6765-6076-9b54"
+      ]
+    },
+    "plot-summon-angles": {
+      "pool": "chinesename:plot-action.summon-angles",
+      "words": [
+        "chinesename:plot-action.summon-angles.53ec-6765-56db-89d2-751f-7075"
+      ]
+    },
+    "plot-summon-skeletons": {
+      "pool": "chinesename:plot-action.summon-skeletons",
+      "words": [
+        "chinesename:plot-action.summon-skeletons.53ec-6765-9ab7-9ac5"
+      ]
+    },
+    "plot-summon-living-plants": {
+      "pool": "chinesename:plot-action.summon-living-plants",
+      "words": [
+        "chinesename:plot-action.summon-living-plants.5524-9192-8349-6728"
+      ]
+    },
+    "plot-big-cast-coffee": {
+      "pool": "chinesename:plot-action.big-cast-coffee",
+      "words": [
+        "chinesename:plot-action.big-cast-coffee.5e7f-65bd-9192-795e"
+      ]
+    },
+    "plot-big-cast-bubble-shield": {
+      "pool": "chinesename:plot-action.big-cast-bubble-shield",
+      "words": [
+        "chinesename:plot-action.big-cast-bubble-shield.5e7f-65bd-6c14-6ce1-62a4-76fe"
+      ]
+    },
+    "plot-big-cast-madness": {
+      "pool": "chinesename:plot-action.big-cast-madness",
+      "words": [
+        "chinesename:plot-action.big-cast-madness.64ad-4e0b-766b-72c2"
+      ]
+    },
+    "plot-big-cast-slowness": {
+      "pool": "chinesename:plot-action.big-cast-slowness",
+      "words": [
+        "chinesename:plot-action.big-cast-slowness.5e7f-65bd-8fdf-7f13"
+      ]
+    },
+    "plot-cause-rebellion": {
+      "pool": "chinesename:plot-action.cause-rebellion",
+      "words": [
+        "chinesename:plot-action.cause-rebellion.7b56-52a8-53db-4e71"
       ]
     },
     "kingdom-traditional-mottos": {

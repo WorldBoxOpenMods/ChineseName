@@ -97,6 +97,9 @@ internal static class NativeNamingGlyphs
             "装备种类", "ui/Icons/iconItemType", "chinesename:equipment-kind", "按装备种类取称谓，例如剑、长弓或指环。");
         service.RegisterCultureGlyph("worldbox:item", "chinesename:equipment-material", '\uE120', "material",
             "装备材质", "ui/Icons/iconCraftIron", "chinesename:equipment-material", "按实际材质和当前语言抽取材质称谓。");
+        service.RegisterCultureGlyph(VanillaNames.Plot, "chinesename:plot-action", '\uE121', "plot",
+            "谋划类型", "ui/Icons/iconDiplomacy", "chinesename:plot-action", "按实际谋划类型和当前语言取称谓。",
+            fallbackPool: "chinesename:plot-action");
         if (library.getByShortId(KeepSurnameCode.ToString()) == null && !library.dict.ContainsKey(KeepSurname))
         {
             var asset = library.add(new OnomasticsAsset

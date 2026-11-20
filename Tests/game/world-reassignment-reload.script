@@ -1,0 +1,104 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+void Check(bool yes, string why) { if (!yes) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+}
+
+var root = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT")).Parent.Parent;
+string path = root.EnumerateFiles("map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.FullName.EndsWith("/output/world-reassignment/renamed/map.wbox", StringComparison.Ordinal))
+    .OrderBy(file => file.FullName, StringComparer.Ordinal).Last().FullName;
+string output = Directory.GetParent(path).Parent.FullName;
+var map = World.world;
+string[] opening = File.ReadAllLines(Path.Combine(output, "opening-expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(output, "opening", "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+Check(!SmoothLoader.isLoading() && map.map_stats.name == opening[0] && map.map_stats.player_name == opening[1],
+    "Restart lost the reassigned titles on the opening map.");
+Check(map.units.get(long.Parse(opening[2]))?.data.name == opening[3], "Restart lost the renamed opening-map unit.");
+Check(!NamingApi.Current.GetWorld().UseSavedVanillaCards, "Restart restored the vanilla rules on the opening map.");
+
+string[] expected = File.ReadAllLines(Path.Combine(output, "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(path));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+var service = NamingApi.Current;
+var founder = map.units.get(long.Parse(expected[0]));
+var city = map.cities.get(long.Parse(expected[2]));
+Check(founder?.data.name == expected[3] && map.units.get(long.Parse(expected[1]))?.data.name == "Named by player" &&
+    city?.name == "乌普萨拉" && founder.generateName(MetaType.City, 7) == "乌普萨拉" &&
+    service.GetWorld().CulturePack == "chinesename:world-nordic-set" && !service.GetWorld().UseSavedVanillaCards,
+    "Restart lost the reassigned style or object names.");
+
+var plotAsset = AssetManager.plots_library.get("language_divergence");
+const string plotPool = "chinesename:plot-action.language-divergence";
+var defaultPack = service.GetPackage(service.DefaultPack);
+var state = service.GetWorld();
+var profiles = state.Languages;
+var alternate = map.languages.newLanguage(founder, true);
+map.languages.checkLists();
+void Keep(Language language, string term)
+{
+    var word = defaultPack.Words.Single(word => word.Text == term && defaultPack.Pools[plotPool].ContainsKey(word.Id));
+    profiles[language.id] = new LanguageNaming
+    {
+        Pools = new Dictionary<string, PoolEdit>
+        {
+            [plotPool] = new PoolEdit { ExcludeIds = defaultPack.Pools[plotPool].Keys.Where(id => id != word.Id).ToList() }
+        }
+    };
+}
+var original = founder.language;
+Keep(original, "语言分化");
+Keep(alternate, "乡音分支");
+WorldNamingStore.Apply(state);
+var defaultPlot = map.plots.newPlot(founder, plotAsset, true);
+Check(defaultPlot.name == "语言分化", "The existing language did not affect actual plot naming.");
+
+map.console.Hide();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = founder.culture;
+ScrollWindow.showWindow("culture");
+await Settle();
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+await Settle();
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_plot").toggle.click();
+await Settle();
+Check(tab.getOnomasticsData().getFullTemplateData().Contains("chinesename:plot-action") &&
+      tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Any(button => button.onomastics_asset?.id == "chinesename:plot-action"),
+    "The original naming tab did not show the plot glyph.");
+char action = AssetManager.onomastics_library.get("chinesename:plot-action").short_id;
+tab.loadTemplate($"{action}0|0:之议");
+await Settle();
+var edited = map.plots.newPlot(founder, plotAsset, true);
+founder.joinLanguage(alternate);
+var otherLanguage = map.plots.newPlot(founder, plotAsset, true);
+Check(edited.name == "语言分化之议" && otherLanguage.name == "乡音分支之议",
+    "The default and edited plot names did not follow the author culture and language: " + edited.name + " / " + otherLanguage.name);
+
+var voidElves = CursedSacrifice.getVoidElvesSubspecies();
+Check(voidElves?.name == "虚空精灵", "The curse event overwrote an automatically generated name with English.");
+voidElves.setName("Chosen title");
+voidElves.data.custom_name = true;
+Check(CursedSacrifice.getVoidElvesSubspecies().name == "Chosen title", "The curse event discarded a manually set name.");
+var corner = map.units.spawnNewUnit("angle", map.GetTile(0, 0), pSpawnSound: false, pMiracleSpawn: true);
+corner.setName("BCD", pTrack: false);
+Check(corner.data.name == "乙丙丁", "The startup corner marker was not localized.");
+var army = map.armies.newObject();
+army.generateName();
+Check(army.name == "无归属军队", "The unaffiliated army took a formal army name: " + army.name);
+return new { opening = opening[0], people = founder.data.name, city = city.name, plot = edited.name, alternate = otherLanguage.name,
+    special = "虚空精灵", corner = corner.data.name, army = army.name };
