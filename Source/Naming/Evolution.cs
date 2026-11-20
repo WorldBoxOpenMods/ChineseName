@@ -63,9 +63,11 @@ internal static partial class Configuration
     }
 
     private static WordGroup FindWordGroup(Dictionary<string, NamingPack> active,
-        string selected, string fallback, string id, string pool)
+        string selected, string fallback, string id, string pool, NamingPack snapshot = null)
     {
         if (id == null) return null;
+        if (snapshot != null && InPack(id, snapshot, out var local) &&
+            snapshot.WordGroups.TryGetValue(local, out var captured) && captured.Pool == pool) return captured;
         foreach (var pack in EvolutionPacks(active, selected, fallback, true))
             if (InPack(id, pack, out var key) && pack.WordGroups.TryGetValue(key, out var group) &&
                 group.Pool == pool) return group;
@@ -73,14 +75,14 @@ internal static partial class Configuration
     }
 
     private static Dictionary<string, double> PreferredWords(LanguageNaming language, Dictionary<string, NamingPack> active,
-        string selected, string fallback, string pool, List<string> diagnostics)
+        string selected, string fallback, string pool, List<string> diagnostics, NamingPack snapshot = null)
     {
         if (language == null) return null;
         Dictionary<string, double> words = null;
         foreach (var preference in language.PreferencesFor(pool))
         {
             if (!(preference.Value > 0 && preference.Value <= 1)) continue;
-            var group = FindWordGroup(active, selected, fallback, preference.Key, pool);
+            var group = FindWordGroup(active, selected, fallback, preference.Key, pool, snapshot);
             if (group == null)
             {
                 diagnostics.Add("missing-word-group:" + preference.Key);
@@ -133,7 +135,7 @@ internal static partial class Configuration
         IReadOnlyDictionary<string, NamingPack> packs, string fallback, IEnumerable<string> defaults, ulong seed)
     {
         var diagnostics = new List<string>();
-        var active = ResolveDependencies(packs, world, fallback, defaults, diagnostics);
+        var active = ResolveCulturePacks(packs, world, culture, fallback, defaults, diagnostics, out var snapshot);
         var selected = Select(active, diagnostics, culture.Pack, world.CulturePack, fallback);
         var byType = types.ToDictionary(type => type.Id, StringComparer.Ordinal);
         var rules = new Dictionary<string, Rule[]>(StringComparer.Ordinal);
@@ -148,7 +150,7 @@ internal static partial class Configuration
             string id = pack.Id + "/" + pair.Key;
             if (culture.Variants.TryGetValue(key, out var previous) && previous == id) continue;
             if (!rules.TryGetValue(type.Id, out var available))
-                rules[type.Id] = available = ResolveRules(type, active, selected, fallback, culture, world.PackPriorities, diagnostics);
+                rules[type.Id] = available = ResolveRules(type, active, selected, fallback, culture, world.PackPriorities, diagnostics, snapshot);
             var rule = available.FirstOrDefault(value => value.Id == variant.Rule);
             culture.Rules.TryGetValue(key, out var playerEdit);
             var evolved = rule == null ? null : ApplyVariant(rule, variant, playerEdit);
@@ -169,14 +171,17 @@ internal static partial class Configuration
         IReadOnlyDictionary<string, NamingPack> packs, string fallback, IEnumerable<string> defaults, long? culture = null)
     {
         var diagnostics = new List<string>();
-        var active = ResolveDependencies(packs, world, fallback, defaults, diagnostics);
+        CultureNaming cultureSettings = null;
+        if (culture.HasValue) world.Cultures.TryGetValue(culture.Value, out cultureSettings);
+        var active = ResolveCulturePacks(packs, world, cultureSettings, fallback, defaults, diagnostics, out var snapshot);
         var basis = SelectCulturePack(active, diagnostics, world, culture, fallback);
         var selected = SelectLanguagePack(active, diagnostics, world, settings, basis, fallback);
-        return WordGroupDefinitions(active, selected, fallback).ToArray();
+        return WordGroupDefinitions(active, selected, fallback, snapshot).ToArray();
     }
 
     private static IEnumerable<(string Id, WordGroup Group)> WordGroupDefinitions(Dictionary<string, NamingPack> active,
-        string selected, string fallback) => EvolutionPacks(active, selected, fallback, true)
+        string selected, string fallback, NamingPack snapshot) => EvolutionPacks(active, selected, fallback, true)
+        .Concat(snapshot != null && selected != snapshot.Id ? new[] { snapshot } : Array.Empty<NamingPack>())
         .SelectMany(pack => pack.WordGroups.Select(pair => (pack.Id + "/" + pair.Key, pair.Value)));
 
     private static Dictionary<string, string[]> GroupIds(IEnumerable<(string Id, WordGroup Group)> groups) =>
@@ -188,16 +193,18 @@ internal static partial class Configuration
         ISet<string> preferredPools = null, long? culture = null)
     {
         var diagnostics = new List<string>();
-        var active = ResolveDependencies(packs, world, fallback, defaults, diagnostics);
+        CultureNaming cultureSettings = null;
+        if (culture.HasValue) world.Cultures.TryGetValue(culture.Value, out cultureSettings);
+        var active = ResolveCulturePacks(packs, world, cultureSettings, fallback, defaults, diagnostics, out var snapshot);
         var basis = SelectCulturePack(active, diagnostics, world, culture, fallback);
         var selected = SelectLanguagePack(active, diagnostics, world, language, basis, fallback);
-        var definitions = WordGroupDefinitions(active, selected, fallback);
+        var definitions = WordGroupDefinitions(active, selected, fallback, snapshot);
         if (!split && preferredPools != null) definitions = definitions.Where(group => preferredPools.Contains(group.Group.Pool));
         var groups = GroupIds(definitions);
         if (groups.Count == 0) return false;
         var locked = new HashSet<string>(StringComparer.Ordinal);
         var available = ResolvePools(active, selected, fallback, groups.Keys.ToArray(), null, null, language,
-            world.PackPriorities, diagnostics, locked);
+            world.PackPriorities, diagnostics, locked, snapshot);
         var options = new List<(string Pool, string[] Groups)>();
         foreach (var pool in groups.OrderBy(pair => pair.Key, StringComparer.Ordinal))
         {
@@ -205,11 +212,11 @@ internal static partial class Configuration
             language.Pools.TryGetValue(pool.Key, out var player);
             var words = available[pool.Key];
             if (words.Length < 2) continue;
-            var preferred = split ? PreferredWords(language, active, selected, fallback, pool.Key, diagnostics) : null;
+            var preferred = split ? PreferredWords(language, active, selected, fallback, pool.Key, diagnostics, snapshot) : null;
             var eligible = new List<string>();
             foreach (string id in pool.Value)
             {
-                var group = FindWordGroup(active, selected, fallback, id, pool.Key);
+                var group = FindWordGroup(active, selected, fallback, id, pool.Key, snapshot);
                 var members = new HashSet<string>(group.Words, StringComparer.Ordinal);
                 if (words.Any(word => members.Contains(word.Id) && !HasCustomWeight(player, word.Id)) &&
                     (!split || ChangesRelativeWeight(words, members, preferred, player)))

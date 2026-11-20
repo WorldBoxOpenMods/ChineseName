@@ -11,6 +11,7 @@ internal static class NativeNamingSettings
 {
     internal const string PackTab = "chinesename_packs";
     internal const string LexiconTab = "chinesename_lexicons";
+    internal const string PresetTab = "chinesename_presets";
     private const string SettingsTooltip = "chinesename_settings";
     private const string ActionSurface = "ActionButton";
     private static Font _font;
@@ -34,14 +35,20 @@ internal static class NativeNamingSettings
 
     private static void Attach(string id)
     {
-        if (id is not ("world_info" or "language")) return;
+        var (tabId, label, icon) = id switch
+        {
+            "world_info" => (PackTab, "命名包", "iconBooks"),
+            "language" => (LexiconTab, "词库", "iconLanguageList"),
+            "settings" => (PresetTab, "我的预设", "iconBooks"),
+            _ => (null, null, null)
+        };
+        if (tabId == null) return;
         var window = ScrollWindow.getCurrentWindow();
-        bool packages = id == "world_info";
-        string tabId = packages ? PackTab : LexiconTab;
         if (window.tabs._tabs.Any(tab => tab.name == tabId)) return;
-        var content = AddTab(window, tabId, packages ? "命名包" : "词库", packages ? "iconBooks" : "iconLanguageList");
-        if (packages) content.gameObject.AddComponent<NativePackagePage>();
-        else content.gameObject.AddComponent<NativeLexiconPage>();
+        var content = AddTab(window, tabId, label, icon);
+        if (id == "world_info") content.gameObject.AddComponent<NativePackagePage>();
+        else if (id == "language") content.gameObject.AddComponent<NativeLexiconPage>();
+        else content.gameObject.AddComponent<NativePresetPage>();
     }
 
     private static RectTransform AddTab(ScrollWindow window, string id, string label, string icon)
@@ -79,6 +86,9 @@ internal static class NativeNamingSettings
         page.gameObject.SetActive(false);
         var titleTemplate = source.tab_elements.FirstOrDefault(item => item != null &&
             item.name.StartsWith("tab_title_container_", StringComparison.Ordinal));
+        titleTemplate ??= source.tab_elements.Where(item => item != null)
+            .SelectMany(item => item.GetComponentsInChildren<RectTransform>(true))
+            .FirstOrDefault(item => item.name.StartsWith("tab_title_container_", StringComparison.Ordinal));
         if (titleTemplate != null)
         {
             var title = UnityEngine.Object.Instantiate(titleTemplate, page);
@@ -163,6 +173,7 @@ internal static class NativeNamingSettings
     private static void AddValueButton(KeyValueField row)
     {
         var value = row.value.rectTransform;
+        row.value.alignment = TextAnchor.MiddleCenter;
         if (value.parent.name == ActionSurface) return;
 
         var textColumn = (RectTransform)value.parent;
@@ -188,18 +199,17 @@ internal static class NativeNamingSettings
         value.anchorMax = Vector2.one;
         value.offsetMin = Vector2.zero;
         value.offsetMax = new Vector2(0, 3);
-        row.value.alignment = TextAnchor.MiddleCenter;
         row.value.raycastTarget = true;
         StyleButton(row.value.GetComponent<Button>(), face);
         SetActionText(row, row.value.text);
     }
 
-    internal static void SetActionText(KeyValueField row, string text)
+    internal static void SetActionText(KeyValueField row, string text, float trailingWidth = 0)
     {
         row.value.text = text;
         if (row.value.transform.parent.name != ActionSurface) return;
         float width = Mathf.Clamp(Mathf.Ceil(row.value.preferredWidth) + 14, 32, 100);
-        row.value.transform.parent.GetComponent<LayoutElement>().preferredWidth = width;
+        row.value.transform.parent.GetComponent<LayoutElement>().preferredWidth = width + trailingWidth;
     }
 
     internal static void AddIconButton(KeyValueField row, string id, string icon, string title, bool selected, Action action)
@@ -208,6 +218,39 @@ internal static class NativeNamingSettings
         var button = IconButton(primary.parent, id, icon, row.name_text.text, title, action);
         button.transform.SetSiblingIndex(primary.GetSiblingIndex());
         if (selected) ((Image)button.targetGraphic).sprite = button.spriteState.selectedSprite;
+    }
+
+    internal static Button LabelButton(Transform parent, string id, string title, bool selected, Action action)
+    {
+        var face = ButtonFace(parent, id);
+        var button = face.gameObject.AddComponent<Button>();
+        StyleButton(button, face);
+        if (selected) face.sprite = button.spriteState.selectedSprite;
+        button.onClick.AddListener(() =>
+        {
+            MusicBox.playSoundUI("event:/SFX/UI/Click");
+            action();
+        });
+        button.OnHover(() => Tooltip.show(button, SettingsTooltip, new TooltipData { tip_name = title, tip_description = "" }));
+        button.OnHoverOut(Tooltip.hideTooltip);
+
+        var label = new GameObject("Label", typeof(RectTransform), typeof(Text)).GetComponent<Text>();
+        label.transform.SetParent(face.transform, false);
+        label.rectTransform.anchorMax = Vector2.one;
+        label.rectTransform.anchorMin = Vector2.zero;
+        label.rectTransform.offsetMin = new Vector2(5, 1);
+        label.rectTransform.offsetMax = new Vector2(-5, 1);
+        label.font = EditorFont() ?? LocalizedTextManager.current_font;
+        label.fontSize = 9;
+        label.resizeTextForBestFit = true;
+        label.resizeTextMinSize = 7;
+        label.resizeTextMaxSize = 9;
+        label.alignment = TextAnchor.MiddleCenter;
+        label.supportRichText = false;
+        label.raycastTarget = false;
+        label.color = Color.white;
+        label.text = title;
+        return button;
     }
 
     internal static Button IconButton(Transform parent, string id, string icon, string title, string description, Action action)
@@ -323,7 +366,7 @@ internal static class NativeNamingSettings
         field.placeholder = text;
     }
 
-    private static NameInput SettingsInput() => Resources.Load<ScrollWindow>("windows/world_info")
+    internal static NameInput SettingsInput() => Resources.Load<ScrollWindow>("windows/world_info")
         .GetComponentInChildren<WorldWindow>(true).nameInput;
 
     internal static NameInput Search(Transform parent, string id, string placeholder, Action<string> changed) =>

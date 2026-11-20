@@ -24,7 +24,9 @@ public sealed class NamingService
     public IReadOnlyList<NameType> Types => _types.Values.OrderBy(type => type.Id, StringComparer.Ordinal).ToArray();
     public IReadOnlyList<string> Packages => _packs.Keys.OrderBy(id => id, StringComparer.Ordinal).ToArray();
     public NamingPack GetPackage(string id) => _packs.TryGetValue(id, out var pack) ? NamingJson.Copy(pack) : null;
-    internal NamingPack DescribePackage(string id) => _packs.TryGetValue(id, out var pack) ? pack : null;
+    internal NamingPack DescribePackage(string id) => _packs.TryGetValue(id, out var pack) ||
+        _world.AppliedPresets.TryGetValue(id, out pack) ? pack : null;
+    internal bool HasProvider(string id) => _providers.ContainsKey(id);
     internal bool IsModDefault(string id) => _modDefaults.Contains(id);
     internal Dictionary<string, NamingPack> ActivePacks(WorldNaming world) =>
         Configuration.ResolveDependencies(_packs, world, _defaultPack, _modDefaults, new List<string>());
@@ -133,14 +135,21 @@ public sealed class NamingService
         _types.TryGetValue(request.Type, out var type) ? Resolve(type, request, draft ?? _world) : null;
 
     internal NamingPack MakePortablePack(string id, long? culture, long? language, WorldNaming draft,
-        IReadOnlyDictionary<string, (CardNaming Cards, string[] Pools)> arrangements)
+        IReadOnlyDictionary<string, (CardNaming Cards, string[] Pools)> arrangements,
+        IReadOnlyList<NameType> types = null, bool baseVocabulary = false)
     {
-        var pack = new NamingPack { Format = 1, Id = id, Label = id, UseAsLanguageDefault = arrangements?.Count > 0 };
+        var pack = new NamingPack
+        {
+            Format = 1, Id = id, Label = id, UseAsLanguageDefault = baseVocabulary || arrangements?.Count > 0
+        };
         var words = new Dictionary<string, Word>(StringComparer.Ordinal);
         EffectiveNames languagePools = null;
-        foreach (var type in Types)
+        draft ??= _world;
+        foreach (var type in types ?? Types)
         {
-            var effective = Inspect(new NameRequest(type.Id, 0, culture, language), draft);
+            var effective = baseVocabulary
+                ? Configuration.Resolve(type, culture, language, draft, _packs, _defaultPack, _modDefaults, baseVocabulary: true)
+                : Inspect(new NameRequest(type.Id, 0, culture, language), draft);
             languagePools ??= effective;
             var rules = effective.Rules.ToList();
             if (arrangements != null && arrangements.TryGetValue(type.Id, out var arrangement))
@@ -171,7 +180,6 @@ public sealed class NamingService
         }
         if (languagePools != null)
         {
-            draft ??= _world;
             LanguageNaming settings = null;
             if (language.HasValue) draft.Languages.TryGetValue(language.Value, out settings);
             foreach (var alias in languagePools.PoolAliases)
@@ -205,6 +213,7 @@ public sealed class NamingService
         {
             if (pack.Pools.ContainsKey(pool)) return;
             var candidates = effective.GetPool(pool);
+            if (baseVocabulary && candidates.Length == 0) return;
             double scale = candidates.Length == 0 ? 1 : Math.Max(1, candidates.Max(word => word.Weight) / 10000);
             pack.Pools[pool] = candidates.ToDictionary(word => word.Id, word => word.Weight / scale);
             foreach (var word in candidates)

@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using UnityEngine;
+using UnityEngine.UI;
+
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 10; i++) await Game.NextFrame();
+}
+
+var current = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+string map = Directory.EnumerateFiles(current.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/output/preset-management/map.wbox", StringComparison.Ordinal))
+    .OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(map), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(map));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+World.world.console.Hide();
+var actor = World.world.units.get(long.Parse(expected[0]));
+Check(!SmoothLoader.isLoading() && actor?.getName() == expected[2], "The applied world did not reload.");
+
+ScrollWindow.showWindow("settings");
+await Settle();
+ScrollWindow.getCurrentWindow().tabs.showTab("chinesename_presets");
+await Settle();
+Check(ScrollWindow.getCurrentWindow().GetComponentsInChildren<KeyValueField>().Any(row => row.name == "NoPlayerPreset" &&
+    row.name_text.text == "还没有预设"), "The deleted preset reappeared after restart.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+await Settle();
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = actor.culture;
+ScrollWindow.showWindow("culture");
+await Settle();
+var culture = ScrollWindow.getCurrentWindow();
+culture.tabs.showTab("Onomastics");
+await Settle();
+var row = culture.GetComponentsInChildren<KeyValueField>().Single(item => item.name == "CultureNamingStyle");
+Check(row.value.text == "北欧灵猫", "The saved world copy was removed or renamed along with the profile.");
+row.value.GetComponent<Button>().onClick.Invoke();
+await Settle();
+Check(culture.GetComponentsInChildren<Button>().Any(button => button.name == "CultureStyle." + expected[1] &&
+    button.GetComponentInChildren<Text>().text == "北欧灵猫"), "The applied copy no longer appears in the culture picker.");
+string person = NamingApi.Current.Generate(new NameRequest("worldbox:person", 23, actor.culture.id, actor.language.id,
+    new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat" })).Text;
+string city = actor.generateName(MetaType.City, 23);
+Check(person == expected[2] && city == expected[3], "The reloaded applied copy could not generate its names.");
+return new { person, city, playerLibraryEmpty = true };

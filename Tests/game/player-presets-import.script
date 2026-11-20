@@ -1,0 +1,107 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string transferFolder = "__PRESET_TRANSFER__";
+const string givenPool = "chinesename:species-lexicon.cat.given", placePool = "chinesename:species-lexicon.cat.place";
+JToken Copies(WorldNaming settings) => JObject.Parse(NamingJson.Write(settings))["appliedPresets"];
+void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 8; i++) await Game.NextFrame();
+}
+void RowClick(string id) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<KeyValueField>()
+    .Single(row => row.name == id).value.GetComponent<Button>().onClick.Invoke();
+
+var snapshotFile = Path.Combine(transferFolder, "transfer.preset.json");
+string json = File.ReadAllText(snapshotFile);
+var envelope = JObject.Parse(json);
+var snapshot = NamingJson.Read<NamingPack>(envelope["snapshot"].ToString(Formatting.None));
+string directory = Path.Combine(Application.persistentDataPath, "ChineseName", "Presets");
+string[] LibraryFiles() => Directory.Exists(directory) ? Directory.GetFiles(directory, "*.preset.json") : Array.Empty<string>();
+Check(LibraryFiles().Length == 0, "Use a clean, separate isolated player profile for this test.");
+
+// The second profile has the target world's copy before it imports the personal preset.
+var expected = File.ReadAllLines(Path.Combine(transferFolder, "target.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(transferFolder, "target", "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+World.world.console.Hide();
+var existing = World.world.units.get(long.Parse(expected[0]));
+var service = NamingApi.Current;
+Check(!SmoothLoader.isLoading() && existing?.getName() == expected[2] &&
+    existing.generateName(MetaType.City, 23) == expected[3] && Copies(service.GetWorld())[expected[1]] != null,
+    "The target save depended on the source player profile.");
+string before = NamingJson.Write(service.GetWorld());
+
+ScrollWindow.showWindow("settings");
+await Settle();
+ScrollWindow.getCurrentWindow().tabs.showTab("chinesename_presets");
+await Settle();
+GUIUtility.systemCopyBuffer = "not a preset";
+RowClick("ImportPlayerPreset");
+Check(LibraryFiles().Length == 0 && NamingJson.Write(service.GetWorld()) == before,
+    "Invalid clipboard data changed the library or the save.");
+GUIUtility.systemCopyBuffer = json;
+for (int attempt = 0; attempt < 2; attempt++)
+{
+    RowClick("ImportPlayerPreset");
+    await Settle();
+    RowClick("ConfirmPlayerPreset");
+    await Settle();
+}
+var files = LibraryFiles();
+Check(files.Length == 1 && JToken.DeepEquals(JObject.Parse(File.ReadAllText(files[0])), envelope) &&
+    NamingJson.Write(service.GetWorld()) == before,
+    "Import did not persist the preset independently or deduplicate the same file.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+var previous = World.world.map_stats;
+World.world.generateNewMap();
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && World.world.map_stats != previous, "A new map is required.");
+Config.paused = true;
+var tile = World.world.tiles_list.First(tile => tile.Type.ground && tile.zone.isGoodForNewCity());
+var founder = World.world.units.createNewUnit("civ_cat", tile);
+founder.setCulture(World.world.cultures.newCulture(founder, true));
+founder.joinLanguage(World.world.languages.newLanguage(founder, true));
+World.world.units.checkLists();
+World.world.cultures.checkLists();
+World.world.languages.checkLists();
+var world = service.GetWorld();
+Check(!Copies(world).HasValues, "An imported preset was automatically applied to a new save.");
+world.EnabledPacks.Remove("chinesename:world-nordic-set");
+world.EnabledPacks.Remove("chinesename:world-styles-lexicon");
+var language = world.Languages[founder.language.id] = new LanguageNaming();
+void Only(string pool, string text)
+{
+    var word = snapshot.Words.Single(term => term.Text == text && snapshot.Pools[pool].ContainsKey(term.Id));
+    language.Pools[pool] = new PoolEdit { ExcludeIds = snapshot.Pools[pool].Keys.Where(id => id != word.Id).ToList() };
+}
+Only(givenPool, "夜瞳");
+Only(placePool, "长尾湾");
+WorldNamingStore.Apply(world);
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = founder.culture;
+ScrollWindow.showWindow("culture");
+await Settle();
+ScrollWindow.getCurrentWindow().tabs.showTab("Onomastics");
+await Settle();
+RowClick("CultureNamingStyle");
+await Settle();
+ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>()
+    .Single(button => button.name == "CultureStyle." + snapshot.Id).onClick.Invoke();
+await Settle();
+founder.data.set("chinesename.surname.v1", (string)null);
+founder.generateNewName();
+string city = founder.generateName(MetaType.City, 23);
+Check(founder.getName() == "夜瞳·长尾湾" && city == "长尾湾府",
+    "The imported preset did not follow the second profile's world and language settings.");
+return new { preset = snapshot.Label, person = founder.getName(), city, profile = Application.persistentDataPath };

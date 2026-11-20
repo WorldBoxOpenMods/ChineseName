@@ -53,7 +53,22 @@ public sealed class WorldNaming
     public Dictionary<long, CultureNaming> Cultures { get; set; } = new();
     public Dictionary<long, LanguageNaming> Languages { get; set; } = new();
     public Dictionary<long, long> LanguageParents { get; set; } = new();
+    [JsonProperty]
+    internal Dictionary<string, NamingPack> AppliedPresets { get; set; } = new();
     public bool UseSavedVanillaCards { get; set; }
+
+    internal WorldNaming WithoutAppliedPresets()
+    {
+        var draft = (WorldNaming)MemberwiseClone();
+        draft.AppliedPresets = null;
+        return draft;
+    }
+}
+
+internal sealed class PlayerNamingPreset
+{
+    public int Format { get; set; }
+    public NamingPack Snapshot { get; set; }
 }
 
 public sealed class CultureNaming
@@ -165,6 +180,7 @@ internal sealed class EffectiveNames
 public static class NamingJson
 {
     private const int MaxInputSize = 4_000_000;
+    private const int MaxWorldSize = 32_000_000;
     private static readonly JsonSerializerSettings Settings = new()
     {
         NullValueHandling = NullValueHandling.Ignore,
@@ -178,14 +194,22 @@ public static class NamingJson
     internal static string WritePack(NamingPack pack)
     {
         string text = Write(pack);
-        if (text.Length > MaxInputSize) text = JsonConvert.SerializeObject(pack, Formatting.None, Settings);
-        if (text.Length > MaxInputSize) throw new InvalidOperationException("命名包超过大小上限。");
+        return text.Length <= MaxInputSize ? text : WriteLimited(pack, MaxInputSize, "命名包超过大小上限。");
+    }
+    internal static string WritePreset(PlayerNamingPreset preset) => WriteLimited(preset, MaxInputSize, "命名预设超过大小上限。");
+    internal static string WriteWorld(WorldNaming world) => WriteLimited(world, MaxWorldSize, "世界命名配置超过大小上限。");
+
+    private static string WriteLimited<T>(T value, int limit, string error)
+    {
+        string text = JsonConvert.SerializeObject(value, Formatting.None, Settings);
+        if (text.Length > limit) throw new InvalidOperationException(error);
         return text;
     }
 
     public static T Read<T>(string text)
     {
-        if (text == null || text.Length > MaxInputSize) throw new FormatException("Invalid naming JSON size.");
+        int limit = typeof(T) == typeof(WorldNaming) ? MaxWorldSize : MaxInputSize;
+        if (text == null || text.Length > limit) throw new FormatException("Invalid naming JSON size.");
         // Reject duplicate keys rather than silently accepting the last spelling.
         using var reader = new JsonTextReader(new System.IO.StringReader(text)) { MaxDepth = Settings.MaxDepth };
         var value = Newtonsoft.Json.Linq.JToken.ReadFrom(reader, new Newtonsoft.Json.Linq.JsonLoadSettings
@@ -300,17 +324,18 @@ internal static partial class Configuration
     }
 
     internal static EffectiveNames Resolve(NameType type, long? culture, long? language, WorldNaming world,
-        IReadOnlyDictionary<string, NamingPack> packs, string defaultPack, IEnumerable<string> modDefaults)
+        IReadOnlyDictionary<string, NamingPack> packs, string defaultPack, IEnumerable<string> modDefaults,
+        bool baseVocabulary = false)
     {
         var diagnostics = new List<string>();
-        var active = ResolveDependencies(packs, world, defaultPack, modDefaults, diagnostics);
         CultureNaming cultureEdit = null;
         LanguageNaming languageEdit = null;
         if (culture.HasValue) world.Cultures.TryGetValue(culture.Value, out cultureEdit);
         if (language.HasValue) world.Languages.TryGetValue(language.Value, out languageEdit);
+        var active = ResolveCulturePacks(packs, world, cultureEdit, defaultPack, modDefaults, diagnostics, out var snapshot);
         var culturePack = SelectCulturePack(active, diagnostics, world, culture, defaultPack);
         var languagePack = SelectLanguagePack(active, diagnostics, world, languageEdit, culturePack, defaultPack);
-        var rules = ResolveRules(type, active, culturePack, defaultPack, cultureEdit, world.PackPriorities, diagnostics);
+        var rules = ResolveRules(type, active, culturePack, defaultPack, cultureEdit, world.PackPriorities, diagnostics, snapshot);
         var poolIds = active.Values.SelectMany(pack => pack.Pools.Keys
             .Concat(pack.PoolPatches.Select(patch => patch.Pool))).Distinct(StringComparer.Ordinal).ToArray();
         var boundPools = cultureEdit != null && cultureEdit.Cards.TryGetValue(type.Id, out var cards) && cards.Enabled
@@ -328,7 +353,7 @@ internal static partial class Configuration
             .Concat(allParts.Select(part => part.FallbackPool).Where(id => id != null))
             .Concat(boundPools.Where(Ids.Qualified))
             .Distinct(StringComparer.Ordinal).ToArray();
-        long? biasLanguage = languageEdit?.BiasOrigin ?? language;
+        long? biasLanguage = baseVocabulary ? null : languageEdit?.BiasOrigin ?? language;
         long? parentLanguage = biasLanguage.HasValue && world.LanguageParents.TryGetValue(biasLanguage.Value, out long parent)
             ? parent : null;
         var aliases = EvolutionPacks(active, languagePack, defaultPack, language: true)
@@ -337,6 +362,9 @@ internal static partial class Configuration
             .ToDictionary(group => group.Key,
                 group => group.Select(pair => pair.Value).Distinct(StringComparer.Ordinal).Count() == 1 ? group.First().Value : null,
                 StringComparer.OrdinalIgnoreCase);
+        if (snapshot != null)
+            foreach (var alias in snapshot.PoolAliases) aliases[alias.Key] = alias.Value;
+        var vocabulary = baseVocabulary ? null : languageEdit;
         var additional = new Dictionary<string, Word[]>(StringComparer.Ordinal);
         return new EffectiveNames
         {
@@ -347,20 +375,31 @@ internal static partial class Configuration
             PoolLabels = active.Values.OrderBy(pack => Priority(pack, world.PackPriorities))
                 .ThenBy(pack => pack.Id, StringComparer.Ordinal).SelectMany(pack => pack.PoolLabels)
                 .GroupBy(pair => pair.Key).ToDictionary(group => group.Key, group => group.Last().Value),
-            Pools = ResolvePools(active, languagePack, defaultPack, usedPools, biasLanguage, parentLanguage, languageEdit,
-                world.PackPriorities, diagnostics),
+            Pools = ResolvePools(active, languagePack, defaultPack, usedPools, biasLanguage, parentLanguage, vocabulary,
+                world.PackPriorities, diagnostics, snapshot: snapshot, baseVocabulary: baseVocabulary),
             PoolAliases = aliases,
             ReadAdditionalPool = id =>
             {
                 if (!additional.TryGetValue(id, out var words))
                     additional[id] = words = poolIds.Contains(id)
-                        ? ResolvePools(active, languagePack, defaultPack, new[] { id }, biasLanguage, parentLanguage, languageEdit,
-                            world.PackPriorities, new List<string>())[id]
+                        ? ResolvePools(active, languagePack, defaultPack, new[] { id }, biasLanguage, parentLanguage, vocabulary,
+                            world.PackPriorities, new List<string>(), snapshot: snapshot, baseVocabulary: baseVocabulary)[id]
                         : Array.Empty<Word>();
                 return words;
             },
             Diagnostics = diagnostics.ToArray()
         };
+    }
+
+    private static Dictionary<string, NamingPack> ResolveCulturePacks(IReadOnlyDictionary<string, NamingPack> packs,
+        WorldNaming world, CultureNaming culture, string fallback, IEnumerable<string> defaults, List<string> diagnostics,
+        out NamingPack snapshot)
+    {
+        var active = ResolveDependencies(packs, world, fallback, defaults, diagnostics);
+        snapshot = null;
+        if (culture?.Pack != null && world.AppliedPresets.TryGetValue(culture.Pack, out snapshot))
+            active[snapshot.Id] = snapshot;
+        return active;
     }
 
     internal static Dictionary<string, NamingPack> ResolveDependencies(IReadOnlyDictionary<string, NamingPack> packs,
@@ -423,11 +462,13 @@ internal static partial class Configuration
     }
 
     private static Rule[] ResolveRules(NameType type, Dictionary<string, NamingPack> active,
-        string selected, string fallback, CultureNaming edit, Dictionary<string, int> priorities, List<string> diagnostics)
+        string selected, string fallback, CultureNaming edit, Dictionary<string, int> priorities, List<string> diagnostics,
+        NamingPack snapshot = null)
     {
         var rules = new Dictionary<string, Rule>(StringComparer.Ordinal);
-        var scoped = active.Values.Where(pack => pack.Supplemental &&
-                     (pack.CultureBases.Count == 0 || pack.CultureBases.Contains(selected))).ToArray();
+        var scoped = snapshot?.Rules.ContainsKey(type.Id) == true ? Array.Empty<NamingPack>() :
+            active.Values.Where(pack => pack.Supplemental &&
+                (pack.CultureBases.Count == 0 || pack.CultureBases.Contains(selected))).ToArray();
         if (fallback != null && active.TryGetValue(fallback, out var baseline) && baseline.Rules.TryGetValue(type.Id, out var defaults))
             foreach (var rule in defaults) rules[rule.Id] = rule;
         if (selected != null && selected != fallback && active[selected].Rules.TryGetValue(type.Id, out var selectedRules))
@@ -580,12 +621,15 @@ internal static partial class Configuration
 
     private static Dictionary<string, Word[]> ResolvePools(Dictionary<string, NamingPack> active, string selected,
         string fallback, string[] usedPools, long? languageId, long? languageParent, LanguageNaming language, Dictionary<string, int> priorities,
-        List<string> diagnostics, ISet<string> restrictedPools = null)
+        List<string> diagnostics, ISet<string> restrictedPools = null, NamingPack snapshot = null, bool baseVocabulary = false)
     {
         var result = new Dictionary<string, Word[]>(StringComparer.Ordinal);
         if (usedPools.Length == 0) return result;
         var words = new Dictionary<string, Word>(StringComparer.Ordinal);
-        foreach (var group in active.Values.GroupBy(pack => Priority(pack, priorities)).OrderBy(group => group.Key))
+        var groups = active.Values.Where(pack => pack != snapshot).GroupBy(pack => Priority(pack, priorities))
+            .OrderBy(group => group.Key).ToArray();
+        var capturedWords = snapshot?.Words.ToDictionary(word => word.Id, StringComparer.Ordinal);
+        foreach (var group in groups)
         foreach (var entries in group.SelectMany(pack => pack.Words).GroupBy(word => word.Id))
         {
             var first = entries.First();
@@ -596,15 +640,20 @@ internal static partial class Configuration
         foreach (var id in usedPools)
         {
             var weights = new Dictionary<string, double>(StringComparer.Ordinal);
+            Dictionary<string, double> capturedPool = null;
+            bool captured = snapshot != null && snapshot.Pools.TryGetValue(id, out capturedPool) &&
+                (selected == snapshot.Id || selected == null || !active[selected].Pools.ContainsKey(id));
             var basePack = selected != null && active[selected].Pools.ContainsKey(id) ? selected : fallback;
             bool hasBasePool = false;
-            if (basePack != null && active.TryGetValue(basePack, out var primary) && primary.Pools.TryGetValue(id, out var pool))
+            if (captured) MergeMax(weights, capturedPool);
+            else if (basePack != null && active.TryGetValue(basePack, out var primary) && primary.Pools.TryGetValue(id, out var pool))
             {
                 MergeMax(weights, pool);
                 hasBasePool = true;
             }
-            foreach (var priority in active.Values.GroupBy(pack => Priority(pack, priorities)).OrderBy(group => group.Key))
+            foreach (var priority in groups)
             {
+                if (captured) break;
                 var contributions = priority.Select(pack => Collapse(Operations(pack, id, selected, fallback, hasBasePool)))
                     .Where(patch => patch.Replacement != null || patch.Members.Count != 0).ToArray();
                 var replacements = contributions.Where(patch => patch.Replacement != null).ToArray();
@@ -640,7 +689,7 @@ internal static partial class Configuration
             var excludedText = new HashSet<string>(edit?.ExcludeText ?? new List<string>(), StringComparer.Ordinal);
             var packBias = new Dictionary<string, double>(StringComparer.Ordinal);
             string packGroup = null;
-            foreach (var group in active.Values.Where(pack => pack.Supplemental && pack.LanguageEdits.ContainsKey(id) &&
+            foreach (var group in active.Values.Where(pack => !baseVocabulary && pack.Supplemental && pack.LanguageEdits.ContainsKey(id) &&
                          (pack.LanguageBases.Count == 0 || pack.LanguageBases.Contains(selected)))
                          .GroupBy(pack => Priority(pack, priorities)).OrderBy(group => group.Key))
             {
@@ -662,18 +711,19 @@ internal static partial class Configuration
                 }
             }
             string groupId = edit?.Group ?? packGroup;
-            var wordGroup = FindWordGroup(active, selected, fallback, groupId, id);
+            var wordGroup = FindWordGroup(active, selected, fallback, groupId, id, snapshot);
             var restricted = wordGroup == null ? null : new HashSet<string>(wordGroup.Words, StringComparer.Ordinal);
             if (groupId != null)
             {
                 restrictedPools?.Add(id);
                 diagnostics.Add(restricted == null ? "missing-word-group:" + groupId : "语言词群 · " + groupId);
             }
-            var preferred = groupId == null ? PreferredWords(language, active, selected, fallback, id, diagnostics) : null;
+            var preferred = groupId == null ? PreferredWords(language, active, selected, fallback, id, diagnostics, snapshot) : null;
             var candidates = new List<Word>();
+            var vocabulary = captured ? capturedWords : words;
             foreach (var weight in weights.OrderBy(pair => pair.Key, StringComparer.Ordinal))
             {
-                if (!words.TryGetValue(weight.Key, out var word))
+                if (!vocabulary.TryGetValue(weight.Key, out var word))
                 {
                     diagnostics.Add("missing-word:" + id + "/" + weight.Key);
                     continue;
