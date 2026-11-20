@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string transfer = "__PRESET_TRANSFER__";
+const string renamed = "北欧灵猫·北岸";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 10)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+int sequence = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string coordinates = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+            rect.TransformPoint(rect.rect.center));
+        coordinates = $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+    }
+    string request = Path.Combine(exchange, ++sequence + ".mouse");
+    File.WriteAllText(request + ".tmp", action + coordinates);
+    File.Move(request + ".tmp", request);
+    float deadline = Time.realtimeSinceStartup + 8;
+    while (!File.Exists(request + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(request + ".done"), "Physical input timed out.");
+    await Frames();
+}
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "preset-management");
+Directory.CreateDirectory(output);
+string library = Path.Combine(Application.persistentDataPath, "ChineseName", "Presets");
+Directory.CreateDirectory(library);
+Check(Directory.GetFiles(library, "*.preset.json").Length == 0, "Use a clean isolated player profile.");
+var original = Path.Combine(transfer, "transfer.preset.json");
+var local = Path.Combine(library, "alpha.preset.json");
+var duplicate = Path.Combine(library, "copy.preset.json");
+File.Copy(original, local);
+File.Copy(original, duplicate);
+var envelope = JObject.Parse(File.ReadAllText(original));
+string id = (string)envelope["snapshot"]["id"];
+string old = (string)envelope["snapshot"]["label"];
+var expected = File.ReadAllLines(Path.Combine(transfer, "target.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(transfer, "target", "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Config.paused = true;
+World.world.console.Hide();
+var actor = World.world.units.get(long.Parse(expected[0]));
+var service = NamingApi.Current;
+string world = NamingJson.Write(service.GetWorld());
+Check(!SmoothLoader.isLoading() && actor?.getName() == expected[2] && world.Contains(id),
+    "The test save should already contain the applied personal preset.");
+
+ScrollWindow.showWindow("settings");
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var window = ScrollWindow.getCurrentWindow();
+await Mouse("click", window.GetComponentsInChildren<WindowMetaTab>().Single(tab => tab.name == "chinesename_presets"));
+Button ButtonById(string name) => window.GetComponentsInChildren<Button>().Single(button => button.name == name);
+KeyValueField Row(string name) => window.GetComponentsInChildren<KeyValueField>().Single(row => row.name == name);
+NameInput Field(string name) => window.GetComponentsInChildren<NameInput>().Single(input => input.name == name);
+async System.Threading.Tasks.Task Name(string text)
+{
+    var input = Field("RenamePlayerPresetInput").inputField;
+    await Mouse("click", input);
+    GUIUtility.systemCopyBuffer = text;
+    await Mouse("paste");
+    Check(input.text == text, "The original name field did not accept the rename.");
+}
+
+await Mouse("click", ButtonById("ManagePlayerPreset." + id));
+await Mouse("click", ButtonById("RenamePlayerPreset"));
+await Name(renamed);
+await Mouse("click", ButtonById("CancelRenamePlayerPreset"));
+Check(Row("ExportPlayerPreset." + id).name_text.text == old &&
+    JToken.DeepEquals(JObject.Parse(File.ReadAllText(local)), envelope), "Cancel changed the saved name.");
+await Mouse("click", ButtonById("RenamePlayerPreset"));
+await Name(renamed);
+ScreenCapture.CaptureScreenshot(Path.Combine(output, "rename.png"));
+await Frames();
+await Mouse("click", ButtonById("ConfirmRenamePlayerPreset"));
+var renamedEnvelope = (JObject)envelope.DeepClone();
+renamedEnvelope["snapshot"]["label"] = renamed;
+Check(Row("ExportPlayerPreset." + id).name_text.text == renamed &&
+    JToken.DeepEquals(JObject.Parse(File.ReadAllText(local)), renamedEnvelope) &&
+    NamingJson.Write(service.GetWorld()) == world,
+    "Rename did not preserve the ID, contents, path and applied world copy.");
+
+await Mouse("click", Row("ExportPlayerPreset." + id).value);
+Check(JToken.DeepEquals(JObject.Parse(GUIUtility.systemCopyBuffer), renamedEnvelope),
+    "The renamed item did not export its new name.");
+await Mouse("click", ButtonById("ManagePlayerPreset." + id));
+await Mouse("click", ButtonById("DeletePlayerPreset"));
+await Mouse("click", ButtonById("CancelDeletePlayerPreset"));
+Check(File.Exists(local) && File.Exists(duplicate), "Cancel deleted a profile file.");
+await Mouse("click", ButtonById("DeletePlayerPreset"));
+Tooltip.hideTooltipNow();
+ScreenCapture.CaptureScreenshot(Path.Combine(output, "delete.png"));
+await Frames();
+await Mouse("click", Row("ConfirmDeletePlayerPreset").value);
+Check(Row("NoPlayerPreset").name_text.text == "还没有预设" &&
+    Directory.GetFiles(library, "*.preset.json").Length == 0 &&
+    Directory.GetFiles(Path.Combine(Application.persistentDataPath, "ChineseName", "PresetExports"), "*.preset.json").Length == 1 &&
+    NamingJson.Write(service.GetWorld()) == world &&
+    ScrollWindow.getCurrentWindow() == window,
+    "Deletion left a duplicate or affected exports, the active world or the original settings window.");
+
+string person = service.Generate(new NameRequest("worldbox:person", 23, actor.culture.id, actor.language.id,
+    new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat" })).Text;
+string city = actor.generateName(MetaType.City, 23);
+Check(person == expected[2] && city == expected[3], "The applied world could no longer generate from the deleted preset.");
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), expected);
+return new { renamed, person, city, profile = Application.persistentDataPath, output };

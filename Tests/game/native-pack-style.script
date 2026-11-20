@@ -54,15 +54,24 @@ await WaitForWindow();
 var tab = ScrollWindow.getCurrentWindow().GetComponentInChildren<OnomasticsTab>();
 tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
 await WaitForWindow();
-Check(Row("CultureNamingStyle").value.text.StartsWith("随物种") &&
+Check(Row("CultureNamingStyle").name_text.text == "命名预设" &&
+    Row("CultureNamingStyle").value.text == "随物种 · 灵猫" &&
     tab.getOnomasticsData().getGroupString("group_1") == "灵猫地名词根",
     "The original editor did not show the active species style.");
+bool PickerOpen() => ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>()
+    .Any(entry => entry.name == "CultureStyleSearch");
+Check(!PickerOpen(), "The preset picker must start collapsed.");
 Click("CultureNamingStyle");
 var search = ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>().Single(entry => entry.name == "CultureStyleSearch");
+Check(((Text)search.inputField.placeholder).text == "搜索预设", "The preset search has the wrong label.");
 search.inputField.text = "北欧";
 await WaitForWindow();
-Click("CultureStyle." + nordic);
+var preset = ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>()
+    .Single(button => button.name == "CultureStyle." + nordic);
+Check(preset.GetComponentInChildren<Text>().text == "北欧风格", "Opening the picker changed the pack's name.");
+preset.onClick.Invoke();
 await WaitForWindow();
+Check(!PickerOpen(), "Selecting a preset did not collapse the picker.");
 string switched = Name(founder);
 Check(NamingApi.Current.GetWorld().Cultures[cultureId].Pack == nordic &&
     switched != original && Name(cats[1]) == other &&

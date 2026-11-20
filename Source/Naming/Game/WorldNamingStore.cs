@@ -115,6 +115,17 @@ public static class WorldNamingStore
         return Export(_service.MakePortablePack(id, culture, language, world, arrangements));
     }
 
+    internal static NamingPack CapturePreset(string id, string label, Culture culture, long? language)
+    {
+        Sync();
+        var world = _service.ActiveWorld;
+        var arrangements = NativeOnomastics.ExportArrangements(_service, culture, language, world);
+        var types = _service.Types.Where(type => NativeOnomastics.Supports(type.Id)).ToArray();
+        var snapshot = _service.MakePortablePack(id, culture.id, language, world, arrangements, types, baseVocabulary: true);
+        snapshot.Label = label;
+        return snapshot;
+    }
+
     public static string ExportEdits(string id, long? culture, long? language, WorldNaming draft = null)
     {
         Sync();
@@ -167,6 +178,7 @@ public static class WorldNamingStore
         {
             var saved = NamingJson.Read<WorldNaming>(json);
             if (saved?.Format != 1) return _service.GetWorld();
+            saved.AppliedPresets = _service.ActiveWorld.AppliedPresets;
             EnableNewBundledPacks(saved);
             return saved;
         }
@@ -183,7 +195,7 @@ public static class WorldNamingStore
         if (_map == null) throw new InvalidOperationException("No world is active.");
         _map.custom_data ??= new SaveCustomData();
         if (draft == null) _map.custom_data.removeString(DraftKey);
-        else _map.custom_data.set(DraftKey, NamingJson.Write(draft));
+        else _map.custom_data.set(DraftKey, NamingJson.WriteWorld(draft.WithoutAppliedPresets()));
     }
 
     internal static bool HasSavedDraft()
@@ -200,7 +212,7 @@ public static class WorldNamingStore
         if (_map == null) throw new InvalidOperationException("No world is active.");
         if (_loadError != null) throw new InvalidOperationException(_loadError);
         draft.InitializedBundledPacks = _service.ActiveWorld.InitializedBundledPacks;
-        string json = NamingJson.Write(draft);
+        string json = NamingJson.WriteWorld(draft);
         _service.SetWorld(draft);
         Save(_map, json);
     }
@@ -223,19 +235,34 @@ public static class WorldNamingStore
         SaveDraft(draft);
     }
 
-    internal static void ApplyCultureStyle(long culture, string pack)
+    internal static string ApplyCultureStyle(long culture, string pack, NamingPack snapshot = null)
     {
         var world = NamingApi.Current.GetWorld();
+        if (snapshot != null && world.AppliedPresets.TryGetValue(pack, out var prior))
+        {
+            if (PlayerPresetLibrary.SameContent(prior, snapshot)) prior.Label = snapshot.Label;
+            else
+            {
+                snapshot = NamingJson.Copy(snapshot);
+                pack = snapshot.Id = PlayerPresetLibrary.NewId();
+            }
+        }
         if (!world.Cultures.TryGetValue(culture, out var settings))
             world.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
+        if (snapshot != null && !world.AppliedPresets.ContainsKey(pack))
+            world.AppliedPresets.Add(pack, snapshot);
+        var used = new HashSet<string>(world.Cultures.Values.Select(value => value.Pack), StringComparer.Ordinal);
+        foreach (string id in world.AppliedPresets.Keys.Where(id => !used.Contains(id)).ToArray())
+            world.AppliedPresets.Remove(id);
         Apply(world);
-        if (!HasSavedDraft()) return;
+        if (!HasSavedDraft()) return pack;
         var draft = GetSavedDraft();
         if (!draft.Cultures.TryGetValue(culture, out settings))
             draft.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
         SaveDraft(draft);
+        return pack;
     }
 
     internal static void ApplyLanguageSettings(long language, Action<LanguageNaming> edit)
@@ -270,7 +297,7 @@ public static class WorldNamingStore
                 var saved = NamingJson.Read<WorldNaming>(json);
                 bool changed = saved?.Format == 1 && EnableNewBundledPacks(saved);
                 _service.SetWorld(saved);
-                if (changed) Save(map, NamingJson.Write(saved));
+                if (changed) Save(map, NamingJson.WriteWorld(saved));
                 return;
             }
         }
@@ -282,7 +309,7 @@ public static class WorldNamingStore
         var settings = new WorldNaming { UseSavedVanillaCards = map != null && _loadError == null };
         bool initialized = map != null && EnableNewBundledPacks(settings);
         _service.SetWorld(settings);
-        if (initialized && _loadError == null) Save(map, NamingJson.Write(settings));
+        if (initialized && _loadError == null) Save(map, NamingJson.WriteWorld(settings));
     }
 
     private static void Save(MapStats map, string json)
@@ -303,6 +330,6 @@ public static class WorldNamingStore
             _service.SetWorld(settings);
         }
 
-        private static void Postfix(MapStats __instance) => Save(__instance, NamingJson.Write(_service.ActiveWorld));
+        private static void Postfix(MapStats __instance) => Save(__instance, NamingJson.WriteWorld(_service.ActiveWorld));
     }
 }

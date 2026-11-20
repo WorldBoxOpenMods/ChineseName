@@ -15,6 +15,8 @@ def main():
     parser.add_argument("script", type=Path)
     parser.add_argument("--display", required=True, help="Xvfb display used by the isolated game")
     parser.add_argument("--name", default="parts-editor")
+    parser.add_argument("--reference", type=Path)
+    parser.add_argument("--root", type=Path)
     parser.add_argument("--cultiway", choices=("with-chinesename", "alone"))
     args = parser.parse_args()
     env = {**os.environ, "DISPLAY": args.display}
@@ -31,6 +33,10 @@ def main():
         subprocess.run(["xdotool", "windowfocus", window], check=True, env=env)
         result = exchange / "response.json"
         command = [sys.executable, "Tools/game.py", "--name", args.name]
+        if args.reference:
+            command += ["--reference", str(args.reference.resolve())]
+        if args.root:
+            command += ["--root", str(args.root.resolve())]
         if args.cultiway:
             command += ["--cultiway", args.cultiway]
         with result.open("w") as log, subprocess.Popen(

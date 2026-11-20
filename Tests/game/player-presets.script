@@ -1,0 +1,175 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+const string nordic = "chinesename:world-nordic-set";
+const string givenPool = "chinesename:species-lexicon.cat.given", placePool = "chinesename:species-lexicon.cat.place";
+const string label = "北欧灵猫";
+const string asPool = "chinesename_as_pool";
+JToken Copies(WorldNaming settings) => JObject.Parse(NamingJson.Write(settings))["appliedPresets"];
+
+void Check(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); }
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 8; i++) await Game.NextFrame();
+}
+
+int sequence = 0;
+async System.Threading.Tasks.Task Mouse(string action, Component control = null)
+{
+    string coordinates = "";
+    if (control != null)
+    {
+        var rect = (RectTransform)control.transform;
+        var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+            rect.TransformPoint(rect.rect.center));
+        coordinates = $" {(int)point.x} {UnityEngine.Screen.height - (int)point.y}";
+    }
+    string request = Path.Combine(exchange, ++sequence + ".mouse");
+    File.WriteAllText(request + ".tmp", action + coordinates);
+    File.Move(request + ".tmp", request);
+    float deadline = Time.realtimeSinceStartup + 8;
+    while (!File.Exists(request + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(request + ".done"), "Physical input timed out: " + action);
+    await Settle();
+}
+KeyValueField Row(string id) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<KeyValueField>().Single(row => row.name == id);
+Button ButtonById(string id) => ScrollWindow.getCurrentWindow().GetComponentsInChildren<Button>().Single(button => button.name == id);
+async System.Threading.Tasks.Task Show(string id, Actor founder = null)
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    await Settle();
+    if (founder != null)
+    {
+        SelectedUnit.select(founder);
+        SelectedMetas.selected_culture = founder.culture;
+    }
+    ScrollWindow.showWindow(id);
+    await Settle();
+    string tab = id == "culture" ? "Onomastics" : "chinesename_presets";
+    var target = ScrollWindow.getCurrentWindow().GetComponentsInChildren<WindowMetaTab>().Single(item => item.name == tab);
+    await Mouse("click", target);
+    Check(ScrollWindow.getCurrentWindow().tabs.getActiveTab() == target, "Could not open " + tab);
+}
+async System.Threading.Tasks.Task<Actor> Fresh()
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    var before = World.world.map_stats;
+    World.world.generateNewMap();
+    for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading() && World.world.map_stats != before, "An isolated fresh world is required.");
+    Config.paused = true;
+    World.world.console.Hide();
+    var tile = World.world.tiles_list.First(tile => tile.Type.ground && tile.zone.isGoodForNewCity());
+    var cat = World.world.units.createNewUnit("civ_cat", tile);
+    cat.setCulture(World.world.cultures.newCulture(cat, true));
+    cat.joinLanguage(World.world.languages.newLanguage(cat, true));
+    World.world.units.checkLists();
+    World.world.cultures.checkLists();
+    World.world.languages.checkLists();
+    return cat;
+}
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "player-presets");
+Directory.CreateDirectory(output);
+var source = await Fresh();
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+Check(settings.EnabledPacks.Contains(nordic), "Use the integrated package bundle for this test.");
+settings.Cultures[source.culture.id] = new CultureNaming { Pack = nordic };
+settings.Languages[source.language.id] = new LanguageNaming
+{
+    Pools = { [givenPool] = new PoolEdit { ExcludeText = { "月爪" } } }
+};
+void CultureCards(string type, OnomasticsData data)
+{
+    settings.Cultures[source.culture.id].Cards[type] = new CardNaming
+    {
+        Enabled = true, SourceRule = "world-nordic-set", Template = data.getShortTemplate(),
+        ExplicitSeparators = true, Inheritance = SurnameOrder.Father };
+}
+using (var person = new OnomasticsData())
+{
+    person.setTemplateData(new[] { "group_3", asPool, "chinesename_rule_separator",
+        "group_1", asPool, "chinesename_keep_surname" });
+    person.setGroup("group_3", "灵猫个体名");
+    person.setGroup("group_1", "灵猫地名词根");
+    CultureCards("worldbox:person", person);
+}
+using (var city = new OnomasticsData())
+{
+    city.setTemplateData(new[] { "group_1", asPool, "group_2" });
+    city.setGroup("group_1", "灵猫地名词根");
+    city.setGroup("group_2", "府");
+    CultureCards("worldbox:city", city);
+}
+WorldNamingStore.Apply(settings);
+
+await Show("culture", source);
+await Mouse("click", Row("CultureNamingStyle").value);
+await Mouse("click", Row("SaveCulturePreset").value);
+var field = ScrollWindow.getCurrentWindow().GetComponentsInChildren<NameInput>().Single(input => input.name == "CulturePresetName");
+await Mouse("click", field.inputField);
+GUIUtility.systemCopyBuffer = label;
+await Mouse("paste");
+await Mouse("click", ButtonById("ConfirmCulturePreset"));
+string directory = Path.Combine(Application.persistentDataPath, "ChineseName", "Presets");
+var envelope = Directory.GetFiles(directory, "*.preset.json").OrderBy(File.GetLastWriteTimeUtc)
+    .Select(path => JObject.Parse(File.ReadAllText(path))).Last();
+var snapshot = NamingJson.Read<NamingPack>(envelope["snapshot"].ToString(Formatting.None));
+Check(service.GetWorld().Cultures[source.culture.id].Pack == nordic, "Saving applied the preset to the source culture.");
+Check(snapshot.PoolAliases["灵猫个体名"] == givenPool && snapshot.PoolAliases["灵猫地名词根"] == placePool &&
+    snapshot.WordGroups.Values.Any(group => group.Pool == givenPool), "The snapshot lost its vocabulary references.");
+var moon = snapshot.Words.Single(word => word.Text == "月爪" && snapshot.Pools[givenPool].ContainsKey(word.Id));
+var terrace = snapshot.Words.Single(word => word.Text == "猫眼台" && snapshot.Pools[placePool].ContainsKey(word.Id));
+Tooltip.hideTooltipNow();
+WorldTip.hideNow();
+ScreenCapture.CaptureScreenshot(Path.Combine(output, "culture-picker.png"));
+await Settle();
+SaveManager.saveWorldToDirectory(Path.Combine(output, "source"));
+
+var targetCat = await Fresh();
+settings = service.GetWorld();
+Check(!Copies(settings).HasValues && !service.Packages.Contains(snapshot.Id), "The profile library was activated for the whole world.");
+settings.EnabledPacks.Remove(nordic);
+settings.EnabledPacks.Remove("chinesename:world-styles-lexicon");
+settings.Languages[targetCat.language.id] = new LanguageNaming
+{
+    Pools =
+    {
+        [givenPool] = new PoolEdit { ExcludeIds = snapshot.Pools[givenPool].Keys.Where(id => id != moon.Id).ToList() },
+        [placePool] = new PoolEdit { ExcludeIds = snapshot.Pools[placePool].Keys.Where(id => id != terrace.Id).ToList() }
+    }
+};
+WorldNamingStore.Apply(settings);
+await Show("culture", targetCat);
+await Mouse("click", Row("CultureNamingStyle").value);
+await Mouse("click", ButtonById("CultureStyle." + snapshot.Id));
+Check(Row("CultureNamingStyle").value.text == snapshot.Label && Copies(service.GetWorld())[snapshot.Id] != null,
+    "The copy was not applied to the target culture.");
+targetCat.data.set("chinesename.surname.v1", (string)null);
+targetCat.generateNewName();
+string cityName = targetCat.generateName(MetaType.City, 23);
+Check(targetCat.getName() == "月爪·猫眼台" && cityName == "猫眼台府", "The target language did not use the carried cards and words.");
+string targetFolder = Path.Combine(output, "target");
+SaveManager.saveWorldToDirectory(targetFolder);
+File.WriteAllLines(Path.Combine(output, "target.txt"), new[] { targetCat.getID().ToString(), snapshot.Id, targetCat.getName(), cityName });
+await Show("settings");
+await Mouse("click", Row("ExportPlayerPreset." + snapshot.Id).value);
+string exported = Path.Combine(Application.persistentDataPath, "ChineseName", "PresetExports",
+    snapshot.Id.Substring("local-preset:p".Length) + ".preset.json");
+Check(File.Exists(exported) && GUIUtility.systemCopyBuffer == File.ReadAllText(exported), "Export did not write both file and clipboard.");
+File.Copy(exported, Path.Combine(output, "transfer.preset.json"));
+Tooltip.hideTooltipNow();
+WorldTip.hideNow();
+ScreenCapture.CaptureScreenshot(Path.Combine(output, "player-settings.png"));
+await Settle();
+return new { preset = snapshot.Label, person = targetCat.getName(), city = cityName, output };

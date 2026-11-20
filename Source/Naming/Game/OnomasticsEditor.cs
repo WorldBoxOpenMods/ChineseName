@@ -257,6 +257,8 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         control.Select();
         if (control is NativeInput field) field.ActivateInputField();
         if (control.transform.IsChildOf(_preview)) RevealLanguageFlag(control.transform);
+        if (_styleResults != null && control.transform.IsChildOf(_styleResults.content))
+            RevealInScroll(control.transform, _styleResults);
         RevealInScroll(control.transform);
     }
 
@@ -277,17 +279,22 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
     private static void RevealInScroll(Transform target, float margin = 0)
     {
         var shell = ScrollWindow.getCurrentWindow();
-        if (!target.IsChildOf(shell.transform_content)) return;
-        var viewport = shell.transform_viewport;
+        RevealInScroll(target, shell.scrollRect, margin);
+    }
+
+    private static void RevealInScroll(Transform target, ScrollRect scroll, float margin = 0)
+    {
+        if (!target.IsChildOf(scroll.content)) return;
+        var viewport = scroll.viewport;
         var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, target);
-        float range = shell.transform_content.rect.height - viewport.rect.height;
+        float range = scroll.content.rect.height - viewport.rect.height;
         if (range <= 0) return;
         float delta = bounds.size.y + margin * 2 > viewport.rect.height ? bounds.max.y + margin - viewport.rect.yMax :
             bounds.min.y - margin < viewport.rect.yMin ? bounds.min.y - margin - viewport.rect.yMin :
             Mathf.Max(0, bounds.max.y + margin - viewport.rect.yMax);
         if (Mathf.Abs(delta) < .01f) return;
-        shell.scrollRect.StopMovement();
-        shell.scrollRect.verticalNormalizedPosition = Mathf.Clamp01(shell.scrollRect.verticalNormalizedPosition + delta / range);
+        scroll.StopMovement();
+        scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + delta / range);
     }
 
 }

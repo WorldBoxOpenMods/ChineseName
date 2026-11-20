@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Create independently installable archives from the release allowlist."""
+"""Package ChineseName with the bundled naming packs."""
 import argparse
 from pathlib import Path
-from shutil import copyfile
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,14 +33,6 @@ if __name__ == "__main__":
         "Source", "Content", "Locales", "GameResources", "mod.json", "icon.png", "LICENSE", "README.md",
         "Doc/screenshots", "Doc/命名框架重构/实现与验证.md", "Examples/Packages", "Tools/import_legacy_pack.py",
     )
-    build(args.output / "ChineseName.zip", "ChineseName", ROOT, mod_entries)
-    build(args.output / "SpellNamesExample.zip", "SpellNamesExample", ROOT / "Examples/SpellNames",
-          ("Source", "Content", "mod.json"))
     packs = sorted((ROOT / "Examples/Packages").glob("*.naming.json"))
-    if packs:
-        build(args.output / "ChineseName-Bundled.zip", "ChineseName", ROOT, mod_entries,
-              ((pack, "Content/NamingPacks/" + pack.name) for pack in packs))
-        build(args.output / "LexiconVariants.zip", "ChineseNameLexicons", ROOT,
-              (*(pack.relative_to(ROOT) for pack in packs), "Examples/Packages/README.md", "LICENSE"))
-    for pack in packs:
-        copyfile(pack, args.output / pack.name)
+    build(args.output / "ChineseName.zip", "ChineseName", ROOT, mod_entries,
+          ((pack, "Content/NamingPacks/" + pack.name) for pack in packs))
