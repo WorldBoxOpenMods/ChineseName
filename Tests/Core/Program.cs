@@ -103,12 +103,20 @@ Check(lexicons.Length != 0, "Optional lexicon fixtures must be present.");
 var catalog = new NamingService(bundled.Id);
 const string city = "worldbox:city";
 var context = new[] { "species", "kind", "culture-species", "founder-surname", "attacker", "defender",
-    "origin", "station", "topic", "material", "equipment", "stage", "plot" }.Select(id => new InputField(id, InputKind.Text)).ToArray();
+    "origin", "founder-short", "partner-short", "station", "topic", "material", "equipment", "stage", "plot" }
+    .Select(id => new InputField(id, InputKind.Text)).ToArray();
 catalog.RegisterType(new NameType("worldbox:person", "姓名", context, fixedParts: new[] { "surname" }));
 var societyCategories = new[] { "city", "kingdom", "culture", "language", "family", "clan", "war", "alliance", "army", "book", "motto", "item" };
 foreach (string category in societyCategories.Concat(new[] { "religion", "subspecies", "plot" }))
     catalog.RegisterType(new NameType("worldbox:" + category, category, context));
 catalog.InstallPack(bundled);
+const string allianceType = "worldbox:alliance";
+var namedAlliance = catalog.Generate(new NameRequest(allianceType, 7, inputs: new Dictionary<string, object>
+{
+    ["kind"] = "founding-pair", ["founder-short"] = "临川", ["partner-short"] = "松岭"
+}));
+Check(namedAlliance.Success && namedAlliance.Text.StartsWith("临川松岭"), "An alliance should name both founding kingdoms.");
+Check(catalog.Generate(new NameRequest(allianceType, 7)).Success, "An alliance without context should still have a name.");
 var languagePlot = catalog.Generate(new NameRequest("worldbox:plot", 7, inputs: new Dictionary<string, object>
 {
     ["plot"] = "language-divergence"

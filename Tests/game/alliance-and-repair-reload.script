@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+var current = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+string map = current.Parent.Parent.EnumerateFiles("map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.FullName.EndsWith("/output/alliance-and-repair/map.wbox", StringComparison.Ordinal))
+    .OrderBy(file => file.FullName, StringComparer.Ordinal).Last().FullName;
+string[] expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(map), "expected.txt"));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(map));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Alliance fixture did not load.");
+Config.paused = true;
+
+var world = World.world;
+var repaired = world.alliances.get(long.Parse(expected[0]));
+var edited = world.alliances.get(long.Parse(expected[2]));
+var english = world.units.get(long.Parse(expected[4]));
+var manual = world.units.get(long.Parse(expected[6]));
+var realm = world.kingdoms.get(long.Parse(expected[8]));
+Check(repaired?.name == expected[1] && edited?.name == expected[3] && english?.data.name == expected[5] &&
+    manual?.data.name == expected[7] && manual.data.custom_name, "A repaired or preserved name changed after restart.");
+
+Check(realm?.name == "青岑封境", "The country with two name parts did not reload.");
+var prototype = world.alliances.newObject();
+foreach (var member in edited.kingdoms_list) prototype.kingdoms_hashset.Add(member);
+prototype.recalculate();
+prototype.update();
+Check(prototype.name.Contains("青岑") && !prototype.name.Contains("封境"),
+    "A raw alliance was left unnamed or lost the recorded short name after restart: " + prototype.name);
+
+var loadedBlank = world.alliances.newObject();
+loadedBlank.loadData(new AllianceData
+{
+    id = loadedBlank.id,
+    kingdoms = repaired.kingdoms_list.Select(member => member.id).ToList(),
+    founder_kingdom_id = repaired.data.founder_kingdom_id,
+    founder_kingdom_name = repaired.data.founder_kingdom_name,
+    name = " "
+});
+Check(loadedBlank.name.StartsWith("长风澄海", StringComparison.Ordinal),
+    "Loading a blank legacy alliance did not supply a name: " + loadedBlank.name);
+prototype.setName("Manual Charter");
+prototype.data.custom_name = true;
+prototype.update();
+Check(prototype.name == "Manual Charter", "The alliance fallback overwrote a player name.");
+return new { repaired = repaired.name, preserved = manual.data.name, raw = prototype.id, oldBlank = loadedBlank.name };

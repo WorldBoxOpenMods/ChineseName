@@ -8,6 +8,8 @@ namespace Chinese_Name.Naming.Game;
 internal static class VanillaNames
 {
     internal const string Person = "worldbox:person";
+    internal const string Kingdom = "worldbox:kingdom";
+    internal const string Alliance = "worldbox:alliance";
     internal const string War = "worldbox:war";
     internal const string Plot = "worldbox:plot";
     internal const string Surname = "surname";
@@ -21,7 +23,7 @@ internal static class VanillaNames
         [MetaType.Unit] = Person, [MetaType.Family] = "worldbox:family", [MetaType.Language] = "worldbox:language",
         [MetaType.Culture] = "worldbox:culture", [MetaType.Religion] = "worldbox:religion",
         [MetaType.Clan] = "worldbox:clan", [MetaType.City] = "worldbox:city",
-        [MetaType.Kingdom] = "worldbox:kingdom", [MetaType.Alliance] = "worldbox:alliance",
+        [MetaType.Kingdom] = Kingdom, [MetaType.Alliance] = Alliance,
         [MetaType.Army] = "worldbox:army", [MetaType.Subspecies] = "worldbox:subspecies",
         [MetaType.War] = War, [MetaType.Item] = "worldbox:item", [MetaType.World] = "worldbox:world"
     };
@@ -48,7 +50,11 @@ internal static class VanillaNames
                         new InputField("attacker", InputKind.Text, label: "进攻国", example: "临川国"),
                         new InputField("defender", InputKind.Text, label: "防守国", example: "松岭国")
                     }),
-                    MetaType.Alliance => Fields.Where(field => field.Id != "origin").Append(new("origin", InputKind.Text, label: "发起国", example: "临川国")),
+                    MetaType.Alliance => Fields.Where(field => field.Id != "origin").Concat(new[] {
+                        new InputField("origin", InputKind.Text, label: "发起国", example: "临川国"),
+                        new InputField("founder-short", InputKind.Text, label: "发起国简称", example: "临川"),
+                        new InputField("partner-short", InputKind.Text, label: "缔约国简称", example: "松岭")
+                    }),
                     MetaType.Army => Fields.Append(new("station", InputKind.Text, label: "驻地城市", example: "澄江")),
                     MetaType.Family => Fields.Append(new("founder-surname", InputKind.Text, label: "创始人姓氏", example: "欧阳")),
                     MetaType.Item => Fields.Concat(new[] {
@@ -212,13 +218,13 @@ internal static class VanillaNames
         private static bool Prefix(Actor __instance) => !TryNamePerson(__instance);
     }
 
-    internal static bool TryNamePerson(Actor actor)
+    internal static bool TryNamePerson(Actor actor, Func<string, bool> accept = null)
     {
         IReadOnlyDictionary<string, string> fixedParts = null;
         if (ReadSurname(actor, out var surname))
             fixedParts = new Dictionary<string, string> { [Surname] = surname };
         var result = NamingApi.Current.Generate(Request(Person, actor, PersonSeed(actor),
-            actor.data.sex, fixedParts: fixedParts));
+            actor.data.sex, fixedParts: fixedParts), accept);
         if (!result.Success) return false;
         actor.setName(result.Text);
         actor.data.name_culture_id = actor.culture?.id ?? -1L;

@@ -41,11 +41,40 @@ internal static class WorldNamingReassignment
             entries.Remove(key);
     }
 
-    internal static (int Changed, int Failed) RenameExisting(bool includeWorld)
+    private static bool NeedsRepair(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return true;
+        bool latin = false;
+        for (int index = 0; index < name.Length; index++)
+        {
+            if (!char.IsLetter(name, index)) continue;
+            if (name[index] is not (>= 'A' and <= 'Z' or >= 'a' and <= 'z' or
+                >= '\u00C0' and <= '\u024F' or >= '\u1E00' and <= '\u1EFF' or
+                >= '\uFF21' and <= '\uFF3A' or >= '\uFF41' and <= '\uFF5A')) return false;
+            latin = true;
+        }
+        return latin;
+    }
+
+    private static bool ContainsHan(string name)
+    {
+        for (int index = 0; index < name.Length; index++)
+        {
+            char character = name[index];
+            if (character is >= '\u3400' and <= '\u9FFF' or >= '\uF900' and <= '\uFAFF') return true;
+            if (char.IsSurrogatePair(name, index) && char.ConvertToUtf32(name, index) is >= 0x20000 and <= 0x323AF)
+                return true;
+        }
+        return false;
+    }
+
+    internal static (int Changed, int Failed) RenameExisting(bool includeWorld, bool repairOnly = false)
     {
         var world = World.world;
-        int changed = includeWorld ? IndependentNames.AssignWorldNames(world.map_stats) : 0;
+        int changed = includeWorld && !repairOnly ? IndependentNames.AssignWorldNames(world.map_stats) : 0;
         int failed = 0;
+        Func<string, bool> accept = repairOnly ? ContainsHan : null;
+        bool CanRename(BaseSystemData data) => !data.custom_name && (!repairOnly || NeedsRepair(data.name));
         void Record(NanoObject subject, string before, bool success)
         {
             if (!success) failed++;
@@ -53,7 +82,7 @@ internal static class WorldNamingReassignment
         }
         void Assign(NanoObject subject, BaseSystemData data, Func<string> generate)
         {
-            if (data.custom_name) return;
+            if (!CanRename(data)) return;
             string before = data.name;
             string after = generate();
             if (after != null && before != after) subject.setName(after);
@@ -66,31 +95,32 @@ internal static class WorldNamingReassignment
             if (species != null) inputs["species"] = inputs[VanillaNames.CultureSpecies] = species;
             return VanillaNames.Generate(type, actor, IndependentNames.Seed(data.id),
                 culture: culture?.id ?? actor?.culture?.id ?? (data.name_culture_id >= 0 ? data.name_culture_id : null),
-                language: language?.id, inputs: inputs);
+                language: language?.id, accept: accept, inputs: inputs);
         }
         Actor Member(long id, IEnumerable<Actor> members) => world.units.get(id) ?? members.FirstOrDefault();
 
         foreach (var actor in world.units)
         {
-            if (actor.data.custom_name) continue;
+            if (!CanRename(actor.data)) continue;
             string before = actor.data.name;
             string marker = actor.asset.id == "angle" ? SpecialNames.AngleMarker(before) : null;
             if (marker != null) Assign(actor, actor.data, () => marker);
-            else Record(actor, before, VanillaNames.TryNamePerson(actor));
+            else Record(actor, before, VanillaNames.TryNamePerson(actor, accept));
         }
         foreach (var species in world.subspecies.OrderBy(entry => entry.id))
         {
-            if (species.data.custom_name || species.name == SpecialNames.VoidElves) continue;
+            if (!CanRename(species.data) || species.name == SpecialNames.VoidElves) continue;
             string before = species.name;
             if (before == SpecialNames.VanillaVoidElves) Assign(species, species.data, () => SpecialNames.VoidElves);
-            else Record(species, before, IndependentNames.SubspeciesName.TryAssign(species, species.getActorAsset(), species.data.biome_variant));
+            else Record(species, before, IndependentNames.SubspeciesName.TryAssign(species, species.getActorAsset(), species.data.biome_variant, accept));
         }
         foreach (var city in world.cities)
             Assign(city, city.data, () => Generate("worldbox:city", city.data, city.leader ?? world.units.get(city.data.founder_id),
                 city.culture, city.language, city.data.original_actor_asset));
         foreach (var kingdom in world.kingdoms)
-            Assign(kingdom, kingdom.data, () => Generate("worldbox:kingdom", kingdom.data, kingdom.king,
-                kingdom.culture, kingdom.language, kingdom.data.original_actor_asset));
+            Assign(kingdom, kingdom.data, () => KingdomNames.Generate(kingdom, kingdom.king, IndependentNames.Seed(kingdom.id),
+                kingdom.culture?.id ?? kingdom.king?.culture?.id ?? (kingdom.data.name_culture_id >= 0 ? kingdom.data.name_culture_id : null),
+                kingdom.language?.id, accept));
         foreach (var culture in world.cultures)
             Assign(culture, culture.data, () => Generate("worldbox:culture", culture.data,
                 Member(culture.data.creator_id, culture.units), culture, species: culture.data.original_actor_asset));
@@ -107,21 +137,20 @@ internal static class WorldNamingReassignment
             Assign(family, family.data, () => Generate("worldbox:family", family.data, family.getFounderFirst() ??
                 family.getFounderSecond() ?? family.units.FirstOrDefault()));
         foreach (var alliance in world.alliances)
-            Assign(alliance, alliance.data, () => IndependentNames.FromKingdom("worldbox:alliance",
-                world.kingdoms.get(alliance.data.founder_kingdom_id), alliance.id));
+            Assign(alliance, alliance.data, () => AllianceNames.Generate(alliance, accept: accept));
         foreach (var war in world.wars)
-            Assign(war, war.data, () => IndependentNames.GenerateWar(war.getMainAttacker(), war.getMainDefender(), war.getAsset(), war.id));
+            Assign(war, war.data, () => IndependentNames.GenerateWar(war.getMainAttacker(), war.getMainDefender(), war.getAsset(), war.id, accept));
         foreach (var army in world.armies.OrderBy(entry => entry.id))
-            if (!army.data.custom_name) Record(army, army.name, IndependentNames.ArmyName.TryAssign(army, army.getKingdom()));
+            if (CanRename(army.data)) Record(army, army.name, IndependentNames.ArmyName.TryAssign(army, army.getKingdom(), accept));
         foreach (var plot in world.plots)
-            Assign(plot, plot.data, () => IndependentNames.GeneratePlot(plot, plot.getAuthor(), plot.getAsset()));
+            Assign(plot, plot.data, () => IndependentNames.GeneratePlot(plot, plot.getAuthor(), plot.getAsset(), accept));
         foreach (var book in world.books)
             if (book.getAsset()?.name_template is string template && template.StartsWith("book_name_", StringComparison.Ordinal))
                 Assign(book, book.data, () => IndependentNames.GenerateBook(template, book, world.units.get(book.data.author_id),
-                    book.data.culture_id >= 0 ? book.data.culture_id : null, book.data.language_id >= 0 ? book.data.language_id : null));
+                    book.data.culture_id >= 0 ? book.data.culture_id : null, book.data.language_id >= 0 ? book.data.language_id : null, accept));
         foreach (var item in world.items)
             if (!string.IsNullOrEmpty(item.data.name))
-                Assign(item, item.data, () => IndependentNames.GenerateExistingItem(item));
+                Assign(item, item.data, () => IndependentNames.GenerateExistingItem(item, accept));
         return (changed, failed);
     }
 }

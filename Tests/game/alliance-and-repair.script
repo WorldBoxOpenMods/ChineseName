@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+const string exchange = "__EXCHANGE__";
+void Check(bool valid, string message) { if (!valid) throw new InvalidOperationException(message); }
+bool Han(string name) => name?.Any(c => c is >= '\u3400' and <= '\u9fff') == true;
+async System.Threading.Tasks.Task Settle()
+{
+    for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+    for (int i = 0; i < 10; i++) await Game.NextFrame();
+}
+int click = 0;
+async System.Threading.Tasks.Task Mouse(Selectable control)
+{
+    var rect = (RectTransform)control.transform;
+    var point = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera,
+        rect.TransformPoint(rect.rect.center));
+    string file = Path.Combine(exchange, ++click + ".mouse");
+    File.WriteAllText(file + ".tmp", $"click {(int)point.x} {UnityEngine.Screen.height - (int)point.y}");
+    File.Move(file + ".tmp", file);
+    var deadline = Time.realtimeSinceStartup + 6;
+    while (!File.Exists(file + ".done") && Time.realtimeSinceStartup < deadline) await Game.NextFrame();
+    Check(File.Exists(file + ".done"), "Input timed out: " + control.name);
+    await Settle();
+}
+ScrollWindow Window() => ScrollWindow.getCurrentWindow();
+KeyValueField Row(string name) => Window().GetComponentsInChildren<KeyValueField>().SingleOrDefault(row => row.name == name);
+System.Threading.Tasks.Task ClickRow(string name) => Mouse((Row(name) ?? throw new InvalidOperationException("Missing row " + name))
+    .value.GetComponent<Button>());
+
+var world = World.world;
+var before = world.map_stats;
+world.generateNewMap();
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && world.map_stats != before, "A fresh map is required.");
+Config.paused = true;
+var service = NamingApi.Current;
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(8).Select(group => group.First()).ToArray();
+Check(tiles.Length == 8, "The map needs eight empty settlements.");
+(Kingdom Kingdom, Actor Founder) Realm(int index, string name, bool split = false)
+{
+    var actor = world.units.createNewUnit("human", tiles[index]);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    world.cultures.checkLists();
+    world.languages.checkLists();
+    if (split)
+    {
+        var settings = service.GetWorld();
+        settings.Cultures[culture.id] = new CultureNaming
+        {
+            Rules = new Dictionary<string, RuleEdit>
+            {
+                ["worldbox:kingdom/countries"] = new RuleEdit
+                {
+                    Order = new List<string> { "name", "suffix" },
+                    Parts = new Dictionary<string, Part>
+                    {
+                        ["name"] = new Part { Id = "name", Literal = name },
+                        ["suffix"] = new Part { Id = "suffix", Literal = "封境" }
+                    }
+                }
+            }
+        };
+        WorldNamingStore.Apply(settings);
+    }
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    kingdom.setCulture(culture);
+    kingdom.setLanguage(actor.language);
+    if (split) Check(kingdom.name == name + "封境", "The split-country fixture failed: " + kingdom.name);
+    else kingdom.setName(name);
+    var city = world.cities.buildNewCity(actor, tiles[index].zone);
+    actor.joinCity(city);
+    return (kingdom, actor);
+}
+
+var (first, founder) = Realm(0, "临川共和国");
+var (second, _) = Realm(1, "松岭王国");
+var managed = world.alliances.newAlliance(first, second);
+Check(managed.name.StartsWith("临川松岭", StringComparison.Ordinal), "The default alliance did not use the two short names: " + managed.name);
+string managedName = managed.name;
+
+var (third, author) = Realm(2, "青岑", split: true);
+var (fourth, _) = Realm(3, "白岩公国");
+world.units.checkContainer(); world.kingdoms.checkLists(); world.cities.checkLists();
+world.console.Hide();
+SelectedUnit.select(author);
+SelectedMetas.selected_culture = author.culture;
+ScrollWindow.showWindow("culture");
+await Settle();
+Window().tabs.showTab("Onomastics");
+await Settle();
+var tab = Window().GetComponentInChildren<OnomasticsTab>();
+await Mouse(tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_alliance").toggle.GetComponent<Button>());
+const string firstGlyph = "chinesename:alliance-founder-short", secondGlyph = "chinesename:alliance-partner-short";
+var glyphs = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Select(button => button.onomastics_asset?.id).ToArray();
+Check(glyphs.Contains(firstGlyph) && glyphs.Contains(secondGlyph) && glyphs.Contains("chinesename:founding-kingdom"),
+    "The three alliance-context glyphs did not appear together in the alliance palette.");
+char ShortCode(string id) => AssetManager.onomastics_library.get(id).short_id;
+tab.loadTemplate($"{ShortCode(firstGlyph)}{ShortCode("hyphen")}{ShortCode(secondGlyph)}0|0:会盟");
+await Settle();
+var direct = world.alliances.newObject();
+direct.createNewAlliance();
+Check(Han(direct.name), "Direct initialization left the alliance without a Chinese name.");
+direct.addFounders(third, fourth);
+Check(direct.name == "青岑-白岩会盟", "Direct creation did not read the stored country root and original editor cards: " + direct.name);
+string directName = direct.name;
+
+var (fifth, _) = Realm(4, "云津");
+var (sixth, _) = Realm(5, "北辰王庭");
+var joined = world.alliances.newObject();
+joined.join(fifth, pForce: true);
+joined.join(sixth, pForce: true);
+Check(joined.name.StartsWith("云津北辰", StringComparison.Ordinal), "The join-only path missed the two kingdoms: " + joined.name);
+var (seventh, _) = Realm(6, "长风国");
+var (eighth, _) = Realm(7, "澄海领");
+var blank = world.alliances.newObject();
+blank.addFounders(seventh, eighth);
+Check(blank.name.StartsWith("长风澄海", StringComparison.Ordinal), "Adding founders without creation left the alliance unnamed.");
+blank.setName("  ", pTrack: false);
+
+Actor Named(string name, bool manual = false)
+{
+    var actor = world.units.createNewUnit("human", tiles[0]);
+    actor.setCulture(founder.culture);
+    actor.joinLanguage(founder.language);
+    actor.joinCity(founder.city);
+    actor.setName(name, pTrack: false);
+    actor.data.custom_name = manual;
+    return actor;
+}
+var english = Named("Élan-North 2");
+var empty = Named("  ");
+var handwritten = Named("Handwritten", manual: true);
+var chinese = Named("留春");
+var mixed = Named("顾·Smith");
+var nonLatin = Named("Север");
+const string worldTitle = "Player's World";
+world.map_stats.name = worldTitle;
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+ScrollWindow.showWindow("world_info");
+await Settle();
+Window().tabs.showTab("chinesename_packs");
+await Settle();
+Window().scrollRect.verticalNormalizedPosition = 1;
+await Settle();
+await ClickRow("WorldNamingReassignment");
+await ClickRow("WorldNamingSpecies");
+await ClickRow("WorldNamingTitles");
+await ClickRow("WorldNamingScope");
+Check(Row("WorldNamingScope").value.text == "仅英文和空白" && Row("WorldNamingTitles") == null,
+    "The repair filter did not protect world titles without a manual-name marker.");
+await ClickRow("WorldNamingObjects");
+Check(Han(english.data.name) && Han(empty.data.name) && blank.name.StartsWith("长风澄海", StringComparison.Ordinal),
+    "Selective reassignment missed automatic English or empty names.");
+Check(handwritten.data.name == "Handwritten" && chinese.data.name == "留春" && mixed.data.name == "顾·Smith" &&
+    nonLatin.data.name == "Север" && world.map_stats.name == worldTitle && managed.name == managedName && direct.name == directName,
+    "Selective reassignment changed a name outside the selected scope.");
+world.units.checkContainer(); world.units.checkLists(); world.alliances.checkLists();
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "alliance-and-repair");
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "expected.txt"), new[]
+{
+    blank.id.ToString(), blank.name, direct.id.ToString(), directName, english.id.ToString(), english.data.name,
+    handwritten.id.ToString(), handwritten.data.name, third.id.ToString()
+});
+return new { managed = managed.name, direct = direct.name, joined = joined.name, repaired = blank.name,
+    english = english.data.name, empty = empty.data.name, manual = handwritten.data.name, output };

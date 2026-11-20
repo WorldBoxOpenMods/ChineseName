@@ -285,6 +285,11 @@ for id, label, terms in [
     ("personal-names", "完整中文给名", "静姝 明远 景行 安澜 望舒 青岚 正则 修远 怀瑾 知新 照雪 云舟 听竹 宁秋 雨棠 含章".split()),
 ]:
     pack["poolAliases"][label] = pool(id, terms, label)
+rule("alliance", "founding-pair", [
+    {"id": "founder-short", "input": "founder-short"},
+    {"id": "partner-short", "input": "partner-short"},
+    part("suffix", "chinesename:alliance-ending"),
+], 5, kind="founding-pair", use_native_word_groups=True)
 for id, ref, members in [
     ("river-cultures", "culture-name", "江渚 海桑 舟居 听潮 煮盐 引水"),
     ("craft-cultures", "culture-name", "百工 礼耕 制陶 羽织 炉铸 拓垦"),

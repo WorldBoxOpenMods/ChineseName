@@ -17,7 +17,9 @@ internal sealed class ModClass : BasicMod<ModClass>
         {
             typeof(WorldNamingStore.NewWorld), typeof(VanillaNames.ActorNames), typeof(VanillaNames.FirstName),
             typeof(VanillaNames.Birth), typeof(VanillaNames.CopyIdentity), typeof(VanillaNames.MaterializeIdentity),
-            typeof(IndependentNames.WorldNames), typeof(IndependentNames.AllianceName), typeof(IndependentNames.WarName),
+            typeof(IndependentNames.WorldNames), typeof(KingdomNames.Founding), typeof(AllianceNames.ManagedCreation),
+            typeof(AllianceNames.DirectCreation), typeof(AllianceNames.Founders), typeof(AllianceNames.MemberFallback),
+            typeof(IndependentNames.WarName),
             typeof(IndependentNames.BookName), typeof(IndependentNames.PlotName), typeof(IndependentNames.ArmyName),
             typeof(IndependentNames.SubspeciesName), typeof(SpecialNames.VoidEvent), typeof(SpecialNames.StartupAngles),
             typeof(IndependentNames.ItemOrigin), typeof(IndependentNames.LegendaryName), typeof(IndependentNames.ReforgeName),
