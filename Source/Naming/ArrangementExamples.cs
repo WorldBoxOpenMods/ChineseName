@@ -27,6 +27,7 @@ internal static class ArrangementExamples
         {
             if (remaining-- <= 0) return false;
             var outcome = arrangement.Expression.Evaluate(term => assigned.TryGetValue(term.Field, out var value)
+                && service.InputApplies(type.Id, term.Field, sample) && (!service.IsScopedInput(type.Id, term.Field) || value != null)
                 ? service.MatchesCondition(type.Id, term.Field, term, NameEngine.Value(value)) : (bool?)null);
             if (!hasContext && outcome.HasValue) return outcome.Value;
             if (hasContext && (outcome == true || index >= choices.Length))
@@ -65,6 +66,9 @@ internal static class ArrangementExamples
         var field = type.Fields[terms.Key];
         sample.TryGetValue(terms.Key, out var current);
         bool registered = service.Conditions(type.Id).TryGetValue(terms.Key, out var options);
+        if (service.IsScopedInput(type.Id, terms.Key))
+            return !service.InputApplies(type.Id, terms.Key, sample) || !registered || options.Presence
+                ? new[] { current } : new[] { current }.Concat(options.Values.Keys.Cast<object>()).Distinct();
         var operands = terms
             .Where(term => term.Test != ArrangementTest.Registered || !registered || !options.Presence)
             .SelectMany(term => term.Values).Distinct(StringComparer.Ordinal).ToArray();

@@ -199,17 +199,17 @@ internal static class WorldNamingReassignment
                 (species, name) => { reservedSpecies.Add(name); renamedSpecies.Add(species.id); });
 
             PlanObjects(() => world.cultures, culture => culture.data, culture =>
-                SocietyRequest("worldbox:culture", culture.data, Member(culture.data.creator_id, culture.units),
+                SocietyRequest("worldbox:culture", culture, culture.data, Member(culture.data.creator_id, culture.units),
                     culture, species: culture.data.original_actor_asset));
             PlanObjects(() => world.languages, language => language.data, language =>
-                SocietyRequest("worldbox:language", language.data, Member(language.data.creator_id, language.units), language: language));
+                SocietyRequest("worldbox:language", language, language.data, Member(language.data.creator_id, language.units), language: language));
             PlanObjects(() => world.religions, religion => religion.data, religion =>
-                SocietyRequest("worldbox:religion", religion.data, Member(religion.data.creator_id, religion.units)));
+                SocietyRequest("worldbox:religion", religion, religion.data, Member(religion.data.creator_id, religion.units)));
             PlanObjects(() => world.clans, clan => clan.data, clan =>
-                SocietyRequest("worldbox:clan", clan.data, clan.getChief() ?? Member(clan.data.founder_actor_id, clan.units),
+                SocietyRequest("worldbox:clan", clan, clan.data, clan.getChief() ?? Member(clan.data.founder_actor_id, clan.units),
                     species: clan.data.original_actor_asset));
             PlanObjects(() => world.families, family => family.data, family =>
-                SocietyRequest("worldbox:family", family.data, family.getFounderFirst() ?? family.getFounderSecond() ??
+                SocietyRequest("worldbox:family", family, family.data, family.getFounderFirst() ?? family.getFounderSecond() ??
                     family.units.FirstOrDefault()));
 
             var armyNames = world.armies.ToLookup(army => (army.getKingdom()?.id, army.name));
@@ -272,14 +272,14 @@ internal static class WorldNamingReassignment
             }
         }
 
-        private static NameRequest SocietyRequest(string type, BaseSystemData data, Actor actor = null,
+        private static NameRequest SocietyRequest(string type, NanoObject subject, BaseSystemData data, Actor actor = null,
             Culture culture = null, Language language = null, string species = null)
         {
             var inputs = new Dictionary<string, object>();
             if (species != null) inputs["species"] = inputs[VanillaNames.CultureSpecies] = species;
             return VanillaNames.Request(type, actor, unchecked((ulong)IndependentNames.Seed(data.id)),
                 culture: culture?.id ?? actor?.culture?.id ?? (data.name_culture_id >= 0 ? data.name_culture_id : null),
-                language: language?.id, inputs: inputs);
+                language: language?.id, inputs: inputs, subject: subject);
         }
 
         private string ProjectedName(Kingdom kingdom) => kingdom != null && _countryNames.TryGetValue(kingdom.id, out var name)

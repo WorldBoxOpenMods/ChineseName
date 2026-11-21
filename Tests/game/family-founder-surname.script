@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Content.Const;
+
+const string eastern = "Cultiway.EasternHuman", surnameKey = "chinesename.surname.v1", family = "worldbox:family";
+const string terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The family test world did not load.");
+Config.paused = true;
+var world = World.world;
+var tile = world.tiles_list.First(cell => cell.Type.ground);
+var service = NamingApi.Current;
+
+Actor Spawn(string asset, ActorSex sex, string surname, Culture owner = null, Language language = null)
+{
+    var actor = world.units.createNewUnit(asset, tile, pAdultAge: true);
+    actor.data.sex = sex;
+    actor.data.set(surnameKey, surname);
+    if (owner != null) actor.setCulture(owner);
+    if (language != null) actor.joinLanguage(language);
+    return actor;
+}
+string Surname(Actor actor) { actor.data.get(surnameKey, out string value); return value; }
+var human = Spawn("human", ActorSex.Male, "欧阳");
+var father = Spawn(eastern, ActorSex.Male, "敖");
+var culture = world.cultures.newCulture(father, true);
+father.setCulture(culture);
+var language = world.languages.newLanguage(father, true);
+father.joinLanguage(language);
+world.cultures.checkLists();
+world.languages.checkLists();
+for (int i = 0; i < 10 && !EasternHumanSkinStyles.IsSelected(culture, "chunqiu"); i++)
+    EasternHumanSkinStyles.CycleNext(culture);
+Check(EasternHumanSkinStyles.IsSelected(culture, "chunqiu"), "The fixture did not select Chunqiu.");
+
+var state = service.GetWorld();
+state.UseSavedVanillaCards = false;
+var pack = service.GetPackage("cultiway:eastern-human");
+var profile = new LanguageNaming();
+state.Languages[language.id] = profile;
+void Select(string pool, string value)
+{
+    var id = pack.Words.Single(word => word.Text == value && pack.Pools[pool].ContainsKey(word.Id)).Id;
+    profile.Pools[pool] = new PoolEdit { ExcludeIds = pack.Pools[pool].Keys.Where(word => word != id).ToList() };
+}
+Select("cultiway:eastern-family-suffix.chunqiu", "氏");
+Select("cultiway:eastern-surname.chunqiu", "公孙");
+WorldNamingStore.Apply(state);
+
+var parent = Spawn(eastern, ActorSex.Female, "李", culture, language);
+var household = world.families.newFamily(father, tile, parent);
+var child = BabyMaker.makeBaby(father, parent, ActorSex.Male, pTile: tile, pJoinFamily: true);
+Check(household.name == "敖氏" && Surname(father) == "敖" && Surname(child) == "敖" &&
+    child.family == household && child.getName().StartsWith("敖", StringComparison.Ordinal),
+    "The family and inherited surname disagree: " + household.name + " / " + child.getName());
+
+var unnamed = Spawn(eastern, ActorSex.Male, "", culture, language);
+var fallback = world.families.newFamily(unnamed, tile, null);
+Check(fallback.name == "公孙氏" && Surname(unnamed) == "",
+    "The fallback did not use the current style and language: " + fallback.name);
+var baseFamily = world.families.newFamily(human, tile, null);
+Check(baseFamily.name == "欧阳一门", "Base naming did not use the whole surname: " + baseFamily.name);
+
+state = service.GetWorld();
+if (!state.Cultures.TryGetValue(culture.id, out var settings)) state.Cultures[culture.id] = settings = new CultureNaming();
+settings.Cards[family] = new CardNaming { Enabled = true, Template = "0|0:承礼堂" };
+WorldNamingStore.Apply(state);
+var custom = world.families.newFamily(Spawn(eastern, ActorSex.Male, "敖", culture, language), tile, null);
+Check(custom.name == "承礼堂", "The default overwrote a player's family arrangement.");
+
+var expected = new[] { household, fallback, baseFamily, custom }.ToDictionary(item => item.id, item => item.name);
+long fatherId = father.id, childId = child.id;
+world.units.checkContainer();
+world.families.checkLists();
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "family-founder-surname");
+Directory.CreateDirectory(folder);
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The family fixture did not reload.");
+Config.paused = true;
+world = World.world;
+Check(expected.All(pair => world.families.get(pair.Key)?.name == pair.Value) &&
+    Surname(world.units.get(fatherId)) == "敖" && Surname(world.units.get(childId)) == "敖",
+    "Readback changed an existing family name or surname.");
+return new { families = expected.Values.ToArray(), child = world.units.get(childId).getName(), folder };

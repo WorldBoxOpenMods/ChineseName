@@ -1,0 +1,8 @@
+{
+  "name": "中文名 · 新支系开姓",
+  "author": "ChineseName",
+  "version": "1.0.0",
+  "GUID": "ChineseName.SurnameBranches",
+  "Dependencies": ["CHINESENAME"],
+  "description": "少数新文化和移民城市会开出新姓。只作用于尚未定姓、也未加入家族的成员。"
+}

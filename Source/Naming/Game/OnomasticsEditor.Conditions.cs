@@ -301,10 +301,12 @@ public sealed partial class OnomasticsEditor
 
     private void DrawConditionPresets(Transform panel, float width)
     {
-        var choices = ConditionChoices.Values.ToArray();
+        var service = NamingApi.Current;
+        var inputs = PreviewInputs(_type, _culture, _page);
+        var choices = ConditionChoices.Values.Where(field => service.InputApplies(_type.Id, field.Field, inputs)).ToArray();
         if (choices.Sum(field => field.Values.Count) > 14)
         {
-            _presetField ??= choices[0].Field;
+            if (!choices.Any(field => field.Field == _presetField)) _presetField = choices[0].Field;
             ConditionCards(panel, choices, width, (row, field) =>
                 ConditionCard(row, "ConditionPresetField." + field.Field, FieldIcon(field.Field), field.Label,
                     () => Change(() => _presetField = field.Field), field.Field == _presetField));
@@ -350,7 +352,7 @@ public sealed partial class OnomasticsEditor
     private NameRequest Scenario(ConditionalArrangement arrangement, out bool matches)
     {
         var service = NamingApi.Current;
-        var inputs = PreviewInputs(_type, _page);
+        var inputs = PreviewInputs(_type, _culture, _page);
         matches = ArrangementExamples.TryApply(service, _type, arrangement, inputs);
         service.PrepareExample(_type.Id, inputs);
         if (_type.Id == VanillaNames.War && inputs.TryGetValue("kind", out var war) && Equals(war, "spite") &&

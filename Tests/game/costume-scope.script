@@ -1,0 +1,278 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Content.Const;
+using UnityEngine.UI;
+
+const string person = "worldbox:person", glyphId = "cultiway:eastern-surname";
+const string field = "cultiway-costume", eastern = "Cultiway.EasternHuman", cat = "civ_cat";
+const string terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The isolated map did not load.");
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var pack = service.GetPackage("cultiway:eastern-human");
+var words = pack.Words.ToDictionary(word => word.Id, word => word.Text);
+HashSet<string> Pool(string role, string key) => new(pack.Pools["cultiway:eastern-" + role + "." + key].Keys
+    .Select(id => words[id]));
+bool Formed(string name, string head, string tail, string key) =>
+    Pool(head, key).Any(stem => name.StartsWith(stem, StringComparison.Ordinal) && Pool(tail, key).Contains(name.Substring(stem.Length)));
+
+var zones = world.zone_calculator.zones.Where(zone => zone.canStartCityHere()).ToArray();
+var home = zones.First();
+var next = zones.First(zone => Math.Abs(zone.centerTile.x - home.centerTile.x) + Math.Abs(zone.centerTile.y - home.centerTile.y) > 36);
+var founder = world.units.createNewUnit(eastern, home.centerTile, pAdultAge: true);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+kingdom.setUnitMetas(founder);
+world.kingdoms.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+Check(culture.data.original_actor_asset == eastern, "The fixture did not create an eastern culture.");
+
+void Style(string key, Culture owner = null)
+{
+    owner ??= culture;
+    for (int i = 0; i < 10 && !EasternHumanSkinStyles.IsSelected(owner, key); i++)
+        EasternHumanSkinStyles.CycleNext(owner);
+    Check(EasternHumanSkinStyles.IsSelected(owner, key), "The existing costume control did not select " + key);
+}
+Actor Spawn(string asset, Culture owner, WorldTile tile, ActorSex sex = ActorSex.Male)
+{
+    var actor = world.units.createNewUnit(asset, tile, pAdultAge: true);
+    actor.data.sex = sex;
+    actor.setCulture(owner);
+    actor.joinLanguage(language);
+    return actor;
+}
+
+Style("tang");
+var tang = Spawn(eastern, culture, home.centerTile);
+string tangName = tang.getName();
+Check(Formed(tangName, "surname", "given-male", "tang"), "The native person entry did not use Tang pools: " + tangName);
+var city = world.cities.buildNewCity(founder, home);
+founder.joinCity(city);
+kingdom.setCapital(city);
+world.cities.checkLists();
+Check(Formed(city.name, "city", "city-suffix", "tang"), "The native city entry did not use Tang pools: " + city.name);
+var tangSpecies = world.subspecies.newSpecies(founder.asset, city.getTile());
+Check(Formed(tangSpecies.name, "subspecies", "subspecies-suffix", "tang"), "The birthplace did not supply the Tang style: " + tangSpecies.name);
+Style("ming");
+var ming = Spawn(eastern, culture, home.centerTile, ActorSex.Female);
+string mingName = ming.getName();
+Check(Formed(mingName, "surname", "given-female", "ming") && tang.getName() == tangName,
+    "Ming pools or the existing Tang name are wrong: " + mingName);
+var mingCity = world.cities.buildNewCity(founder, next);
+world.cities.checkLists();
+Check(Formed(mingCity.name, "city", "city-suffix", "ming"), "The native city entry did not use Ming pools: " + mingCity.name);
+var mingSpecies = world.subspecies.newSpecies(founder.asset, mingCity.getTile());
+Check(Formed(mingSpecies.name, "subspecies", "subspecies-suffix", "ming"), "The birthplace did not supply the Ming style: " + mingSpecies.name);
+
+var catalogue = new Dictionary<string, Dictionary<string, string>>();
+foreach (string key in new[] { "common", "chunqiu", "tang", "song", "yuan", "ming", "qing", "modern", "fusang", "chaoxian" })
+{
+    Style(key == "common" ? "1" : key);
+    var zone = zones.First(item => item.canStartCityHere());
+    var actor = Spawn(eastern, culture, zone.centerTile);
+    string man = actor.getName();
+    var woman = Spawn(eastern, culture, zone.centerTile, ActorSex.Female);
+    Check(Formed(woman.getName(), "surname", "given-female", key), key + ": " + woman.getName());
+    var realm = world.kingdoms.makeNewCivKingdom(actor);
+    realm.setUnitMetas(actor);
+    var town = world.cities.buildNewCity(actor, zone);
+    actor.joinCity(town);
+    realm.setCapital(town);
+    world.kingdoms.checkLists(); world.cities.checkLists();
+    var named = new Dictionary<string, string>
+    {
+        ["person"] = man, ["city"] = town.name, ["kingdom"] = realm.name,
+        ["culture"] = world.cultures.newCulture(actor, false).name,
+        ["language"] = world.languages.newLanguage(actor, false).name,
+        ["clan"] = world.clans.newClan(actor, true).name,
+        ["family"] = world.families.newFamily(actor, town.getTile(), null).name,
+        ["religion"] = world.religions.newReligion(actor, true).name,
+        ["subspecies"] = world.subspecies.newSpecies(actor.asset, town.getTile()).name
+    };
+    catalogue.Add(key, named);
+    void Compound(string type, string head, string tail) =>
+        Check(Formed(named[type], head, tail, key), key + "/" + type + ": " + named[type]);
+    void Literal(string type, string suffix) =>
+        Check(Pool(type, key).Any(word => word + suffix == named[type]), key + "/" + type + ": " + named[type]);
+    Compound("person", "surname", "given-male");
+    Compound("city", "city", "city-suffix");
+    Compound("clan", "surname", "clan-suffix");
+    actor.data.get("chinesename.surname.v1", out string founderSurname);
+    Check(Pool("family-suffix", key).Any(ending => founderSurname + ending == named["family"]),
+        key + "/family: " + named["family"] + " / founder surname " + founderSurname);
+    Compound("religion", "religion", "religion-suffix");
+    Compound("subspecies", "subspecies", "subspecies-suffix");
+    Literal("culture", "文化");
+    Literal("language", "语");
+    var shortName = WorldNamingInputs.KingdomShortName(realm);
+    Check(Pool("kingdom", key).Contains(shortName) &&
+        (realm.name == shortName || Pool("kingdom-suffix", key).Any(ending => shortName + ending == realm.name)),
+        key + "/kingdom: " + realm.name + " / " + shortName);
+    world.cultures.checkLists(); world.languages.checkLists();
+}
+Check(catalogue.Count == 10 && catalogue.Values.All(names => names.Count == 9), "The fixture missed a costume or category.");
+var namesWithTitle = Enumerable.Range(1, 500).Select(seed => service.Generate(new NameRequest(
+    "worldbox:kingdom", (ulong)seed, culture.id, language.id,
+    new Dictionary<string, object> { [field] = "ming" }))).Count(result =>
+        result.Parts.TryGetValue("suffix", out string title) && title.Length != 0);
+Check(namesWithTitle is > 150 and < 250, "The optional kingdom suffix did not keep its 40% chance: " + namesWithTitle);
+
+ConditionalArrangement Row(string id, string template, string key, string value, bool negated = false) => new()
+{
+    Id = id, Cards = new CardNaming { Enabled = true, Template = template },
+    Expression = new ArrangementCondition { Field = key, Values = new List<string> { value }, Negated = negated }
+};
+Style("tang");
+char glyph = AssetManager.onomastics_library.get(glyphId).short_id;
+char keepSurname = AssetManager.onomastics_library.get("chinesename_keep_surname").short_id;
+var rows = new List<ConditionalArrangement>
+{
+    Row("not-tang", "0|0:非唐专名", field, "tang", negated: true),
+    Row("costume", glyph.ToString() + keepSurname + "0|0:服饰", "kind", "sapient"),
+    Row("fallback", "0|0:星尾", "kind", "sapient")
+};
+var feline = Spawn(cat, culture, city.getTile());
+Check(feline.culture == culture && feline.asset.id == cat, "The two species did not share a culture.");
+var visitors = Spawn(cat, null, city.getTile());
+var cats = world.cultures.newCulture(visitors, true);
+visitors.setCulture(cats);
+world.cultures.checkLists();
+var settings = service.GetWorld();
+settings.Cultures[culture.id] = new CultureNaming();
+settings.Cultures[culture.id].Arrangements[person] = rows;
+settings.Cultures[cats.id] = new CultureNaming();
+settings.Cultures[cats.id].Arrangements[person] = NamingJson.Read<List<ConditionalArrangement>>(NamingJson.Write(rows));
+WorldNamingStore.Apply(settings);
+var styled = Spawn(eastern, culture, city.getTile());
+string styledName = styled.getName();
+Check(styledName.EndsWith("服饰") && Pool("surname", "tang").Contains(styledName.Substring(0, styledName.Length - 2)),
+    "The eastern unit did not use the costume glyph: " + styledName);
+Check(feline.getName() == "星尾", "A cat matched the costume glyph or negated costume condition: " + feline.getName());
+Style("ming");
+var negated = Spawn(eastern, culture, city.getTile());
+Check(negated.getName() == "非唐专名", "Negation did not match an applicable Ming style.");
+Style("tang");
+
+async System.Threading.Tasks.Task CheckEditor(Actor sample, Culture target, bool expected)
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    world.console.Hide();
+    SelectedUnit.select(sample);
+    SelectedMetas.selected_culture = target;
+    ScrollWindow.showWindow("culture");
+    var window = ScrollWindow.getCurrentWindow();
+    window.tabs.showTab("Onomastics");
+    var tab = window.GetComponentInChildren<OnomasticsTab>();
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_unit").toggle.click();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    for (int frame = 0; frame < 10; frame++) await Game.NextFrame();
+    bool available = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>().Any(button =>
+        button.onomastics_asset?.id == glyphId && button.gameObject.activeInHierarchy);
+    Check(available == expected, "The costume glyph appeared in the wrong culture.");
+    window.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.costume").onClick.Invoke();
+    for (int frame = 0; frame < 10; frame++) await Game.NextFrame();
+    bool hasCondition = window.GetComponentsInChildren<Button>().Any(button =>
+        button.name == "ConditionPresetField." + field || button.name.StartsWith("ConditionPreset." + field + ".", StringComparison.Ordinal));
+    Check(hasCondition == expected, "The costume conditions appeared in the wrong culture.");
+    if (!expected)
+    {
+        var issue = window.transform.FindRecursive("PreviewIssue")?.GetComponent<Text>()?.text;
+        Check(issue?.Contains("当前情境不适用") == true, "The saved costume layout did not explain its fallback: " + issue);
+    }
+    foreach (var (group, id) in new[]
+    {
+        ("city", "city"), ("kingdom", "kingdom"), ("culture", "culture"), ("language", "language"),
+        ("clan", "clan-surname"), ("family", "family-surname"), ("religion", "religion")
+    })
+    {
+        tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_" + group).toggle.click();
+        for (int frame = 0; frame < 8; frame++) await Game.NextFrame();
+        bool shown = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>().Any(button =>
+            button.onomastics_asset?.id == "cultiway:eastern-" + id && button.gameObject.activeInHierarchy);
+        Check(shown == expected, group + ": the costume glyph appeared in the wrong culture.");
+    }
+}
+await CheckEditor(tang, culture, true);
+await CheckEditor(visitors, cats, false);
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+
+Check(AssetManager.plots_library.get("culture_divide").action(founder), "The native culture split failed.");
+var branch = founder.culture;
+world.cultures.checkLists();
+settings = service.GetWorld();
+Check(branch != culture && EasternHumanSkinStyles.IsSelected(branch, "tang") &&
+    settings.Cultures[branch.id].Parent == culture.id &&
+    settings.Cultures[branch.id].Arrangements[person].Select(row => row.Id).SequenceEqual(rows.Select(row => row.Id)),
+    "The new culture did not inherit the costume and arranged rules.");
+Style("qing", branch);
+Check(EasternHumanSkinStyles.IsSelected(culture, "tang") &&
+    Pool("culture", "tang").Any(head => head + "文化" == branch.name),
+    "The child costume changed the parent or the split did not get a Tang culture name.");
+
+const string qingPool = "cultiway:eastern-given-male.qing", surnameKey = "chinesename.surname.v1";
+var qingIds = pack.Pools[qingPool].Keys.Take(2).ToArray();
+var qingNames = qingIds.Select(id => words[id]).ToArray();
+settings.Cultures[branch.id].Arrangements.Remove(person);
+Restrict(language, qingIds[0]);
+WorldNamingStore.Apply(settings);
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The native language split failed.");
+var dialect = founder.language;
+world.languages.checkLists();
+settings = service.GetWorld();
+Check(dialect != language && settings.LanguageParents[dialect.id] == language.id &&
+    !settings.Languages[dialect.id].Pools[qingPool].ExcludeIds.Contains(qingIds[0]) &&
+    settings.Languages[dialect.id].Pools[qingPool].ExcludeIds.Contains(qingIds[1]),
+    "The new language lost its parent's active costume vocabulary.");
+Restrict(dialect, qingIds[1]);
+WorldNamingStore.Apply(settings);
+
+void Restrict(Language speech, string id)
+{
+    if (!settings.Languages.TryGetValue(speech.id, out var profile))
+        settings.Languages[speech.id] = profile = new LanguageNaming();
+    profile.Pools[qingPool] = new PoolEdit { ExcludeIds = pack.Pools[qingPool].Keys.Where(word => word != id).ToList() };
+}
+
+tang.data.get(surnameKey, out string surname);
+Check(!string.IsNullOrEmpty(surname), "The founder's Tang surname was not saved.");
+Actor Born(Language speech, string given)
+{
+    var baby = BabyMaker.makeBaby(tang, ming, ActorSex.Male, pTile: city.getTile());
+    baby.setCulture(branch);
+    baby.joinLanguage(speech);
+    baby.data.get(surnameKey, out string inherited);
+    Check(inherited == surname && baby.getName() == surname + given,
+        "A newborn lost its inherited surname or current language: " + baby.getName());
+    return baby;
+}
+var heir = Born(language, qingNames[0]);
+var sibling = Born(dialect, qingNames[1]);
+world.units.checkContainer(); world.subspecies.checkLists(); world.cities.checkLists(); world.cultures.checkLists();
+world.kingdoms.checkLists(); world.languages.checkLists(); world.families.checkLists();
+world.clans.checkLists(); world.religions.checkLists();
+var save = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "costume-scope");
+Directory.CreateDirectory(save);
+var map = SaveManager.saveWorldToDirectory(save);
+Check(map.kingdoms.Any(entry => entry.id == kingdom.id), "The fixture was saved before its country joined the world.");
+File.WriteAllText(Path.Combine(save, "names.json"), NamingJson.Write(new
+{
+    Culture = culture.id, CatCulture = cats.id, Language = language.id, Town = city.id, Cat = feline.id,
+    Tang = tangName, Ming = mingName, Styled = styled.id, StyledName = styledName,
+    TangSpecies = tangSpecies.name, MingSpecies = mingSpecies.name,
+    Branch = branch.id, Dialect = dialect.id, Heir = heir.id, Sibling = sibling.id, Father = tang.id, Mother = ming.id,
+    Surname = surname, QingNames = qingNames
+}));
+return new { tangName, mingName, tangCity = city.name, mingCity = mingCity.name,
+    tangSpecies = tangSpecies.name, mingSpecies = mingSpecies.name, cat = feline.getName(), styledName,
+    catalogue, namesWithTitle, branch = branch.name, family = new[] { heir.getName(), sibling.getName() }, save };

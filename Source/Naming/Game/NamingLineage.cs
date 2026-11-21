@@ -121,8 +121,9 @@ internal static class NamingLineage
             ["origin"] = origin ?? "",
             ["species"] = target.getActorAsset().id
         };
-        var result = NamingApi.Current.Generate(new NameRequest("worldbox:subspecies", unchecked((ulong)target.id),
-            inputs: inputs), name => !World.world.subspecies.Any(other => other != target && other.name == name));
+        var request = VanillaNames.Request("worldbox:subspecies", null, unchecked((ulong)target.id),
+            inputs: inputs, subject: target, tile: IndependentNames.SubspeciesName.Origin(target));
+        var result = NamingApi.Current.Generate(request, name => !World.world.subspecies.Any(other => other != target && other.name == name));
         return result.Success ? result.Text : null;
     }
 }

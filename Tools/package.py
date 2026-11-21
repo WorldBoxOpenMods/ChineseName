@@ -40,3 +40,6 @@ if __name__ == "__main__":
           ROOT / "Addons/CultureExonyms", ("Source", "Content", "mod.json", "LICENSE"))
     build(args.output / "ChineseName-HistoryEvents.zip", "ChineseName-HistoryEvents",
           ROOT / "Addons/HistoryEvents", ("Source", "Content", "mod.json", "LICENSE"))
+    build(args.output / "ChineseName-SurnameBranches.zip", "ChineseName-SurnameBranches",
+          ROOT / "Addons/SurnameBranches", ("Source", "mod.json"),
+          ((ROOT / "LICENSE", "LICENSE"),))

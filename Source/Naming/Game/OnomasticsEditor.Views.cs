@@ -52,6 +52,7 @@ public sealed partial class OnomasticsEditor
         {
             NameFailureReason.MissingGlyph => "缺少字形",
             NameFailureReason.MissingInput => "缺少输入",
+            NameFailureReason.InapplicableInput => "当前情境不适用",
             NameFailureReason.MissingVocabulary => "缺少词库",
             NameFailureReason.AmbiguousVocabulary => "词库名有重名",
             NameFailureReason.EmptyVocabulary => "词库无可用词",

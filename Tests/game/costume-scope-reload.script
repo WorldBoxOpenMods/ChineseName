@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway.Content.Const;
+using Newtonsoft.Json.Linq;
+
+const string person = "worldbox:person", cat = "civ_cat", eastern = "Cultiway.EasternHuman";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var expectedPath = Directory.EnumerateFiles(output.Parent.Parent.FullName, "names.json", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/costume-scope/names.json", StringComparison.Ordinal))
+    .OrderBy(file => file, StringComparer.Ordinal).Last();
+var expected = JObject.Parse(File.ReadAllText(expectedPath));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(expectedPath), "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The mixed culture save did not load.");
+Config.paused = true;
+var world = World.world;
+var culture = world.cultures.get((long)expected["culture"]);
+var catCulture = world.cultures.get((long)expected["catCulture"]);
+var language = world.languages.get((long)expected["language"]);
+var town = world.cities.get((long)expected["town"]);
+var prior = world.units.get((long)expected["cat"]);
+var styled = world.units.get((long)expected["styled"]);
+Check(prior != null && culture != null && prior.culture == culture && prior.getName() == "星尾" &&
+    styled?.getName() == (string)expected["styledName"] &&
+    EasternHumanSkinStyles.IsSelected(culture, "tang"), "Readback changed names, membership, or costume.");
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+foreach (var target in new[] { culture, catCulture })
+{
+    var rows = settings.Cultures[target.id].Arrangements[person];
+    Check(rows.Single(row => row.Id == "costume").Cards.Template == "\uE242\uE1170|0:服饰" &&
+        rows.Single(row => row.Id == "not-tang").Expression is { Field: "cultiway-costume", Negated: true },
+        "Reading the save discarded a scoped arrangement.");
+}
+Actor Spawn(string species, Culture owner)
+{
+    var actor = world.units.createNewUnit(species, town.getTile(), pAdultAge: true);
+    actor.setCulture(owner);
+    actor.joinLanguage(language);
+    return actor;
+}
+string mixedCat = Spawn(cat, culture).getName(), localCat = Spawn(cat, catCulture).getName(),
+    human = Spawn(eastern, culture).getName();
+Check(mixedCat == "星尾" && localCat == "星尾" && human.EndsWith("服饰"),
+    "New names after readback are wrong: " + mixedCat + " / " + localCat + " / " + human);
+var result = service.Preview(new NameRequest(person, 0, culture.id, language.id,
+    new Dictionary<string, object> { ["species"] = cat, ["kind"] = "sapient" }));
+Check(result.Text == "星尾" && result.ArrangementId == "fallback" &&
+    result.Failures.Any(failure => failure.ArrangementId == "costume" && failure.Reason == NameFailureReason.InapplicableInput),
+    "The unavailable glyph did not produce a fallback reason.");
+
+var branch = world.cultures.get((long)expected["branch"]);
+var dialect = world.languages.get((long)expected["dialect"]);
+var ancestor = world.units.get((long)expected["father"]);
+var parent = world.units.get((long)expected["mother"]);
+string retainedSurname = (string)expected["surname"];
+var given = expected["qingNames"].Values<string>().ToArray();
+Check(branch != null && dialect != null && EasternHumanSkinStyles.IsSelected(branch, "qing") &&
+    settings.Cultures[branch.id].Parent == culture.id && settings.LanguageParents[dialect.id] == language.id,
+    "The cultured branches or their costume did not survive the save.");
+Check(world.units.get((long)expected["heir"]).getName() == retainedSurname + given[0] &&
+    world.units.get((long)expected["sibling"]).getName() == retainedSurname + given[1],
+    "Reading the save changed the children's names.");
+
+string NewChild(Language speech)
+{
+    var baby = BabyMaker.makeBaby(ancestor, parent, ActorSex.Male, pTile: town.getTile());
+    baby.setCulture(branch);
+    baby.joinLanguage(speech);
+    return baby.getName();
+}
+var namesAfterReadback = new[] { NewChild(language), NewChild(dialect) };
+Check(namesAfterReadback.SequenceEqual(given.Select(name => retainedSurname + name)),
+    "The old surname or the distinct dialect vocabulary was lost after readback: " + string.Join(", ", namesAfterReadback));
+
+const string tangGiven = "cultiway:eastern-given-male.tang", surnameKey = "chinesename.surname.v1";
+var pack = service.GetPackage("cultiway:eastern-human");
+var choices = pack.Pools[tangGiven].Keys.ToArray();
+string only = pack.Words.Single(word => word.Id == choices[0]).Text;
+settings.Cultures[culture.id].Arrangements.Remove(person);
+// Switch this legacy-map fixture back to its current default before testing that default's vocabulary.
+settings.Cultures[culture.id].Cards[person] = new CardNaming();
+if (!settings.Languages.TryGetValue(language.id, out var preferences))
+    settings.Languages[language.id] = preferences = new LanguageNaming();
+preferences.Pools[tangGiven] = new PoolEdit { ExcludeIds = new List<string>(choices.Skip(1)) };
+WorldNamingStore.Apply(settings);
+
+string Surname(Actor actor) { actor.data.get(surnameKey, out string value); return value; }
+var father = Spawn(eastern, culture);
+father.data.sex = ActorSex.Male;
+var mother = Spawn(eastern, culture);
+mother.data.sex = ActorSex.Female;
+string weighted = father.getName();
+mother.getName();
+string surname = Surname(father);
+Check(!string.IsNullOrEmpty(surname) && weighted == surname + only, "The language's Tang pool edit was ignored: " + weighted);
+var child = BabyMaker.makeBaby(father, mother, ActorSex.Male, pTile: town.getTile());
+child.setCulture(culture);
+child.joinLanguage(language);
+Check(Surname(child) == surname && child.getName() == weighted, "A costume rule lost the inherited surname or language pool.");
+
+return new { mixedCat, localCat, eastern = human, preserved = prior.getName(), town = town.name,
+    issue = result.Failures.Single(failure => failure.ArrangementId == "costume").Reason.ToString(),
+    branch = branch.name, namesAfterReadback, weighted, inherited = child.getName() };

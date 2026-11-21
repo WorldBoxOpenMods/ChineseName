@@ -1,0 +1,50 @@
+using System;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json.Linq;
+
+const string stateKey = "chinesename.surname-branches.v1", surnameKey = "chinesename.surname.v1";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+int State(BaseSystemData data) { data.get(stateKey, out int state); return state; }
+string Surname(Actor actor) { actor.data.get(surnameKey, out string value); return value; }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var fixtures = Directory.EnumerateFiles(output.Parent.Parent.FullName, "branches.json", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/surname-branches/branches.json")).OrderBy(path => path, StringComparer.Ordinal).ToArray();
+Check(fixtures.Length > 0, "Run surname-branches.script before loading its save.");
+var saved = JObject.Parse(File.ReadAllText(fixtures.Last()));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(fixtures.Last()), "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The surname branch save did not load.");
+Config.paused = true;
+var world = World.world;
+var enabled = NeoModLoader.WorldBoxMod.LoadedMods.Any(mod => mod.GetDeclaration().UID == "CHINESENAME_SURNAMEBRANCHES");
+
+foreach (var record in saved["people"])
+{
+    var actor = world.units.get((long)record["id"]);
+    Check(actor?.data.name == (string)record["name"] && Surname(actor) == (string)record["surname"] &&
+        (actor.family?.id ?? -1) == (long)record["family"], "An existing name, surname or family changed: " + record["name"]);
+}
+foreach (var record in saved["families"])
+    Check(world.families.get((long)record["id"])?.name == (string)record["name"], "A family name changed: " + record["name"]);
+
+var branch = world.cultures.get((long)saved["branch"]);
+var pending = world.cultures.get((long)saved["pending"]);
+var migrant = world.cities.get((long)saved["migrant"]);
+Check(State(branch.data) == 2 && State(migrant.data) == 2 && State(pending.data) == 1, "The saved opportunity states changed.");
+Actor Child(string parent)
+{
+    var actor = world.units.get((long)saved[parent]);
+    return BabyMaker.makeBaby(actor, null, ActorSex.Male, pTile: actor.current_tile);
+}
+var regular = Child("branchParent");
+var migrantChild = Child("migrantParent");
+Check(Surname(regular) == "敖" && regular.getName() == "敖青" && Surname(migrantChild) == "公孙" &&
+    migrantChild.getName() == "公孙青" && migrantChild.family.name == "公孙氏", "An already used opportunity reopened on load.");
+var newFounder = Child("pendingParent");
+// Both alternatives are already in use. 李 has one holder and 欧阳 has two.
+string expected = enabled ? "李" : "敖";
+Check(Surname(newFounder) == expected && newFounder.getName() == expected + "青" && State(pending.data) == (enabled ? 2 : 1),
+    "The saved pending split did not use the expected fallback: " + newFounder.getName());
+return new { enabled, existingFamilies = saved["families"].Select(record => (string)record["name"]).ToArray(),
+    regular = regular.getName(), migrantChild = migrantChild.getName(), pending = newFounder.getName() };

@@ -12,7 +12,7 @@ public enum NameWriting { Original, Chinese }
 public enum NameFailureReason
 {
     MissingGlyph, MissingInput, MissingVocabulary, AmbiguousVocabulary, EmptyVocabulary, UnavailableRule,
-    InvalidArrangement, InvalidResult, Rejected
+    InvalidArrangement, InvalidResult, Rejected, InapplicableInput
 }
 
 public sealed class InputField
@@ -99,6 +99,7 @@ public sealed class NameRequest
     internal string FatherSurname { get; private set; }
     internal string MotherSurname { get; private set; }
     internal NamingService ContextOwner { get; private set; }
+    internal Func<string, int> SurnameUsage { get; private set; }
 
     /// <summary>Provide known parental surnames for candidates that use surname inheritance.</summary>
     public NameRequest WithParentSurnames(string father, string mother)
@@ -110,6 +111,9 @@ public sealed class NameRequest
     }
 
     internal NameRequest WithSeed(ulong seed) => WithSeed(seed, FatherSurname, MotherSurname);
+
+    internal NameRequest ForSurnameFounding(Func<string, int> usage) =>
+        new NameRequest(this, Seed) { SurnameUsage = usage };
 
     private NameRequest WithSeed(ulong seed, string father, string mother) =>
         new NameRequest(this, seed)
@@ -128,6 +132,7 @@ public sealed class NameRequest
         FixedParts = source.FixedParts;
         Writing = source.Writing;
         ContextOwner = source.ContextOwner;
+        SurnameUsage = source.SurnameUsage;
     }
 
     internal NameRequest WithPreparedInputs(NamingService service, IReadOnlyDictionary<string, object> inputs) =>
@@ -135,7 +140,8 @@ public sealed class NameRequest
         {
             FatherSurname = FatherSurname,
             MotherSurname = MotherSurname,
-            ContextOwner = service
+            ContextOwner = service,
+            SurnameUsage = SurnameUsage
         };
 
     internal string ResolveSurname(SurnameOrder order)

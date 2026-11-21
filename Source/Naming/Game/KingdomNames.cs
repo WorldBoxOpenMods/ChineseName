@@ -63,7 +63,7 @@ internal static class KingdomNames
         if (kingdom.data.original_actor_asset is string species)
             inputs["species"] = inputs[VanillaNames.CultureSpecies] = species;
         return VanillaNames.Request(VanillaNames.Kingdom, source, unchecked((ulong)seed),
-            culture: culture, language: language, inputs: inputs);
+            culture: culture, language: language, inputs: inputs, subject: kingdom, tile: kingdom.capital?.getTile());
     }
 
     internal static Calculated Calculate(NameRequest request, Func<NameRequest, NameResult> generate)

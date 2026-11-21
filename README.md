@@ -10,6 +10,6 @@
 
 ## 给接入模组的 Agent
 
-在 NML 清单声明 `CHINESENAME` 依赖。用 `RegisterCategory` 登记新类别的输入、默认内容、字形和预制条件，用 `NameRequest` 接入实际取名。已有类别和新物种也可以补充规则或词库。[API 实现](Source/Naming/NamingService.cs) · [请求与结果](Source/Naming/Contracts.cs) · [接入示例和包格式](Doc/命名框架重构/实现与验证.md#其他模组接入)
+在 NML 清单声明 `CHINESENAME` 依赖。用 `RegisterCategory` 登记新类别的输入、默认内容、字形和预制条件，用 `NameRequest` 接入实际取名。用 `ExtendCategory` 和 `WorldNamingInputs.RegisterInput` 给原版类别扩展输入、字形和条件。已有类别和新物种也可以补充规则或词库。[API 实现](Source/Naming/NamingService.cs) · [请求与结果](Source/Naming/Contracts.cs) · [接入示例和包格式](Doc/命名框架重构/实现与验证.md#其他模组接入)
 
-文化外称和史书事件可以分别与中文名并列安装。两者都用 `ExtendCategory` 给原版命名学补充输入、预制条件和字形。共装时，史书可引用作者文化的外称。[文化外称](Addons/CultureExonyms) · [史书事件](Addons/HistoryEvents) · [安装和验证](Doc/命名框架重构/实现与验证.md#史书事件)
+文化外称、史书事件和新支系开姓可分别与中文名并列安装。外称和史书共装时，史书可引用作者文化的外称。新支系开姓通过 `WorldNamingInputs.RegisterSurnameFounding` 提供开姓时机。[文化外称](Addons/CultureExonyms) · [史书事件](Addons/HistoryEvents) · [新支系开姓](Addons/SurnameBranches)

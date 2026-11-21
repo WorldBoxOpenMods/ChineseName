@@ -81,7 +81,7 @@ public sealed partial class OnomasticsEditor
 
     private Rule SelectedRule(NamingService service, NameType type, Culture culture, PartsPage page)
     {
-        var sample = PreviewRequest(type, culture, page, PreviewInputs(type, page));
+        var sample = PreviewRequest(type, culture, page, PreviewInputs(type, culture, page));
         var request = service.PrepareContext(sample) ?? sample;
         page.Effective = service.Inspect(request, _draft);
         var effective = page.Effective;
