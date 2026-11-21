@@ -196,7 +196,6 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         var service = NamingApi.Current;
         _rule = SelectedRule(service, _type, _culture, _page);
         _card = _rule == null ? null : ReadArrangementChoice();
-
     }
 
     private void Render()
@@ -229,7 +228,7 @@ public sealed partial class OnomasticsEditor : MonoBehaviour
         if (_commitPending)
         {
             _commitPending = false;
-            if (HasChanges(raw) && _page.Result?.Success == true && !_page.Result.Diagnostics.Contains("中文规则回退"))
+            if (HasChanges(raw))
             {
                 try
                 {

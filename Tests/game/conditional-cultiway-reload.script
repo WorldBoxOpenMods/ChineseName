@@ -1,0 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Cultiway.Core.SkillLibV3.Utils;
+using UnityEngine.UI;
+
+const string type = "cultiway:spell";
+void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/conditional-cultiway/map.wbox", StringComparison.Ordinal))
+    .OrderBy(path => path, StringComparer.Ordinal).Last();
+var expected = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "expected.txt"));
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1750 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The spell fixture did not load.");
+Config.paused = true;
+
+var world = World.world;
+var first = world.units.get(long.Parse(expected[0]));
+var second = world.units.get(long.Parse(expected[1]));
+long language = long.Parse(expected[2]);
+string Fireball(Actor creator) => new SkillContainerBuilder(Cultiway.Content.SkillEntities.Fireball)
+    .UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, creator).Name.value;
+Check(first?.language?.id == language && second != null && Fireball(first) == "火珠" && Fireball(second) == expected[3],
+    "Reload did not restore the distinct culture and language behavior of the actual spell.");
+var service = NamingApi.Current;
+var request = new NameRequest(type, 3, first.culture.id, language,
+    new Dictionary<string, object> { ["element"] = "semantic.element.fire", ["form"] = "semantic.form.ball" });
+Check(service.Preview(request).Text == "火珠" && service.Generate(request).ArrangementId == expected[4],
+    "Preview and generation did not agree on the first restored candidate.");
+var edits = service.GetWorld().Cultures[first.culture.id].ArrangementEdits[type];
+Check(edits.Orders.Values.Single().SequenceEqual(expected.Skip(4)), "The reordered player conditions did not survive.");
+
+world.console.Hide();
+SelectedUnit.select(first);
+SelectedMetas.selected_culture = first.culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_mod_cultiway:spell").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+window.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + expected[4]).onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+var preview = window.transform.FindRecursive("PreviewName")?.GetComponent<Text>();
+Check(preview?.text == "火珠" && tab.getOnomasticsData().getGroupString("group_5") == "珠",
+    "The original editor did not reopen the winning arrangement and its read-only preview.");
+return new { preview = preview.text, actual = Fireball(first), otherCulture = Fireball(second), save };

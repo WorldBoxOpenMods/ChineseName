@@ -22,10 +22,11 @@ var rival = world.kingdoms.get(ids[4]);
 var war = world.wars.get(ids[5]);
 Check(kingdom?.name == "云津国" && rival?.name == "松岭国" && war?.name == "云松旧战", "Existing names changed or did not load.");
 var order = new[] { "group_1", "chinesename_as_pool", "group_2" };
-var data = culture.getOnomasticData(MetaType.Kingdom);
-Check(data.getFullTemplateData().SequenceEqual(order) && data.getGroupString("group_1") == "国号主体",
-    "Country naming did not retain the native arrangement.");
 var service = NamingApi.Current;
+DefaultArrangementEdit CountryEdit(Culture owner) => service.GetWorld().Cultures[owner.id]
+    .DefaultArrangementEdits.Single(pair => pair.Key.StartsWith("worldbox:kingdom/")).Value;
+Check(CountryEdit(culture).Glyphs.SequenceEqual(order) && CountryEdit(culture).PartGroups["name"] == "国号主体",
+    "Country naming did not retain the native arrangement.");
 string Generate(string type, long from, long language) => service.Generate(new NameRequest("worldbox:" + type, 0, from, language)).Text;
 Check(Generate("kingdom", culture.id, ids[1]) == kingdom.name && Generate("kingdom", culture.id, ids[2]) == rival.name,
     "Country naming did not restore both language settings.");
@@ -37,7 +38,7 @@ var founder = world.units.get(ids[6]);
 var child = world.cultures.newCulture(founder, false);
 child.cloneAndEvolveOnomastics(culture);
 world.cultures.checkLists();
-Check(child.getOnomasticData(MetaType.Kingdom).getGroupString("group_1") == "国号主体" &&
+Check(CountryEdit(child).PartGroups["name"] == "国号主体" &&
       Generate("kingdom", child.id, ids[1]) == kingdom.name, "Culture divergence did not keep the country pool selector.");
 
 ScrollWindow.hideAllEvent(pWithAnimation: false);
@@ -54,4 +55,13 @@ for (int i = 0; i < 10; i++) await Game.NextFrame();
 var preview = shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
 Check(preview == rival.name && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(order),
     "Reopening the native editor produced " + preview);
+foreach (var (type, label) in new[] { ("family", "松庭一门"), ("clan", "白鹿氏族"), ("culture", "河洛之风"),
+    ("language", "江渚语"), ("religion", "观星教") })
+{
+    tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_" + type).toggle.click();
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+    Check(tab.getOnomasticsData().getGroupString("group_1") == label &&
+          shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text == label,
+        "The original editor did not reopen the saved " + type + " arrangement.");
+}
 return new { save, preview, kingdom = kingdom.name, rival = rival.name, manualWar = war.name, childCulture = child.name };

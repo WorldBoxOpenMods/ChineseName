@@ -31,9 +31,11 @@ Check(settings.Cultures[guofeng.id].Pack == "chinesename:guofeng-set" &&
       settings.Cultures[fantasy.id].Pack == "chinesename:fantasy-race-set", "The culture pack bindings did not survive.");
 Check(first.getName() == "欧阳怀瑾" && city.name == "樱丘城" && newCity.name == "白滨町" && country.name == "绿叶王庭",
     "A name changed after restarting.");
-Check(guofeng.getOnomasticData(MetaType.Unit).getGroupString("group_1") == "国风复姓" &&
-      wafuu.getOnomasticData(MetaType.City).getGroupString("group_2") == "町" &&
-      fantasy.getOnomasticData(MetaType.Kingdom).getGroupString("group_2") == "领" &&
+string Word(Culture culture, string type, string group) => service.GetWorld().Cultures[culture.id].DefaultArrangementEdits
+    .Single(pair => pair.Key.StartsWith(type + "/")).Value.Groups[group];
+Check(Word(guofeng, "worldbox:person", "group_1") == "国风复姓" &&
+      Word(wafuu, "worldbox:city", "group_2") == "町" &&
+      Word(fantasy, "worldbox:kingdom", "group_2") == "领" &&
       elf.generateName(MetaType.Kingdom, 3) == "绿叶领", "A native edit did not survive.");
 
 NameResult CityName(long language) => service.Generate(new NameRequest("worldbox:city", 3, wafuu.id, language));
@@ -46,7 +48,7 @@ try
     var result = CityName(ids[4]);
     Check(result.Success && result.Text != "白滨町" &&
           result.Sources.Values.Any(source => source.Reference == "chinesename:places") &&
-          newCity.name == "白滨町" && wafuu.getOnomasticData(MetaType.City).getGroupString("group_2") == "町",
+          newCity.name == "白滨町" && Word(wafuu, "worldbox:city", "group_2") == "町",
         "Unloading the dependent lexicon did not fall back or discarded the edit.");
 }
 finally

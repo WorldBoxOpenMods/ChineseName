@@ -71,11 +71,11 @@ async System.Threading.Tasks.Task Edit(MetaType meta, string type, string templa
     Check(culture.getOnomasticData(meta).getShortTemplate() == live, "Preview changed the culture cards.");
     tab.loadTemplate(template);
     await Redraw();
-    Check(tab.getOnomasticsData().getShortTemplate() == template &&
-        culture.getOnomasticData(meta).getShortTemplate() == template, "The native editor did not save the arrangement.");
+    Check(tab.getOnomasticsData().getShortTemplate() == template && service.Generate(request).Text == expected,
+        "The native editor did not save the arrangement.");
     var preview = shell.GetComponentsInChildren<Text>().Single(label => label.name == "PreviewName");
     Check(preview.text == expected, "The native preview returned " + preview.text + " instead of " + expected);
-    Check(service.GetWorld().Cultures[culture.id].Cards[type].DraftTemplate == null, "Applied rules duplicated native card text.");
+    Check(service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Keys.Any(key => key.StartsWith(type + "/")), "No default edit was saved.");
 }
 await Edit(MetaType.Unit, "worldbox:person", unitTemplate,
     new NameRequest("worldbox:person", 12, culture.id, language.id, new Dictionary<string, object> { ["kind"] = "sapient" },

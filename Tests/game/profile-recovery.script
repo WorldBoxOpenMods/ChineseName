@@ -1,0 +1,120 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string headerKey = "chinesename.rules.v1";
+const string culturePrefix = "chinesename.culture.v1/", languagePrefix = "chinesename.language.v1/";
+const string brokenCulture = "{\"unknownRevision\":2,\"raw\":\"乡约\"}";
+const string brokenLanguage = "{\"settings\":{\"groups\":";
+const string brokenHeader = "{\"format\":99,\"enabledPacks\":[]}";
+void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); }
+
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.city == null);
+var creature = world.units.createNewUnit("civ_cat", tile);
+var healthyCulture = world.cultures.newCulture(creature, true);
+creature.setCulture(healthyCulture);
+var healthyLanguage = world.languages.newLanguage(creature, true);
+creature.joinLanguage(healthyLanguage);
+var damagedCulture = world.cultures.newCulture(creature, false);
+var damagedLanguage = world.languages.newLanguage(creature, false);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+long cultureId = healthyCulture.id, languageId = healthyLanguage.id, brokenCultureId = damagedCulture.id, brokenLanguageId = damagedLanguage.id;
+long creatureId = creature.id;
+string cultureKey = culturePrefix + brokenCultureId, languageKey = languagePrefix + brokenLanguageId;
+string Read(string key) { World.world.map_stats.custom_data.get(key, out string value); return value; }
+void Write(string key, string value) => World.world.map_stats.custom_data.set(key, value);
+var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
+async System.Threading.Tasks.Task SaveAndLoad(string name)
+{
+    string folder = Path.Combine(output, name);
+    Directory.CreateDirectory(folder);
+    SaveManager.saveWorldToDirectory(folder);
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The fixture failed to reload.");
+    Config.paused = true;
+    _ = NamingApi.Current;
+}
+
+var legacy = service.GetWorld();
+legacy.Cultures[brokenCultureId] = new CultureNaming { Parent = 17 };
+legacy.Languages[brokenLanguageId] = new LanguageNaming { BiasOrigin = 23 };
+legacy.LanguageParents[brokenLanguageId] = 23;
+legacy.Cultures[cultureId] = new CultureNaming { Parent = 41 };
+legacy.Languages[languageId] = new LanguageNaming { BiasOrigin = 31 };
+legacy.LanguageParents[languageId] = 31;
+Write(headerKey, NamingJson.Write(legacy));
+Write(cultureKey, brokenCulture);
+Write(languageKey, brokenLanguage);
+await SaveAndLoad("legacy-profile-recovery");
+var loaded = service.GetWorld();
+Check(loaded.Cultures[brokenCultureId].Parent == 17 && loaded.Languages[brokenLanguageId].BiasOrigin == 23 &&
+    loaded.LanguageParents[brokenLanguageId] == 23, "Unreadable profiles eclipsed the last readable backup.");
+
+World.world.console.Hide();
+ScrollWindow.showWindow("world_info");
+var info = ScrollWindow.getCurrentWindow();
+info.tabs.showTab("chinesename_packs");
+for (int frame = 0; frame < 20; frame++) await Game.NextFrame();
+Check(info.GetComponentsInChildren<KeyValueField>().Any(row => row.name == "PackageStatus" &&
+    row.name_text.text.Contains("2 条命名设置待恢复")), "The original package page did not report the damaged records.");
+
+loaded.Cultures[cultureId].Parent = 42;
+loaded.Languages[languageId].BiasOrigin = 45;
+loaded.LanguageParents[languageId] = 45;
+loaded.Cultures[brokenCultureId].Parent = 99;
+loaded.Languages.Remove(brokenLanguageId);
+WorldNamingStore.Apply(loaded);
+Check(Read(cultureKey) == brokenCulture && Read(languageKey) == brokenLanguage, "Global apply overwrote a damaged record.");
+var header = NamingJson.Read<WorldNaming>(Read(headerKey));
+Check(header.Cultures.Count == 1 && header.Cultures.ContainsKey(brokenCultureId) &&
+    header.Languages.Count == 1 && header.Languages.ContainsKey(brokenLanguageId) &&
+    Read(culturePrefix + cultureId) != null && Read(languagePrefix + languageId) != null,
+    "Healthy profiles were not split from the world configuration.");
+await SaveAndLoad("retained-damaged-profiles");
+loaded = service.GetWorld();
+Check(Read(cultureKey) == brokenCulture && Read(languageKey) == brokenLanguage && loaded.Cultures[brokenCultureId].Parent == 17 &&
+    loaded.Languages[brokenLanguageId].BiasOrigin == 23 && loaded.Cultures[cultureId].Parent == 42 &&
+    loaded.Languages[languageId].BiasOrigin == 45 && loaded.LanguageParents[languageId] == 45,
+    "A later save lost the fallback, the original bytes or a healthy edit.");
+
+Write(cultureKey, NamingJson.Write(new CultureNaming { Parent = 52 }));
+await SaveAndLoad("repaired-profile");
+Check(service.GetWorld().Cultures[brokenCultureId].Parent == 52, "Reload did not accept the repaired record.");
+WorldNamingStore.Apply(service.GetWorld());
+Check(!NamingJson.Read<WorldNaming>(Read(headerKey)).Cultures.ContainsKey(brokenCultureId) && Read(languageKey) == brokenLanguage,
+    "Saving a repaired culture did not leave only the damaged fallback in the header.");
+
+Write(headerKey, brokenHeader);
+await SaveAndLoad("unreadable-world-header");
+loaded = service.GetWorld();
+Check(loaded.Cultures[cultureId].Parent == 42 && loaded.Languages[languageId].BiasOrigin == 45 && loaded.LanguageParents[languageId] == 45,
+    "An unreadable world header disabled readable profiles.");
+bool rejected = false;
+try { WorldNamingStore.Apply(loaded); }
+catch (InvalidOperationException) { rejected = true; }
+Check(rejected && Read(headerKey) == brokenHeader && Read(languageKey) == brokenLanguage, "Global apply overwrote an unreadable header.");
+creature = World.world.units.get(creatureId);
+SelectedUnit.select(creature);
+SelectedMetas.selected_culture = creature.culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+for (int frame = 0; frame < 20; frame++) await Game.NextFrame();
+tab.loadTemplate("0|0:留青府");
+for (int frame = 0; frame < 20; frame++) await Game.NextFrame();
+await SaveAndLoad("scoped-edit-after-header-failure");
+Check(World.world.units.get(creatureId).generateName(MetaType.City, 0) == "留青府" && Read(headerKey) == brokenHeader,
+    "The healthy culture could not be edited independently of the damaged header.");
+return new { healthyCulture = loaded.Cultures[cultureId].Parent, healthyLanguage = loaded.LanguageParents[languageId],
+    repairedCulture = loaded.Cultures[brokenCultureId].Parent, damagedRecordsPreserved = true };

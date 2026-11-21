@@ -15,18 +15,27 @@ public sealed class SpellNames : BasicMod<SpellNames>
         var naming = NamingApi.Current;
         var packagePath = Path.Combine(GetDeclaration().FolderPath, "Content", "spell.naming.json");
         var defaults = NamingJson.Read<NamingPack>(File.ReadAllText(packagePath));
-        naming.RegisterProvider("spell-example:form", request =>
-        {
-            request.Inputs.TryGetValue("form", out var form);
-            bool blade = string.Equals(form as string, "blade", StringComparison.Ordinal);
-            return new[] { new Word { Id = blade ? "spell-example:blade" : "spell-example:seal", Text = blade ? "刃" : "印" } };
-        });
-        naming.RegisterType(new NameType(TypeId, "法术（扩展示例）",
+        var category = new NamingCategory(new NameType(TypeId, "法术（扩展示例）",
             new[]
             {
-                new InputField("element", InputKind.Text, required: true, label: "元素"),
-                new InputField("form", InputKind.Text, label: "形态")
-            }, maxLength: 12), defaults);
+                new InputField("element", InputKind.Text, required: true, label: "元素", example: "fire"),
+                new InputField("form", InputKind.Text, label: "形态", example: "blade"),
+                new InputField("form-name", InputKind.Text, label: "形态称谓")
+            }, maxLength: 12))
+        {
+            Defaults = defaults,
+            CultureIcon = "ui/Icons/iconFire",
+            PrepareContext = inputs =>
+            {
+                inputs.TryGetValue("form", out var form);
+                inputs["form-name"] = Equals(form, "blade") ? "刃" : "印";
+                return true;
+            }
+        };
+        category.Values("element", "元素", new Dictionary<string, string> { ["fire"] = "火" });
+        category.Values("form", "形态", new Dictionary<string, string> { ["blade"] = "刃", ["seal"] = "印" });
+        category.InputGlyph("spell-example:form-name", '\uE260', "form-name", "法术形态", "ui/Icons/iconFire");
+        naming.RegisterCategory(category);
     }
 
     public static NameResult Generate(string element, string form, ulong seed, long? culture = null, long? language = null) =>

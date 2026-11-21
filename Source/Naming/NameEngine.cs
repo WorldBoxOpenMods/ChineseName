@@ -65,64 +65,125 @@ internal static class NameEngine
         foreach (var part in request.FixedParts)
             if (!type.FixedParts.Contains(part.Key) || !Ids.Text(part.Value, 128))
                 return "fixed-part:" + part.Key;
+        if ((request.FatherSurname != null || request.MotherSurname != null) && !type.FixedParts.Contains(NameRequest.SurnamePart))
+            return "fixed-part:" + NameRequest.SurnamePart;
         return null;
     }
 
+    internal static NamingCandidate RuleCandidate(Rule rule, int index, int count) =>
+        new(rule, index == count - 1 ? Math.Max(2, Attempts - 2 * index) : 2);
+
     internal static NameResult Generate(NameType type, NameRequest request, EffectiveNames effective,
         IReadOnlyDictionary<string, Func<NameRequest, IEnumerable<Word>>> providers, Func<string, bool> accept,
-        string selectedRule = null)
+        NamingTrace trace, IEnumerable<NamingCandidate> candidates)
     {
-        var diagnostics = new List<string>();
-        NameResult Fail(GenerationStatus code, string detail)
-        {
-            diagnostics.Add(detail);
-            return new NameResult(code, null, null, diagnostics);
-        }
+        var diagnostics = new List<string>(effective.Diagnostics);
+        var result = TryCandidates(type, request, effective, candidates, accept, trace, diagnostics, out int tried, providers);
+        if (result != null) return result;
+        diagnostics.Add(tried == 0 ? "no-rule:" + type.Id : "rules-exhausted:" + tried);
+        return trace.Finish(new NameResult(tried == 0 ? GenerationStatus.NoRule : GenerationStatus.Exhausted, null, null, diagnostics));
+    }
 
-        diagnostics.AddRange(effective.Diagnostics);
-        var rules = (selectedRule == null ? effective.Rules : effective.AvailableRules)
-            .Where(rule => (selectedRule == null || rule.Id == selectedRule) && Matches(rule, request)).ToArray();
-        if (rules.Length == 0) return Fail(GenerationStatus.NoRule, "no-rule:" + type.Id);
-        // A provider sees the same request once, even when a name needs multiple attempts.
+    internal static NameResult TryCandidates(NameType type, NameRequest request, EffectiveNames effective,
+        IEnumerable<NamingCandidate> candidates, Func<string, bool> accept, NamingTrace trace, List<string> diagnostics,
+        out int tried, IReadOnlyDictionary<string, Func<NameRequest, IEnumerable<Word>>> providers = null)
+    {
+        // 同一次取名只向候选提供者读取一次词表。
         var customPools = new Dictionary<string, Word[]>(StringComparer.Ordinal);
         var random = new NamingRandom(request.Seed);
-        for (int attempt = 0; attempt < Attempts; attempt++)
+        tried = 0;
+        foreach (var candidate in candidates)
         {
-            // Give the preferred rule most attempts while leaving budget for a fallback.
-            int ruleIndex = Math.Min(attempt / 2, rules.Length - 1);
-            if (attempt == Attempts - 1) ruleIndex = rules.Length - 1;
-            var rule = rules[ruleIndex];
-            var parts = new Dictionary<string, string>(StringComparer.Ordinal);
-            var sources = new Dictionary<string, NamePartSource>(StringComparer.Ordinal);
+            tried++;
+            string surname = request.ResolveSurname(candidate.Inheritance);
+            using var draw = candidate.OpenLayout == null ? DrawRule(candidate.Rule, surname) : candidate.OpenLayout(surname, diagnostics);
+            if (draw == null) continue;
+            var failure = draw.PreparationFailure;
+            if (draw.Attempt != null)
+                for (int attempt = 0; attempt < candidate.Attempts; attempt++)
+                {
+                    var trial = draw.Attempt(attempt);
+                    if (trial.Name == null)
+                    {
+                        failure ??= trial.Failure;
+                        continue;
+                    }
+                    var name = trial.Name;
+                    string missing = request.FixedParts.FirstOrDefault(part =>
+                        name.Parts.TryGetValue(part.Key, out string actual) ? actual != part.Value : part.Value.Length != 0).Key;
+                    if (missing != null)
+                    {
+                        failure = (NameFailureReason.UnavailableRule, missing);
+                        continue;
+                    }
+                    if (ResultFailure(type, name.Text, accept) is { } reason)
+                    {
+                        if (failure == null || reason == NameFailureReason.Rejected) failure = (reason, null);
+                        continue;
+                    }
+                    return trace.Finish(name);
+                }
+            if (failure is { } actual)
+                trace.Add(candidate.RuleId, candidate.ArrangementId, actual.Reason, actual.Reference, native: candidate.OpenLayout != null);
+        }
+        return null;
+
+        CandidateDraw DrawRule(Rule rule, string surname)
+        {
             var writing = request.Writing ?? rule.Writing;
             string separator = Separator(rule, writing);
-            bool failed = false;
-            foreach (var part in rule.Parts)
-            {
-                bool fixedPart = request.FixedParts.TryGetValue(part.Id, out string value);
-                NamePartSource source = fixedPart ? new NamePartSource("inherited") : null;
-                if (!fixedPart && (part.Chance == 1 || random.Next() < part.Chance))
-                    value = DrawPart(part, request, effective, writing, parts, customPools, providers, diagnostics, ref random, out source);
-                if (value == null && !part.Optional)
-                {
-                    string detail = "part:" + rule.Id + "/" + part.Id;
-                    if (!diagnostics.Contains(detail)) diagnostics.Add(detail);
-                    failed = true;
-                    break;
-                }
-                parts.Add(part.Id, value ?? "");
-                if (source != null) sources.Add(part.Id, source);
-            }
-            // Dropping a persisted part would silently change a person's established surname.
-            if (failed || request.FixedParts.Any(p => p.Value.Length != 0 && !parts.ContainsKey(p.Key))) continue;
             var order = rule.Parts.Select(part => part.Id).ToArray();
-            string text = Join(order.Select(id => parts[id]), separator);
-            if (!Ids.Text(text, type.MaxLength) || text.Trim().Length < type.MinLength ||
-                (accept != null && !accept(text))) continue;
-            return new NameResult(GenerationStatus.Success, text, parts, diagnostics, order, sources, separator);
+            if (request.FixedParts.FirstOrDefault(part => part.Value.Length != 0 && !order.Contains(part.Key)).Key is string lost)
+                return new CandidateDraw(NameFailureReason.UnavailableRule, lost);
+
+            return new CandidateDraw(_ =>
+            {
+                var parts = new Dictionary<string, string>(StringComparer.Ordinal);
+                var sources = new Dictionary<string, NamePartSource>(StringComparer.Ordinal);
+                foreach (var part in rule.Parts)
+                {
+                    bool fixedPart = request.FixedParts.TryGetValue(part.Id, out string value);
+                    if (!fixedPart && part.Id == NameRequest.SurnamePart && surname != null && part.Chance > 0 && part.Literal != "")
+                    {
+                        value = surname;
+                        fixedPart = true;
+                    }
+                    NamePartSource source = fixedPart ? new NamePartSource("inherited") : null;
+                    if (!fixedPart && (part.Chance == 1 || random.Next() < part.Chance))
+                        value = DrawPart(part, request, effective, writing, parts, customPools, providers, diagnostics, ref random, out source);
+                    if (value == null && !part.Optional)
+                    {
+                        string detail = "part:" + rule.Id + "/" + part.Id;
+                        if (!diagnostics.Contains(detail)) diagnostics.Add(detail);
+                        return (null, PartFailure(part, source, effective));
+                    }
+                    parts.Add(part.Id, value ?? "");
+                    if (source != null) sources.Add(part.Id, source);
+                }
+                string text = Join(order.Select(id => parts[id]), separator);
+                return (new NameResult(GenerationStatus.Success, text, parts, diagnostics, order, sources, separator, ruleId: rule.Id), null);
+            });
         }
-        return Fail(GenerationStatus.Exhausted, "attempts:" + Attempts);
     }
+
+    internal static NameFailureReason? ResultFailure(NameType type, string text, Func<string, bool> accept)
+    {
+        if (!Ids.Text(text, type.MaxLength) || text.Trim().Length < type.MinLength) return NameFailureReason.InvalidResult;
+        return accept != null && !accept(text) ? NameFailureReason.Rejected : null;
+    }
+
+    internal static NameFailureReason VocabularyFailure(EffectiveNames effective, string pool) =>
+        effective.HasPool(pool) ? NameFailureReason.EmptyVocabulary : NameFailureReason.MissingVocabulary;
+
+    internal static (NameFailureReason Reason, string Reference) PartFailure(Part part, NamePartSource source,
+        EffectiveNames effective) => source?.Kind switch
+    {
+        "pool" when source.Reference != null => (VocabularyFailure(effective, source.Reference), source.Reference),
+        "input" => (NameFailureReason.MissingInput, source.Reference),
+        "provider" => (NameFailureReason.EmptyVocabulary, source.Reference),
+        _ when part.PoolInput != null => (NameFailureReason.MissingInput, part.PoolInput),
+        _ => (NameFailureReason.InvalidResult, part.Id)
+    };
 
     internal static string Separator(Rule rule, NameWriting writing) =>
         (writing == NameWriting.Chinese ? rule.ChineseSeparator : rule.OriginalSeparator) ?? "";
@@ -169,13 +230,14 @@ internal static class NameEngine
 
     internal static string PoolPrefix(string id) => id.EndsWith("-", StringComparison.Ordinal) ? id : id + ".";
 
-    private static string DrawPool(string pool, string fallback, EffectiveNames effective, NameWriting writing,
+    internal static string DrawPool(string pool, string fallback, EffectiveNames effective, NameWriting writing,
         ref NamingRandom random, out NamePartSource source)
     {
+        pool = effective.PoolId(pool);
         var words = pool == null ? Array.Empty<Word>() : effective.GetPool(pool);
         if (words.Length == 0 && fallback != null)
         {
-            pool = fallback;
+            pool = effective.PoolId(fallback);
             words = effective.GetPool(pool);
         }
         return RenderWord(PickWord(words, ref random), writing, "pool", pool, out source);

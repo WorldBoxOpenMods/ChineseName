@@ -108,7 +108,7 @@ char suffix = AssetManager.onomastics_library.get("group_2").short_id;
 tab.loadTemplate(cards.getShortTemplate().Replace(suffix + ":庭", suffix + ":港"));
 await Frames();
 var edited = service.GetWorld();
-Check(edited.Cultures[cat.Culture.id].Cards[cityType].Enabled && cat.Actor.generateName(MetaType.City, 7).EndsWith("港"),
+Check(edited.Cultures[cat.Culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith(cityType + "/")).Value.Groups["group_2"] == "港" && cat.Actor.generateName(MetaType.City, 7).EndsWith("港"),
     "Editing the default words did not take effect in actual naming.");
 
 string examples = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");

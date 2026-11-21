@@ -13,6 +13,7 @@ internal static class ArrangementExamples
         var choices = arrangement.Expression.Leaves().GroupBy(term => term.Field)
             .Select(terms => (Field: terms.Key, Candidates: Candidates(service, type, terms, sample).ToArray())).ToArray();
         var assigned = new Dictionary<string, object>(StringComparer.Ordinal);
+        bool hasContext = service.HasContext(type.Id);
         int remaining = 4096;
         if (!Search(0)) return false;
         foreach (var entry in assigned)
@@ -27,7 +28,18 @@ internal static class ArrangementExamples
             if (remaining-- <= 0) return false;
             var outcome = arrangement.Expression.Evaluate(term => assigned.TryGetValue(term.Field, out var value)
                 ? service.MatchesCondition(type.Id, term.Field, term, NameEngine.Value(value)) : (bool?)null);
-            if (outcome.HasValue) return outcome.Value;
+            if (!hasContext && outcome.HasValue) return outcome.Value;
+            if (hasContext && (outcome == true || index >= choices.Length))
+            {
+                var inputs = new Dictionary<string, object>(sample, StringComparer.Ordinal);
+                foreach (var entry in assigned)
+                {
+                    if (entry.Value == null) inputs.Remove(entry.Key);
+                    else inputs[entry.Key] = entry.Value;
+                }
+                var request = service.PrepareContext(new NameRequest(type.Id, 0, inputs: inputs));
+                if (request != null && service.MatchesExpression(arrangement, request)) return true;
+            }
             if (index >= choices.Length) return false;
             var (field, candidates) = choices[index];
             foreach (object candidate in candidates)

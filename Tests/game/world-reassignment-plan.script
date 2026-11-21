@@ -1,0 +1,226 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
+
+const string packId = "tests:reassignment-plan", pool = "tests:realm-root", shortKey = "chinesename.kingdom-short-name.v1";
+const string warKey = "chinesename.war-parties.v1";
+const string cityKey = "chinesename.city-name.v1", foundingKey = "chinesename.city-founding.v1";
+const string surnameKey = "chinesename.surname.v1", fatherKey = "chinesename.birth-father-surname.v1";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+string Read(BaseSystemData data, string key) { data.get(key, out string text); return text; }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+}
+
+var world = World.world;
+var previousMap = world.map_stats;
+world.generateNewMap();
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && !ReferenceEquals(world.map_stats, previousMap), "Need a clean world for the preview fixture.");
+Config.paused = true;
+var tiles = world.tiles_list.Where(tile => tile.Type.ground && tile.zone.isGoodForNewCity())
+    .GroupBy(tile => tile.zone).Take(4).Select(group => group.First()).ToArray();
+Check(tiles.Length == 4, "Need four settlement sites.");
+Actor founder = null;
+Kingdom Realm(int index, string name, bool manual = false)
+{
+    var actor = world.units.createNewUnit("human", tiles[index], pAdultAge: true);
+    if (index == 0) founder = actor;
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    kingdom.setCulture(culture);
+    kingdom.setLanguage(actor.language);
+    var city = world.cities.buildNewCity(actor, tiles[index].zone);
+    actor.joinCity(city);
+    kingdom.setName(name);
+    kingdom.data.custom_name = manual;
+    return kingdom;
+}
+var first = Realm(0, "North March");
+var city = founder.city;
+city.setName("Old City");
+founder.setName("Old Founder");
+founder.data.removeString(surnameKey);
+founder.data.set(fatherKey, "欧阳");
+string oldCityRecord = Read(city.data, cityKey);
+string foundingRecord = Read(city.data, foundingKey);
+var second = Realm(1, "East March");
+var manual = Realm(2, "Player's Kingdom", manual: true);
+var other = Realm(3, "留春国");
+var oldWar = world.wars.newWar(first, second, AssetManager.war_types_library.get("normal"));
+oldWar.setName("Old Border War");
+string parties = Read(oldWar.data, warKey);
+Check(parties != null && parties.Contains("North March") && parties.Contains("East March"), "Missing war history fixture.");
+var alliance = world.alliances.newAlliance(first, second);
+alliance.setName("Old Pact");
+var army = world.armies.newArmy(founder, city);
+army.setName("Old Guard");
+var manualAlliance = world.alliances.newAlliance(manual, other);
+manualAlliance.setName("Handwritten Pact");
+manualAlliance.data.custom_name = true;
+world.units.checkContainer();
+world.kingdoms.checkLists(); world.alliances.checkLists(); world.cities.checkLists(); world.wars.checkLists();
+world.languages.checkLists(); world.cultures.checkLists();
+world.armies.checkLists();
+
+var service = NamingApi.Current;
+var pack = new NamingPack
+{
+    Id = packId, Format = 1, Label = "重配预演测试",
+    Words = new List<Word> { new() { Id = "tests:green", Text = "青岑" }, new() { Id = "tests:white", Text = "白岩" } },
+    Pools = new Dictionary<string, Dictionary<string, double>> { [pool] = new() { ["tests:green"] = 1, ["tests:white"] = 1 } },
+    UseAsLanguageDefault = true
+};
+pack.Rules["worldbox:kingdom"] = new List<Rule> { new()
+{
+    Id = "planned-kingdom", Priority = 1000,
+    Parts = new List<Part> { new() { Id = "name", Pool = pool }, new() { Id = "suffix", Literal = "封境" } }
+} };
+pack.Rules["worldbox:alliance"] = new List<Rule> { new()
+{
+    Id = "planned-alliance", Priority = 1000,
+    When = new Dictionary<string, string> { ["kind"] = "founding-pair" },
+    Parts = new List<Part>
+    {
+        new() { Id = "first", Input = "founder-short" }, new() { Id = "second", Input = "partner-short" },
+        new() { Id = "verb", Literal = "会盟于" }, new() { Id = "origin", Input = "origin" }
+    }
+} };
+pack.Rules["worldbox:army"] = new List<Rule> { new()
+{
+    Id = "planned-army", Priority = 1000,
+    Parts = new List<Part> { new() { Id = "name", Input = "station" }, new() { Id = "suffix", Literal = "卫" } }
+} };
+pack.Rules["worldbox:city"] = new List<Rule> { new()
+{
+    Id = "planned-city", Priority = 1000,
+    Parts = new List<Part> { new() { Id = "name", Input = "origin" }, new() { Id = "suffix", Literal = "府" } }
+} };
+pack.Rules["worldbox:person"] = new List<Rule> { new()
+{
+    Id = "planned-person", Priority = 1000, Inheritance = SurnameOrder.Father,
+    Parts = new List<Part> { new() { Id = "surname", Literal = "柳" }, new() { Id = "given", Literal = "青" } }
+} };
+pack.Rules["worldbox:war"] = new List<Rule> { new()
+{
+    Id = "planned-war", Priority = 1000,
+    Parts = new List<Part> { new() { Id = "attacker", Input = "attacker" }, new() { Id = "dash", Literal = "—" },
+        new() { Id = "defender", Input = "defender" }, new() { Id = "suffix", Literal = "之战" } }
+} };
+service.InstallPack(pack);
+var worldSettings = service.GetWorld();
+worldSettings.EnabledPacks.Add(packId);
+void Keep(Kingdom realm, string exclude)
+{
+    if (!worldSettings.Languages.TryGetValue(realm.language.id, out var language))
+        worldSettings.Languages[realm.language.id] = language = new LanguageNaming();
+    language.Pools[pool] = new PoolEdit { ExcludeIds = new List<string> { exclude } };
+}
+Keep(first, "tests:white");
+Keep(second, "tests:green");
+WorldNamingStore.Apply(worldSettings);
+string baseline = NamingJson.Write(service.GetWorld());
+string originalShort = Read(first.data, shortKey);
+string originalHistory = NamingJson.Write(first.data.past_names);
+
+world.console.Hide();
+ScrollWindow.showWindow("world_info");
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("chinesename_packs");
+await Frames();
+KeyValueField Row(string name) => window.GetComponentsInChildren<KeyValueField>().Single(row => row.name == name);
+async System.Threading.Tasks.Task Press(string name)
+{
+    Row(name).value.GetComponent<Button>().onClick.Invoke();
+    await Frames();
+}
+await Press("WorldNamingReassignment");
+await Press("WorldNamingStyle." + packId);
+await Press("WorldNamingScope");
+await Press("WorldNamingObjects");
+string[] Examples(string prefix) => window.GetComponentsInChildren<KeyValueField>()
+    .Where(row => row.name.StartsWith(prefix, StringComparison.Ordinal)).Select(row => row.value.text).ToArray();
+var countries = Examples("WorldNamingPreviewKingdom.");
+var alliances = Examples("WorldNamingPreviewAlliance.");
+var cities = Examples("WorldNamingPreviewCity.");
+var actors = Examples("WorldNamingPreviewActor.");
+var wars = Examples("WorldNamingPreviewWar.");
+var secondary = window.GetComponentsInChildren<KeyValueField>().Single(row => row.name == "WorldNamingPreviewSubjects").value.text;
+Check(secondary == "其他 1" && army.name == "Old Guard", "The preview did not account for the pending army.");
+Check(countries.SequenceEqual(new[] { "青岑封境（青岑）", "白岩封境（白岩）" }) &&
+    alliances.SequenceEqual(new[] { "青岑白岩会盟于青岑封境" }) && cities.SequenceEqual(new[] { "青岑封境府" }) &&
+    actors.SequenceEqual(new[] { "欧阳青" }) && wars.SequenceEqual(new[] { "青岑封境—白岩封境之战" }),
+    "Preview did not use planned details: " + string.Join(", ", countries.Concat(alliances).Concat(cities).Concat(actors).Concat(wars)));
+Check(first.name == "North March" && second.name == "East March" && alliance.name == "Old Pact" &&
+    city.name == "Old City" && founder.data.name == "Old Founder" && oldWar.name == "Old Border War" &&
+    Read(city.data, cityKey) == oldCityRecord && Read(founder.data, surnameKey) == null && Read(founder.data, fatherKey) == "欧阳" &&
+    baseline == NamingJson.Write(service.GetWorld()) && originalShort == Read(first.data, shortKey) &&
+    originalHistory == NamingJson.Write(first.data.past_names) && Read(oldWar.data, warKey) == parties,
+    "Preview mutated applied settings, names, history, or abbreviations.");
+await Press("WorldNamingPreviewBack");
+Check(first.name == "North March" && alliance.name == "Old Pact", "Returning from preview modified names.");
+await Press("WorldNamingObjects");
+first.data.custom_name = true;
+await Press("WorldNamingPreviewSummary");
+Check(first.name == "North March" && alliance.name == "Old Pact" &&
+    baseline == NamingJson.Write(service.GetWorld()), "A stale preview applied after a manual change.");
+first.data.custom_name = false;
+await Press("WorldNamingObjects");
+founder.data.set(fatherKey, "司马");
+await Press("WorldNamingPreviewSummary");
+Check(first.name == "North March" && founder.data.name == "Old Founder", "A change to a pending surname did not cancel the preview.");
+founder.data.set(fatherKey, "欧阳");
+await Press("WorldNamingObjects");
+army.setName("Changed Guard");
+await Press("WorldNamingPreviewSummary");
+Check(first.name == "North March" && army.name == "Changed Guard", "The plan reused a stale secondary change.");
+army.setName("Old Guard");
+await Press("WorldNamingObjects");
+await Press("WorldNamingPreviewSummary");
+Check(first.name == "青岑封境" && Read(first.data, shortKey) == "青岑" && second.name == "白岩封境" &&
+    Read(second.data, shortKey) == "白岩" && alliance.name == alliances[0] && city.name == cities[0] &&
+    founder.data.name == actors[0] && oldWar.name == wars[0] && army.name == cities[0] + "卫" && Read(founder.data, surnameKey) == "欧阳" &&
+    Read(founder.data, fatherKey) == null && (string)JObject.Parse(Read(city.data, cityKey))["stem"] == "青岑封境",
+    $"Applied result or its metadata did not match the preview: {first.name}, {alliance.name}, {city.name}, {founder.data.name}, {oldWar.name}.");
+Check(manual.name == "Player's Kingdom" && manualAlliance.name == "Handwritten Pact" &&
+    first.data.past_names.Any(entry => entry.name == "North March") && Read(city.data, foundingKey) == foundingRecord &&
+    Read(oldWar.data, warKey) == parties && alliance.data.founder_kingdom_name == "North March",
+    "Applying the plan changed a manual name or a historical record.");
+
+long armyId = army.id, firstId = first.id, secondId = second.id, manualId = manual.id, allianceId = alliance.id,
+    manualAllianceId = manualAlliance.id, warId = oldWar.id, cityId = city.id, founderId = founder.id;
+string cityRecord = Read(city.data, cityKey);
+string folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "world-reassignment-plan");
+Directory.CreateDirectory(folder);
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Unable to load the plan fixture.");
+Config.paused = true;
+first = World.world.kingdoms.get(firstId);
+second = World.world.kingdoms.get(secondId);
+alliance = World.world.alliances.get(allianceId);
+city = World.world.cities.get(cityId);
+founder = World.world.units.get(founderId);
+oldWar = World.world.wars.get(warId);
+Check(first.name == "青岑封境" && Read(first.data, shortKey) == "青岑" && second.name == "白岩封境" &&
+    Read(second.data, shortKey) == "白岩" && alliance.name == alliances[0] &&
+    first.data.past_names.Any(entry => entry.name == "North March") &&
+    Read(oldWar.data, warKey) == parties && oldWar.name == wars[0] && city.name == cities[0] &&
+    Read(city.data, cityKey) == cityRecord && Read(city.data, foundingKey) == foundingRecord &&
+    founder.data.name == actors[0] && Read(founder.data, surnameKey) == "欧阳" &&
+    World.world.kingdoms.get(manualId).name == "Player's Kingdom" &&
+    World.world.alliances.get(manualAllianceId).name == "Handwritten Pact" &&
+    World.world.armies.get(armyId)?.name == cities[0] + "卫", "Readback did not match the confirmed result.");
+return new { countries, alliances, cities, actors, wars, army = World.world.armies.get(armyId).name,
+    readback = alliance.name, historicalFounder = alliance.data.founder_kingdom_name };

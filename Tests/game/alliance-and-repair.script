@@ -161,6 +161,7 @@ await ClickRow("WorldNamingScope");
 Check(Row("WorldNamingScope").value.text == "仅英文和空白" && Row("WorldNamingTitles") == null,
     "The repair filter did not protect world titles without a manual-name marker.");
 await ClickRow("WorldNamingObjects");
+await ClickRow("WorldNamingPreviewSummary");
 Check(Han(english.data.name) && Han(empty.data.name) && blank.name.StartsWith("长风澄海", StringComparison.Ordinal),
     "Selective reassignment missed automatic English or empty names.");
 Check(handwritten.data.name == "Handwritten" && chinese.data.name == "留春" && mixed.data.name == "顾·Smith" &&

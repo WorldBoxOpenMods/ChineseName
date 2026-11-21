@@ -46,22 +46,21 @@ internal static class NamingLineage
                     if (parentCards.getGroupString(group) is { Length: > 0 } alias)
                         entry.Value.setGroup(group, alias);
             }
-            WorldNamingStore.Update(draft =>
+            var world = WorldNamingStore.LineageWorld();
+            if (world == null || world.Cultures.TryGetValue(__instance.id, out var existing) && existing.Parent.HasValue) return;
+            var child = world.Cultures.TryGetValue(pFrom.id, out var parent)
+                ? NamingJson.Copy(parent) : new CultureNaming();
+            child.Parent = pFrom.id;
+            foreach (var meta in NativeOnomastics.Categories)
             {
-                if (draft.Cultures.TryGetValue(__instance.id, out var existing) && existing.Parent.HasValue) return false;
-                var child = draft.Cultures.TryGetValue(pFrom.id, out var parent)
-                    ? NamingJson.Copy(parent) : new CultureNaming();
-                child.Parent = pFrom.id;
-                foreach (var meta in NativeOnomastics.Categories)
-                {
-                    string type = NativeOnomastics.Type(meta);
-                    var choice = NativeOnomastics.Selection(draft, pFrom, type);
-                    if (choice != null) child.Cards[type] = NamingJson.Copy(choice);
-                }
-                NamingApi.Current.EvolveCulture(child, draft, Seed(__instance.id));
-                draft.Cultures[__instance.id] = child;
-                return true;
-            });
+                string type = NativeOnomastics.Type(meta);
+                var choice = NativeOnomastics.Selection(world, pFrom, type);
+                if (choice != null) child.Cards[type] = NamingJson.Copy(choice);
+            }
+            var founder = World.world.units.get(__instance.data.creator_id);
+            NamingApi.Current.EvolveCulture(child, world, Seed(__instance.id),
+                GeographicNaming.At(founder?.current_tile)?.Landform, __instance.data.original_actor_asset);
+            WorldNamingStore.SetCulture(__instance.id, child);
         }
     }
 
@@ -72,23 +71,17 @@ internal static class NamingLineage
         {
             var parent = ReferenceEquals(pActor, _languageFounder) ? _parentLanguage : null;
             if (parent?.id == __instance.id) return;
-            WorldNamingStore.Update(draft =>
-            {
-                if (draft.Languages.ContainsKey(__instance.id)) return false;
-                var language = parent != null && draft.Languages.TryGetValue(parent.id, out var previous)
-                    ? NamingJson.Copy(previous) : new LanguageNaming();
-                var service = NamingApi.Current;
-                var preferred = NativeOnomastics.CulturePools(service, pActor);
-                bool diversified = service.EvolveLanguage(language, draft, Seed(__instance.id), parent != null, preferred, pActor?.culture?.id);
-                if (parent == null && !diversified) return false;
-                if (parent != null)
-                {
-                    draft.LanguageParents[__instance.id] = parent.id;
-                    language.BiasOrigin ??= parent.id;
-                }
-                draft.Languages[__instance.id] = language;
-                return true;
-            });
+            var world = WorldNamingStore.LineageWorld();
+            if (world == null || world.Languages.ContainsKey(__instance.id)) return;
+            var language = parent != null && world.Languages.TryGetValue(parent.id, out var previous)
+                ? NamingJson.Copy(previous) : new LanguageNaming();
+            var service = NamingApi.Current;
+            var preferred = NativeOnomastics.CulturePools(service, pActor);
+            bool diversified = service.EvolveLanguage(language, world, Seed(__instance.id), parent != null, preferred,
+                pActor?.culture?.id, GeographicNaming.At(pActor?.current_tile)?.Landform);
+            if (parent == null && !diversified) return;
+            language.BiasOrigin ??= parent?.id;
+            WorldNamingStore.SetLanguage(__instance.id, language, parent?.id);
         }
     }
 

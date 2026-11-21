@@ -43,11 +43,11 @@ public sealed partial class OnomasticsEditor
             var sample = VanillaNames.Request(type.Id, example, 0);
             if (sample.Inputs.TryGetValue("origin", out var name) && name is string source) page.Samples["origin"] = source;
         }
-        if (type.Id == NativeOnomastics.City && SelectedMetas.selected_city is { } namingCity && namingCity.culture == culture &&
-            VanillaNames.CityInputs(namingCity).TryGetValue("biome", out var terrain) && terrain is string biome)
-            page.Samples["biome"] = biome;
+        if (type.Id == NativeOnomastics.City && SelectedMetas.selected_city is { } namingCity && namingCity.culture == culture)
+            foreach (var input in VanillaNames.CityInputs(namingCity))
+                if (input.Value is string value) page.Samples[input.Key] = value;
         string exampleKind = NativeOnomastics.Meta(type.Id).HasValue ? "sapient" :
-            NativeOnomastics.AdditionalCategories.FirstOrDefault(category => category.Type == type.Id).ExampleKind;
+            NamingApi.Current.ExampleKind(type.Id);
         if (exampleKind != null) page.Samples["kind"] = exampleKind;
         if (type.Id == VanillaNames.Person)
         {
@@ -81,9 +81,8 @@ public sealed partial class OnomasticsEditor
 
     private Rule SelectedRule(NamingService service, NameType type, Culture culture, PartsPage page)
     {
-        var request = new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage,
-            type.Fields.Values.Where(field => page.Samples.ContainsKey(field.Id) || field.Example != null)
-                .ToDictionary(field => field.Id, field => page.Samples.TryGetValue(field.Id, out var value) ? value : field.Example));
+        var sample = PreviewRequest(type, culture, page, PreviewInputs(type, page));
+        var request = service.PrepareContext(sample) ?? sample;
         page.Effective = service.Inspect(request, _draft);
         var effective = page.Effective;
         string cardRule = NativeOnomastics.Selection(_draft, culture, type.Id) is { Enabled: true } cards ? cards.SourceRule : null;

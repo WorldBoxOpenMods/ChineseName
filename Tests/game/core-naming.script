@@ -1,0 +1,282 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string type = "worldbox:city", packId = "tests:core-arrangements", pool = "tests:core-root", word = "tests:root";
+const string terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 10)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+if (File.Exists(terrain))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+}
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var tile = world.zone_calculator.zones.First(zone => zone.canStartCityHere() && zone.centerTile.Type.biome_asset != null).centerTile;
+string biome = tile.Type.biome_asset.id;
+string alternative = biome == "biome_desert" ? "biome_grass" : "biome_desert";
+ConditionalArrangement Row(string id, string card, string landscape) => new()
+{
+    Id = id, Cards = new CardNaming { Enabled = true, Template = card },
+    Expression = new ArrangementCondition
+    {
+        Children = new List<ArrangementCondition>
+        {
+            new() { Field = "biome", Test = ArrangementTest.Equal, Values = new List<string> { landscape } }
+        }
+    }
+};
+var pack = new NamingPack
+{
+    Format = 1, Id = packId, Label = "试验预设",
+    Words = new List<Word> { new() { Id = word, Text = "青江" } },
+    Pools = new Dictionary<string, Dictionary<string, double>> { [pool] = new() { [word] = 1 } },
+    UseAsLanguageDefault = true
+};
+var defaultRule = new Rule
+{
+    Id = "town", Priority = 1000,
+    Parts = new List<Part> { new() { Id = "name", Literal = "旧石" }, new() { Id = "suffix", Literal = "城" } },
+    NativeCards = new CardNaming { Enabled = true, Template = "01|0:旧石;1:城" }
+};
+pack.Rules[type] = new List<Rule> { defaultRule };
+var bad = Row("no-glyph", "\uE1FE0|0:坏", biome);
+bad.Expression.Children[0].Test = ArrangementTest.Present;
+bad.Expression.Children[0].Values.Clear();
+var empty = Row("no-words", "0\uE1181|0:tests/core-root;1:府", biome);
+var river = Row("river", "01|0:澄江;1:府", biome);
+var disabled = Row("disable-this", "0|0:凉关", alternative);
+var removed = Row("delete-this", "0|0:秦城", alternative);
+pack.Arrangements[type] = new List<ConditionalArrangement> { bad, empty, river, disabled, removed };
+string path = Path.Combine(WorldNamingStore.PackageDirectory, "test-core-arrangements.naming.json");
+void LoadPackage()
+{
+    File.WriteAllText(path, NamingJson.Write(pack));
+    var errors = WorldNamingStore.ReloadPacks();
+    Check(errors.Count == 0, string.Join(", ", errors));
+}
+LoadPackage();
+var actor = world.units.createNewUnit("human", tile, pAdultAge: true);
+var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+var language = world.languages.newLanguage(actor, true);
+actor.joinLanguage(language);
+kingdom.setUnitMetas(actor);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists(); world.kingdoms.checkLists();
+var draft = service.GetWorld();
+if (!draft.EnabledPacks.Contains(packId)) draft.EnabledPacks.Add(packId);
+draft.Cultures[culture.id] = new CultureNaming { Pack = packId };
+var words = draft.Languages[language.id] = new LanguageNaming();
+words.Pools[pool] = new PoolEdit { ExcludeIds = new List<string> { word } };
+WorldNamingStore.Apply(draft);
+NameRequest Request(string land) => new(type, 3, culture.id, language.id,
+    new Dictionary<string, object> { ["biome"] = land, ["kind"] = "sapient" });
+
+var failed = service.Generate(Request(biome));
+Check(failed.Text == "澄江府" && failed.ArrangementId == "river" && failed.Failures.Count == 2 &&
+    failed.Failures[0].ArrangementId == "no-glyph" && failed.Failures[0].Reason == NameFailureReason.MissingGlyph &&
+    failed.Failures[1].ArrangementId == "no-words" && failed.Failures[1].Reason == NameFailureReason.EmptyVocabulary,
+    "The engine did not report earlier failures and the actual arrangement.");
+var rejected = service.Generate(Request(biome), name => name != "澄江府");
+Check(rejected.Success && rejected.Text != "澄江府" && rejected.RuleId != null &&
+    rejected.Failures.Any(reason => reason.ArrangementId == "river" && reason.Reason == NameFailureReason.Rejected),
+    "A caller-rejected name was not reported.");
+var city = world.cities.buildNewCity(actor, tile.zone);
+actor.joinCity(city);
+kingdom.setCapital(city);
+world.cities.checkLists();
+Check(city.name == "澄江府", "Actual founding disagreed with the decision.");
+
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+SelectedMetas.selected_city = city;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(button => button.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+Button Button(string name) => shell.GetComponentsInChildren<Button>().Single(button => button.name == name);
+string defaultLand = new[] { "biome_grass", "biome_desert", "biome_swamp" }.First(land => land != biome && land != alternative);
+tab.loadTemplate("01|0:新石;1:城");
+await Frames();
+Check(service.Generate(Request(defaultLand)).Text == "新石城", "A broken conditional row blocked saving the valid default.");
+var defaultEdit = service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Single().Value;
+Check(defaultEdit.Glyphs == null && defaultEdit.Groups.Count == 1 && defaultEdit.Groups["group_1"] == "新石",
+    "Editing a word group should not copy the other groups or the glyph order.");
+tab.loadTemplate("0\uE118|0:tests/core-root");
+await Frames();
+Check(service.Generate(Request(defaultLand)).Text == "新石城", "An invalid default replaced the saved default.");
+Button("Arrangement.river").onClick.Invoke();
+await Frames();
+string issue = shell.GetComponentsInChildren<Text>().Single(label => label.name == "PreviewIssue").text;
+Check(issue.Contains("第 1 条排列") && issue.Contains("缺少字形") && issue.Contains("第 3 条排列") &&
+    shell.GetComponentsInChildren<Text>().First(label => label.name == "PreviewName").text == city.name,
+    "The existing preview did not explain the actual fallback: " + issue);
+tab.loadTemplate("01|0:澄江;1:县");
+await Frames();
+Button("Arrangement.disable-this").onClick.Invoke();
+await Frames();
+Button("ArrangementEnabled.disable-this").onClick.Invoke();
+await Frames();
+Button("Arrangement.delete-this").onClick.Invoke();
+await Frames();
+Button("ArrangementDelete.delete-this").onClick.Invoke();
+await Frames();
+var saved = service.GetWorld().Cultures[culture.id];
+Check(!saved.Arrangements.ContainsKey(type) && saved.ArrangementEdits[type].Changes.Count == 3 &&
+    service.Generate(Request(biome)).Text == "澄江县" && city.name == "澄江府",
+    "Native editing copied the whole preset, changed the old city, or lost a row edit.");
+var riverEdit = saved.ArrangementEdits[type].Changes[packId + "/river"];
+Check(riverEdit.Template == null && riverEdit.Layout.Glyphs == null && riverEdit.Layout.Groups.Count == 1 &&
+    riverEdit.Layout.Groups["group_2"] == "县", "Editing a conditional suffix copied its unedited word group.");
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+
+pack.Version = 2;
+defaultRule.NativeCards.Template = "01|0:旧石;1:府";
+pack.Arrangements[type] = new List<ConditionalArrangement>
+{
+    bad, empty, Row("river", "01|0:澄溪;1:城", biome), Row("disable-this", "0|0:北关", alternative),
+    Row("delete-this", "0|0:秋城", alternative), Row("new-town", "0|0:望海邑", alternative)
+};
+LoadPackage();
+var updated = service.Generate(Request(alternative));
+Check(service.Generate(Request(biome)).Text == "澄溪县" && updated.ArrangementId == "new-town" &&
+    updated.Text == "望海邑" && service.Generate(Request(defaultLand)).Text == "新石府",
+    "The update lost a local edit or failed to incorporate the new group or row.");
+string duplicate = Path.Combine(WorldNamingStore.PackageDirectory, "test-core-duplicate.naming.json");
+File.WriteAllText(path, "{ broken JSON");
+Check(WorldNamingStore.ReloadPacks().Any(error => error.Contains("沿用上次有效版本")) &&
+    service.Generate(Request(defaultLand)).Text == "新石府", "A malformed edit unloaded the active preset.");
+pack.Version = 3;
+File.WriteAllText(path, NamingJson.Write(pack));
+File.Copy(path, duplicate);
+Check(WorldNamingStore.ReloadPacks().Any(error => error.Contains("重复的命名包 ID")) &&
+    service.GetPackage(packId).Version == 2, "Duplicate preset files replaced the last accepted version.");
+File.Delete(duplicate);
+const string dependencyId = "tests:core-library";
+string dependencyPath = Path.Combine(WorldNamingStore.PackageDirectory, "test-core-library.naming.json");
+var dependency = new NamingPack { Id = dependencyId, Format = 1, Version = 2, Supplemental = true };
+pack.Requires[dependencyId] = 2;
+File.WriteAllText(path, NamingJson.Write(pack));
+Check(WorldNamingStore.ReloadPacks().Any(error => error.Contains("更新后的依赖不可用")) &&
+    service.GetPackage(packId).Version == 2, "An incompatible update replaced the active preset.");
+File.WriteAllText(dependencyPath, NamingJson.Write(dependency));
+var enabled = service.GetWorld();
+enabled.EnabledPacks.Add(dependencyId);
+WorldNamingStore.Apply(enabled);
+LoadPackage();
+Check(service.GetPackage(packId).Version == 3, "The corrected update was not installed.");
+dependency.Version = 1;
+File.WriteAllText(dependencyPath, NamingJson.Write(dependency));
+Check(WorldNamingStore.ReloadPacks().Any(error => error.Contains("版本低于")) &&
+    service.GetPackage(dependencyId).Version == 2 && service.Generate(Request(defaultLand)).Text == "新石府",
+    "A dependency downgrade broke the active preset.");
+dependency.Version = 2;
+File.WriteAllText(dependencyPath, NamingJson.Write(dependency));
+string exportedPath = WorldNamingStore.ExportCombination("tests:core-layout-export", culture.id, language.id);
+var exported = NamingJson.Read<NamingPack>(File.ReadAllText(exportedPath));
+Check(exported.Rules[type].Single(rule => rule.Id == "town").NativeCards.Template == "01|0:新石;1:府",
+    "Export did not capture the merged default arrangement.");
+File.Delete(exportedPath);
+File.Delete(path);
+Check(WorldNamingStore.ReloadPacks().Count == 0 && service.Generate(Request(biome)).ArrangementId != "river",
+    "Uninstalling the package left its old arrangement active.");
+LoadPackage();
+Check(service.Generate(Request(biome)).Text == "澄溪县" && service.Generate(Request(alternative)).Text == "望海邑",
+    "Reinstalling the preset did not restore the edits.");
+
+string folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "core-naming");
+Directory.CreateDirectory(folder);
+long cityId = city.id, cultureId = culture.id, languageId = language.id;
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The new settings could not be reloaded.");
+Config.paused = true;
+culture = World.world.cultures.get(cultureId);
+language = World.world.languages.get(languageId);
+Check(World.world.cities.get(cityId).name == "澄江府" && service.Generate(Request(biome)).Text == "澄溪县" &&
+    service.Generate(Request(alternative)).Text == "望海邑" && service.Generate(Request(defaultLand)).Text == "新石府",
+    "The preset update or its local edits did not survive reload.");
+
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(button => button.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+void CultureRow(string name) =>
+    shell.GetComponentsInChildren<KeyValueField>().Single(row => row.name == name).value.GetComponent<Button>().onClick.Invoke();
+string presetDirectory = Path.Combine(UnityEngine.Application.persistentDataPath, "ChineseName", "Presets");
+Directory.CreateDirectory(presetDirectory);
+var existingPresets = Directory.GetFiles(presetDirectory).ToHashSet();
+CultureRow("CultureNamingStyle");
+await Frames();
+CultureRow("SaveCulturePreset");
+await Frames();
+shell.GetComponentsInChildren<NameInput>().Single(field => field.name == "CulturePresetName").inputField.text = "新石府预设";
+Button("ConfirmCulturePreset").onClick.Invoke();
+await Frames();
+string savedPreset = Directory.GetFiles(presetDirectory, "*.preset.json").Single(file => !existingPresets.Contains(file));
+string localPresetId = (string)Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(savedPreset))["snapshot"]["id"];
+tab.loadTemplate("01|0:南石;1:府");
+await Frames();
+Check(service.Generate(Request(defaultLand)).Text == "南石府", "The local default could not be edited after reload.");
+var beforeApplyingPreset = service.GetWorld().Cultures[culture.id];
+string presetButton = "CultureStyle." + localPresetId;
+if (!shell.GetComponentsInChildren<Button>().Any(button => button.name == presetButton))
+{
+    CultureRow("CultureNamingStyle");
+    await Frames();
+}
+Button(presetButton).onClick.Invoke();
+await Frames();
+Check(service.Generate(Request(defaultLand)).Text == "新石府" &&
+    service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Count == 0,
+    "Applying the captured preset kept the previous local arrangement on top.");
+File.Delete(savedPreset);
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+
+var resetFixture = service.GetWorld();
+resetFixture.Cultures[culture.id] = beforeApplyingPreset;
+WorldNamingStore.Apply(resetFixture);
+ScrollWindow.showWindow("world_info");
+await Frames();
+var worldWindow = ScrollWindow.getCurrentWindow();
+worldWindow.tabs.showTab("chinesename_packs");
+await Frames();
+async System.Threading.Tasks.Task WorldRow(string name)
+{
+    worldWindow.GetComponentsInChildren<KeyValueField>().Single(row => row.name == name).value.GetComponent<Button>().onClick.Invoke();
+    await Frames();
+}
+await WorldRow("WorldNamingReassignment");
+await WorldRow("WorldNamingStyle." + packId);
+await WorldRow("WorldNamingRules");
+Check(service.Generate(Request(biome)).Text == "澄溪城" && service.Generate(Request(defaultLand)).Text == "旧石府" &&
+    !service.GetWorld().Cultures[culture.id].ArrangementEdits.ContainsKey(type),
+    "Reapplying the original preset after global reset resurrected previous edits.");
+await WorldRow("RescanPackages");
+Check(worldWindow.GetComponentsInChildren<KeyValueField>().Single(row => row.name == "PackageStatus")
+    .name_text.text.Contains("引用提示"), "The rescan did not report a missing glyph in a known naming category.");
+File.Delete(path);
+File.Delete(dependencyPath);
+WorldNamingStore.ReloadPacks();
+return new { original = World.world.cities.get(cityId).name, previewIssue = issue, edited = "澄江县", mergedConditional = "澄溪县", updated = updated.Text,
+    mergedDefault = "新石府", reappliedPreset = "新石府", resetDefault = "旧石府", rejectedRefreshes = 4 };

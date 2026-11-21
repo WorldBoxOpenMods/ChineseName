@@ -14,8 +14,7 @@ internal static class NativeNamingGlyphs
     internal const char RuleSeparatorCode = '\uE116';
     internal const string AsPool = "chinesename_as_pool";
     internal const char AsPoolCode = '\uE118';
-
-    private static readonly Dictionary<string, CultureNameGlyph> Inputs = new(StringComparer.Ordinal);
+    private static IReadOnlyDictionary<string, CultureNameGlyph> _inputs;
 
     internal sealed class Glyph
     {
@@ -52,10 +51,10 @@ internal static class NativeNamingGlyphs
     internal static Glyph Find(string id) => Glyphs.FirstOrDefault(glyph => glyph.Id == id);
 
     internal static CultureNameGlyph FindInput(string id) =>
-        id != null && Inputs.TryGetValue(id, out var input) ? input : null;
+        id != null && _inputs?.TryGetValue(id, out var input) == true ? input : null;
 
     internal static CultureNameGlyph ForInput(string type, Part part) =>
-        part.Input == null && part.PoolInput == null ? null : Inputs.Values.FirstOrDefault(glyph => glyph.Type == type &&
+        part.Input == null && part.PoolInput == null ? null : _inputs?.Values.FirstOrDefault(glyph => glyph.Type == type &&
             glyph.Field == (part.Input ?? part.PoolInput) && glyph.PoolPrefix == (part.PoolInput == null ? null : part.Pool));
 
     internal static bool AppliesTo(string id, string type)
@@ -76,34 +75,6 @@ internal static class NativeNamingGlyphs
         foreach (var glyph in Glyphs)
             RegisterOutput(glyph.Id, glyph.Code, "ui/Icons/" + glyph.Icon, glyph.Label, glyph.Description,
                 (card, data, builder, _, index, _) => NativeOnomastics.DrawGlyph(card.id, data, index, builder.Length));
-        // 已发布的战争字形继续使用原 ID 和短码。
-        AddContext(new CultureNameGlyph(VanillaNames.War, "chinesename_war_attacker", '\uE119', "attacker",
-            "进攻国", "ui/Icons/iconArmyAttackers", null, "取这场战争的进攻国全名。"));
-        AddContext(new CultureNameGlyph(VanillaNames.War, "chinesename_war_defender", '\uE11A', "defender",
-            "防守国", "ui/Icons/iconArmyDefenders", null, "取这场战争的防守国全名。"));
-        var service = NamingApi.Current;
-        service.CultureGlyphRegistrar = AddContext;
-        service.RegisterCultureGlyph("worldbox:family", "chinesename:founder-surname", '\uE11B', "founder-surname",
-            "创始人姓氏", "ui/Icons/iconFamilyList", description: "沿用创始人的姓氏，无姓时按当前语言抽取堂号。",
-            fallbackPool: "chinesename:family-name");
-        service.RegisterCultureGlyph("worldbox:army", "chinesename:station-city", '\uE11C', "station",
-            "驻地城市", "ui/Icons/iconCityList");
-        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:founding-kingdom", '\uE11D', "origin",
-            "发起国", "ui/Icons/iconKingdomList");
-        service.RegisterCultureGlyph("worldbox:book", "chinesename:book-topic", '\uE11E', "topic",
-            "书籍题材", "ui/Icons/iconBooks", "chinesename:book-", "按书籍题材和当前语言抽取一个主题词。",
-            fallbackPool: "chinesename:book-name");
-        service.RegisterCultureGlyph("worldbox:item", "chinesename:equipment-kind", '\uE11F', "equipment",
-            "装备种类", "ui/Icons/iconItemType", "chinesename:equipment-kind", "按装备种类取称谓，例如剑、长弓或指环。");
-        service.RegisterCultureGlyph("worldbox:item", "chinesename:equipment-material", '\uE120', "material",
-            "装备材质", "ui/Icons/iconCraftIron", "chinesename:equipment-material", "按实际材质和当前语言抽取材质称谓。");
-        service.RegisterCultureGlyph(VanillaNames.Plot, "chinesename:plot-action", '\uE121', "plot",
-            "谋划类型", "ui/Icons/iconDiplomacy", "chinesename:plot-action", "按实际谋划类型和当前语言取称谓。",
-            fallbackPool: "chinesename:plot-action");
-        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:alliance-founder-short", '\uE122', "founder-short",
-            "发起国简称", "ui/Icons/iconKingdomList", description: "取建立联盟的一方的国名简称。");
-        service.RegisterCultureGlyph(VanillaNames.Alliance, "chinesename:alliance-partner-short", '\uE123', "partner-short",
-            "缔约国简称", "ui/Icons/iconAlliance", description: "取共同建立联盟的另一方的国名简称。");
         if (library.getByShortId(KeepSurnameCode.ToString()) == null && !library.dict.ContainsKey(KeepSurname))
         {
             var asset = library.add(new OnomasticsAsset
@@ -156,6 +127,10 @@ internal static class NativeNamingGlyphs
             LM.AddToCurrentLocale(asset.getDescriptionID(), "紧挨左侧词组。用空格分隔词库名，例如「江河地名 山岭地名 沿海地名 边塞地名」。先抽词库，再按当前语言取词。");
             LM.AddToCurrentLocale(asset.getDescriptionID2(), "");
         }
+        var service = NamingApi.Current;
+        service.AttachGlyphCatalog(AddContext, glyph =>
+            library.getByShortId(glyph.ShortCode.ToString()) == null && !library.dict.ContainsKey(glyph.Id));
+        _inputs = service.CultureGlyphs;
     }
 
     private static void AddContext(CultureNameGlyph input)
@@ -163,7 +138,6 @@ internal static class NativeNamingGlyphs
         if (!RegisterOutput(input.Id, input.ShortCode, input.Icon, input.Label, input.Description,
             (_, data, _, _, index, _) => NativeOnomastics.DrawInputGlyph(input, data, index)))
             throw new InvalidOperationException("Duplicate native glyph ID or short code: " + input.Id);
-        Inputs.Add(input.Id, input);
     }
 
     private static bool RegisterOutput(string id, char code, string icon, string label, string description,

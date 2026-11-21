@@ -1,0 +1,106 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string cityType = "worldbox:city", glyph = "tests:legacy-city-origin";
+const char code = '\uE2DF';
+string mode = "__GLYPH_TEST_MODE__";
+string template = code + "0|0:旧埠";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+}
+
+var service = NamingApi.Current;
+void LoadProvider() => service.RegisterCultureGlyph(cityType, glyph, code, "origin", "旧存档地名", "ui/Icons/iconBooks");
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+Config.paused = true;
+if (mode == "seed")
+{
+    LoadProvider();
+    var world = World.world;
+    var tile = world.tiles_list.First(candidate => candidate.Type.ground && candidate.zone.city == null);
+    var actor = world.units.createNewUnit("human", tile);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    world.kingdoms.makeNewCivKingdom(actor).setName("中州");
+    world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists(); world.kingdoms.checkLists();
+    culture.getOnomasticData(MetaType.City).loadFromShortTemplate(template);
+    var settings = service.GetWorld();
+    settings.UseSavedVanillaCards = true;
+    WorldNamingStore.Apply(settings);
+    string folder = Path.Combine(output.FullName, "legacy-glyph-seed");
+    Directory.CreateDirectory(folder);
+    SaveManager.saveWorldToDirectory(folder);
+    Check(culture.data.onomastics[MetaType.City] == template, "The vanilla slot was not written.");
+    File.WriteAllText(Path.Combine(folder, "founder.txt"), actor.id.ToString());
+    return new { template, folder };
+}
+
+var saved = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/legacy-glyph-seed/map.wbox", StringComparison.Ordinal)).OrderBy(path => path).Last();
+long founder = long.Parse(File.ReadAllText(Path.Combine(Path.GetDirectoryName(saved), "founder.txt")));
+async System.Threading.Tasks.Task Load(string file)
+{
+    ScrollWindow.hideAllEvent(pWithAnimation: false);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(file));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "Save did not finish loading.");
+    Config.paused = true;
+}
+Check(AssetManager.onomastics_library.getByShortId(code.ToString()) == null, "Restart without the optional glyph provider.");
+await Load(saved);
+var subject = World.world.units.get(founder);
+var owner = subject.culture;
+NameResult City() => service.Generate(new NameRequest(cityType, 0, owner.id, subject.language.id,
+    new Dictionary<string, object> { ["origin"] = "中州" }));
+Check(owner.data.onomastics[MetaType.City] == template && City().Success &&
+    City().Failures.Any(failure => failure.Reason == NameFailureReason.MissingGlyph), "A missing glyph caused data loss or stopped fallback.");
+
+World.world.console.Hide();
+SelectedUnit.select(subject);
+SelectedMetas.selected_culture = owner;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+async System.Threading.Tasks.Task Tab(string key)
+{
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_" + key).toggle.click();
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    await Frames();
+}
+await Tab("city");
+Check(window.GetComponentsInChildren<Text>().Any(text => text.name == "PreviewIssue" && text.text.Contains("缺少字形")),
+    "The unavailable slot did not show a readable fallback in the editor.");
+await Tab("kingdom");
+tab.loadTemplate("0|0:青岑国");
+await Frames();
+string Kingdom() => service.Generate(new NameRequest("worldbox:kingdom", 0, owner.id, subject.language.id)).Text;
+Check(Kingdom() == "青岑国", "The other category could not be edited.");
+
+const string brokenType = "tests:throwing-context";
+service.RegisterType(new NameType(brokenType, "异常示例"));
+service.RegisterContext(brokenType, _ => throw new InvalidOperationException("test callback"));
+var failed = service.Generate(new NameRequest(brokenType, 0));
+Check(failed.Status == GenerationStatus.ContextError && service.Preview(new NameRequest(brokenType, 0)).Status == failed.Status &&
+    failed.Diagnostics.Single() == "context-exception:tests:throwing-context/InvalidOperationException" &&
+    Kingdom() == "青岑国", "The throwing mod callback affected unrelated naming.");
+
+string second = Path.Combine(output.FullName, "legacy-glyph-dormant");
+Directory.CreateDirectory(second);
+SaveManager.saveWorldToDirectory(second);
+Check(owner.data.onomastics[MetaType.City] == template, "Saving with no provider replaced the dormant template.");
+LoadProvider();
+await Load(Path.Combine(second, "map.wbox"));
+subject = World.world.units.get(founder);
+owner = subject.culture;
+Check(owner.getOnomasticData(MetaType.City).getShortTemplate() == template &&
+    City().Text == "中州旧埠" && Kingdom() == "青岑国", "The original glyph and its words were not restored.");
+return new { restored = City().Text, independentEdit = Kingdom(), context = failed.Diagnostics.Single() };

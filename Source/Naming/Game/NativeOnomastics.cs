@@ -17,17 +17,6 @@ internal static class NativeOnomastics
     private static readonly Dictionary<string, MetaType> Metas =
         Types.ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
 
-    internal static readonly (string Type, string Icon, string Description, string ExampleKind)[] AdditionalCategories =
-    {
-        (VanillaNames.War, "iconWar", "由战争类型指定的国家取名", "normal"),
-        (VanillaNames.Alliance, "iconAlliance", "由发起国取名，可使用缔约双方的简称", "founding-pair"),
-        ("worldbox:army", "iconArmy", "由驻地城市取名", null),
-        ("worldbox:book", "iconBooks", "由作者取名，预览示例为史书", "book_name_history"),
-        (VanillaNames.Plot, "iconDiplomacy", "由发起者取名，预览示例为语言分化", "language_divergence"),
-        ("worldbox:motto", "iconDiplomacy", "用于国家、氏族和联盟，预览示例为国家格言", "kingdom"),
-        ("worldbox:item", "iconItemType", "由制作者取名，用于传奇装备和重铸", null)
-    };
-
     internal static IEnumerable<MetaType> Categories => Types.Keys;
 
     internal static MetaType? Meta(string type) => type != null && Metas.TryGetValue(type, out var meta) ? meta : (MetaType?)null;
@@ -35,20 +24,47 @@ internal static class NativeOnomastics
     internal static string Type(MetaType type) => Types.TryGetValue(type, out string id) ? id : null;
 
     internal static bool Supports(string type) => type != null && (Meta(type).HasValue ||
-        AdditionalCategories.Any(category => category.Type == type) || NamingApi.Current.CultureOnomastics.ContainsKey(type));
+        NamingApi.Current.CultureOnomastics.ContainsKey(type));
 
-    internal static CardNaming Selection(WorldNaming world, Culture culture, string type)
+    internal static CardNaming Selection(WorldNaming world, Culture culture, string type, EffectiveNames effective = null, Rule rule = null)
     {
         if (culture == null || !Supports(type)) return null;
-        if (world.Cultures.TryGetValue(culture.id, out var custom) && custom.Cards.TryGetValue(type, out var cards))
-            return cards;
+        if (world.Cultures.TryGetValue(culture.id, out var custom))
+        {
+            if (custom.Cards.TryGetValue(type, out var cards) && cards.Enabled) return cards;
+            if (EditedDefault(custom, type, effective, rule) is { } edited) return edited;
+            if (cards != null) return cards;
+        }
         return world.UseSavedVanillaCards && Meta(type) is MetaType meta && culture.data.onomastics?.ContainsKey(meta) == true
-            ? new CardNaming { Enabled = true } : null;
+            ? new CardNaming { Enabled = true, Template = LegacyCultureCards.Preserved(culture.data, meta) } : null;
+    }
+
+    private static CardNaming EditedDefault(CultureNaming culture, string type, EffectiveNames effective, Rule rule)
+    {
+        if (effective == null || rule == null || culture.DefaultArrangementEdits.Count == 0) return null;
+        if (culture.DefaultArrangementEdits.TryGetValue(CultureNaming.DefaultArrangementKey(type, effective.ArrangementBasis, rule.Id),
+                out var own))
+            return NativeNamingArrangement.ApplyDefaultEdit(type, rule, effective, own);
+        if (!NamingApi.Current.ShareDefaultLayout(type)) return null;
+
+        CardNaming shared = null;
+        foreach (var source in effective.AvailableRules)
+        {
+            if (!culture.DefaultArrangementEdits.TryGetValue(
+                    CultureNaming.DefaultArrangementKey(type, effective.ArrangementBasis, source.Id), out var edit)) continue;
+            bool unresolved = false;
+            var projected = NativeNamingArrangement.ApplyDefaultEdit(type, rule, effective, edit, _ => unresolved = true);
+            if (unresolved || projected == null) continue;
+            if (shared != null && shared.Template != projected.Template) return null;
+            shared = projected;
+        }
+        return shared;
     }
 
     internal static OnomasticsData Read(Culture culture, string type, CardNaming choice, bool reset = false)
     {
-        if (!reset && (choice?.DraftTemplate ?? choice?.Template) is string template) return Parse(template);
+        if (!reset && (choice?.DraftTemplate ?? choice?.Template) is string template &&
+            NativeNamingArrangement.ReadTemplate(template) is { } data) return data;
         return Meta(type) is MetaType meta ? ReadVanilla(culture, meta, reset) : new OnomasticsData();
     }
 
@@ -74,13 +90,6 @@ internal static class NativeOnomastics
     {
         var result = new OnomasticsData();
         result.cloneFrom(from);
-        return result;
-    }
-
-    internal static OnomasticsData Parse(string template)
-    {
-        var result = new OnomasticsData();
-        result.loadFromShortTemplate(template);
         return result;
     }
 
@@ -190,11 +199,12 @@ internal static class NativeOnomastics
         var culture = founder.culture;
         foreach (var type in service.Types.Where(type => Supports(type.Id)))
         {
-            string kind = AdditionalCategories.FirstOrDefault(category => category.Type == type.Id).ExampleKind;
-            var request = VanillaNames.Request(type.Id, founder, 0, kind: kind);
+            string kind = service.ExampleKind(type.Id);
+            var request = service.PrepareContext(VanillaNames.Request(type.Id, founder, 0, kind: kind));
+            if (request == null) continue;
             var effective = service.Inspect(request, null);
-            result.UnionWith(ConditionalPools(type.Id, effective, activeOnly: true));
-            var choice = Selection(service.ActiveWorld, culture, type.Id);
+            result.UnionWith(ConditionalPools(type.Id, effective, request));
+            var choice = Selection(service.ActiveWorld, culture, type.Id, effective, MatchedRule(request, effective));
             var source = BoundRule(choice, request, effective);
             if (choice?.Enabled == true && (choice.SourceRule == null || source != null))
             {
@@ -212,149 +222,217 @@ internal static class NativeOnomastics
     }
 
     internal static Rule MatchedRule(NameRequest request, EffectiveNames effective) =>
-        effective.SelectedPreset is { } preset && NameEngine.Matches(preset, request) ? preset :
-        effective.Rules.FirstOrDefault(rule => rule.NativeCards != null && NameEngine.Matches(rule, request)) ??
-            effective.Rules.FirstOrDefault(rule => NameEngine.Matches(rule, request));
+        effective.Rules.FirstOrDefault(rule => NameEngine.Matches(rule, request));
 
     internal static Rule BoundRule(CardNaming choice, NameRequest request, EffectiveNames effective) =>
         choice?.SourceRule == null ? MatchedRule(request, effective) :
             effective.AvailableRules.FirstOrDefault(rule => rule.Id == choice.SourceRule && NameEngine.Matches(rule, request));
 
-    internal static Dictionary<string, (CardNaming Cards, string[] Pools)> ExportArrangements(NamingService service,
+    internal static Dictionary<string, (CardNaming[] Cards, string[] Pools)> ExportArrangements(NamingService service,
         Culture culture, long? language, WorldNaming world)
     {
-        var arrangements = new Dictionary<string, (CardNaming, string[])>(StringComparer.Ordinal);
+        var arrangements = new Dictionary<string, (CardNaming[], string[])>(StringComparer.Ordinal);
+        world.Cultures.TryGetValue(culture.id, out var settings);
         foreach (var type in service.Types.Where(type => Supports(type.Id)))
         {
             var effective = service.Inspect(new NameRequest(type.Id, 0, culture.id, language), world);
-            var choice = Selection(world, culture, type.Id);
-            var rules = choice?.SourceRule == null ? effective.Rules :
-                effective.AvailableRules.Where(rule => rule.Id == choice.SourceRule).ToArray();
+            var legacy = Selection(world, culture, type.Id);
+            var snapshots = new List<CardNaming>();
             var pools = new HashSet<string>(StringComparer.Ordinal);
             pools.UnionWith(ConditionalPools(type.Id, effective));
-            CardNaming snapshot = null;
-            if (choice?.Enabled == true && rules.Length != 0)
+            if (legacy?.Enabled == true)
             {
-                using var cards = Read(culture, type.Id, choice);
-                Validate(cards, type.Id, choice);
-                snapshot = NamingJson.Copy(choice);
-                snapshot.Template = cards.getShortTemplate();
-                snapshot.DraftTemplate = null;
-                foreach (var rule in rules) pools.UnionWith(ArrangementPools(cards, choice, rule, effective));
+                var rules = legacy.SourceRule == null ? effective.Rules :
+                    effective.AvailableRules.Where(rule => rule.Id == legacy.SourceRule).ToArray();
+                if (rules.Length > 0) Capture(legacy, rules);
             }
-            foreach (var rule in effective.Rules.Where(rule => rule.NativeCards != null && (snapshot == null || !rules.Contains(rule))))
+            else if (settings != null)
+                foreach (var rule in effective.Rules)
+                    if (EditedDefault(settings, type.Id, effective, rule) is { } edited) Capture(edited, new[] { rule });
+            foreach (var rule in effective.Rules.Where(rule => rule.NativeCards != null &&
+                snapshots.All(cards => cards.SourceRule != null && cards.SourceRule != rule.Id)))
             {
                 using var cards = NativeNamingArrangement.ReadPackaged(type.Id, rule.NativeCards);
                 if (cards != null) pools.UnionWith(ArrangementPools(cards, rule.NativeCards, rule, effective));
             }
-            if (snapshot != null || pools.Count > 0) arrangements.Add(type.Id, (snapshot, pools.ToArray()));
+            if (snapshots.Count > 0 || pools.Count > 0) arrangements.Add(type.Id, (snapshots.ToArray(), pools.ToArray()));
+
+            void Capture(CardNaming choice, IReadOnlyList<Rule> rules)
+            {
+                using var cards = (choice.DraftTemplate ?? choice.Template) is string template
+                    ? NativeNamingArrangement.ReadPackaged(type.Id, choice, out _, template) : Read(culture, type.Id, choice);
+                if (cards == null) return;
+                Validate(cards, type.Id, choice);
+                var snapshot = NamingJson.Copy(choice);
+                snapshot.Template = cards.getShortTemplate();
+                snapshot.DraftTemplate = null;
+                snapshots.Add(snapshot);
+                foreach (var rule in rules) pools.UnionWith(ArrangementPools(cards, choice, rule, effective));
+            }
         }
         return arrangements;
     }
 
-    private static IEnumerable<string> ConditionalPools(string type, EffectiveNames effective, bool activeOnly = false)
+    private static IEnumerable<string> ConditionalPools(string type, EffectiveNames effective, NameRequest request = null)
     {
         foreach (var arrangement in effective.Arrangements)
         {
-            if (activeOnly && (arrangement.Disabled || !arrangement.IsConfigured)) continue;
-            using var cards = NativeNamingArrangement.ReadPackaged(type, arrangement.Cards);
+            if (request != null && (arrangement.Disabled || !arrangement.IsConfigured)) continue;
+            var choice = arrangement.Cards;
+            using var cards = NativeNamingArrangement.ReadPackaged(type, choice);
             if (cards == null) continue;
-            foreach (var pool in ArrangementPools(cards, arrangement.Cards, null, effective)) yield return pool;
-            var roles = arrangement.Cards.Roles.Values.ToHashSet();
+            var rule = request == null ? null : BoundRule(choice, request, effective);
+            foreach (var pool in ArrangementPools(cards, choice, rule, effective)) yield return pool;
+            if (request != null) continue;
+            // 导出仍需带上各条适用规则引用的词库。
+            var roles = choice.Roles.Values.ToHashSet();
             foreach (var pool in effective.AvailableRules.SelectMany(rule => rule.Parts)
                 .Where(part => roles.Contains(part.Id)).SelectMany(effective.ReferencedPools))
                 yield return pool;
         }
     }
 
-    internal static bool UsesSurname(Culture culture, CardNaming choice)
-    {
-        if ((choice.DraftTemplate ?? choice.Template) is string template)
-        {
-            using var draft = Parse(template);
-            return UsesSurname(draft, choice);
-        }
-        culture._onomastics_data.TryGetValue(MetaType.Unit, out var data);
-        return UsesSurname(data, choice);
-    }
-
-    internal static bool UsesSurname(OnomasticsData data, CardNaming choice)
-    {
-        var layout = data?.getFullTemplateData();
-        return layout != null && (layout.Contains(NativeNamingGlyphs.KeepSurname) || SurnameCard(layout, choice) != null);
-    }
-
-    internal static NameResult Generate(NameType type, NameRequest request, WorldNaming world, EffectiveNames effective,
-        Func<string, bool> accept)
+    internal static IEnumerable<NamingCandidate> Candidates(NameType type, NameRequest request, WorldNaming world,
+        EffectiveNames effective, Rule[] rules)
     {
         var culture = request.Culture.HasValue ? World.world?.cultures.get(request.Culture.Value) : null;
-        if (Meta(type.Id) == null && request.FixedParts.Count > 0) return null;
-        if (culture == null || VanillaNamingConditions.WorldScoped(type.Id))
-            return GenerateConditional(type, request, effective, accept);
-        if (!Supports(type.Id)) return null;
-        var conditional = GenerateConditional(type, request, effective, accept);
-        if (conditional != null) return conditional;
-        var choice = Selection(world, culture, type.Id);
-        var sourceRule = BoundRule(choice, request, effective);
-        using var cards = choice?.Enabled == true && (choice.SourceRule == null || sourceRule != null)
-            ? Read(culture, type.Id, choice)
-            : new OnomasticsData();
-        if (choice?.Enabled != true || choice.SourceRule != null && sourceRule == null)
+        bool worldScoped = NamingApi.Current.WorldScoped(type.Id);
+        bool cultureCards = culture != null && !worldScoped && Supports(type.Id);
+        if (cultureCards || culture == null || worldScoped)
+            foreach (var candidate in ConditionalCandidates(type, request, effective, effective.Arrangements))
+                yield return candidate;
+
+        var matched = rules.FirstOrDefault();
+        if (cultureCards && DefaultCandidate(type, request, effective, culture,
+            Selection(world, culture, type.Id, effective, matched)) is { } selected)
+            yield return selected;
+
+        for (int index = 0; index < rules.Length; index++)
         {
-            sourceRule = MatchedRule(request, effective);
-            if (Meta(type.Id) == null && sourceRule?.UseNativeWordGroups != true && sourceRule?.NativeCards == null) return null;
-            if (!NativeNamingArrangement.FillDefault(cards, type.Id, sourceRule, effective, out _)) return null;
-            choice = NativeNamingArrangement.ForRule(type.Id, sourceRule);
+            var rule = rules[index];
+            if (cultureCards)
+            {
+                if (index != 0 && world.Cultures.TryGetValue(culture.id, out var settings) &&
+                    DefaultCandidate(type, request, effective, culture, EditedDefault(settings, type.Id, effective, rule)) is { } edited)
+                    yield return edited;
+                if (Meta(type.Id) != null || rule.UseNativeWordGroups || rule.NativeCards != null)
+                {
+                    var packaged = rule.NativeCards;
+                    var cards = packaged ?? NativeNamingArrangement.ForRule(type.Id, rule);
+                    yield return CardCandidate(type, request, effective, cards, rule, () =>
+                        packaged != null ? ReadLayout(type.Id, packaged) : ProjectRule(type.Id, effective, rule),
+                        inheritance: rule.Inheritance);
+                }
+            }
+            yield return NameEngine.RuleCandidate(rule, index, rules.Length);
         }
-        return GenerateCards(type, request, effective, accept, choice, sourceRule, cards);
     }
 
-    internal static OnomasticsData ReadConditionalSurnameCards(NameRequest request, EffectiveNames effective, out CardNaming choice)
+    internal static NameResult ValidateDefault(NameRequest request, EffectiveNames effective, Culture culture, CardNaming choice) =>
+        NamingApi.Current.EvaluateArrangements(request, effective, (type, prepared) =>
+            DefaultCandidate(type, prepared, effective, culture, choice) is { } candidate
+                ? new[] { candidate } : Array.Empty<NamingCandidate>());
+
+    private static NamingCandidate DefaultCandidate(NameType type, NameRequest request, EffectiveNames effective,
+        Culture culture, CardNaming choice)
     {
-        foreach (var (arrangement, _) in ConditionalCards(request, effective))
-        {
-            var data = NativeNamingArrangement.ReadPackaged(request.Type, arrangement.Cards);
-            if (data == null) continue;
-            choice = arrangement.Cards;
-            return data;
-        }
-        choice = null;
-        return null;
+        if (choice?.Enabled != true) return null;
+        var rule = BoundRule(choice, request, effective);
+        if (choice.SourceRule != null && rule == null)
+            return effective.AvailableRules.Any(candidate => candidate.Id == choice.SourceRule)
+                ? null : Unavailable(choice.SourceRule, null);
+        return CardCandidate(type, request, effective, choice, rule, () =>
+            (choice.DraftTemplate ?? choice.Template) is string template
+                ? ReadLayout(type.Id, choice, template) : (Read(culture, type.Id, choice), null));
     }
 
-    private static IEnumerable<(ConditionalArrangement Arrangement, Rule Rule)> ConditionalCards(
-        NameRequest request, EffectiveNames effective)
+    internal static NameResult GenerateConditional(NameRequest request, EffectiveNames effective,
+        Func<string, bool> accept, IEnumerable<ConditionalArrangement> arrangements, NamingTrace trace) =>
+        NamingApi.Current.EvaluateArrangements(request, effective,
+            (type, prepared) => ConditionalCandidates(type, prepared, effective, arrangements), accept, trace);
+
+    private static IEnumerable<NamingCandidate> ConditionalCandidates(NameType type, NameRequest request,
+        EffectiveNames effective, IEnumerable<ConditionalArrangement> arrangements)
     {
-        foreach (var arrangement in effective.Arrangements)
+        var service = NamingApi.Current;
+        foreach (var arrangement in arrangements)
         {
-            if (!NamingApi.Current.Matches(arrangement, request)) continue;
-            var branch = arrangement.Cards;
-            var rule = BoundRule(branch, request, effective);
-            if (!branch.Enabled || branch.Template == null || branch.SourceRule != null && rule == null) continue;
-            yield return (arrangement, rule);
+            var cards = arrangement.Cards;
+            if (cards?.Enabled != true || arrangement.Disabled) continue;
+            if (!service.MatchesExpression(arrangement, request))
+            {
+                // An uninstalled extension can take both the condition field and its glyph out of the catalog.
+                if (arrangement.IsConfigured && arrangement.Expression.Leaves().Any(term => !type.Fields.ContainsKey(term.Field)))
+                {
+                    using var layout = NativeNamingArrangement.ReadPackaged(type.Id, cards, out var failure);
+                    if (failure.Reason == NameFailureReason.MissingGlyph)
+                        yield return new NamingCandidate(null, 0, (_, _) => new CandidateDraw(failure.Reason, failure.Reference),
+                            arrangement.Id, ruleId: cards.SourceRule);
+                }
+                continue;
+            }
+            var rule = BoundRule(cards, request, effective);
+            yield return cards.SourceRule != null && rule == null ? Unavailable(cards.SourceRule, arrangement.Id) :
+                CardCandidate(type, request, effective, cards, rule, () => ReadLayout(type.Id, cards), arrangement.Id);
         }
     }
 
-    private static NameResult GenerateConditional(NameType type, NameRequest request, EffectiveNames effective, Func<string, bool> accept)
+    private static NamingCandidate Unavailable(string ruleId, string arrangement) =>
+        new(null, 0, (_, _) => new CandidateDraw(NameFailureReason.UnavailableRule, ruleId), arrangement, ruleId: ruleId);
+
+    private static (OnomasticsData Data, (NameFailureReason Reason, string Reference)? Failure) ReadLayout(
+        string type, CardNaming choice, string template = null)
     {
-        foreach (var (arrangement, rule) in ConditionalCards(request, effective))
-        {
-            var branch = arrangement.Cards;
-            using var data = NativeNamingArrangement.ReadPackaged(type.Id, branch);
-            if (data == null) continue;
-            var result = GenerateCards(type, request, effective, accept, branch, rule, data, arrangement.Id);
-            if (result.Success) return result;
-        }
-        return null;
+        var data = NativeNamingArrangement.ReadPackaged(type, choice, out var failure, template);
+        return (data, data == null ? failure : null);
     }
 
-    internal static NameResult GenerateCards(NameType type, NameRequest request, EffectiveNames effective,
-        Func<string, bool> accept, CardNaming choice, Rule sourceRule, OnomasticsData cards, string arrangement = null)
+    private static (OnomasticsData Data, (NameFailureReason Reason, string Reference)? Failure) ProjectRule(
+        string type, EffectiveNames effective, Rule rule)
+    {
+        var cards = new OnomasticsData();
+        if (NativeNamingArrangement.FillDefault(cards, type, rule, effective, out _)) return (cards, null);
+        cards.Dispose();
+        return (null, null);
+    }
+
+    private static NamingCandidate CardCandidate(NameType type, NameRequest request, EffectiveNames effective,
+        CardNaming choice, Rule rule, Func<(OnomasticsData Data, (NameFailureReason Reason, string Reference)? Failure)> load,
+        string arrangement = null, SurnameOrder? inheritance = null, bool ownsCards = true) =>
+        new(rule, NameEngine.Attempts, (surname, diagnostics) =>
+        {
+            var (data, failure) = load();
+            if (data == null) return failure is { } issue ? new CandidateDraw(issue.Reason, issue.Reference) : null;
+            try
+            {
+                return OpenCards(type, request, effective, choice, rule, data, surname, diagnostics,
+                    arrangement, ownsCards ? new Action(data.Dispose) : null);
+            }
+            catch
+            {
+                if (ownsCards) data.Dispose();
+                throw;
+            }
+        }, arrangement, inheritance ?? choice.Inheritance);
+
+    internal static NameResult GenerateCards(NameRequest request, EffectiveNames effective,
+        CardNaming choice, Rule rule, OnomasticsData cards) =>
+        NamingApi.Current.EvaluateArrangements(request, effective, (type, prepared) =>
+            new[] { CardCandidate(type, prepared, effective, choice, rule, () => (cards, null), ownsCards: false) });
+
+    private static CandidateDraw OpenCards(NameType type, NameRequest request, EffectiveNames effective, CardNaming choice,
+        Rule sourceRule, OnomasticsData cards, string fixedSurname, List<string> diagnostics, string arrangement, Action release)
     {
         if (NativeNamingArrangement.TryUpgrade(type.Id, cards, sourceRule, choice, out var upgraded)) choice = upgraded;
-        var diagnostics = new List<string>(effective.Diagnostics) { "原版命名学" };
-        if (arrangement != null) diagnostics.Add("排列:" + arrangement);
+        string ruleId = sourceRule?.Id;
+        CandidateDraw Failure(NameFailureReason reason, string reference = null)
+        {
+            release?.Invoke();
+            return new CandidateDraw(reason, reference);
+        }
         var layout = cards.getFullTemplateData();
+        if (layout.FirstOrDefault(id => !AssetManager.onomastics_library.dict.ContainsKey(id)) is string missingGlyph)
+            return Failure(NameFailureReason.MissingGlyph, missingGlyph);
         var writing = request.Writing ?? sourceRule?.Writing ?? NameWriting.Original;
         bool explicitSeparators = choice.ExplicitSeparators || layout.Contains(NativeNamingGlyphs.RuleSeparator);
         var separator = sourceRule == null || explicitSeparators ? "" : NameEngine.Separator(sourceRule, writing);
@@ -363,20 +441,19 @@ internal static class NativeOnomastics
             IsWordGroup(id) && cards.isGroupEmpty(id) && !choice.Pools.ContainsKey(id))
             .Select(id => Role(id, choice)).Where(role => role != null).ToHashSet();
         if (required.Count != 0 && (sourceRule == null || !required.IsSubsetOf(sourceRule.Parts.Select(part => part.Id))))
-            return new NameResult(GenerationStatus.NoRule, null, null, diagnostics.Append("卡片绑定的规则或部件已不可用。"));
+            return Failure(NameFailureReason.UnavailableRule, choice.SourceRule);
         if (sourceRule?.Parts.Any(part => part.Provider != null && required.Contains(part.Id)) == true)
-            return new NameResult(GenerationStatus.NoRule, null, null, diagnostics.Append("卡片绑定的部件需要由模组提供。"));
+            return Failure(NameFailureReason.UnavailableRule, ruleId);
         try { Validate(cards, type.Id, choice); }
         catch (InvalidOperationException error)
         {
             diagnostics.Add(error.Message);
-            return new NameResult(GenerationStatus.NoRule, null, null, diagnostics);
+            return Failure(NameFailureReason.InvalidArrangement, error.Message);
         }
-        var parts = new Dictionary<string, string>();
         var pools = new Dictionary<string, Word[]>();
         foreach (var binding in choice.Pools.Where(binding => layout.Contains(binding.Key)))
         {
-            if (!effective.PoolIds.Contains(binding.Value))
+            if (!effective.HasPool(binding.Value))
             {
                 diagnostics.Add("文化词组 · " + binding.Key + " · 缺少 " + binding.Value);
                 continue;
@@ -386,11 +463,10 @@ internal static class NativeOnomastics
         }
         var sex = request.Inputs.TryGetValue("sex", out var value)
             ? Equals(value, "male") ? ActorSex.Male : ActorSex.Female : ActorSex.None;
-        request.FixedParts.TryGetValue(VanillaNames.Surname, out var fixedSurname);
         string surnameCard = SurnameCard(layout, choice);
         bool markedSurname = layout.Contains(NativeNamingGlyphs.KeepSurname);
         var scope = new DrawContext(cards, pools, choice, surnameCard, fixedSurname, request, effective, sourceRule, writing, diagnostics);
-        for (int i = 0; i < NameEngine.Attempts; i++)
+        return new CandidateDraw(i =>
         {
             string text = Isolate(unchecked((long)(request.Seed + (ulong)i * 104729)), () =>
             {
@@ -399,8 +475,13 @@ internal static class NativeOnomastics
                 try { return cards.generateName(sex); }
                 finally { _draw = previous; }
             });
-            if (scope.Missing || markedSurname && scope.SurnameIndex < 0 || text == OnomasticsData.DEFAULT_NAME_FAILED) continue;
-            parts.Clear();
+            if (scope.Missing || markedSurname && scope.SurnameIndex < 0 || text == OnomasticsData.DEFAULT_NAME_FAILED)
+            {
+                if (scope.MissingSurname && !diagnostics.Contains("姓氏词组没有可用候选。"))
+                    diagnostics.Add("姓氏词组没有可用候选。");
+                return (null, scope.Failure ?? (NameFailureReason.InvalidResult, null));
+            }
+            var parts = new Dictionary<string, string>();
             Dictionary<string, NamePartSource> sources = null;
             string join = "";
             var branch = cards.getCurrentSubgroup();
@@ -425,7 +506,7 @@ internal static class NativeOnomastics
                 text = NameEngine.Join(parts.Values, join);
             }
             else if (TryDescribeSeparatedName(branch, scope, text, parts,
-                hasInputGlyph || explicitSeparators && roles.Count != 0, out sources))
+                hasInputGlyph || request.FixedParts.Count != 0 || explicitSeparators && roles.Count != 0, out sources))
             {
                 text = string.Concat(parts.Values);
             }
@@ -433,9 +514,10 @@ internal static class NativeOnomastics
             {
                 string fragment = markedSurname ? scope.Surname : SurnameToken;
                 int index = markedSurname ? scope.SurnameOffset : text.IndexOf(SurnameToken, StringComparison.Ordinal);
-                if (scope.Surname == null || index < 0 || fragment.Length == 0 || index + fragment.Length > text.Length ||
+                if (scope.Surname == null || index < 0 || index + fragment.Length > text.Length ||
                     string.Compare(text, index, fragment, 0, fragment.Length, StringComparison.OrdinalIgnoreCase) != 0 ||
-                    !markedSurname && text.IndexOf(SurnameToken, index + fragment.Length, StringComparison.Ordinal) >= 0) continue;
+                    !markedSurname && text.IndexOf(SurnameToken, index + fragment.Length, StringComparison.Ordinal) >= 0)
+                    return (null, (NameFailureReason.InvalidResult, null));
                 if (index > 0) parts["before-surname"] = text.Substring(0, index);
                 parts[VanillaNames.Surname] = scope.Surname;
                 if (index + fragment.Length < text.Length)
@@ -446,12 +528,10 @@ internal static class NativeOnomastics
                         scope.CardSource(draw.Source, branch[scope.SurnameIndex], scope.SurnameIndex) };
             }
             else parts["name"] = text;
-            if (!Ids.Text(text, type.MaxLength) || text.Trim().Length < type.MinLength ||
-                (accept != null && !accept(text))) continue;
-            return new NameResult(GenerationStatus.Success, text, parts, diagnostics, parts.Keys, sources, join, branch.ToArray());
-        }
-        diagnostics.Add(scope.MissingSurname ? "姓氏词组没有可用候选。" : "命名卡片没有生成有效结果。");
-        return new NameResult(GenerationStatus.Exhausted, null, null, diagnostics);
+            var labels = arrangement == null ? new[] { "原版命名学" } : new[] { "原版命名学", "排列:" + arrangement };
+            return (new NameResult(GenerationStatus.Success, text, parts, diagnostics.Concat(labels), parts.Keys,
+                sources, join, branch.ToArray(), ruleId, arrangement), null);
+        }, release);
     }
 
     // 分隔符由原版执行。只在能复原实际输出时，把字形与文字片段关联起来。
@@ -541,6 +621,7 @@ internal static class NativeOnomastics
         internal readonly Dictionary<string, string> Draws = new();
         private readonly Dictionary<string, Word[]> _unusedProviders = new();
         private readonly Dictionary<string, string[]> _poolOptions = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, (NameFailureReason Reason, string Reference)> _poolFailures = new(StringComparer.Ordinal);
         private readonly List<string> _diagnostics;
         internal NamingRandom Random;
         internal string Surname;
@@ -548,6 +629,13 @@ internal static class NativeOnomastics
         internal int SurnameOffset;
         internal bool Missing;
         internal bool MissingSurname;
+        internal (NameFailureReason Reason, string Reference)? Failure;
+
+        private void MarkFailure(NameFailureReason reason, string reference)
+        {
+            Missing = true;
+            Failure ??= (reason, reference);
+        }
 
         internal DrawContext(OnomasticsData cards, Dictionary<string, Word[]> pools, CardNaming choice, string surnameCard, string surname,
             NameRequest request, EffectiveNames effective, Rule rule, NameWriting writing, List<string> diagnostics)
@@ -575,7 +663,7 @@ internal static class NativeOnomastics
         internal string RoleAt(int index, string group)
         {
             if (IsMarked(index) || group == SurnameCard) return VanillaNames.Surname;
-            var role = NativeNamingGlyphs.FindInput(group)?.Field ?? Role(group, Choice);
+            var role = Role(group, Choice) ?? NativeNamingGlyphs.FindInput(group)?.Field;
             return role == VanillaNames.Surname ? null : role;
         }
 
@@ -584,12 +672,19 @@ internal static class NativeOnomastics
 
         internal string PickInput(CultureNameGlyph glyph, int index)
         {
+            string fixedRole = Choice.Roles.TryGetValue(glyph.Id, out string mapped) ? mapped : glyph.Field;
+            if (Request.FixedParts.TryGetValue(fixedRole, out string fixedText))
+                return Record(glyph.Id, index, 0, fixedRole, fixedText, new NamePartSource("inherited"), surname: false);
             if (Choice.Roles.TryGetValue(glyph.Id, out string role) && Rule?.Parts.FirstOrDefault(part => part.Id == role) is Part bound &&
                 NativeNamingGlyphs.ForInput(Request.Type, bound) == glyph)
             {
                 string drawn = NameEngine.DrawPart(bound, Request, Effective, Writing, Draws, _unusedProviders,
                     null, null, ref Random, out var origin);
-                if (string.IsNullOrWhiteSpace(drawn)) Missing = true;
+                if (string.IsNullOrWhiteSpace(drawn))
+                {
+                    var problem = NameEngine.PartFailure(bound, origin, Effective);
+                    MarkFailure(problem.Reason, problem.Reference);
+                }
                 return Record(glyph.Id, index, 0, glyph.Field, drawn, origin, surname: false);
             }
             string text = Request.Inputs.TryGetValue(glyph.Field, out var value) ? NameEngine.Value(value) : null;
@@ -599,17 +694,12 @@ internal static class NativeOnomastics
                 string prefix = glyph.PoolPrefix;
                 string pool = prefix != null && Ids.Local(text)
                     ? NameEngine.PoolPrefix(prefix) + text : null;
-                var words = pool == null ? Array.Empty<Word>() : Effective.GetPool(pool);
-                if (words.Length == 0)
-                {
-                    pool = glyph.FallbackPool ?? glyph.PoolPrefix;
-                    words = Effective.GetPool(pool);
-                }
-                text = NameEngine.RenderWord(NameEngine.PickWord(words, ref Random), Writing, "pool", pool, out source);
+                text = NameEngine.DrawPool(pool, glyph.FallbackPool ?? prefix, Effective, Writing, ref Random, out source);
             }
             if (string.IsNullOrWhiteSpace(text))
             {
-                Missing = true;
+                if (source.Kind == "pool") MarkFailure(NameEngine.VocabularyFailure(Effective, source.Reference), source.Reference);
+                else MarkFailure(NameFailureReason.MissingInput, glyph.Field);
                 string issue = "命名卡片缺少输入或候选 · " + Request.Type + "/" + glyph.Field;
                 if (!_diagnostics.Contains(issue)) _diagnostics.Add(issue);
             }
@@ -628,12 +718,18 @@ internal static class NativeOnomastics
                 value = FixedSurname;
                 source = new NamePartSource("inherited");
             }
+            else if (!surname && role != null && role != VanillaNames.Surname && Request.FixedParts.TryGetValue(role, out value))
+                source = new NamePartSource("inherited");
             else if (HasPoolSelector(index))
             {
                 string pool = SelectPool(group);
-                var word = pool == null ? null : NameEngine.PickWord(Effective.GetPool(pool), ref Random);
-                value = NameEngine.RenderWord(word, Writing, "pool", pool, out source);
-                if (value == null) Missing = true;
+                value = NameEngine.DrawPool(pool, null, Effective, Writing, ref Random, out source);
+                if (value == null)
+                {
+                    var problem = _poolFailures.TryGetValue(group, out var recorded)
+                        ? recorded : (NameFailureReason.EmptyVocabulary, group);
+                    MarkFailure(problem.Item1, problem.Item2);
+                }
             }
             else if (Cards.getGroup(group)?.characters is { Length: > 0 } local && NativeNamingGlyphs.Find(group) == null)
             {
@@ -647,21 +743,27 @@ internal static class NativeOnomastics
                 {
                     value = NameEngine.DrawPart(part, Request, Effective, Writing, Draws, _unusedProviders,
                         null, null, ref Random, out source);
-                    if (value == null && !part.Optional) Missing = true;
+                    if (value == null && !part.Optional)
+                    {
+                        var problem = NameEngine.PartFailure(part, source, Effective);
+                        MarkFailure(problem.Reason, problem.Reference);
+                    }
                     return Record(group, index, offset, role, value, source, surname);
                 }
                 source = new NamePartSource("optional");
             }
             else if (Pools.TryGetValue(group, out var words))
             {
-                value = NameEngine.RenderWord(NameEngine.PickWord(words, ref Random), Writing, "pool", Choice.Pools[group], out source);
-                if (value == null) Missing = true;
+                value = NameEngine.RenderWord(NameEngine.PickWord(words, ref Random), Writing, "pool", Effective.PoolId(Choice.Pools[group]), out source);
+                if (value == null) MarkFailure(NameFailureReason.EmptyVocabulary, Choice.Pools[group]);
             }
             else
             {
                 var terms = Cards.getGroup(group)?.characters;
                 value = terms is { Length: > 0 } ? terms.GetRandom() : null;
                 source = new NamePartSource("culture");
+                if (value == null && Choice.Pools.TryGetValue(group, out string missing))
+                    MarkFailure(NameFailureReason.MissingVocabulary, missing);
             }
             return Record(group, index, offset, role, value, source, surname);
         }
@@ -681,11 +783,20 @@ internal static class NativeOnomastics
                 {
                     string pool = Effective.ResolvePoolToken(alias, out bool ambiguous);
                     if (ambiguous)
+                    {
                         _diagnostics.Add($"词库字形 · 「{alias}」指向多个词库。请填写作者/词库。");
+                        _poolFailures.TryAdd(group, (NameFailureReason.AmbiguousVocabulary, alias));
+                    }
                     else if (pool == null)
+                    {
                         _diagnostics.Add($"词库字形 · 「{alias}」未登记。");
+                        _poolFailures.TryAdd(group, (NameFailureReason.MissingVocabulary, alias));
+                    }
                     else if (Effective.GetPool(pool).Length == 0)
+                    {
                         _diagnostics.Add($"词库字形 · 「{alias}」在当前语言没有可用词条。");
+                        _poolFailures.TryAdd(group, (NameFailureReason.EmptyVocabulary, pool));
+                    }
                     else pools.Add(pool);
                 }
                 _poolOptions[group] = options = pools.ToArray();
@@ -702,7 +813,11 @@ internal static class NativeOnomastics
             Surname = value;
             SurnameIndex = index;
             SurnameOffset = offset;
-            if (string.IsNullOrEmpty(value) && FixedSurname == null) Missing = MissingSurname = true;
+            if (string.IsNullOrEmpty(value) && FixedSurname == null)
+            {
+                MarkFailure(NameFailureReason.EmptyVocabulary, group);
+                MissingSurname = true;
+            }
             return group == SurnameCard ? SurnameToken : value ?? "";
         }
     }
@@ -717,6 +832,7 @@ internal static class NativeOnomastics
             scope.Surname = null;
             scope.SurnameIndex = scope.SurnameOffset = -1;
             scope.Missing = scope.MissingSurname = false;
+            scope.Failure = null;
             scope.Picked.Clear();
             scope.Draws.Clear();
         }

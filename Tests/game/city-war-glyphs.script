@@ -218,8 +218,8 @@ await CheckPreview(warName);
 var warOrder = new[] { attacker, "group_3", defender, "group_2" };
 Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(warOrder), "The arranged cards did not match the preview.");
 var worldConfig = service.GetWorld();
-var warCards = worldConfig.Cultures[culture.id].Cards[warType];
-Check(warCards.Template == tab.getOnomasticsData().getShortTemplate() && warCards.DraftTemplate == null,
+var warEdit = worldConfig.Cultures[culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith(warType + "/")).Value;
+Check(warEdit.Glyphs.SequenceEqual(warOrder) && warEdit.Groups["group_2"] == "之战",
     "The war arrangement was not applied.");
 var ab = new Dictionary<string, object> { ["kind"] = "normal", ["origin"] = kingdom.name, ["attacker"] = kingdom.name };
 var missing = service.Generate(new NameRequest(warType, 0, culture.id, child.id, ab));

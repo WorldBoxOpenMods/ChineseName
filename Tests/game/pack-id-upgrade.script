@@ -1,0 +1,147 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string cityType = "worldbox:city", riverType = "tests:river-name", packId = "tests:semantic-city";
+const string oldPool = "tests:old-river", newPool = "tests:river", green = "tests:green-river", mist = "tests:mist-river";
+void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+    for (int frame = 0; frame < 10; frame++) await Game.NextFrame();
+}
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+service.RegisterType(new NameType(riverType, "江河"));
+var tile = world.tiles_list.First(cell => cell.Type.ground && cell.zone.isGoodForNewCity());
+var founder = world.units.createNewUnit("human", tile);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var language = world.languages.newLanguage(founder, true);
+founder.joinLanguage(language);
+var realm = world.kingdoms.makeNewCivKingdom(founder);
+realm.setName("东国");
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists(); world.kingdoms.checkLists();
+long cultureId = culture.id, languageId = language.id;
+var file = Path.Combine(WorldNamingStore.PackageDirectory, "test-semantic-city.naming.json");
+void WritePack(int version, bool rename)
+{
+    string part = version == 1 ? "root" : "river";
+    string pool = version == 1 ? oldPool : newPool;
+    CardNaming Cards() => new()
+    {
+        Enabled = true, Template = version == 1 ? "01|0:江;1:府" : "10|0:驿;1:溪",
+        Roles = new() { [version == 1 ? "group_1" : "group_2"] = part, [version == 1 ? "group_2" : "group_1"] = "suffix" }
+    };
+    var pack = new NamingPack
+    {
+        Id = packId, Format = 1, Version = version, UseAsLanguageDefault = true,
+        Rules = new() {
+            [cityType] = new() { new() { Id = "river-town", Priority = 1000, NativeCards = Cards(),
+                Parts = new() { new() { Id = part, Literal = "江" }, new() { Id = "suffix", Literal = "府" } } } },
+            [riverType] = new() { new() { Id = "river", Parts = new() { new() { Id = "name", Pool = oldPool } } } }
+        },
+        Arrangements = new() { [cityType] = new() { new() { Id = "by-origin", Cards = Cards(),
+            Expression = new() { Children = new() { new() { Field = "origin", Values = new() { "东国" } } } } } } },
+        Words = new() { new() { Id = green, Text = "澄江" }, new() { Id = mist, Text = "雾江" } },
+        Pools = new() { [pool] = new() { [green] = 1, [mist] = 1 } },
+        WordGroups = new() { ["clear-rivers"] = new() { Pool = pool, Words = new() { green } } }
+    };
+    if (version > 1) pack.PoolRenames[oldPool] = newPool;
+    if (rename) pack.PartRenames[cityType] = new() { ["root"] = "river" };
+    File.WriteAllText(file, NamingJson.Write(pack));
+}
+WritePack(1, false);
+Check(WorldNamingStore.ReloadPacks().Count == 0, "The first pack could not load.");
+var state = service.GetWorld();
+state.EnabledPacks.Add(packId);
+state.Cultures[cultureId] = new CultureNaming { Pack = packId };
+state.Languages[languageId] = new LanguageNaming { Pack = packId, Pools = new() {
+    [oldPool] = new() { ExcludeIds = new() { mist }, Bias = new() { [green] = 2 } } },
+    GroupPreferences = new() { [oldPool] = new() { [packId + "/clear-rivers"] = 1 } } };
+WorldNamingStore.Apply(state);
+NameResult Generate(string type, bool withOrigin = false) => service.Generate(new NameRequest(type, 1, cultureId, languageId,
+    withOrigin ? new Dictionary<string, object> { ["origin"] = "东国" } : null));
+
+World.world.console.Hide();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+await Frames();
+tab.loadTemplate("01|0:临川;1:府");
+await Frames();
+Check(Generate(cityType).Text == "临川府", "The native default group edit did not apply.");
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.by-origin").onClick.Invoke();
+await Frames();
+tab.loadTemplate("01|0:澄江;1:府");
+await Frames();
+Check(Generate(cityType, true).Text == "澄江府", "The native conditional group edit did not apply.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+ScrollWindow.showWindow("world_info");
+await Frames();
+var info = ScrollWindow.getCurrentWindow();
+info.tabs.showTab("chinesename_packs");
+await Frames();
+async System.Threading.Tasks.Task Refresh()
+{
+    info.GetComponentsInChildren<KeyValueField>().Single(row => row.name == "RescanPackages").value.GetComponent<Button>().onClick.Invoke();
+    await Frames();
+}
+WritePack(2, false);
+await Refresh();
+Check(Generate(cityType).Text == "溪驿" && Generate(cityType, true).Text == "溪驿",
+    "An unmapped part leaked text into the new slot.");
+Check(info.GetComponentsInChildren<KeyValueField>().Single(row => row.name == "PackageStatus").name_text.text.Contains("引用提示"),
+    "The native package page did not flag the pending group edits.");
+WritePack(3, true);
+await Refresh();
+Check(Generate(cityType).Text == "临川驿" && Generate(cityType, true).Text == "澄江驿",
+    "Declaring the migration did not restore both player edits.");
+var river = Generate(riverType);
+Check(river.Text == "澄江" && river.Sources["name"].Reference == newPool &&
+    service.GetWorld().Languages[languageId].Pools[oldPool].Bias[green] == 2, "The old pool reference or edit was not carried to the new pool.");
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedMetas.selected_language = language;
+ScrollWindow.showWindow("language");
+var languageWindow = ScrollWindow.getCurrentWindow();
+languageWindow.tabs.showTab("chinesename_lexicons");
+await Frames();
+async System.Threading.Tasks.Task ClickLanguageRow(string id)
+{
+    languageWindow.GetComponentsInChildren<KeyValueField>().Single(row => row.name == id).value.GetComponent<Button>().onClick.Invoke();
+    await Frames();
+}
+await ClickLanguageRow("LexiconPool." + newPool);
+Check(languageWindow.GetComponentsInChildren<KeyValueField>().Any(row => row.name == "RestoreWord." + mist) &&
+    languageWindow.GetComponentsInChildren<KeyValueField>().Any(row => row.name == "LexiconPreference"),
+    "The language page lost the inherited word exclusion or group preference.");
+await ClickLanguageRow("LexiconWord." + green);
+await ClickLanguageRow("IncreaseWord." + green);
+var updated = service.GetWorld().Languages[languageId];
+Check(updated.Pools[newPool].Bias[green] == 4 && updated.Pools[newPool].ExcludeIds.Contains(mist) &&
+    updated.GroupPreferences[newPool][packId + "/clear-rivers"] == 1, "Editing the renamed pool lost earlier settings.");
+var city = world.cities.buildNewCity(founder, tile.zone);
+world.cities.checkLists();
+Check(city.name == "澄江驿", "The city creation entry did not use the upgraded conditional layout.");
+string folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "pack-id-upgrade");
+Directory.CreateDirectory(folder);
+long cityId = city.id;
+SaveManager.saveWorldToDirectory(folder);
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && World.world.cities.get(cityId).name == "澄江驿" && Generate(cityType).Text == "临川驿" &&
+    Generate(riverType).Text == "澄江" && service.GetWorld().Languages[languageId].Pools[newPool].Bias[green] == 4,
+    "Readback changed the migrated layout or vocabulary.");
+return new { regular = Generate(cityType).Text, conditional = Generate(cityType, true).Text, pool = river.Sources["name"].Reference };

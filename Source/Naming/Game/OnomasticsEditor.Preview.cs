@@ -20,44 +20,33 @@ public sealed partial class OnomasticsEditor
         }
         if (page.PreviewRevision == page.RenderedRevision) return;
         page.RenderedRevision = page.PreviewRevision;
-        var request = PartPreviewRequest(type, culture, page, rule, choice);
-        CollectPreview(service, request, PartsWorld(type, culture, rule, choice), rule.Id, page);
+        var request = PartPreviewRequest(type, culture, page, rule);
+        CollectPreview(service, request, PartsWorld(type, culture, rule, choice), page);
     }
 
-    private static NameRequest PartPreviewRequest(NameType type, Culture culture, PartsPage page, Rule rule, CardNaming choice)
+    private static NameRequest PartPreviewRequest(NameType type, Culture culture, PartsPage page, Rule rule) =>
+        PreviewRequest(type, culture, page, PreviewInputs(type, page, rule));
+
+    private static Dictionary<string, object> PreviewInputs(NameType type, PartsPage page, Rule rule = null)
     {
         var inputs = new Dictionary<string, object>();
         foreach (var field in type.Fields.Values)
         {
             string text = SampleValue(page, rule, field);
             if (string.IsNullOrWhiteSpace(text)) continue;
-            if (field.Kind == InputKind.Integer && int.TryParse(text, out int number)) inputs[field.Id] = number;
-            else if (field.Kind == InputKind.Flag && bool.TryParse(text, out bool flag)) inputs[field.Id] = flag;
-            else inputs[field.Id] = text;
+            if (ArrangementExamples.Input(field, text) is { } value) inputs[field.Id] = value;
         }
-        string surname = rule.Inheritance switch
-        {
-            SurnameOrder.Father => page.FatherSurname ?? page.MotherSurname,
-            SurnameOrder.Mother => page.MotherSurname ?? page.FatherSurname,
-            SurnameOrder.Random => (page.Seed & 1) == 0 ? page.FatherSurname ?? page.MotherSurname : page.MotherSurname ?? page.FatherSurname,
-            _ => null
-        };
-        if (UsesCards(choice, rule) && choice.SourceRule == null)
-            surname = choice.Inheritance switch
-            {
-                SurnameOrder.Father => page.FatherSurname ?? page.MotherSurname,
-                SurnameOrder.Mother => page.MotherSurname ?? page.FatherSurname,
-                SurnameOrder.Random => surname,
-                _ => null
-            };
-        var fixedParts = surname == null ? null : new Dictionary<string, string> { [VanillaNames.Surname] = surname };
-        return new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage, inputs, fixedParts);
+        return inputs;
     }
 
-    private static void CollectPreview(NamingService service, NameRequest request, WorldNaming world, string rule, PartsPage page)
+    private static NameRequest PreviewRequest(NameType type, Culture culture, PartsPage page, Dictionary<string, object> inputs) =>
+        new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage, inputs)
+            .WithParentSurnames(page.FatherSurname, page.MotherSurname);
+
+    private static void CollectPreview(NamingService service, NameRequest request, WorldNaming world, PartsPage page)
     {
         page.PreviewSamples.Clear();
-        using var draws = service.PreviewRule(request, world, rule, PreviewDraws).GetEnumerator();
+        using var draws = service.PreviewSamples(request, world, PreviewDraws).GetEnumerator();
         draws.MoveNext();
         page.Result = draws.Current;
         if (!IsPreviewName(page.Result)) return;
@@ -70,23 +59,23 @@ public sealed partial class OnomasticsEditor
         }
     }
 
-    private static bool IsPreviewName(NameResult result) =>
-        result?.Success == true && !result.Diagnostics.Contains("中文规则回退");
+    private static bool IsPreviewName(NameResult result) => result?.Success == true;
 
     private static string SampleValue(PartsPage page, Rule rule, InputField field)
     {
-        if (page.Samples.TryGetValue(field.Id, out string value) || rule.When.TryGetValue(field.Id, out value)) return value;
+        if (page.Samples.TryGetValue(field.Id, out string value) || rule?.When.TryGetValue(field.Id, out value) == true) return value;
         return field.Example == null ? "" : NameEngine.Value(field.Example);
     }
 
     private WorldNaming PartsWorld(NameType type, Culture culture, Rule rule, CardNaming choice)
     {
-        var world = NamingApi.Current.GetWorld();
-        if (!world.Cultures.TryGetValue(culture.id, out var settings)) world.Cultures[culture.id] = settings = new CultureNaming();
+        var world = NamingApi.Current.ActiveWorld;
+        var settings = world.Cultures.TryGetValue(culture.id, out var previous) ? NamingJson.Copy(previous) : new CultureNaming();
         var draft = DraftCulture(culture.id);
         string key = RuleKey(type, rule);
         if (draft.Rules.TryGetValue(key, out var edit)) settings.Rules[key] = NamingJson.Copy(edit);
         else settings.Rules.Remove(key);
+        settings.DefaultArrangementEdits = NamingJson.Copy(draft.DefaultArrangementEdits);
         settings.Pack = draft.Pack;
         if (choice != null)
             settings.Cards[type.Id] = NamingJson.Copy(choice);
@@ -97,10 +86,13 @@ public sealed partial class OnomasticsEditor
             else
             {
                 cards.Inheritance = rule.Inheritance;
-                cards.DraftTemplate = NativeNamingTab.DraftTemplate(culture.id, type.Id) ?? cards.DraftTemplate;
+                string saved = cards.DraftTemplate ?? cards.Template;
+                using var stored = saved == null ? null : NativeNamingArrangement.ReadTemplate(saved);
+                if (saved == null || stored != null)
+                    cards.DraftTemplate = NativeNamingTab.DraftTemplate(culture.id, type.Id) ?? cards.DraftTemplate;
             }
         }
-        return world;
+        return world.WithCulture(culture.id, settings);
     }
 
     private void ApplyParts(NameType type, Culture culture, PartsPage page, Rule rule, CardNaming choice)
@@ -108,7 +100,9 @@ public sealed partial class OnomasticsEditor
         var service = NamingApi.Current;
         string key = RuleKey(type, rule);
         var world = PartsWorld(type, culture, rule, choice);
-        var effective = service.Inspect(new NameRequest(type.Id, page.Seed, culture.id, page.ReferenceLanguage), world);
+        var request = service.PrepareContext(PartPreviewRequest(type, culture, page, rule)) ??
+            throw new InvalidOperationException("当前预览情境无效。");
+        var effective = service.Inspect(request, world);
         if (effective.Diagnostics.Any(issue => (issue.StartsWith("invalid-edit:", StringComparison.Ordinal) ||
                 issue.StartsWith("missing-part:", StringComparison.Ordinal)) && issue.IndexOf(key, StringComparison.Ordinal) >= 0))
             throw new InvalidOperationException("请修正当前规则的部件设置。");
@@ -118,15 +112,40 @@ public sealed partial class OnomasticsEditor
         {
             if (applied.SourceRule != null && applied.SourceRule != rule.Id)
                 throw new InvalidOperationException("请先切换到卡片绑定的规则再应用。");
-            if (page.Result == null || !page.Result.Success || page.Result.Diagnostics.Contains("中文规则回退"))
-                throw new InvalidOperationException("请修正字形排列后再应用。");
-            NativeOnomastics.Apply(culture, type.Id, applied, () => WorldNamingStore.Apply(world));
-            DraftCulture(culture.id).Cards[type.Id] = NamingJson.Copy(applied);
+            var validation = NativeOnomastics.ValidateDefault(request, effective, culture, applied);
+            if (!validation.Success)
+            {
+                var detail = validation.Diagnostics.FirstOrDefault(issue => issue.StartsWith("词库字形", StringComparison.Ordinal));
+                throw new InvalidOperationException(detail ?? PreviewFallback(validation) ?? "请修正字形排列后再应用。");
+            }
+            var live = service.ActiveWorld;
+            var legacy = NativeOnomastics.Selection(live, culture, type.Id);
+            using var cards = NativeOnomastics.Read(culture, type.Id, applied);
+            var editedRule = effective.AvailableRules.First(candidate => candidate.Id == rule.Id);
+            string editKey = CultureNaming.DefaultArrangementKey(type.Id, effective.ArrangementBasis, rule.Id);
+            settings.DefaultArrangementEdits.TryGetValue(editKey, out var previous);
+            var edit = legacy?.Enabled == true ? null :
+                NativeNamingArrangement.CompareDefault(cards, type.Id, editedRule, effective, previous);
+            if (edit == null)
+            {
+                NativeOnomastics.Apply(culture, type.Id, applied, () => WorldNamingStore.SetCulture(culture.id, settings));
+                DraftCulture(culture.id).Cards[type.Id] = NamingJson.Copy(applied);
+            }
+            else
+            {
+                var draft = DraftCulture(culture.id);
+                if (edit.IsEmpty) settings.DefaultArrangementEdits.Remove(editKey);
+                else settings.DefaultArrangementEdits[editKey] = edit;
+                settings.Cards[type.Id] = new CardNaming();
+                WorldNamingStore.SetCulture(culture.id, settings);
+                draft.Cards = NamingJson.Copy(settings.Cards);
+                draft.DefaultArrangementEdits = NamingJson.Copy(settings.DefaultArrangementEdits);
+            }
         }
         else
         {
             if (applied != null) applied.DraftTemplate = null;
-            WorldNamingStore.Apply(world);
+            WorldNamingStore.SetCulture(culture.id, settings);
             if (applied != null) DraftCulture(culture.id).Cards[type.Id] = NamingJson.Copy(applied);
         }
         if (WorldNamingStore.HasSavedDraft()) SavePartsDraft();

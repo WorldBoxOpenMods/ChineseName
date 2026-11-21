@@ -1,0 +1,8 @@
+{
+  "name": "中文名 · 史书事件",
+  "author": "ChineseName",
+  "version": "1.0.0",
+  "GUID": "ChineseName.HistoryEvents",
+  "Dependencies": ["CHINESENAME"],
+  "description": "让史书记载战争、叛乱、迁徙和建城。装有文化外称时，可引用作者文化的外称。"
+}

@@ -32,7 +32,8 @@ internal sealed class NativePackagePage : MonoBehaviour
         }
         Bind(_reassign, ToggleReassignment, ReassignmentHint);
         Bind(_rescan, Rescan, scanHint);
-        _status.gameObject.SetActive(false);
+        var storage = WorldNamingStore.StorageWarnings();
+        Status(storage.Count == 0 ? null : "有 " + storage.Count + " 条命名设置待恢复", storage.Count == 0 ? null : string.Join("\n", storage.Take(10)));
         Refresh();
     }
 
@@ -74,20 +75,19 @@ internal sealed class NativePackagePage : MonoBehaviour
         Show("");
     }
 
-    private void ConfirmReassignment(MapStats map, string pack, string label)
+    private void ConfirmReassignment(MapStats map, string pack, string label, bool renameWorld = false, bool repairOnly = false)
     {
         Clear(_reassignment);
-        bool renameWorld = false;
-        bool repairOnly = false;
-        Row(_reassignment, "WorldNamingRules", label, "仅重配规则", () => Apply(renew: false),
+        Row(_reassignment, "WorldNamingRules", label, "仅重配规则", ApplyRules,
             tooltip: "重置本世界各文化的原版类别排列、规则和预设，保留各语言的用词设置。");
         var worldTitle = Row(_reassignment, "WorldNamingTitles", "世界与造物主", "保留");
         Bind(worldTitle, ToggleTitles, "开启后会重取这两个名称，原版存档没有记录它们是否经过手动编辑。");
         var scope = Row(_reassignment, "WorldNamingScope", "重取范围", "全部自动命名");
         Bind(scope, ToggleScope, "可只修英文名和空白名，同时保护手改名。所选预设仍会用于重配文化规则。");
-        Row(_reassignment, "WorldNamingObjects", "已有对象", "重配并重取", () => Apply(renew: true),
-            tooltip: "重配文化规则，然后重取自动命名对象。保留已标记的手改名和已有姓氏。");
+        Row(_reassignment, "WorldNamingObjects", "已有对象", "预演重取", Preview,
+            tooltip: "先看国家和联盟的新名字。确认后重配规则并重取所选范围内的自动名称。");
         Row(_reassignment, "WorldNamingCancel", "", "取消", CloseReassignment);
+        UpdateScope();
         RebuildLayout();
 
         void ToggleTitles()
@@ -99,30 +99,93 @@ internal sealed class NativePackagePage : MonoBehaviour
         void ToggleScope()
         {
             repairOnly = !repairOnly;
-            SetActionText(scope, repairOnly ? "仅英文和空白" : "全部自动命名");
-            worldTitle.gameObject.SetActive(!repairOnly);
-            if (!repairOnly)
-                Bind(worldTitle, ToggleTitles, "开启后会重取这两个名称，原版存档没有记录它们是否经过手动编辑。");
+            UpdateScope();
             RebuildLayout();
         }
 
-        void Apply(bool renew)
+        void UpdateScope()
+        {
+            SetActionText(scope, repairOnly ? "仅英文和空白" : "全部自动命名");
+            SetActionText(worldTitle, renameWorld ? "重取" : "保留");
+            worldTitle.gameObject.SetActive(!repairOnly);
+            if (!repairOnly)
+                Bind(worldTitle, ToggleTitles, "开启后会重取这两个名称，原版存档没有记录它们是否经过手动编辑。");
+        }
+
+        void ApplyRules()
         {
             CloseReassignment();
             if (!ReferenceEquals(World.world.map_stats, map)) return;
             try
             {
                 WorldNamingReassignment.ApplyStyle(pack);
-                if (renew)
-                {
-                    var result = WorldNamingReassignment.RenameExisting(renameWorld, repairOnly);
-                    if (renameWorld && !repairOnly) GetComponentInParent<WorldWindow>()?.nameInput.setText(map.name);
-                    Status("已改名 " + result.Changed + (result.Failed == 0 ? "" : " · 未取到新名 " + result.Failed));
-                }
-                else Status("已重配文化命名规则");
+                Status("已重配文化命名规则");
             }
             catch (InvalidOperationException error) { Status(error.Message); }
             RebuildLayout();
+        }
+
+        void Preview()
+        {
+            if (!ReferenceEquals(World.world.map_stats, map)) { CloseReassignment(); return; }
+            try
+            {
+                var plan = new WorldNamingReassignment.Plan(pack, renameWorld, repairOnly);
+                Clear(_reassignment);
+                var countries = plan.Countries.ToArray();
+                var alliances = plan.Alliances.ToArray();
+                var cities = plan.Cities.ToArray();
+                var actors = plan.Actors.ToArray();
+                var wars = plan.Wars.ToArray();
+                Row(_reassignment, "WorldNamingPreviewSummary", "国家 " + countries.Length + " · 联盟 " + alliances.Length,
+                    "确认重取", Commit, tooltip: "确认后应用本次预演的全部结果。");
+                Row(_reassignment, "WorldNamingPreviewSubjects", "城市 " + cities.Length + " · 生物 " + actors.Length + " · 战争 " + wars.Length,
+                    plan.Others > 0 ? "其他 " + plan.Others : "");
+                Row(_reassignment, "WorldNamingPreviewProtected", "保留手改名 " + plan.Manual, "未取到新名 " + plan.Failed);
+                for (int i = 0; i < Math.Min(3, countries.Length); i++)
+                {
+                    var country = countries[i];
+                    Example("WorldNamingPreviewKingdom." + i, country.Before, country.Name + "（" + country.Short + "）");
+                }
+                for (int i = 0; i < Math.Min(3, alliances.Length); i++)
+                    Example("WorldNamingPreviewAlliance." + i, alliances[i].Before, alliances[i].Name);
+                ShowExample("City", cities);
+                ShowExample("Actor", actors);
+                ShowExample("War", wars);
+                Row(_reassignment, "WorldNamingPreviewBack", "", "返回", () => ConfirmReassignment(map, pack, label, renameWorld, repairOnly));
+                RebuildLayout();
+
+                void ShowExample(string type, (string Before, string Name)[] changes)
+                {
+                    if (changes.Length == 0) return;
+                    var (before, name) = changes[0];
+                    Example("WorldNamingPreview" + type + ".0", before, name);
+                }
+
+                void Commit()
+                {
+                    try
+                    {
+                        var result = plan.Apply();
+                        CloseReassignment();
+                        if (renameWorld && !repairOnly) GetComponentInParent<WorldWindow>()?.nameInput.setText(map.name);
+                        Status("已改名 " + result.Changed + (result.Failed == 0 ? "" : " · 未取到新名 " + result.Failed));
+                    }
+                    catch (InvalidOperationException error)
+                    {
+                        ConfirmReassignment(map, pack, label, renameWorld, repairOnly);
+                        Status(error.Message);
+                    }
+                    RebuildLayout();
+                }
+            }
+            catch (InvalidOperationException error) { Status(error.Message); }
+        }
+
+        void Example(string id, string before, string after)
+        {
+            var row = Row(_reassignment, id, string.IsNullOrWhiteSpace(before) ? "（空白）" : before, after);
+            row.name_text.supportRichText = row.value.supportRichText = false;
         }
     }
 
@@ -141,7 +204,9 @@ internal sealed class NativePackagePage : MonoBehaviour
     private void Rescan()
     {
         var errors = WorldNamingStore.ReloadPacks();
-        Status(errors.Count == 0 ? "命名包列表已刷新" : string.Join(" · ", errors));
+        var warnings = WorldNamingStore.StorageWarnings().Concat(NamingPackReferences.Inspect(NamingApi.Current)).ToArray();
+        Status(errors.Count == 0 ? warnings.Length == 0 ? "命名包列表已刷新" : "命名包已刷新 · 引用提示 " + warnings.Length + " 项"
+            : string.Join(" · ", errors), warnings.Length == 0 ? null : string.Join("\n", warnings.Take(10)));
         Refresh();
     }
 
@@ -202,9 +267,11 @@ internal sealed class NativePackagePage : MonoBehaviour
         Refresh();
     }
 
-    private void Status(string message)
+    private void Status(string message, string details = null)
     {
         _status.name_text.text = message ?? "";
+        _status.on_hover_value = null;
+        if (details != null) Bind(_status, null, details);
         _status.gameObject.SetActive(message != null);
     }
 }

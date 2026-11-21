@@ -42,9 +42,9 @@ Check(settings.LanguageParents[ids[2]] == ids[1] && founder.language.id == ids[2
       NamingJson.Write(child.Pools) == NamingJson.Write(parent.Pools), "The language preferences or inherited edits were lost.");
 var cityOrder = new[] { "group_1", "chinesename_as_pool", "group_2" };
 var warOrder = new[] { "chinesename_war_attacker", "group_3", "chinesename_war_defender", "group_2" };
-var cityCards = culture.getOnomasticData(MetaType.City);
-Check(cityCards.getFullTemplateData().SequenceEqual(cityOrder) && cityCards.getGroupString("group_2") == "府" &&
-      cityCards.getGroupString("group_1").Split(' ').ToHashSet().SetEquals(new[] { "江河地名", "港口地名", "关塞地名" }),
+var cityEdit = settings.Cultures[culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith("worldbox:city/")).Value;
+Check(cityEdit.Glyphs.SequenceEqual(cityOrder) && cityEdit.Groups["group_2"] == "府" &&
+      cityEdit.Groups["group_1"].Split(' ').ToHashSet().SetEquals(new[] { "江河地名", "港口地名", "关塞地名" }),
       "The literal suffix or the aliases could not be loaded.");
 var freshNames = Enumerable.Range(0, 128).Select(seed => founder.generateName(MetaType.City, seed)).ToHashSet();
 Check(freshNames.All(name => name.EndsWith("府") && name != "白湾府") && freshNames.Contains("澄江府") &&
@@ -72,7 +72,7 @@ Check(cityPreview.EndsWith("府") && cityPreview != "白湾府", "The loaded cit
 await Select("war");
 var warPreview = shell.transform.FindRecursive("PreviewName").GetComponent<Text>().text;
 Check(warPreview == warName && tab.getOnomasticsData().getFullTemplateData().SequenceEqual(warOrder) &&
-      tab.getOnomasticsData().getShortTemplate() == settings.Cultures[culture.id].Cards[warType].Template,
+      tab.getOnomasticsData().getGroupString("group_2") == "之战",
       "The saved war glyphs did not reopen in the native editor.");
 var freshWar = world.wars.newWar(kingdom, rival, AssetManager.war_types_library.get("normal"));
 Check(freshWar.name == warName, "New war naming after loading lost its participants.");

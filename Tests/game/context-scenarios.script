@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string type = "tests:artifact-scenario";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+}
+
+Config.paused = true;
+var world = World.world;
+var tile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+actor.joinLanguage(world.languages.newLanguage(actor, true));
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+var service = NamingApi.Current;
+var pack = new NamingPack { Id = "tests:artifact-scenario-default", Format = 1, Supplemental = true };
+pack.Rules[type] = new List<Rule> { new()
+{
+    Id = "default", Parts = new List<Part> { new() { Id = "stem", Input = "stem" } },
+    NativeCards = new CardNaming { Enabled = true, Template = "\uE2DC|" }
+} };
+service.RegisterType(new NameType(type, "试验器物", new[]
+{
+    new Chinese_Name.Naming.InputField("form", InputKind.Text, example: "ball"),
+    new Chinese_Name.Naming.InputField("stem", InputKind.Text, required: true)
+}), pack);
+service.RegisterContext(type, input =>
+{
+    if (!input.TryGetValue("form", out var form)) return false;
+    if (Equals(form, "ball")) input["stem"] = "器珠";
+    else if (Equals(form, "blade")) input["stem"] = "器刃";
+    else return false;
+    return true;
+});
+service.RegisterCultureOnomastics(type);
+service.RegisterCultureCondition(type, "form", "形态", new Dictionary<string, string> { ["ball"] = "球状", ["blade"] = "刃形" });
+service.RegisterCultureGlyph(type, "tests:artifact-stem", '\uE2DC', "stem", "器物词根", "ui/Icons/iconBooks");
+var worldSettings = service.GetWorld();
+worldSettings.Cultures[culture.id] = new CultureNaming
+{
+    Arrangements =
+    {
+        [type] = new List<ConditionalArrangement> { new()
+        {
+            Id = "blade",
+            Cards = new CardNaming { Enabled = true, Template = "\uE2DC0|0:术" },
+            Expression = new ArrangementCondition { Children = new List<ArrangementCondition>
+            {
+                new() { Field = "form", Test = ArrangementTest.Registered, Values = new List<string> { "blade" } },
+                new() { Field = "stem", Test = ArrangementTest.Equal, Values = new List<string> { "器刃" } }
+            } }
+        } }
+    }
+};
+WorldNamingStore.Apply(worldSettings);
+NameRequest Request(string form) => new(type, 0, culture.id, actor.language.id, new Dictionary<string, object> { ["form"] = form });
+var actual = service.Generate(Request("blade"));
+Check(actual.Text == "器刃术" && actual.ArrangementId == "blade" &&
+    service.Generate(Request("invalid")).Status == GenerationStatus.InvalidInput, "Runtime input construction did not take effect.");
+
+world.console.Hide();
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_mod_" + type).toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+string Preview() => window.GetComponentsInChildren<Text>().First(label => label.name == "PreviewName").text;
+Check(Preview() == "器珠", "The default preview did not have its derived word stem.");
+window.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.blade").onClick.Invoke();
+await Frames();
+Check(Preview() == actual.Text, "Conditional editor and runtime built different contexts: " + Preview());
+return new { defaultPreview = "器珠", conditionalPreview = Preview(), actual = actual.Text };

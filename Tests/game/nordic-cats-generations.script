@@ -91,8 +91,8 @@ await Edit("unit", $"2{pick}{separator}0{pick}{inherit}|0:灵猫地名词根;2:�
 await Edit("city", $"0{pick}1|0:灵猫地名词根;1:湾");
 await Edit("kingdom", $"0{pick}1|0:灵猫地名词根;1:领");
 var applied = service.GetWorld();
-Check(applied.Cultures[culture.id].Cards.Count == 3, "The three original categories did not commit their edits.");
-var personCards = culture.getOnomasticData(MetaType.Unit).getShortTemplate();
+Check(applied.Cultures[culture.id].DefaultArrangementEdits.Count == 3, "The three original categories did not commit their edits.");
+var personEdits = NamingJson.Write(applied.Cultures[culture.id].DefaultArrangementEdits);
 founder.generateNewName();
 mother.generateNewName();
 var kingdom = world.kingdoms.makeNewCivKingdom(founder);
@@ -142,10 +142,10 @@ for (int generation = 1; generation <= 3; generation++)
     var kitten = BabyMaker.makeBaby(founder, mother, ActorSex.Female, pTile: tile);
     kitten.setCulture(culture);
     kitten.joinLanguage(child);
-    kitten.data.get(surnameKey, out string surname);
     string name = kitten.getName();
+    kitten.data.get(surnameKey, out string surname);
     Check(surname == inherited && name.EndsWith("·" + inherited) && !name.StartsWith("白袜") &&
-        culture.getOnomasticData(MetaType.Unit).getShortTemplate() == personCards, "The new speaker lost her inherited style.");
+        NamingJson.Write(afterWorld.Cultures[culture.id].DefaultArrangementEdits) == personEdits, "The new speaker lost her inherited style.");
     var result = service.Generate(new NameRequest(person, (ulong)generation, culture.id, child.id, cultureInputs));
     Check(result.Sources["given"].Reference == given && result.Sources["surname"].Reference == place,
         "Actual generation left the blended pools.");

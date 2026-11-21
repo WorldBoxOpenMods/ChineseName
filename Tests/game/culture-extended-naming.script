@@ -12,6 +12,8 @@ async System.Threading.Tasks.Task Frames(int count = 12)
     for (int i = 0; i < count; i++) await Game.NextFrame();
 }
 var world = World.world;
+Config.paused = true;
+ScrollWindow.hideAllEvent(pWithAnimation: false);
 var firstTile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
 var secondTile = world.tiles_list.First(tile => tile.Type.ground &&
     Math.Abs(tile.x - firstTile.x) + Math.Abs(tile.y - firstTile.y) > 40 && tile.zone.city == null);
@@ -116,8 +118,11 @@ async System.Threading.Tasks.Task Edit(string id, string template, Func<string, 
     string preview = Preview();
     Check(matches(preview), id + " preview was " + preview);
     var state = service.GetWorld();
-    Check(state.Cultures[firstCulture.id].Cards["worldbox:" + id].Template == template &&
-          (!state.Cultures.TryGetValue(secondCulture.id, out var other) || !other.Cards.ContainsKey("worldbox:" + id)),
+    string prefix = "worldbox:" + id + "/";
+    Check(tab.getOnomasticsData().getShortTemplate() == template &&
+          state.Cultures[firstCulture.id].DefaultArrangementEdits.Keys.Any(key => key.StartsWith(prefix)) &&
+          (!state.Cultures.TryGetValue(secondCulture.id, out var other) ||
+           !other.DefaultArrangementEdits.Keys.Any(key => key.StartsWith(prefix))),
         id + " edit did not isolate the two cultures.");
 }
 await Edit("war", "201|2:江门", text => text == "江门临川国征伐");
@@ -126,6 +131,7 @@ await Edit("army", "01|0:青岩", text => text == "青岩卫");
 await Edit("book", "01|0:同舟", text => text == "同舟纪");
 await Edit("motto", "0|0:守望同舟", text => text == "守望同舟");
 await Edit("item", "0|0:青炉", text => text == "青炉");
+await Edit("plot", "0|0:河谷之议", text => text == "河谷之议");
 
 var conquest = world.wars.newWar(firstKingdom, secondKingdom, AssetManager.war_types_library.get("normal"));
 var reverse = world.wars.newWar(secondKingdom, firstKingdom, AssetManager.war_types_library.get("normal"));
@@ -150,6 +156,8 @@ Check(WriteBook("history", first) == "同舟纪" && WriteBook("warfare_manual", 
 var clan = world.clans.newClan(first, true);
 Check(firstKingdom.getMotto() == "守望同舟" && alliance.getMotto() == "守望同舟" &&
     clan.getMotto() == "守望同舟" && secondKingdom.getMotto() != "守望同舟", "A motto did not honor its source culture.");
+var plot = world.plots.newPlot(first, AssetManager.plots_library.get("language_divergence"), true);
+Check(plot.name == "河谷之议", "The actual plot lost the edit: " + plot.name);
 
 var weapon = AssetManager.items.list.First(asset => asset.equipment_type == EquipmentType.Weapon);
 var item = world.items.generateItem(weapon, firstKingdom, pTries: 0, pActor: first);
@@ -172,15 +180,17 @@ item.data.custom_name = true;
 item.setName("传家宝");
 item.reforge(1);
 Check(item.name == "传家宝", "Reforging overwrote a manual name.");
+first.equipment.setItem(item, first);
 
 var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "culture-extra-save");
 Directory.CreateDirectory(output);
 for (int i = 0; i < 120 && !world.units.getSimpleList().Contains(first); i++) await Game.NextFrame();
 world.units.checkLists(); world.wars.checkLists(); world.kingdoms.checkLists(); world.cities.checkLists();
+world.alliances.checkLists(); world.armies.checkLists(); world.items.checkLists(); world.plots.checkLists();
 var save = SaveManager.saveWorldToDirectory(output);
 Check(save.actors_data.Any(actor => actor.id == first.getID()), "The save missed the first actor.");
 File.WriteAllLines(Path.Combine(output, "expected.txt"), new[] {
-    firstCulture.id, secondCulture.id, language.id, first.getID(), firstKingdom.id, conquest.id
+    firstCulture.id, secondCulture.id, language.id, first.getID(), firstKingdom.id, conquest.id, alliance.id, army.id, item.id, plot.id
 }.Select(id => id.ToString()));
 return new { war = conquest.name, rebellion = uprising.name, alliance = alliance.name, army = army.name, legendary,
-    manualItem = item.name, motto = firstKingdom.getMotto(), output };
+    manualItem = item.name, motto = firstKingdom.getMotto(), plot = plot.name, output };

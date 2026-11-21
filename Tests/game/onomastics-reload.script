@@ -18,8 +18,9 @@ var otherLanguage = long.Parse(expected[2]);
 var child = world.units.get(long.Parse(expected[3]));
 var city = world.cities.get(long.Parse(expected[6]));
 Check(child.getName() == "欧阳" + expected[4] && city.name == expected[4] + "府", "Existing names changed on reload.");
-Check(culture.getOnomasticData(MetaType.Unit).getShortTemplate() == expected[7], "Unit cards did not round trip.");
-Check(culture.getOnomasticData(MetaType.City).getShortTemplate() == expected[8], "City cards did not round trip.");
+var edits = NamingApi.Current.GetWorld().Cultures[culture.id].DefaultArrangementEdits;
+Check(edits.Keys.Any(key => key.StartsWith("worldbox:person/")) &&
+    edits.Keys.Any(key => key.StartsWith("worldbox:city/")), "The two default arrangements did not round trip.");
 var newcomer = world.units.createNewUnit("human", world.tiles_list.First(t => t.Type.ground));
 newcomer.setCulture(culture);
 newcomer.joinLanguage(language);

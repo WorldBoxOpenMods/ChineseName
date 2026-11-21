@@ -12,9 +12,11 @@ internal static class VanillaNames
     internal const string Alliance = "worldbox:alliance";
     internal const string War = "worldbox:war";
     internal const string Plot = "worldbox:plot";
-    internal const string Surname = "surname";
+    internal const string Surname = NameRequest.SurnamePart;
     internal const string CultureSpecies = "culture-species";
     private const string SurnameKey = "chinesename.surname.v1";
+    private const string FatherSurnameKey = "chinesename.birth-father-surname.v1";
+    private const string MotherSurnameKey = "chinesename.birth-mother-surname.v1";
     private const string LayoutKey = "chinesename.person-parts.v1";
     private const string SeparatorKey = "chinesename.person-separator.v1";
 
@@ -48,7 +50,8 @@ internal static class VanillaNames
                     MetaType.War => Fields.Where(field => field.Id != "origin").Concat(new[] {
                         new InputField("origin", InputKind.Text, label: "命名所用国家", example: "临川国"),
                         new InputField("attacker", InputKind.Text, label: "进攻国", example: "临川国"),
-                        new InputField("defender", InputKind.Text, label: "防守国", example: "松岭国")
+                        new InputField("defender", InputKind.Text, label: "防守国", example: "松岭国"),
+                        new InputField(PlaceNames.RebellionCity, InputKind.Text, label: "起事城市", example: "澄江")
                     }),
                     MetaType.Alliance => Fields.Where(field => field.Id != "origin").Concat(new[] {
                         new InputField("origin", InputKind.Text, label: "发起国", example: "临川国"),
@@ -57,7 +60,14 @@ internal static class VanillaNames
                     }),
                     MetaType.Army => Fields.Append(new("station", InputKind.Text, label: "驻地城市", example: "澄江")),
                     MetaType.Family => Fields.Append(new("founder-surname", InputKind.Text, label: "创始人姓氏", example: "欧阳")),
-                    MetaType.City => Fields.Append(new("biome", InputKind.Text, label: "建城地貌", example: "biome_grass")),
+                    MetaType.City => Fields.Concat(new[]
+                    {
+                        new InputField("biome", InputKind.Text, label: "建城群系", example: "biome_grass"),
+                        new InputField(PlaceNames.SourceCity, InputKind.Text, label: "移民来源城", example: "澄江"),
+                        new InputField(PlaceNames.SourceFoundingName, InputKind.Text, label: "移民来源城旧名", example: "澄江府"),
+                        new InputField(PlaceNames.Region, InputKind.Text, label: "所属地区", example: "青岚原"),
+                        new InputField(PlaceNames.Landform, InputKind.Text, label: "建城地貌")
+                    }),
                     MetaType.Item => Fields.Concat(new[] {
                         new InputField("equipment", InputKind.Text, label: "装备种类", example: "sword"),
                         new InputField("material", InputKind.Text, label: "材质", example: "iron"),
@@ -69,7 +79,9 @@ internal static class VanillaNames
             }
             yield return new NameType("worldbox:motto", "格言", Fields, maxLength: 64);
             yield return new NameType("worldbox:book", "书籍",
-                Fields.Append(new("topic", InputKind.Text, label: "书籍题材", example: "history")));
+                Fields.Append(new("topic", InputKind.Text, label: "书籍题材", example: "history"))
+                    .Append(new(PlaceNames.AuthorCity, InputKind.Text, label: "作者所属城市", example: "澄江"))
+                    .Append(new(PlaceNames.AuthorFoundingName, InputKind.Text, label: "作者城市旧名", example: "澄江府")));
             yield return new NameType(Plot, "谋划",
                 Fields.Append(new("plot", InputKind.Text, label: "谋划类型", example: "language-divergence")));
             yield return new NameType("worldbox:player", "造物主", Fields);
@@ -163,55 +175,35 @@ internal static class VanillaNames
         actor.data.set(SurnameKey, value);
     }
 
-    private static string DrawSurname(Actor actor)
-    {
-        var result = NamingApi.Current.Generate(Request(Person, actor, PersonSeed(actor), actor.data.sex));
-        return result.Success ? result.Parts.TryGetValue(Surname, out var surname) ? surname : "" : null;
-    }
-
-    private static string ParentSurname(Actor actor)
-    {
-        if (actor == null) return null;
-        if (ReadSurname(actor, out var surname)) return surname;
-        surname = DrawSurname(actor);
-        if (surname != null) actor.data.set(SurnameKey, surname);
-        return surname;
-    }
-
     private static void AtBirth(Actor child, Actor parent1, Actor parent2)
     {
         if (child == null || ReadSurname(child, out _)) return;
-        ulong seed = PersonSeed(child);
-        var request = Request(Person, child, seed, child.data.sex);
-        var service = NamingApi.Current;
-        var effective = service.Inspect(request, null);
-        using var conditional = NativeOnomastics.ReadConditionalSurnameCards(request, effective, out var branch);
-        var cards = branch ?? NativeOnomastics.Selection(service.ActiveWorld, child.culture, Person);
-        bool usesCards = cards?.Enabled == true && (cards.SourceRule == null || NativeOnomastics.BoundRule(cards, request, effective) != null);
-        var rule = usesCards ? null : NativeOnomastics.MatchedRule(request, effective);
-        if (!usesCards && rule == null) return;
-        using var packaged = NativeNamingArrangement.ReadPackaged(Person, rule?.NativeCards);
-        bool usesSurname = conditional != null ? NativeOnomastics.UsesSurname(conditional, branch) :
-            usesCards ? NativeOnomastics.UsesSurname(child.culture, cards) :
-            packaged != null ? NativeOnomastics.UsesSurname(packaged, rule.NativeCards) :
-            rule.Parts.Exists(part => part.Id == Surname && NativeNamingArrangement.Visible(part));
-        if (!usesSurname)
-        {
-            child.data.set(SurnameKey, "");
-            return;
-        }
         var father = parent1?.isSexMale() == true ? parent1 : parent2?.isSexMale() == true ? parent2 : parent1;
         var mother = parent2?.isSexFemale() == true ? parent2 : parent1?.isSexFemale() == true ? parent1 : parent2;
         if (father == mother) mother = father == parent1 ? parent2 : parent1;
-        var inheritance = rule?.Inheritance ?? cards.Inheritance;
-        if (inheritance == SurnameOrder.New) return;
-        bool motherFirst = inheritance == SurnameOrder.Mother ||
-                           (inheritance == SurnameOrder.Random && new NamingRandom(seed).Next() < 0.5);
-        var first = motherFirst ? mother : father;
-        var second = motherFirst ? father : mother;
-        string surname = ParentSurname(first);
-        if (string.IsNullOrEmpty(surname)) surname = ParentSurname(second);
-        if (!string.IsNullOrEmpty(surname)) child.data.set(SurnameKey, surname);
+        string paternal = SurnameForChild(father);
+        string maternal = SurnameForChild(mother);
+        if (TrySetBirthSurname(child, PersonRequest(child).WithParentSurnames(paternal, maternal))) return;
+
+        // 无可用出生排列时，保留当时的亲代信息，供后续命名恢复。
+        if (paternal != null) child.data.set(FatherSurnameKey, paternal);
+        if (maternal != null) child.data.set(MotherSurnameKey, maternal);
+    }
+
+    private static string SurnameForChild(Actor parent)
+    {
+        if (parent == null) return null;
+        if (ReadSurname(parent, out var surname)) return surname;
+        if (parent.data.custom_name || !string.IsNullOrEmpty(parent.data.name)) return null;
+        return TrySetBirthSurname(parent, PersonRequest(parent)) ? SurnameOf(parent) : null;
+    }
+
+    private static bool TrySetBirthSurname(Actor actor, NameRequest request)
+    {
+        var result = NamingApi.Current.Generate(request);
+        if (!result.Success) return false;
+        SaveSurname(actor, request, result);
+        return true;
     }
 
     [HarmonyPatch(typeof(NameGenerator), nameof(NameGenerator.generateName))]
@@ -236,8 +228,8 @@ internal static class VanillaNames
     {
         private static bool Prefix(City __instance, Actor pActor)
         {
-            long seed = unchecked(World.world.map_stats.life_dna + __instance.id);
-            string name = Generate(NativeOnomastics.City, pActor, seed, inputs: CityInputs(__instance));
+            PlaceNames.FoundingContext(__instance);
+            string name = NameCity(__instance, pActor, unchecked(World.world.map_stats.life_dna + __instance.id));
             if (name == null) return true;
             __instance.setName(name);
             __instance.data.name_culture_id = __instance.culture?.id ?? -1;
@@ -245,30 +237,73 @@ internal static class VanillaNames
         }
     }
 
-    internal static Dictionary<string, object> CityInputs(City city)
+    internal static string NameCity(City city, Actor actor, long seed, Func<string, bool> accept = null)
+    {
+        var result = NamingApi.Current.Generate(CityRequest(city, actor, seed), accept);
+        if (!result.Success) return null;
+        PlaceNames.SaveCityName(city, result);
+        return result.Text;
+    }
+
+    internal static NameRequest CityRequest(City city, Actor actor, long seed, Func<Kingdom, string> projected = null)
+    {
+        var inputs = CityInputs(city, projected);
+        if (city.data.original_actor_asset is string species) inputs[CultureSpecies] = species;
+        long? culture = city.culture?.id ?? actor?.culture?.id;
+        if (!culture.HasValue && city.data.name_culture_id >= 0) culture = city.data.name_culture_id;
+        if (projected != null && !inputs.ContainsKey("origin") && actor?.kingdom is { } realm &&
+            projected(realm) is { Length: > 0 and <= 256 } founderCountry)
+            inputs["origin"] = founderCountry;
+        return Request(NativeOnomastics.City, actor, unchecked((ulong)seed),
+            culture: culture, language: city.language?.id, inputs: inputs);
+    }
+
+    internal static Dictionary<string, object> CityInputs(City city, Func<Kingdom, string> projected = null)
     {
         var inputs = new Dictionary<string, object>();
         if (city.getTile()?.Type?.biome_asset?.id is string biome) inputs["biome"] = biome;
-        if (city.kingdom?.name is { Length: > 0 and <= 256 } country) inputs["origin"] = country;
+        if ((projected?.Invoke(city.kingdom) ?? city.kingdom?.name) is { Length: > 0 and <= 256 } country)
+            inputs["origin"] = country;
+        PlaceNames.CityInputs(city, inputs);
         return inputs;
     }
 
     internal static bool TryNamePerson(Actor actor, Func<string, bool> accept = null)
     {
+        var request = PersonRequest(actor);
+        var result = NamingApi.Current.Generate(request, accept);
+        if (!result.Success) return false;
+        SavePerson(actor, request, result);
+        return true;
+    }
+
+    internal static NameRequest PersonRequest(Actor actor)
+    {
         IReadOnlyDictionary<string, string> fixedParts = null;
         if (ReadSurname(actor, out var surname))
             fixedParts = new Dictionary<string, string> { [Surname] = surname };
-        var result = NamingApi.Current.Generate(Request(Person, actor, PersonSeed(actor),
-            actor.data.sex, fixedParts: fixedParts), accept);
-        if (!result.Success) return false;
-        actor.setName(result.Text);
+        actor.data.get(FatherSurnameKey, out string father);
+        actor.data.get(MotherSurnameKey, out string mother);
+        return Request(Person, actor, PersonSeed(actor), actor.data.sex, fixedParts: fixedParts)
+            .WithParentSurnames(father, mother);
+    }
+
+    internal static void SavePerson(Actor actor, NameRequest request, NameResult result)
+    {
+        if (actor.data.name != result.Text) actor.setName(result.Text);
         actor.data.name_culture_id = actor.culture?.id ?? -1L;
-        if (result.Parts.TryGetValue(Surname, out var part)) actor.data.set(SurnameKey, part);
-        else if (surname == null) actor.data.set(SurnameKey, "");
+        SaveSurname(actor, request, result);
         actor.data.set(LayoutKey, NamingJson.Write(result.PartOrder.Select(id =>
             new KeyValuePair<string, string>(id, result.Parts[id])).ToArray()));
         actor.data.set(SeparatorKey, result.Separator ?? "");
-        return true;
+    }
+
+    private static void SaveSurname(Actor actor, NameRequest request, NameResult result)
+    {
+        if (result.Parts.TryGetValue(Surname, out var part)) actor.data.set(SurnameKey, part);
+        else if (!request.FixedParts.ContainsKey(Surname)) actor.data.set(SurnameKey, "");
+        actor.data.removeString(FatherSurnameKey);
+        actor.data.removeString(MotherSurnameKey);
     }
 
     [HarmonyPatch(typeof(BabyMaker), nameof(BabyMaker.makeBaby))]

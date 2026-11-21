@@ -8,6 +8,9 @@
     <Compile Include="../../Source/Naming/*.cs" />
     <Reference Include="Newtonsoft.Json" HintPath="$(GameRootPath)/worldbox_Data/Managed/Newtonsoft.Json.dll" />
     <None Include="../../Content/default.naming.json" Link="default.naming.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../Content/NamingPacks/place-history.naming.json" Link="place-history.naming.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../Addons/HistoryEvents/Content/history-events.naming.json" Link="history-events.naming.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../Content/NamingPacks/*-geography.naming.json" Link="Geography/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../Examples/Packages/*-lexicon.naming.json" Link="Lexicons/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../Examples/Packages/*-set.naming.json" Link="NamingSets/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

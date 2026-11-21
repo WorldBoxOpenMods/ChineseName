@@ -14,8 +14,10 @@ async System.Threading.Tasks.Task Frames(int count = 10)
 }
 
 var world = World.world;
+Config.paused = true;
+ScrollWindow.hideAllEvent(pWithAnimation: false);
 var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
-var otherTile = world.tiles_list.First(t => t.Type.ground && Math.Abs(t.x - tile.x) + Math.Abs(t.y - tile.y) > 40);
+var otherTile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null && Math.Abs(t.x - tile.x) + Math.Abs(t.y - tile.y) > 40);
 var founder = world.units.createNewUnit("human", tile);
 var neighbour = world.units.createNewUnit("human", otherTile);
 var culture = world.cultures.newCulture(founder, true);

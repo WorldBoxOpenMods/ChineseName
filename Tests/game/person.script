@@ -21,7 +21,7 @@ mother.data.set(surnameKey, "李");
 var oldName = father.getName();
 var child = BabyMaker.makeBaby(father, mother, ActorSex.Male, pTile: tile);
 var sibling = BabyMaker.makeBaby(father, mother, ActorSex.Female, pTile: tile);
-Check(Surname(child) == "欧阳" && Surname(sibling) == "欧阳", "Full paternal surname must be stored at birth.");
+Check(Surname(child) == "欧阳" && Surname(sibling) == "欧阳", "Birth did not commit the surname selected by the arrangement.");
 Check(string.IsNullOrEmpty(child.data.name), "Birth unexpectedly generated the complete name.");
 var service = NamingApi.Current;
 service.InstallPack(new NamingPack {
@@ -43,7 +43,7 @@ Check(service.Preview(request, draft).Text == "欧阳澄川", "Draft preview did
 Check(!service.GetWorld().EnabledPacks.Contains(marker), "Preview applied the draft.");
 WorldNamingStore.Apply(draft);
 var generated = child.getName();
-Check(generated == "欧阳澄川" && father.getName() == oldName, "New rules must not rename existing units.");
+Check(generated == "欧阳澄川" && Surname(child) == "欧阳" && father.getName() == oldName, "The selected rule lost the parental surname.");
 for (int frame = 0; frame < 120 && !world.units.getSimpleList().Contains(child); frame++) await Game.NextFrame();
 Check(world.units.getSimpleList().Contains(child), "The new unit has not entered the active collection.");
 var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "save");

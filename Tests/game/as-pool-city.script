@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Chinese_Name.Naming;
 using Chinese_Name.Naming.Game;
 using UnityEngine;
@@ -12,6 +13,8 @@ const string root = "group_1", suffixCard = "group_2";
 var exchange = "__EXCHANGE__";
 var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
 var world = World.world;
+Config.paused = true;
+ScrollWindow.hideAllEvent(pWithAnimation: false);
 world.console.Hide();
 void Check(bool ok, string message) { if (!ok) throw new Exception(message); }
 var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
@@ -62,7 +65,7 @@ string Preview()
 {
     var line = shell.transform.FindRecursive("PreviewName");
     Check(line != null && line.GetComponent<Selectable>() == null, "Missing read-only preview.");
-    return line.GetComponent<Text>().text;
+    return Regex.Replace(line.GetComponent<Text>().text, "</?color[^>]*>", "");
 }
 string Position(Selectable btn)
 {
@@ -70,9 +73,28 @@ string Position(Selectable btn)
     var p = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
     return $" {(int)p.x} {UnityEngine.Screen.height - (int)p.y}";
 }
+async System.Threading.Tasks.Task ScrollTo(Selectable control)
+{
+    var rect = (RectTransform)control.transform;
+    var scroll = shell.scrollRect;
+    var viewport = scroll.viewport;
+    var fixedPreview = tab.text_name_examples.transform.parent;
+    float top = Mathf.Min(viewport.rect.yMax, RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, fixedPreview).min.y);
+    var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, rect);
+    float range = scroll.content.rect.height - viewport.rect.height;
+    if (range > 0)
+    {
+        if (bounds.max.y > top - 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.max.y - top + 3) / range);
+        else if (bounds.min.y < viewport.rect.yMin + 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.min.y - viewport.rect.yMin - 3) / range);
+    }
+    for (int i = 0; i < 8; i++) await Game.NextFrame();
+}
 int seq = 0;
 async System.Threading.Tasks.Task Send(string action, Selectable control = null, Selectable other = null)
 {
+    if (control != null) await ScrollTo(control);
     var point = control == null ? "" : Position(control);
     if (other != null) point += Position(other);
     string path = Path.Combine(exchange, ++seq + ".mouse");
@@ -136,7 +158,7 @@ await Words(root, "江河地名");
 
 await Send("click", Glyph("hyphen", true).button);
 await Send("drag", Glyph("hyphen", false).button, Glyph(suffixCard, false).button);
-var order = culture.getOnomasticData(MetaType.City).getFullTemplateData();
+var order = tab.getOnomasticsData().getFullTemplateData();
 Check(order.SequenceEqual(new[] { root, marker, "hyphen", suffixCard }), "Drag gave " + string.Join(", ", order));
 Check(Preview() == "临川-府" &&
     service.Generate(new NameRequest(type, 0, culture.id, language.id)).Text == "澄江-府", "Native hyphen no longer mixes with the marker.");

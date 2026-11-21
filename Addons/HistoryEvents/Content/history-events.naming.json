@@ -1,0 +1,132 @@
+{
+  "format": 1,
+  "id": "chinesename:history-events",
+  "label": "史书事件",
+  "supplemental": true,
+  "requires": {
+    "chinesename:place-history": 1
+  },
+  "cultureBases": [
+    "chinesename:place-history"
+  ],
+  "arrangements": {
+    "worldbox:book": [
+      {
+        "id": "war-annals",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            },
+            {
+              "field": "historical-event",
+              "test": "Present"
+            },
+            {
+              "field": "historical-event-kind",
+              "test": "Equal",
+              "values": [
+                "war"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:始末"
+        }
+      },
+      {
+        "id": "rebellion-annals",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            },
+            {
+              "field": "historical-event",
+              "test": "Present"
+            },
+            {
+              "field": "historical-event-kind",
+              "test": "Equal",
+              "values": [
+                "rebellion"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:纪略"
+        }
+      },
+      {
+        "id": "migration-annals",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            },
+            {
+              "field": "historical-event",
+              "test": "Present"
+            },
+            {
+              "field": "historical-event-kind",
+              "test": "Equal",
+              "values": [
+                "migration"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:记"
+        }
+      },
+      {
+        "id": "founding-annals",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            },
+            {
+              "field": "historical-event",
+              "test": "Present"
+            },
+            {
+              "field": "historical-event-kind",
+              "test": "Equal",
+              "values": [
+                "founding"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:记"
+        }
+      }
+    ]
+  }
+}

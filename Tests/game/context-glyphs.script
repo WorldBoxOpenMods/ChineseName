@@ -191,7 +191,8 @@ var family = world.families.newFamily(founder, tile, null);
 Check(family.name == "欧阳堂", "The family lost its founder's full surname: " + family.name);
 
 var applied = service.GetWorld().Cultures[culture.id];
-Check(applied.Cards[spell].Enabled && applied.Cards["worldbox:item"].Enabled, "The two main arrangements were not applied.");
+Check(applied.DefaultArrangementEdits.Keys.Any(key => key.StartsWith(spell + "/")) &&
+    applied.DefaultArrangementEdits.Keys.Any(key => key.StartsWith("worldbox:item/")), "The two main arrangements were not applied.");
 var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "context-glyphs-save");
 Directory.CreateDirectory(output);
 world.units.checkLists(); world.families.checkLists(); world.armies.checkLists(); world.alliances.checkLists(); world.items.checkLists();

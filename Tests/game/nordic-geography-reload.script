@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+
+var root = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT")).Parent.Parent;
+string file = Directory.EnumerateFiles(root.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/nordic-geography/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+var entries = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(file), "ids.txt"));
+var ids = entries.Take(5).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(file));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+if (SmoothLoader.isLoading()) throw new InvalidOperationException("The Nordic map did not reload.");
+Config.paused = true;
+var world = World.world;
+var port = world.cities.get(ids[0]);
+var island = world.cities.get(ids[1]);
+var kitten = world.units.get(ids[4]);
+kitten.data.get("chinesename.surname.v1", out string surname);
+string Next(string landform) => NamingApi.Current.Generate(new NameRequest("worldbox:city", 18, ids[2], ids[3],
+    new Dictionary<string, object> { ["landform"] = landform, ["culture-species"] = "civ_cat" })).Text;
+string nextPort = Next("coast"), nextIsland = Next("island");
+if (port.name != entries[5] || island.name != entries[6] || surname != entries[7] ||
+    !nextPort.EndsWith("维克") || !nextIsland.EndsWith("霍尔姆"))
+    throw new InvalidOperationException("A Nordic city, inherited format, or surname changed on reload.");
+return new { port = port.name, island = island.name, nextPort, nextIsland, surname };

@@ -66,6 +66,7 @@ await SelectRow("WorldNamingReassignment");
 await SelectRow("WorldNamingSpecies");
 await SelectRow("WorldNamingTitles");
 await SelectRow("WorldNamingObjects");
+await SelectRow("WorldNamingPreviewSummary");
 Check(Han(map.map_stats.name) && Han(map.map_stats.player_name) && Han(sample.data.name), "The opening map was not reassigned.");
 string reassignedTitle = map.map_stats.name;
 long sampleId = sample.id;
@@ -117,6 +118,9 @@ Check(service.GetWorld().UseSavedVanillaCards && !Han(founder.generateName(MetaT
 
 var world = service.GetWorld();
 var words = service.GetPackage(atlas);
+Check(words != null && service.Packages.Contains(nordic), "Install the atlas and Nordic fixtures in the isolated profile.");
+foreach (string preset in new[] { atlas, nordic })
+    if (!world.EnabledPacks.Contains(preset)) world.EnabledPacks.Add(preset);
 var approved = words.Words.Single(word => word.Text == "Uppsala" && words.Pools[cityPool].ContainsKey(word.Id));
 world.Languages[language.id] = new LanguageNaming();
 world.Languages[language.id].Pools[cityPool] = new PoolEdit
@@ -143,6 +147,7 @@ GUIUtility.systemCopyBuffer = "北欧";
 await Mouse();
 await SelectRow("WorldNamingStyle." + nordic);
 await SelectRow("WorldNamingObjects");
+await SelectRow("WorldNamingPreviewSummary");
 Check(service.GetWorld().CulturePack == nordic && city.name == "乌普萨拉" && Han(founder.data.name) &&
     map.units.get(customId).data.name == "Named by player" && NamingJson.Write(service.GetWorld().Languages[language.id]) == languageBefore,
     "Global style did not preserve the player name and language restrictions or did not rename the city.");

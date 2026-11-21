@@ -294,10 +294,10 @@ public sealed partial class OnomasticsEditor
         Change(() =>
         {
             if (_commitPending) Render();
-            DraftCulture(id).Pack = WorldNamingStore.ApplyCultureStyle(id, pack, snapshot);
-            _draft.AppliedPresets = NamingApi.Current.ActiveWorld.AppliedPresets;
-            if (snapshot != null)
-                foreach (string type in snapshot.Arrangements.Keys) DraftCulture(id).Arrangements.Remove(type);
+            WorldNamingStore.ApplyCultureStyle(id, pack, snapshot);
+            NativeNamingTab.ForgetDrafts((culture, _) => culture == id);
+            _unfinishedConditions.Clear();
+            LoadDraft();
             CloseArrangements();
             SelectArrangement(null);
             CloseStylePicker();

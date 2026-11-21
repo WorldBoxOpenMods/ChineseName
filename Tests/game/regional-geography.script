@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway;
+using Cultiway.Core;
+using Cultiway.Core.EventSystem;
+using Cultiway.Core.EventSystem.Events;
+using Cultiway.Utils.Extension;
+using UnityEngine;
+
+const string cityType = "worldbox:city", terrain = "__PLACE_HISTORY_TERRAIN__";
+const string wafuu = "chinesename:wafuu", fantasy = "chinesename:fantasy", races = "chinesename:fantasy-race";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+int Distance(TileZone a, TileZone b) => Math.Abs(a.centerTile.x - b.centerTile.x) + Math.Abs(a.centerTile.y - b.centerTile.y);
+bool Lowland(WorldTile tile)
+{
+    var shape = tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landform)?.data.CategoryId;
+    return shape == null || shape.EndsWith(".Plain");
+}
+string Island(WorldTile tile)
+{
+    if (!Lowland(tile)) return null;
+    if (tile.GetExtend().GetGeoRegion(GeoRegionLayer.Archipelago) != null) return "archipelago";
+    return tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landmass)?.data.CategoryId.EndsWith(".Island") == true ? "island" : null;
+}
+bool Coast(WorldTile tile)
+{
+    if (Island(tile) != null || !Lowland(tile)) return false;
+    for (int x = -8; x <= 8; x++)
+        for (int y = Math.Abs(x) - 8; y <= 8 - Math.Abs(x); y++)
+            if (WorldboxGame.I.GeoRegions.GetPrimaryGeoRegionForTile(World.world.GetTile(tile.x + x, tile.y + y))
+                ?.data.CategoryId.EndsWith(".Sea") == true) return true;
+    return false;
+}
+
+var service = NamingApi.Current;
+var stock = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+foreach (string file in new[] { "wafuu-set", "wafuu-lexicon", "fantasy-race-set", "fantasy-race-lexicon" })
+    File.Copy(Path.Combine(stock, file + ".naming.json"), Path.Combine(WorldNamingStore.PackageDirectory, file + ".naming.json"), true);
+var issues = WorldNamingStore.ReloadPacks();
+Check(issues.Count == 0, string.Join(", ", issues));
+Check(File.Exists(terrain), "Set the terrain fixture path to an empty map with a large landmass and another island.");
+
+var result = new Dictionary<string, string[]>();
+foreach (var profile in new[]
+{
+    (Preset: wafuu + "-set", Geography: wafuu + "-geography", Species: "human", Variant: "wafuu",
+     Lexicon: wafuu + "-lexicon", Pool: wafuu + "-lexicon.city-root", Bias: "鹤见", Exclude: "白滨",
+     Endings: new[] { "湊", "岛", "宿" }),
+    (Preset: races + "-set", Geography: fantasy + "-geography", Species: "dwarf", Variant: "dwarf",
+     Lexicon: races + "-lexicon", Pool: races + "-lexicon.dwarf-place", Bias: "星铸", Exclude: "铜脉",
+     Endings: new[] { "港", "岛堡", "炉堡" })
+})
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The blank terrain did not load.");
+    var world = World.world;
+    var zones = world.zone_calculator.zones.Where(zone => zone.centerTile.Type.ground && !zone.hasCity()).ToArray();
+    var mainland = zones.GroupBy(zone => zone.centerTile.region.island).OrderByDescending(group => group.Count()).First().ToArray();
+    var mountainZone = mainland.First(zone => zone.isGoodForNewCity() &&
+        Enumerable.Range(-8, 17).All(x => Enumerable.Range(-8, 17).All(y =>
+        {
+            var tile = world.GetTile(zone.centerTile.x + x, zone.centerTile.y + y);
+            return tile?.Type.ground == true && tile.region.island == zone.centerTile.region.island;
+        })));
+    // A ridge outside the city zone leaves a stock-buildable site at its foot.
+    for (int x = 5; x <= 8; x++)
+        for (int y = -4; y <= 4; y++)
+            MapAction.terraformMain(world.GetTile(mountainZone.centerTile.x + x, mountainZone.centerTile.y + y), TileLibrary.mountains);
+
+    Config.paused = false;
+    EventSystemHub.Publish(new WorldGeneratedEvent
+    {
+        WorldSeedId = MapBox.current_world_seed_id, Width = MapBox.width, Height = MapBox.height
+    });
+    var regions = WorldboxGame.I.GeoRegions;
+    for (int frame = 0; frame < 1000 && regions.GetPrimaryGeoRegionForTile(mountainZone.centerTile) == null; frame++)
+        await Game.NextFrame();
+    Check(regions.GetPrimaryGeoRegionForTile(mountainZone.centerTile) != null && mountainZone.isGoodForNewCity(),
+        "The geography layer was not loaded or the mountain foothill was not buildable.");
+    Config.paused = true;
+
+    var shore = mainland.First(zone => Coast(zone.centerTile) && zone.isGoodForNewCity() && Distance(zone, mountainZone) >= 24);
+    var origin = mainland.First(zone => zone.isGoodForNewCity() && Distance(zone, mountainZone) >= 24 && Distance(zone, shore) >= 24);
+    var offshore = zones.First(zone => zone.centerTile.region.island != shore.centerTile.region.island &&
+        Island(zone.centerTile) != null && zone.isGoodForNewCity());
+
+    var founder = world.units.createNewUnit(profile.Species, origin.centerTile, pAdultAge: true);
+    var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+    founder.setCulture(world.cultures.newCulture(founder, true));
+    founder.joinLanguage(world.languages.newLanguage(founder, true));
+    kingdom.setUnitMetas(founder);
+    world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+    var draft = service.GetWorld();
+    foreach (string id in new[] { profile.Preset, profile.Lexicon, profile.Geography })
+        if (!draft.EnabledPacks.Contains(id)) draft.EnabledPacks.Add(id);
+    draft.Cultures[founder.culture.id] = new CultureNaming { Pack = profile.Preset };
+    var ids = service.GetPackage(profile.Lexicon).Words.ToDictionary(word => word.Text, word => word.Id);
+    var originalLanguage = new LanguageNaming();
+    originalLanguage.Groups[profile.Pool] = profile.Geography + "/" + profile.Variant + "-mountain";
+    originalLanguage.Pools[profile.Pool] = new PoolEdit
+    {
+        Bias = new Dictionary<string, double> { [ids[profile.Bias]] = 1.4 },
+        ExcludeIds = new List<string> { ids[profile.Exclude] }
+    };
+    draft.Languages[founder.language.id] = originalLanguage;
+    var edits = NamingJson.Write(originalLanguage.Pools);
+    WorldNamingStore.Apply(draft);
+    founder.joinCity(world.cities.buildNewCity(founder, origin));
+    kingdom.setCapital(founder.city);
+    world.cities.checkLists();
+
+    var sites = new[] { shore, offshore, mountainZone };
+    var terrainKinds = new[] { "coast", Island(offshore.centerTile), "mountain" };
+    var kinds = new[] { "harbor", "island", "mountain" };
+    var variants = new List<string>();
+    var cities = new List<(long City, string Name, string Landform)>();
+    for (int i = 0; i < sites.Length; i++)
+    {
+        var site = sites[i];
+        string region = terrainKinds[i];
+        long parent = founder.language.id;
+        founder.setCurrentTilePosition(site.centerTile);
+        Check(AssetManager.plots_library.get("culture_divide").action(founder), "Original culture split failed.");
+        Check(AssetManager.plots_library.get("language_divergence").action(founder), "Original language split failed.");
+        world.cultures.checkLists(); world.languages.checkLists();
+
+        draft = service.GetWorld();
+        string variant = profile.Geography + "/" + profile.Variant + "-" + kinds[i];
+        variants.Insert(0, variant);
+        Check(draft.Cultures[founder.culture.id].ArrangementVariants[cityType].SequenceEqual(variants),
+            "Incorrect inherited arrangements for " + profile.Preset + " / " + region);
+        var language = draft.Languages[founder.language.id];
+        Check(draft.LanguageParents[founder.language.id] == parent &&
+            language.GroupPreferences.TryGetValue(profile.Pool, out var preferences) && preferences.ContainsKey(variant) &&
+            NamingJson.Write(language.Pools) == edits, "Regional linguistic evolution lost " + variant + ": " +
+            string.Join(", ", language.GroupPreferences.SelectMany(pool => pool.Value.Keys)));
+
+        Check(site.canStartCityHere(), "The fixture cannot build on the selected terrain: " + region);
+        var city = world.cities.buildNewCity(founder, site);
+        founder.joinCity(city);
+        city.data.get("chinesename.city-region.v1", out string actualRegion);
+        Check(city.getTile().zone == site && city.name.EndsWith(profile.Endings[i]) && !city.name.Contains(profile.Exclude),
+            "The native settlement did not use " + variant + ": " + city.name + " / " + actualRegion);
+        cities.Add((city.id, city.name, region));
+        world.cities.checkLists();
+    }
+
+    var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "regional-geography", profile.Variant);
+    Directory.CreateDirectory(output);
+    long finalCulture = founder.culture.id, finalLanguage = founder.language.id;
+    world.units.checkContainer(); world.kingdoms.checkLists(); world.cultures.checkLists(); world.languages.checkLists();
+    SaveManager.saveWorldToDirectory(output);
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(output, "map.wbox")));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The regional save did not reload.");
+    Config.paused = true;
+
+    draft = service.GetWorld();
+    Check(draft.Cultures[finalCulture].ArrangementVariants[cityType].SequenceEqual(variants) &&
+        NamingJson.Write(draft.Languages[finalLanguage].Pools) == edits, "The inherited setting changed during reload.");
+    for (int i = 0; i < cities.Count; i++)
+    {
+        var expected = cities[i];
+        var saved = World.world.cities.get(expected.City);
+        var input = new Dictionary<string, object> { ["landform"] = expected.Landform, ["culture-species"] = profile.Species };
+        var preview = service.Preview(new NameRequest(cityType, 71, finalCulture, finalLanguage, input));
+        Check(saved.name == expected.Name && preview.Success && preview.Text.EndsWith(profile.Endings[i]) &&
+            preview.Sources["name"].Reference == profile.Pool && !preview.Text.Contains(profile.Exclude),
+            "The saved name or inherited preview changed: " + preview.Text);
+    }
+    result[profile.Variant] = cities.Select(city => city.Name).ToArray();
+}
+return result;

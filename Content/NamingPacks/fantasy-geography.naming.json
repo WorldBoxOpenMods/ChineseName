@@ -1,0 +1,638 @@
+{
+  "format": 1,
+  "id": "chinesename:fantasy-geography",
+  "label": "西幻沿革",
+  "supplemental": true,
+  "requires": {
+    "chinesename:fantasy-race-set": 1,
+    "chinesename:fantasy-race-lexicon": 1
+  },
+  "cultureBases": [
+    "chinesename:fantasy-race-set"
+  ],
+  "cultureVariants": {
+    "western-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "arrangement": {
+        "id": "western-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/western-city-places;1:港",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "western-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "arrangement": {
+        "id": "western-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/western-city-places;1:岛",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "western-mountain": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "arrangement": {
+        "id": "western-mountain",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/western-city-places;1:堡",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "elf-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "species": [
+        "elf"
+      ],
+      "arrangement": {
+        "id": "elf-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "elf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.elf-place;1:港",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "elf-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "species": [
+        "elf"
+      ],
+      "arrangement": {
+        "id": "elf-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "elf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.elf-place;1:岛",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "elf-mountain": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "species": [
+        "elf"
+      ],
+      "arrangement": {
+        "id": "elf-mountain",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "elf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.elf-place;1:山庭",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "dwarf-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "species": [
+        "dwarf"
+      ],
+      "arrangement": {
+        "id": "dwarf-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "dwarf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.dwarf-place;1:港",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "dwarf-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "species": [
+        "dwarf"
+      ],
+      "arrangement": {
+        "id": "dwarf-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "dwarf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.dwarf-place;1:岛堡",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "dwarf-mountain": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "species": [
+        "dwarf"
+      ],
+      "arrangement": {
+        "id": "dwarf-mountain",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "dwarf"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.dwarf-place;1:炉堡",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "orc-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "species": [
+        "orc"
+      ],
+      "arrangement": {
+        "id": "orc-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "orc"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.orc-place;1:港",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "orc-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "species": [
+        "orc"
+      ],
+      "arrangement": {
+        "id": "orc-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "orc"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.orc-place;1:岛寨",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "orc-mountain": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "species": [
+        "orc"
+      ],
+      "arrangement": {
+        "id": "orc-mountain",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "orc"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/fantasy-race-lexicon.orc-place;1:关寨",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    }
+  },
+  "wordGroups": {
+    "western-harbor": {
+      "pool": "chinesename:western-city-places",
+      "words": [
+        "chinesename:western-city-places.42-6c-61-63-6b-77-61-74-65-72",
+        "chinesename:western-city-places.45-61-73-74-6d-65-72-65",
+        "chinesename:western-city-places.52-6f-73-65-68-61-76-65-6e",
+        "chinesename:western-city-places.57-65-73-74-70-6f-72-74"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "western-island": {
+      "pool": "chinesename:western-city-places",
+      "words": [
+        "chinesename:western-city-places.45-61-73-74-6d-65-72-65",
+        "chinesename:western-city-places.52-6f-73-65-68-61-76-65-6e",
+        "chinesename:western-city-places.57-65-73-74-70-6f-72-74",
+        "chinesename:western-city-places.53-69-6c-76-65-72-62-72-6f-6f-6b"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "western-mountain": {
+      "pool": "chinesename:western-city-places",
+      "words": [
+        "chinesename:western-city-places.47-72-65-79-66-6f-72-64",
+        "chinesename:western-city-places.53-74-6f-6e-65-62-72-69-64-67-65",
+        "chinesename:western-city-places.41-73-68-66-69-65-6c-64",
+        "chinesename:western-city-places.53-69-6c-76-65-72-62-72-6f-6f-6b"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ]
+    },
+    "elf-harbor": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-c0ad72e249160dd11452",
+        "chinesename:fantasy-race-lexicon.w-0b01affeb2b75e0550c0",
+        "chinesename:fantasy-race-lexicon.w-e3913225b9fc7abfcf46",
+        "chinesename:fantasy-race-lexicon.w-1babe43290fc2cdf21b9",
+        "chinesename:fantasy-race-lexicon.w-d03abc11b5e36c149e02",
+        "chinesename:fantasy-race-lexicon.w-4e9a0802c251f7e60292"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "elf-island": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-e23adcbcdd8f2975eb3d",
+        "chinesename:fantasy-race-lexicon.w-af76eca09840399ab53d",
+        "chinesename:fantasy-race-lexicon.w-c5938f1a8958c537f581",
+        "chinesename:fantasy-race-lexicon.w-9522f8c19d7c2378440f",
+        "chinesename:fantasy-race-lexicon.w-c0ad72e249160dd11452",
+        "chinesename:fantasy-race-lexicon.w-74571b7cc38f1fbbfcb3"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "elf-mountain": {
+      "pool": "chinesename:fantasy-race-lexicon.elf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-af852d67ddb643ec61ef",
+        "chinesename:fantasy-race-lexicon.w-e12a8ddadfc01970080b",
+        "chinesename:fantasy-race-lexicon.w-97d187a924e4f7bcef13",
+        "chinesename:fantasy-race-lexicon.w-e16a6f078b690a7a5262",
+        "chinesename:fantasy-race-lexicon.w-7335fe5946b0507083f0",
+        "chinesename:fantasy-race-lexicon.w-ae06c37850c196cf2802"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ]
+    },
+    "dwarf-harbor": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-fa1f9930515de6763131",
+        "chinesename:fantasy-race-lexicon.w-014bf2c7ec90f6b4600c",
+        "chinesename:fantasy-race-lexicon.w-98e84f52673a012996c7",
+        "chinesename:fantasy-race-lexicon.w-cdc9577809ffe45d66d1",
+        "chinesename:fantasy-race-lexicon.w-6bcdb2d7dd025b9c6b5b"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "dwarf-island": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-ab067ae1d07d8f7a6512",
+        "chinesename:fantasy-race-lexicon.w-18b4e34f0f6659db9565",
+        "chinesename:fantasy-race-lexicon.w-6c0e14f83054d04134a4",
+        "chinesename:fantasy-race-lexicon.w-014bf2c7ec90f6b4600c",
+        "chinesename:fantasy-race-lexicon.w-5c81a72ef77269d69a22"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "dwarf-mountain": {
+      "pool": "chinesename:fantasy-race-lexicon.dwarf-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-2cc0d63ffd406ceeaa33",
+        "chinesename:fantasy-race-lexicon.w-a473ecb6b1962bcf81d0",
+        "chinesename:fantasy-race-lexicon.w-0ef1d411bcdbcb021df3",
+        "chinesename:fantasy-race-lexicon.w-ce3b09881defd9050187",
+        "chinesename:fantasy-race-lexicon.w-7209b3c086e67caf893a",
+        "chinesename:fantasy-race-lexicon.w-7c86106a7ae753363a21",
+        "chinesename:fantasy-race-lexicon.w-59086d6977be7595348f"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ]
+    },
+    "orc-harbor": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-29df3fbcc58244df04a7",
+        "chinesename:fantasy-race-lexicon.w-1c8c65765d6a9bc03445",
+        "chinesename:fantasy-race-lexicon.w-543dbc5de00841a8382e",
+        "chinesename:fantasy-race-lexicon.w-afcf14719d5bc6421362",
+        "chinesename:fantasy-race-lexicon.w-e9ef433fa0987ced3183"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "orc-island": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-4c7a16407bdcafdca595",
+        "chinesename:fantasy-race-lexicon.w-2d67b7e2590a9b05fd1e",
+        "chinesename:fantasy-race-lexicon.w-e9ef433fa0987ced3183",
+        "chinesename:fantasy-race-lexicon.w-02352c6e032da5f8b01b",
+        "chinesename:fantasy-race-lexicon.w-365eccfc70b7d8f45c77"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "orc-mountain": {
+      "pool": "chinesename:fantasy-race-lexicon.orc-place",
+      "words": [
+        "chinesename:fantasy-race-lexicon.w-fd4ae3678d5bce2169e7",
+        "chinesename:fantasy-race-lexicon.w-70e3887c68a895702dbe",
+        "chinesename:fantasy-race-lexicon.w-757997844d8a20f74377",
+        "chinesename:fantasy-race-lexicon.w-38e6f65887d3c0d6aaa6",
+        "chinesename:fantasy-race-lexicon.w-e69b6b8627fc90e37c76",
+        "chinesename:fantasy-race-lexicon.w-2d67b7e2590a9b05fd1e"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ]
+    }
+  }
+}

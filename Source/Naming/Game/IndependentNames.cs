@@ -22,8 +22,11 @@ internal static class IndependentNames
     }
 
     private static void AddName(Dictionary<string, object> inputs, string key, Kingdom kingdom)
+        => AddName(inputs, key, kingdom?.name);
+
+    private static void AddName(Dictionary<string, object> inputs, string key, string candidate)
     {
-        if (kingdom?.name is { Length: > 0 and <= 256 } name) inputs[key] = name;
+        if (candidate is { Length: > 0 and <= 256 }) inputs[key] = candidate;
     }
 
     private static readonly MethodInfo Template = AccessTools.Method(typeof(NameGenerator),
@@ -63,20 +66,29 @@ internal static class IndependentNames
 
     internal static int AssignWorldNames(MapStats map)
     {
-        string size = MapSizeLibrary.getPreset(Math.Max(Config.ZONE_AMOUNT_X, Config.ZONE_AMOUNT_Y));
-        string worldName = VanillaNames.Generate("worldbox:world", null, map.life_dna, kind: size);
-        string creator = VanillaNames.Generate("worldbox:player", null, map.life_dna, kind: size);
+        string worldName = GenerateText(WorldRequest("worldbox:world", map));
+        string creator = GenerateText(WorldRequest("worldbox:player", map));
         int changed = 0;
         if (worldName != null && map.name != worldName) { map.name = worldName; changed++; }
         if (creator != null && map.player_name != creator) { map.player_name = creator; changed++; }
         return changed;
     }
 
+    internal static NameRequest WorldRequest(string type, MapStats map) =>
+        VanillaNames.Request(type, null, unchecked((ulong)map.life_dna),
+            kind: MapSizeLibrary.getPreset(Math.Max(Config.ZONE_AMOUNT_X, Config.ZONE_AMOUNT_Y)));
+
+    private static string GenerateText(NameRequest request, Func<string, bool> accept = null) =>
+        request == null ? null : NamingApi.Current.Generate(request, accept).Text;
+
     [HarmonyPatch(typeof(WarManager), nameof(WarManager.newWar))]
     internal static class WarName
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codes) =>
             ReplaceCall(codes, Template, nameof(NameWar), 1, 2, 3);
+
+        private static void Postfix(War __result, WarTypeAsset pType, Kingdom pAttacker, Kingdom pDefender)
+            => PlaceNames.SaveWarSource(__result, pType, pAttacker, pDefender);
     }
 
     private static string NameWar(string template, Actor actor, Kingdom kingdom, bool legacy,
@@ -85,14 +97,25 @@ internal static class IndependentNames
         ?? NameGenerator.generateNameFromTemplate(template, actor, kingdom, legacy);
 
     internal static string GenerateWar(Kingdom attacker, Kingdom defender, WarTypeAsset war, long seed,
-        Func<string, bool> accept = null)
+        Func<string, bool> accept = null, War existing = null)
+    {
+        return GenerateText(WarRequest(attacker, defender, war, seed, existing), accept);
+    }
+
+    internal static NameRequest WarRequest(Kingdom attacker, Kingdom defender, WarTypeAsset war, long seed,
+        War existing = null, Func<Kingdom, string> projected = null)
     {
         if (war == null) return null;
+        string Name(Kingdom realm) => projected?.Invoke(realm) ?? realm?.name;
         var inputs = new Dictionary<string, object>();
-        AddName(inputs, "attacker", attacker);
-        AddName(inputs, "defender", defender);
+        AddName(inputs, "attacker", Name(attacker));
+        AddName(inputs, "defender", Name(defender));
         var kingdom = war.kingdom_for_name_attacker ? attacker : defender;
-        return FromKingdom(VanillaNames.War, kingdom ?? attacker ?? defender, seed, war.id, inputs, accept);
+        PlaceNames.WarInputs(existing, war, kingdom, war.kingdom_for_name_attacker ? defender : attacker, inputs);
+        kingdom ??= attacker ?? defender;
+        AddName(inputs, "origin", Name(kingdom));
+        return VanillaNames.Request(VanillaNames.War, kingdom?.king, unchecked((ulong)Seed(seed)),
+            kind: war.id, culture: kingdom?.culture?.id, language: kingdom?.language?.id, inputs: inputs);
     }
 
     [HarmonyPatch(typeof(Book), nameof(Book.newBook))]
@@ -108,12 +131,18 @@ internal static class IndependentNames
     internal static string GenerateBook(string template, Book book, Actor author, long? culture = null,
         long? language = null, Func<string, bool> accept = null)
     {
-        const string prefix = "book_name_";
+        var request = BookRequest(template, book, author, culture, language);
+        return WorldNamingInputs.NameBook(template, book, author, request, accept).Text;
+    }
+
+    internal static NameRequest BookRequest(string template, Book book, Actor author,
+        long? culture = null, long? language = null)
+    {
         var inputs = new Dictionary<string, object>();
-        if (template?.StartsWith(prefix, StringComparison.Ordinal) == true)
-            inputs["topic"] = template.Substring(prefix.Length).Replace('_', '-');
-        return VanillaNames.Generate("worldbox:book", author, Seed(book.id), kind: template, inputs: inputs,
-            culture: culture, language: language, accept: accept);
+        PlaceNames.BookInputs(book, author, inputs);
+        var request = VanillaNames.Request("worldbox:book", author, unchecked((ulong)Seed(book.id)), kind: template,
+            culture: culture, language: language, inputs: inputs);
+        return WorldNamingInputs.RestoreBookInputs(template, book, request);
     }
 
     [HarmonyPatch(typeof(Plot), nameof(Plot.newPlot))]
@@ -128,17 +157,17 @@ internal static class IndependentNames
     {
         plot.data.name_culture_id = author?.culture?.id ?? -1L;
         if (author?.language is { } language) plot.data.set("chinesename.plot-language.v1", language.id);
-        plot.setName(GeneratePlot(plot, author, asset) ?? vanilla, track);
+        plot.setName(GenerateText(PlotRequest(plot, author, asset)) ?? vanilla, track);
     }
 
-    internal static string GeneratePlot(Plot plot, Actor author, PlotAsset asset, Func<string, bool> accept = null)
+    internal static NameRequest PlotRequest(Plot plot, Actor author, PlotAsset asset)
     {
         if (asset == null) return null;
         var inputs = new Dictionary<string, object> { ["plot"] = asset.id.ToLowerInvariant().Replace('_', '-') };
         plot.data.get("chinesename.plot-language.v1", out long language, -1L);
-        return VanillaNames.Generate(VanillaNames.Plot, author, Seed(plot.id), kind: asset.id, inputs: inputs,
+        return VanillaNames.Request(VanillaNames.Plot, author, unchecked((ulong)Seed(plot.id)), inputs: inputs,
             culture: author?.culture?.id ?? (plot.data.name_culture_id >= 0 ? plot.data.name_culture_id : null),
-            language: author?.language?.id ?? (language >= 0 ? language : null), accept: accept);
+            language: author?.language?.id ?? (language >= 0 ? language : null));
     }
 
     [HarmonyPatch(typeof(Army), nameof(Army.generateName))]
@@ -156,27 +185,40 @@ internal static class IndependentNames
             return !TryAssign(army, kingdom);
         }
 
-        internal static bool TryAssign(Army army, Kingdom kingdom, Func<string, bool> accept = null)
+        internal static bool TryAssign(Army army, Kingdom kingdom)
         {
+            var request = Request(army, kingdom, army.getCity()?.name, kingdom?.name);
             if (kingdom == null)
             {
-                if (army.name != "无归属军队") army.setName("无归属军队");
-                army.data.set(Source, -1L);
+                Save(army, kingdom, Unassigned);
                 return true;
             }
-            var city = army.getCity();
-            var inputs = new Dictionary<string, object>();
-            if (city?.name is { Length: > 0 and <= 256 } station) inputs["station"] = station;
-            AddName(inputs, "origin", kingdom);
             var taken = new HashSet<string>(World.world.armies.Where(other => other != army &&
                 other.getKingdom() == kingdom).Select(other => other.name), StringComparer.Ordinal);
-            string name = VanillaNames.Generate("worldbox:army", null, Seed(army.id ^ kingdom.id),
-                culture: city?.culture?.id ?? kingdom.culture?.id, language: city?.language?.id ?? kingdom.language?.id,
-                accept: candidate => !taken.Contains(candidate) && (accept == null || accept(candidate)), inputs: inputs);
+            string name = GenerateText(request, candidate => !taken.Contains(candidate));
             if (name == null) return false;
-            if (army.name != name) army.setName(name);
-            army.data.set(Source, kingdom.id);
+            Save(army, kingdom, name);
             return true;
+        }
+
+        internal const string Unassigned = "无归属军队";
+
+        internal static NameRequest Request(Army army, Kingdom kingdom, string station, string origin)
+        {
+            if (kingdom == null) return null;
+            var city = army.getCity();
+            var inputs = new Dictionary<string, object>();
+            AddName(inputs, "station", station);
+            AddName(inputs, "origin", origin);
+            return VanillaNames.Request("worldbox:army", null, unchecked((ulong)Seed(army.id ^ kingdom.id)),
+                culture: city?.culture?.id ?? kingdom.culture?.id, language: city?.language?.id ?? kingdom.language?.id,
+                inputs: inputs);
+        }
+
+        internal static void Save(Army army, Kingdom kingdom, string name)
+        {
+            if (army.name != name) army.setName(name);
+            army.data.set(Source, kingdom?.id ?? -1L);
         }
     }
 
@@ -184,20 +226,23 @@ internal static class IndependentNames
     internal static class SubspeciesName
     {
         private static bool Prefix(Subspecies __instance, ActorAsset pAsset, WorldTile pTile)
-            => !TryAssign(__instance, pAsset, pTile?.Type?.biome_asset?.id);
-
-        internal static bool TryAssign(Subspecies subspecies, ActorAsset asset, string biome, Func<string, bool> accept = null)
         {
-            if (asset == null) return false;
-            var used = new HashSet<string>(World.world.subspecies.Where(other => other != subspecies)
+            var request = Request(__instance, pAsset, pTile?.Type?.biome_asset?.id);
+            if (request == null) return true;
+            var used = new HashSet<string>(World.world.subspecies.Where(other => other != __instance)
                 .Select(other => other.name), StringComparer.OrdinalIgnoreCase);
+            string name = GenerateText(request, candidate => !used.Contains(candidate));
+            if (name == null) return true;
+            if (__instance.name != name) __instance.setName(name);
+            return false;
+        }
+
+        internal static NameRequest Request(Subspecies subspecies, ActorAsset asset, string biome)
+        {
+            if (asset == null) return null;
             var inputs = new Dictionary<string, object> { ["species"] = asset.id };
             if (biome != null) inputs["kind"] = biome;
-            var result = NamingApi.Current.Generate(new NameRequest("worldbox:subspecies", unchecked((ulong)Seed(subspecies.id)),
-                inputs: inputs), name => !used.Contains(name) && (accept == null || accept(name)));
-            if (!result.Success) return false;
-            if (subspecies.name != result.Text) subspecies.setName(result.Text);
-            return true;
+            return new NameRequest("worldbox:subspecies", unchecked((ulong)Seed(subspecies.id)), inputs: inputs);
         }
     }
 
@@ -258,24 +303,25 @@ internal static class IndependentNames
 
     private static string EquipmentName(Item item, EquipmentAsset asset, Actor maker, long seed, string stage,
         Func<string, bool> accept = null)
+        => GenerateText(EquipmentRequest(item, asset, maker, seed, stage), accept);
+
+    private static NameRequest EquipmentRequest(Item item, EquipmentAsset asset, Actor maker, long seed, string stage)
     {
         var origin = World.world.kingdoms.get(item.data.creator_kingdom_id);
         var inputs = new Dictionary<string, object> { ["stage"] = stage };
         if (asset?.group_id is { Length: > 0 } equipment) inputs["equipment"] = equipment.ToLowerInvariant().Replace('_', '-');
         string material = string.IsNullOrEmpty(item.data.material) ? asset?.material : item.data.material;
         if (!string.IsNullOrEmpty(material)) inputs["material"] = material.ToLowerInvariant().Replace('_', '-');
-        return VanillaNames.Generate("worldbox:item", maker, seed, kind: stage == "reforge" ? stage : asset?.group_id,
-            accept: accept, inputs: inputs,
+        return VanillaNames.Request("worldbox:item", maker, unchecked((ulong)seed), inputs: inputs,
             culture: maker?.culture?.id ?? origin?.culture?.id, language: maker?.language?.id ?? origin?.language?.id);
     }
 
-    internal static string GenerateExistingItem(Item item, Func<string, bool> accept = null)
+    internal static NameRequest ExistingItemRequest(Item item)
     {
         var maker = World.world.units.get(item.data.creator_id);
         item.data.get("chinesename.reforges.v1", out int reforges);
-        if (reforges <= 0)
-            return EquipmentName(item, item.asset, maker, Seed(item.id), "legendary", accept);
-        return EquipmentName(item, item.asset, maker, Seed(item.id + reforges), "reforge", accept);
+        return EquipmentRequest(item, item.asset, maker, Seed(item.id + Math.Max(0, reforges)),
+            reforges > 0 ? "reforge" : "legendary");
     }
 
     [HarmonyPatch]

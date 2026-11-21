@@ -1,0 +1,110 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const int profiles = 1024, passes = 3, splits = 18;
+const string city = "worldbox:city", pool = "chinesename:river-places";
+const string worldKey = "chinesename.rules.v1";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+Config.paused = true;
+var world = World.world;
+world.map_stats.life_dna = 123456789L;
+var service = NamingApi.Current;
+var tile = world.tiles_list.First(candidate => candidate.Type.ground && candidate.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(actor);
+var rootCulture = world.cultures.newCulture(actor, true);
+actor.setCulture(rootCulture);
+var rootLanguage = world.languages.newLanguage(actor, true);
+actor.joinLanguage(rootLanguage);
+long rootCultureId = rootCulture.id, rootLanguageId = rootLanguage.id;
+var config = service.GetWorld();
+var rootProfile = new LanguageNaming();
+rootProfile.Pools[pool] = new PoolEdit { ExcludeText = new List<string> { "平津" },
+    Bias = new Dictionary<string, double> { ["test-word"] = 1.6 } };
+config.Languages[rootLanguage.id] = rootProfile;
+config.Cultures[rootCulture.id] = new CultureNaming();
+for (int index = 0; index < profiles; index++)
+{
+    long id = 100000L + index;
+    config.Languages[id] = rootProfile;
+    config.Cultures[id] = new CultureNaming { Parent = rootCulture.id };
+    config.LanguageParents[id] = rootLanguage.id;
+}
+WorldNamingStore.Apply(config);
+world.map_stats.custom_data.get(worldKey, out string initialSnapshot);
+
+var requests = Enumerable.Range(0, profiles).Select(index =>
+    new NameRequest(city, (ulong)index, 100000L + index, 100000L + index)).ToArray();
+var common = requests.Take(200).ToArray();
+Check(common.All(request => service.Generate(request).Success), "Warmup failed.");
+var clock = Stopwatch.StartNew();
+for (int pass = 0; pass < passes; pass++)
+    foreach (var batch in Enumerable.Range(0, 16))
+    {
+        foreach (var request in common) Check(service.Generate(request).Success, "Frequently used culture failed.");
+        foreach (var request in requests.Skip(200 + pass * 272 + batch * 17).Take(17))
+            Check(service.Generate(request).Success, "Infrequently used culture failed.");
+    }
+double mixedMilliseconds = clock.Elapsed.TotalMilliseconds;
+
+var plot = AssetManager.plots_library.get("language_divergence");
+var children = new List<(long Culture, long Language)>();
+clock.Restart();
+for (int index = 0; index < splits; index++)
+{
+    var parent = actor.culture;
+    var child = world.cultures.newCulture(actor, false);
+    child.cloneAndEvolveOnomastics(parent);
+    actor.setCulture(child);
+    Check(plot.action(actor), "Native language divergence failed.");
+    world.cultures.checkLists(); world.languages.checkLists();
+    Check(service.Generate(common[index]).Success, "An unrelated context failed while evolving.");
+    children.Add((child.id, actor.language.id));
+}
+double divisionMilliseconds = clock.Elapsed.TotalMilliseconds;
+world.map_stats.custom_data.get(worldKey, out string snapshotAfterSplits);
+Check(initialSnapshot == snapshotAfterSplits && children.All(child =>
+    world.map_stats.custom_data.custom_data_string.TryGetValue("chinesename.culture.v1/" + child.Culture, out _) &&
+    world.map_stats.custom_data.custom_data_string.TryGetValue("chinesename.language.v1/" + child.Language, out _)),
+    "Dividing should persist each child without rewriting the full snapshot.");
+long founder = actor.id;
+void CheckLineage()
+{
+    var state = service.GetWorld();
+    long culture = rootCultureId, language = rootLanguageId;
+    foreach (var child in children)
+    {
+        Check(state.Cultures[child.Culture].Parent == culture && state.LanguageParents[child.Language] == language,
+            "The parent links changed.");
+        Check(state.Languages[child.Language].BiasOrigin == rootLanguageId &&
+            NamingJson.Write(state.Languages[child.Language].Pools[pool]) == NamingJson.Write(rootProfile.Pools[pool]),
+            "A descendant lost the root preference or exclusions.");
+        culture = child.Culture; language = child.Language;
+    }
+}
+CheckLineage();
+var lastRequest = new NameRequest(city, 49, actor.culture.id, actor.language.id);
+string name = service.Generate(lastRequest).Text;
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "naming-scale");
+Directory.CreateDirectory(folder);
+world.units.checkContainer(); world.kingdoms.checkLists();
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading() && World.world.units.get(founder) != null, "The scale fixture failed to reload.");
+CheckLineage();
+Check(name != null && service.Generate(lastRequest).Text == name, "Naming changed on reload.");
+WorldNamingStore.Apply(service.GetWorld());
+world.map_stats.custom_data.get(worldKey, out string finalSnapshot);
+var header = NamingJson.Read<WorldNaming>(finalSnapshot);
+Check(header.Cultures.Count == 0 && header.Languages.Count == 0 && children.All(child =>
+    world.map_stats.custom_data.custom_data_string.TryGetValue("chinesename.culture.v1/" + child.Culture, out _) &&
+    world.map_stats.custom_data.custom_data_string.TryGetValue("chinesename.language.v1/" + child.Language, out _)),
+    "Applying the world settings folded independent profiles back into the header.");
+CheckLineage();
+return new { profiles, cultureSplits = splits, languageSplits = splits, mixedMilliseconds, divisionMilliseconds, reloadedName = name };
