@@ -43,6 +43,13 @@ public sealed class NamingService
     internal Dictionary<string, NamingPack> ActivePacks(WorldNaming world, IReadOnlyDictionary<string, NamingPack> catalog = null) =>
         Configuration.ResolveDependencies(catalog ?? _packs, world, _defaultPack, _modDefaults, new List<string>());
 
+    internal string PickHumanCulturePack(WorldNaming world, ulong seed)
+    {
+        var eligible = ActivePacks(world).Values.Where(pack => pack.HumanCultureDefault && !pack.Supplemental)
+            .Select(pack => pack.Id).OrderBy(id => id, StringComparer.Ordinal).ToArray();
+        return eligible.Length == 0 ? null : eligible[(int)(new NamingRandom(seed).Next() * eligible.Length)];
+    }
+
     internal Dictionary<string, NamingPack> PackageCatalog() => new(_packs, StringComparer.Ordinal);
 
     internal void ReplacePackageCatalog(Dictionary<string, NamingPack> catalog)
@@ -533,6 +540,8 @@ public sealed class NamingService
             foreach (var word in candidates)
                 words[word.Id] = new Word { Id = word.Id, Text = word.Text, Chinese = word.Chinese };
             if (effective.PoolLabels.TryGetValue(pool, out string label)) pack.PoolLabels[pool] = label;
+            var credits = effective.GetPoolCredits(pool);
+            if (credits.Count != 0) pack.PoolCredits[pool] = credits.ToList();
         }
     }
 

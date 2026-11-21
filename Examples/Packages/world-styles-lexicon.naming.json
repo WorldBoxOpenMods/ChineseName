@@ -2,6 +2,11 @@
   "format": 1,
   "id": "chinesename:world-styles-lexicon",
   "label": "世界地域译名词库",
+  "credits": [
+    "中文名项目 · 地域词表、译名与架空命名整理",
+    "联合国 M49 · 地域分组参考",
+    "外交部国情资料 · 部分地名汉译校对"
+  ],
   "supplemental": true,
   "words": [
     {

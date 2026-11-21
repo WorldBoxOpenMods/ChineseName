@@ -1,4 +1,6 @@
 # Each theme describes visible traits, habitat and institutions. "members" uses game asset IDs.
+credits = ["中文名项目 · 按游戏物种、环境和习性整理词表"]
+
 [themes.human]
 label = "人族"
 members = "human bandit greg"

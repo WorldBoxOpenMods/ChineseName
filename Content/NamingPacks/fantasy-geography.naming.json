@@ -2,6 +2,7 @@
   "format": 1,
   "id": "chinesename:fantasy-geography",
   "label": "西幻沿革",
+  "credits": ["中文名项目 · 命名排列整理"],
   "supplemental": true,
   "requires": {
     "chinesename:fantasy-race-set": 1,

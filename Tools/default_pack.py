@@ -9,7 +9,14 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "ChineseNamePackages/word_libraries/default"
 DEST = ROOT / "Content/default.naming.json"
-pack = {"format": 1, "id": "chinesename:classic", "label": "华语地名与人名",
+pack = {"format": 1, "id": "chinesename:classic", "label": "华语地名与人名", "humanCultureDefault": True,
+        "credits": ["一米（Inmny） · 原作与现版词库整理"],
+        "poolCredits": {
+            "chinesename:surname": ["《百家姓》 · 传统姓氏资料", "daybreak1929 · 旧版词表增补"],
+            "chinesename:places": ["daybreak1929 · 旧版词表增补"],
+            "chinesename:countries": ["daybreak1929 · 旧版词表增补"],
+            "chinesename:boat": ["daybreak1929 · 旧版词表增补"],
+        },
         "rules": {}, "words": [], "pools": {}, "poolLabels": {}, "wordGroups": {}}
 
 
@@ -255,7 +262,7 @@ for name, (label, stems, suffix) in {
     "language": ("语言名主体", "吴越 南音 河汊 北原 海汀 峡川 鹿鸣 桑谷 秦川 朔庭 东湾 芦汀 山阴 雁北 关西 隔水 雨林 白沙 临川 长屿", "语"),
     "religion": ("宗教名主体", "奉火 观星 归真 崇山 守泉 敬日 敬月 听潮 司禾 明心 续灯 持烛 星誓 青坛 逐光 玄水 山灵 守誓 长明 净泉", "教"),
     "family": ("家族名主体", "松庭 积善 耕读 三槐 杏林 怀远 承礼 双桂 继明 守拙 承荫 永叙 崇德 归耕 听松 敦仁 静和 安棠 栖梧 晋修", "一门"),
-    "clan": ("氏族名主体", "白鹿 赤狐 黑石 乌羽 赤松 青狼 铜角 白鹭 银角 岩羊 苍鹰 金鳞 青竹 雪枭 黑熊 长弓 角鲸 岩鸦 灰獾 翠羽", "氏族"),
+    "clan": ("氏族名主体", "黑石 赤松 青竹 长弓 河源 北原 松岭 江湾 云岫 临川 白垣 长堤 同舟 礼耕 守约 继明 承志 怀远 崇德 敦仁", "氏族"),
     "army": ("军队名主体", "朔骑 镇海 羽林 平野 护城 玄甲 靖边 赤旗 磐石 飞骑 崤关 河防 云骑 鹰旗 白旄 鹿野 息戈 雁门 守望 照夜 镇关 长锋 玄戟 青旌 卫河 守隘 横江 凌霄", "军"),
     "subspecies": ("亚种名主体", "高地 平原 苔原 林栖 沙地 潮汐 穴居 河谷 山麓 沼泽", "支系"),
     "alliance": ("联盟名主体", "三川 四水 山海 北境 归舟 东陆 守土 同心 长堤 诸城 河谷 海门 长垣 青原 北辰 白塔 星火 扶风 连山 同舟", "盟"),
@@ -301,8 +308,8 @@ for id, ref, members in [
     ("land-religions", "religion-name", "崇山 守泉 听潮 司禾 玄水 山灵 净泉"),
     ("scholarly-halls", "family-name", "耕读 三槐 杏林 怀远 继明 晋修"),
     ("pastoral-halls", "family-name", "松庭 双桂 归耕 听松 安棠 栖梧"),
-    ("beast-clans", "clan-name", "白鹿 赤狐 青狼 岩羊 黑熊 灰獾"),
-    ("bird-clans", "clan-name", "乌羽 白鹭 苍鹰 雪枭 岩鸦 翠羽"),
+    ("landscape-clans", "clan-name", "黑石 赤松 青竹 河源 北原 松岭 江湾 云岫 临川 白垣 长堤"),
+    ("civic-clans", "clan-name", "长弓 同舟 礼耕 守约 继明 承志 怀远 崇德 敦仁"),
     ("guard-armies", "army-name", "护城 靖边 河防 守望 镇关 卫河 守隘"),
     ("mobile-armies", "army-name", "朔骑 飞骑 云骑 鹰旗 长锋 横江 凌霄"),
     ("terrain-alliances", "alliance-name", "三川 四水 山海 北境 河谷 海门 长垣"),
@@ -438,7 +445,8 @@ for kind, label, sayings, other in [
 rule("subspecies", "skeleton", [{"id": "origin", "input": "origin"}, text("suffix", "·骨裔")], 20, kind="skeleton")
 rule("subspecies", "uplift", [{"id": "origin", "input": "origin"}, text("suffix", "·升灵")], 20, kind="uplift")
 
-western = {"format": 1, "id": "chinesename:western-localized", "label": "西式本地化", "requires": {pack["id"]: 1},
+western = {"format": 1, "id": "chinesename:western-localized", "label": "西式本地化",
+           "credits": ["一米（Inmny） · 西式译名排列整理"], "requires": {pack["id"]: 1},
            "rules": {}}
 
 
@@ -477,6 +485,11 @@ for type_id, rule_id, label, entries in [
     ("motto", "default", "西式通用格言", "Hold the Line=守住阵线|Faith and Courage=信念与勇气|As One We Stand=同心而立|In Light We Trust=笃信光明"),
 ]:
     west_name(type_id, rule_id, label, entries)
+
+west_name("clan", "human", "西式人类氏族名",
+          "Alder Clan=桤木氏族|Silverbrook Clan=银溪氏族|Stonebridge Clan=石桥氏族|"
+          "River Clan=河湾氏族|Whitehall Clan=白厅氏族|Northgate Clan=北门氏族",
+          {"priority": 5, "when": {"culture-species": "human"}})
 
 for type_id, by_id in {
     "war": {

@@ -36,6 +36,7 @@ def compile_lexicon(key, content):
         "format": 1,
         "id": "chinesename:" + key,
         "label": content["label"],
+        "credits": content["credits"],
         "supplemental": True,
         "words": [],
         "pools": {},
@@ -99,7 +100,7 @@ def regional_lexicon(catalog):
         for role, terms in profile["pools"].items():
             pools[f"{register}.{role}"] = {"label": profile["label"] + CONTEXT_POOL_LABELS[role],
                                            "groups": dict(zip(("first", "second"), terms, strict=True))}
-    return compile_lexicon("world-styles-lexicon", {"label": "世界地域译名词库", "pools": pools})
+    return compile_lexicon("world-styles-lexicon", {"label": "世界地域译名词库", "credits": catalog["credits"], "pools": pools})
 
 
 def species_lexicon(catalog):
@@ -114,19 +115,21 @@ def species_lexicon(catalog):
     for role, terms in shared["pools"].items():
         pools[role] = {"label": shared["label"] + CONTEXT_POOL_LABELS[role],
                        "groups": dict(zip(("first", "second"), terms, strict=True))}
-    return compile_lexicon("species-lexicon", {"label": "物种风格词库", "pools": pools})
+    return compile_lexicon("species-lexicon", {"label": "物种风格词库", "credits": catalog["credits"], "pools": pools})
 
 
 class StyleSets:
     def __init__(self, lexicons, bundled):
         self.lexicons = lexicons
         self.bundled = bundled
-    def new_set(self, stem, label, vocabulary=None):
+    def new_set(self, stem, label, vocabulary=None, *, human_default=False):
         lexicon = self.lexicons[(vocabulary or stem) + "-lexicon"]
         return {
             "format": 1,
             "id": "chinesename:" + stem + "-set",
             "label": label,
+            **({"humanCultureDefault": True} if human_default else {}),
+            "credits": ["一米（Inmny） · 命名排列整理"],
             "requires": {self.bundled["id"]: 1, lexicon["id"]: 1},
             "rules": {},
         }
@@ -195,7 +198,7 @@ class StyleSets:
         }
 
     def original(self):
-        guofeng = self.new_set("guofeng", "国风")
+        guofeng = self.new_set("guofeng", "国风", human_default=True)
         self.add_profile(guofeng, {
             "person": {"surname": self.pool("guofeng", "single-surname"), "given": self.pool("guofeng", "given")},
             "city": {"name": self.pool("guofeng", "town-root"), "suffix": self.pool("guofeng", "town-ending")},
@@ -206,7 +209,7 @@ class StyleSets:
             "clan": self.named(self.pool("guofeng", "emblem"), "氏族"),
             **self.affairs("guofeng", self.pool("guofeng", "country-double"), self.pool("guofeng", "town-root"), self.pool("guofeng", "saying")),
         })
-        wafuu = self.new_set("wafuu", "和风")
+        wafuu = self.new_set("wafuu", "和风", human_default=True)
         self.add_profile(wafuu, {
             "person": {"surname": self.pool("wafuu", "surname"), "given": self.pool("wafuu", "given")},
             "city": self.named(self.pool("wafuu", "city-root"), "城"),
@@ -229,6 +232,9 @@ class StyleSets:
             **self.affairs("fantasy-race", self.pool("classic", "western-kingdom-countries"),
                       self.pool("classic", "western-city-places"), self.pool("classic", "western-motto")),
         }, separator="·")
+        self.add_profile(fantasy, {
+            "clan": self.named(self.pool("classic", "western-clan-human")),
+        }, species="human")
         for species, city_suffix, country_suffix in (("elf", "庭", "王庭"), ("dwarf", "堡", "王国"), ("orc", "寨", "部族")):
             given = self.pool("fantasy-race", species + "-person")
             house = self.pool("fantasy-race", species + "-house")
@@ -247,7 +253,7 @@ class StyleSets:
 
     def regional(self, catalog):
         for region, profile in catalog["regions"].items():
-            pack = self.new_set("world-" + region, profile["label"], "world-styles")
+            pack = self.new_set("world-" + region, profile["label"], "world-styles", human_default=True)
             known = {role: self.pool("world-styles", f"{region}.{role}") for role in REGIONAL_POOL_LABELS if role in profile}
             given, city, realm = known["given"], known["city"], known["realm"]
             surname = known.get("surname")

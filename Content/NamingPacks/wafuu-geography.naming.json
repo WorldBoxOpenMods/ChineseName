@@ -2,6 +2,7 @@
   "format": 1,
   "id": "chinesename:wafuu-geography",
   "label": "和风沿革",
+  "credits": ["中文名项目 · 命名排列整理"],
   "supplemental": true,
   "requires": {
     "chinesename:wafuu-set": 1,

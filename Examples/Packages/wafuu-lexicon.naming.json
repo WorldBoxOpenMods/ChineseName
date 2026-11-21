@@ -2,6 +2,11 @@
   "format": 1,
   "id": "chinesename:wafuu-lexicon",
   "label": "和风人地词库",
+  "credits": [
+    "中文名项目 · 现版选词与整理",
+    "《中文名（日式）》1.5.1 · 姓氏、给名与地名参考",
+    "《中文名宗法制》2.2 · 部分姓氏参考"
+  ],
   "supplemental": true,
   "words": [
     {

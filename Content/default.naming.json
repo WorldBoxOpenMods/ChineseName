@@ -2,6 +2,25 @@
   "format": 1,
   "id": "chinesename:classic",
   "label": "华语地名与人名",
+  "humanCultureDefault": true,
+  "credits": [
+    "一米（Inmny） · 原作与现版词库整理"
+  ],
+  "poolCredits": {
+    "chinesename:surname": [
+      "《百家姓》 · 传统姓氏资料",
+      "daybreak1929 · 旧版词表增补"
+    ],
+    "chinesename:places": [
+      "daybreak1929 · 旧版词表增补"
+    ],
+    "chinesename:countries": [
+      "daybreak1929 · 旧版词表增补"
+    ],
+    "chinesename:boat": [
+      "daybreak1929 · 旧版词表增补"
+    ]
+  },
   "rules": {
     "worldbox:person": [
       {
@@ -15942,84 +15961,84 @@
       "text": "晋修"
     },
     {
-      "id": "chinesename:clan-name.767d-9e7f",
-      "text": "白鹿"
-    },
-    {
-      "id": "chinesename:clan-name.8d64-72d0",
-      "text": "赤狐"
-    },
-    {
       "id": "chinesename:clan-name.9ed1-77f3",
       "text": "黑石"
-    },
-    {
-      "id": "chinesename:clan-name.4e4c-7fbd",
-      "text": "乌羽"
     },
     {
       "id": "chinesename:clan-name.8d64-677e",
       "text": "赤松"
     },
     {
-      "id": "chinesename:clan-name.9752-72fc",
-      "text": "青狼"
-    },
-    {
-      "id": "chinesename:clan-name.94dc-89d2",
-      "text": "铜角"
-    },
-    {
-      "id": "chinesename:clan-name.767d-9e6d",
-      "text": "白鹭"
-    },
-    {
-      "id": "chinesename:clan-name.94f6-89d2",
-      "text": "银角"
-    },
-    {
-      "id": "chinesename:clan-name.5ca9-7f8a",
-      "text": "岩羊"
-    },
-    {
-      "id": "chinesename:clan-name.82cd-9e70",
-      "text": "苍鹰"
-    },
-    {
-      "id": "chinesename:clan-name.91d1-9cde",
-      "text": "金鳞"
-    },
-    {
       "id": "chinesename:clan-name.9752-7af9",
       "text": "青竹"
-    },
-    {
-      "id": "chinesename:clan-name.96ea-67ad",
-      "text": "雪枭"
-    },
-    {
-      "id": "chinesename:clan-name.9ed1-718a",
-      "text": "黑熊"
     },
     {
       "id": "chinesename:clan-name.957f-5f13",
       "text": "长弓"
     },
     {
-      "id": "chinesename:clan-name.89d2-9cb8",
-      "text": "角鲸"
+      "id": "chinesename:clan-name.6cb3-6e90",
+      "text": "河源"
     },
     {
-      "id": "chinesename:clan-name.5ca9-9e26",
-      "text": "岩鸦"
+      "id": "chinesename:clan-name.5317-539f",
+      "text": "北原"
     },
     {
-      "id": "chinesename:clan-name.7070-737e",
-      "text": "灰獾"
+      "id": "chinesename:clan-name.677e-5cad",
+      "text": "松岭"
     },
     {
-      "id": "chinesename:clan-name.7fe0-7fbd",
-      "text": "翠羽"
+      "id": "chinesename:clan-name.6c5f-6e7e",
+      "text": "江湾"
+    },
+    {
+      "id": "chinesename:clan-name.4e91-5cab",
+      "text": "云岫"
+    },
+    {
+      "id": "chinesename:clan-name.4e34-5ddd",
+      "text": "临川"
+    },
+    {
+      "id": "chinesename:clan-name.767d-57a3",
+      "text": "白垣"
+    },
+    {
+      "id": "chinesename:clan-name.957f-5824",
+      "text": "长堤"
+    },
+    {
+      "id": "chinesename:clan-name.540c-821f",
+      "text": "同舟"
+    },
+    {
+      "id": "chinesename:clan-name.793c-8015",
+      "text": "礼耕"
+    },
+    {
+      "id": "chinesename:clan-name.5b88-7ea6",
+      "text": "守约"
+    },
+    {
+      "id": "chinesename:clan-name.7ee7-660e",
+      "text": "继明"
+    },
+    {
+      "id": "chinesename:clan-name.627f-5fd7",
+      "text": "承志"
+    },
+    {
+      "id": "chinesename:clan-name.6000-8fdc",
+      "text": "怀远"
+    },
+    {
+      "id": "chinesename:clan-name.5d07-5fb7",
+      "text": "崇德"
+    },
+    {
+      "id": "chinesename:clan-name.6566-4ec1",
+      "text": "敦仁"
     },
     {
       "id": "chinesename:army-name.6714-9a91",
@@ -19390,6 +19409,36 @@
       "chinese": "笃信光明"
     },
     {
+      "id": "chinesename:western-clan-human.41-6c-64-65-72-20-43-6c-61-6e",
+      "text": "Alder Clan",
+      "chinese": "桤木氏族"
+    },
+    {
+      "id": "chinesename:western-clan-human.4fff4826640231c3e67a",
+      "text": "Silverbrook Clan",
+      "chinese": "银溪氏族"
+    },
+    {
+      "id": "chinesename:western-clan-human.29d23c8bc32797774741",
+      "text": "Stonebridge Clan",
+      "chinese": "石桥氏族"
+    },
+    {
+      "id": "chinesename:western-clan-human.52-69-76-65-72-20-43-6c-61-6e",
+      "text": "River Clan",
+      "chinese": "河湾氏族"
+    },
+    {
+      "id": "chinesename:western-clan-human.57-68-69-74-65-68-61-6c-6c-20-43-6c-61-6e",
+      "text": "Whitehall Clan",
+      "chinese": "白厅氏族"
+    },
+    {
+      "id": "chinesename:western-clan-human.4e-6f-72-74-68-67-61-74-65-20-43-6c-61-6e",
+      "text": "Northgate Clan",
+      "chinese": "北门氏族"
+    },
+    {
       "id": "chinesename:western-war-normal.4d7ed8f9b2eaa90fe9d6",
       "text": "The Northward Campaign",
       "chinese": "北境远征"
@@ -22634,26 +22683,26 @@
       "chinesename:family-name.664b-4fee": 1
     },
     "chinesename:clan-name": {
-      "chinesename:clan-name.767d-9e7f": 1,
-      "chinesename:clan-name.8d64-72d0": 1,
       "chinesename:clan-name.9ed1-77f3": 1,
-      "chinesename:clan-name.4e4c-7fbd": 1,
       "chinesename:clan-name.8d64-677e": 1,
-      "chinesename:clan-name.9752-72fc": 1,
-      "chinesename:clan-name.94dc-89d2": 1,
-      "chinesename:clan-name.767d-9e6d": 1,
-      "chinesename:clan-name.94f6-89d2": 1,
-      "chinesename:clan-name.5ca9-7f8a": 1,
-      "chinesename:clan-name.82cd-9e70": 1,
-      "chinesename:clan-name.91d1-9cde": 1,
       "chinesename:clan-name.9752-7af9": 1,
-      "chinesename:clan-name.96ea-67ad": 1,
-      "chinesename:clan-name.9ed1-718a": 1,
       "chinesename:clan-name.957f-5f13": 1,
-      "chinesename:clan-name.89d2-9cb8": 1,
-      "chinesename:clan-name.5ca9-9e26": 1,
-      "chinesename:clan-name.7070-737e": 1,
-      "chinesename:clan-name.7fe0-7fbd": 1
+      "chinesename:clan-name.6cb3-6e90": 1,
+      "chinesename:clan-name.5317-539f": 1,
+      "chinesename:clan-name.677e-5cad": 1,
+      "chinesename:clan-name.6c5f-6e7e": 1,
+      "chinesename:clan-name.4e91-5cab": 1,
+      "chinesename:clan-name.4e34-5ddd": 1,
+      "chinesename:clan-name.767d-57a3": 1,
+      "chinesename:clan-name.957f-5824": 1,
+      "chinesename:clan-name.540c-821f": 1,
+      "chinesename:clan-name.793c-8015": 1,
+      "chinesename:clan-name.5b88-7ea6": 1,
+      "chinesename:clan-name.7ee7-660e": 1,
+      "chinesename:clan-name.627f-5fd7": 1,
+      "chinesename:clan-name.6000-8fdc": 1,
+      "chinesename:clan-name.5d07-5fb7": 1,
+      "chinesename:clan-name.6566-4ec1": 1
     },
     "chinesename:army-name": {
       "chinesename:army-name.6714-9a91": 1,
@@ -23761,6 +23810,14 @@
       "chinesename:western-motto.41-73-20-4f-6e-65-20-57-65-20-53-74-61-6e-64": 1,
       "chinesename:western-motto.49-6e-20-4c-69-67-68-74-20-57-65-20-54-72-75-73-74": 1
     },
+    "chinesename:western-clan-human": {
+      "chinesename:western-clan-human.41-6c-64-65-72-20-43-6c-61-6e": 1,
+      "chinesename:western-clan-human.4fff4826640231c3e67a": 1,
+      "chinesename:western-clan-human.29d23c8bc32797774741": 1,
+      "chinesename:western-clan-human.52-69-76-65-72-20-43-6c-61-6e": 1,
+      "chinesename:western-clan-human.57-68-69-74-65-68-61-6c-6c-20-43-6c-61-6e": 1,
+      "chinesename:western-clan-human.4e-6f-72-74-68-67-61-74-65-20-43-6c-61-6e": 1
+    },
     "chinesename:western-war-normal": {
       "chinesename:western-war-normal.4d7ed8f9b2eaa90fe9d6": 1,
       "chinesename:western-war-normal.2c45fcfa9c1c44ca2d63": 1,
@@ -23993,6 +24050,7 @@
     "chinesename:western-book": "西式通用书名",
     "chinesename:western-item": "西式装备名",
     "chinesename:western-motto": "西式通用格言",
+    "chinesename:western-clan-human": "西式人类氏族名",
     "chinesename:western-war-normal": "西式征伐战名",
     "chinesename:western-war-spite": "西式复仇战名",
     "chinesename:western-war-inspire": "西式思潮战名",
@@ -24516,26 +24574,34 @@
         "chinesename:family-name.6816-68a7"
       ]
     },
-    "beast-clans": {
+    "landscape-clans": {
       "pool": "chinesename:clan-name",
       "words": [
-        "chinesename:clan-name.767d-9e7f",
-        "chinesename:clan-name.8d64-72d0",
-        "chinesename:clan-name.9752-72fc",
-        "chinesename:clan-name.5ca9-7f8a",
-        "chinesename:clan-name.9ed1-718a",
-        "chinesename:clan-name.7070-737e"
+        "chinesename:clan-name.9ed1-77f3",
+        "chinesename:clan-name.8d64-677e",
+        "chinesename:clan-name.9752-7af9",
+        "chinesename:clan-name.6cb3-6e90",
+        "chinesename:clan-name.5317-539f",
+        "chinesename:clan-name.677e-5cad",
+        "chinesename:clan-name.6c5f-6e7e",
+        "chinesename:clan-name.4e91-5cab",
+        "chinesename:clan-name.4e34-5ddd",
+        "chinesename:clan-name.767d-57a3",
+        "chinesename:clan-name.957f-5824"
       ]
     },
-    "bird-clans": {
+    "civic-clans": {
       "pool": "chinesename:clan-name",
       "words": [
-        "chinesename:clan-name.4e4c-7fbd",
-        "chinesename:clan-name.767d-9e6d",
-        "chinesename:clan-name.82cd-9e70",
-        "chinesename:clan-name.96ea-67ad",
-        "chinesename:clan-name.5ca9-9e26",
-        "chinesename:clan-name.7fe0-7fbd"
+        "chinesename:clan-name.957f-5f13",
+        "chinesename:clan-name.540c-821f",
+        "chinesename:clan-name.793c-8015",
+        "chinesename:clan-name.5b88-7ea6",
+        "chinesename:clan-name.7ee7-660e",
+        "chinesename:clan-name.627f-5fd7",
+        "chinesename:clan-name.6000-8fdc",
+        "chinesename:clan-name.5d07-5fb7",
+        "chinesename:clan-name.6566-4ec1"
       ]
     },
     "guard-armies": {
@@ -25207,6 +25273,7 @@
     "西式通用书名": "chinesename:western-book",
     "西式装备名": "chinesename:western-item",
     "西式通用格言": "chinesename:western-motto",
+    "西式人类氏族名": "chinesename:western-clan-human",
     "西式征伐战名": "chinesename:western-war-normal",
     "西式复仇战名": "chinesename:western-war-spite",
     "西式思潮战名": "chinesename:western-war-inspire",

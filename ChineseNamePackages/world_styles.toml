@@ -1,5 +1,7 @@
 # "|" separates entries. "=" separates the original spelling and Chinese rendering.
 # Realm pools use historic and geographic roots. The generated polities are fictional.
+credits = ["中文名项目 · 地域词表、译名与架空命名整理", "联合国 M49 · 地域分组参考", "外交部国情资料 · 部分地名汉译校对"]
+
 [regions.british]
 label = "不列颠"
 register = "europe"

@@ -18,13 +18,13 @@ var service = new NamingService("tests:base");
 service.RegisterType(new NameType(type, "人名", new[] { new InputField("kind", InputKind.Text, true) },
     fixedParts: new[] { "surname" }));
 service.InstallPack(Read("""
-    {"format":1,"id":"tests:base","rules":{"tests:person":[
+    {"format":1,"id":"tests:base","credits":["原表编者"],"poolCredits":{"tests:given":["给名增补者"]},"rules":{"tests:person":[
         {"id":"person","parts":[{"id":"surname","literal":"李"},{"id":"given","pool":"tests:given"}]}
     ]},"words":[{"id":"tests:green","text":"青"},{"id":"tests:river","text":"川"}],
     "pools":{"tests:given":{"tests:green":1,"tests:river":1}}}
     """));
 service.InstallPack(Read("""
-    {"format":1,"id":"tests:append","supplemental":true,"requires":{"tests:base":1},
+    {"format":1,"id":"tests:append","supplemental":true,"requires":{"tests:base":1},"credits":["补充包编者"],
     "words":[{"id":"tests:mist","text":"岚"}],
     "poolPatches":[{"operation":"Append","pool":"tests:given","words":{"tests:green":3,"tests:mist":3}},
                    {"operation":"Append","pool":"tests:given","words":{"tests:green":2}}]}
@@ -298,6 +298,31 @@ var effective = service.Inspect(Request(), draft);
 Check(effective.Pools[pool].ToDictionary(word => word.Text, word => word.Weight)
     .All(pair => pair.Value == (pair.Key == "川" ? 1 : 3)), "Merge duplicate references by maximum weight.");
 Check(effective.Pools[pool].Length == 3, "Resolve precisely three word IDs.");
+var credited = new[] { "原表编者", "给名增补者", "补充包编者" };
+Check(credited.ToHashSet().SetEquals(effective.GetPoolCredits(pool)) &&
+    service.GetPackage("tests:alternative").Credits.Count == 0, "Pool credits must include the source and active additions while allowing old manifests.");
+var portableCredits = service.MakePortablePack("tests:credited-export", null, null, draft, null);
+Check(credited.ToHashSet().SetEquals(Read(NamingJson.WritePack(portableCredits)).PoolCredits[pool]),
+    "Exported vocabulary must retain its contributor notices.");
+service.InstallPack(Read("""
+    {"format":1,"id":"tests:replacement","supplemental":true,"priority":100,
+    "poolCredits":{"tests:given":["替换词表编者"]},
+    "words":[{"id":"tests:leaf","text":"叶"}],
+    "poolPatches":[{"operation":"Replace","pool":"tests:given","words":{"tests:leaf":1}}]}
+    """));
+var creditDraft = NamingJson.Copy(draft);
+creditDraft.EnabledPacks.Add("tests:replacement");
+Check(service.Inspect(Request(), creditDraft).GetPoolCredits(pool).SequenceEqual(new[] { "替换词表编者" }),
+    "A completely replaced pool retains only the new source's credits.");
+var reusedTerms = service.GetPackage("tests:replacement");
+reusedTerms.Id = "tests:replacement-with-reuse";
+reusedTerms.PoolPatches[0].Words["tests:river"] = 1;
+service.InstallPack(reusedTerms);
+creditDraft.EnabledPacks.Remove("tests:replacement");
+creditDraft.EnabledPacks.Add(reusedTerms.Id);
+Check(service.Inspect(Request(), creditDraft).GetPoolCredits(pool).ToHashSet().SetEquals(new[] {
+    "原表编者", "给名增补者", "替换词表编者"
+}), "A replacement that still uses some of the previous words keeps their sources.");
 Check(effective.Diagnostics.Contains("dependency:tests:missing/tests:absent"), "Report unavailable pack dependencies.");
 Check(service.Inspect(Request(), null).Pools[pool].Length == 2, "Preview must never enable an installed pack.");
 draft.Languages[9] = new LanguageNaming
@@ -619,6 +644,19 @@ var regionNames = catalog.GetWorld();
 const string british = "chinesename:world-british-set", korean = "chinesename:world-korean-set";
 regionNames.EnabledPacks.AddRange(new[] { british, korean });
 var identity = new Dictionary<string, object> { ["kind"] = "sapient" };
+const string regionalVocabulary = "chinesename:world-styles-lexicon";
+var founding = NamingJson.Copy(enabledLexicons);
+founding.EnabledPacks.AddRange(new[] { british, korean, "chinesename:species-set", "chinesename:fantasy-race-set" });
+var reversedFounding = NamingJson.Copy(founding);
+reversedFounding.EnabledPacks.Reverse();
+var foundingPicks = Enumerable.Range(0, 96).Select(seed => catalog.PickHumanCulturePack(founding, (ulong)seed)).ToArray();
+Check(bundled.HumanCultureDefault && namingSets.Count(pack => pack.HumanCultureDefault) == 40 &&
+    foundingPicks.ToHashSet().SetEquals(new[] { bundled.Id, british, korean }) &&
+    foundingPicks.SequenceEqual(Enumerable.Range(0, 96).Select(seed => catalog.PickHumanCulturePack(reversedFounding, (ulong)seed))),
+    "Human founding should draw reproducibly from the eligible enabled styles only.");
+founding.EnabledPacks.Remove(regionalVocabulary);
+Check(Enumerable.Range(0, 96).All(seed => catalog.PickHumanCulturePack(founding, (ulong)seed) == bundled.Id),
+    "A style with a missing dependency should be excluded from human founding.");
 foreach (var (set, source, given, surname, original, localized) in new[] {
     (british, "british", "John", "Smith", "John Smith", "约翰·史密斯"),
     (korean, "korean", "민준", "김", "김민준", "金敏俊")

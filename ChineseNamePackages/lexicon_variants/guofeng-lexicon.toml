@@ -1,4 +1,5 @@
 label = "国风乡土词库"
+credits = ["中文名项目 · 现版选词与整理", "《中文名》1.5.1 国风变体 · 姓氏与双字名参考", "一米、凸( →_→ )凸、太一、康康 · 全文明版 2.0 词表参考"]
 
 [pools.single-surname]
 label = "国风单姓"
@@ -72,7 +73,7 @@ conduct = "兼爱非攻 厚德载物 格物致知 慎终如始 和而不同 言�
 [pools.emblem]
 label = "国风旗号"
 [pools.emblem.groups]
-regions = "青禾 玉垣 沧浪 朔风 海桑 桂舟 白鹭 赤松 明汀 野梅 长河 槐月"
+regions = "青禾 玉垣 沧浪 朔风 海桑 桂舟 白洲 赤松 明汀 野梅 长河 槐月"
 values = "守土 同舟 礼耕 守信 承志 秉义 清议 守约 勤民 保境 崇贤 信和"
 
 [pools.tradition]

@@ -2,6 +2,10 @@
   "format": 1,
   "id": "chinesename:books-craft-lexicon",
   "label": "书志与器物词库",
+  "credits": [
+    "中文名项目 · 现版选词与整理",
+    "《全文明种族版中文名》2.0 与《中文名宗法制》2.2 · 题名与器物词表参考"
+  ],
   "supplemental": true,
   "words": [
     {

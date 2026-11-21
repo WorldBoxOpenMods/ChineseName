@@ -221,7 +221,9 @@ internal sealed class NativePackagePage : MonoBehaviour
         {
             var pack = service.DescribePackage(id);
             string label = pack?.Label ?? id;
-            if (!Matches(_query, label, id)) continue;
+            var credits = pack == null ? Array.Empty<string>() : pack.Credits.Concat(pack.PoolCredits.Values.SelectMany(lines => lines))
+                .Distinct(StringComparer.Ordinal).ToArray();
+            if (!Matches(_query, label, id) && !credits.Any(line => Matches(_query, line, id))) continue;
             bool required = id == service.DefaultPack || service.IsModDefault(id);
             bool enabled = world.EnabledPacks.Contains(id);
             bool available = active.ContainsKey(id);
@@ -229,6 +231,7 @@ internal sealed class NativePackagePage : MonoBehaviour
                 available ? "已启用" : "缺少依赖";
             string hint = pack == null || pack.Requires.Count == 0 ? id :
                 id + "\n依赖 " + string.Join("、", pack.Requires.Keys.Select(key => service.DescribePackage(key)?.Label ?? key));
+            hint = WithCredits(hint, credits);
             string icon = required ? "iconMainInfo" : available ? "IconOn" : "IconOff";
             var row = Row(_results, "NamingPack." + id, label, state, required ? null : () => Toggle(id), icon,
                 hint);

@@ -2,6 +2,10 @@
   "format": 1,
   "id": "chinesename:world-british-set",
   "label": "不列颠",
+  "humanCultureDefault": true,
+  "credits": [
+    "一米（Inmny） · 命名排列整理"
+  ],
   "requires": {
     "chinesename:classic": 1,
     "chinesename:world-styles-lexicon": 1

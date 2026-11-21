@@ -12,9 +12,13 @@ public sealed class NamingPack
     public int Format { get; set; }
     public string Id { get; set; }
     public string Label { get; set; }
+    public List<string> Credits { get; set; } = new();
+    public Dictionary<string, List<string>> PoolCredits { get; set; } = new();
     public int Version { get; set; } = 1;
     public int Priority { get; set; }
     public bool Supplemental { get; set; }
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public bool HumanCultureDefault { get; set; }
     public bool UseAsLanguageDefault { get; set; }
     public bool FallbackPools { get; set; }
     public Dictionary<string, int> Requires { get; set; } = new();
@@ -33,6 +37,9 @@ public sealed class NamingPack
     public Dictionary<string, string> PoolAliases { get; set; } = new();
     public Dictionary<string, string> PoolRenames { get; set; } = new();
     public Dictionary<string, Dictionary<string, string>> PartRenames { get; set; } = new();
+
+    internal IEnumerable<string> CreditsFor(string pool) => PoolCredits.TryGetValue(pool, out var extra)
+        ? Credits.Concat(extra) : Credits;
 }
 
 public enum PoolOperation { Append, Replace, Exclude }
@@ -289,6 +296,7 @@ internal sealed class EffectiveNames
     internal Rule[] Rules { get; set; }
     internal Rule[] AvailableRules { get; set; }
     internal Dictionary<string, Word[]> Pools { get; set; }
+    internal Dictionary<string, string[]> VocabularyCredits { get; set; }
     internal string[] Diagnostics { get; set; }
     internal string[] PoolIds { get; set; }
     internal Dictionary<string, string> PoolLabels { get; set; }
@@ -315,6 +323,14 @@ internal sealed class EffectiveNames
     {
         id = PoolId(id);
         return Pools.TryGetValue(id, out var words) ? words : ReadAdditionalPool(id);
+    }
+
+    internal IReadOnlyList<string> GetPoolCredits(string id)
+    {
+        id = PoolId(id);
+        if (VocabularyCredits == null || id == null) return Array.Empty<string>();
+        if (!VocabularyCredits.ContainsKey(id)) GetPool(id);
+        return VocabularyCredits.TryGetValue(id, out var credits) ? credits : Array.Empty<string>();
     }
 
     internal IEnumerable<string> ReferencedPools(Part part)
@@ -404,10 +420,17 @@ public static class NamingJson
 
 internal static partial class Configuration
 {
+    private static bool ValidCredits(List<string> lines) => lines != null &&
+        lines.All(line => Ids.Text(line, 256) && !string.IsNullOrWhiteSpace(line) &&
+            !line.Contains('<') && !line.Contains('>'));
+
     internal static void Validate(NamingPack pack)
     {
         if (pack == null || pack.Format != NamingPack.CurrentFormat || !Ids.Qualified(pack.Id) || pack.Version < 1)
             throw new FormatException("Unsupported pack format, ID or version.");
+        if (!ValidCredits(pack.Credits) || pack.PoolCredits == null ||
+            pack.PoolCredits.Any(pair => !Ids.Qualified(pair.Key) || !ValidCredits(pair.Value)))
+            throw new FormatException("Invalid naming credits in " + pack.Id);
         if ((pack.FallbackPools && !pack.Supplemental) ||
             pack.Requires.Any(pair => !Ids.Qualified(pair.Key) || pair.Value < 1) ||
             pack.CultureBases.Any(id => !Ids.Qualified(id)) || pack.LanguageBases.Any(id => !Ids.Qualified(id)))
@@ -618,6 +641,7 @@ internal static partial class Configuration
         var vocabulary = baseVocabulary ? null : migratedLanguage;
         var priorities = world.PackPriorities;
         var additional = new Dictionary<string, Word[]>(StringComparer.Ordinal);
+        var vocabularyCredits = new Dictionary<string, string[]>(StringComparer.Ordinal);
         return new EffectiveNames
         {
             Rules = rules,
@@ -635,7 +659,9 @@ internal static partial class Configuration
                 .ThenBy(pack => pack.Id, StringComparer.Ordinal).SelectMany(pack => pack.PoolLabels)
                 .GroupBy(pair => pair.Key).ToDictionary(group => group.Key, group => group.Last().Value),
             Pools = ResolvePools(active, languagePack, defaultPack, usedPools, biasLanguage, parentLanguage, vocabulary,
-                priorities, diagnostics, snapshot: snapshot, baseVocabulary: baseVocabulary, poolRenames: poolMigrations.Ids),
+                priorities, diagnostics, snapshot: snapshot, baseVocabulary: baseVocabulary, poolRenames: poolMigrations.Ids,
+                credits: vocabularyCredits),
+            VocabularyCredits = vocabularyCredits,
             PoolAliases = aliases,
             PoolMigrations = poolMigrations,
             LanguageSettings = migratedLanguage,
@@ -644,7 +670,8 @@ internal static partial class Configuration
                 if (!additional.TryGetValue(id, out var words))
                     additional[id] = words = poolIds.Contains(id)
                         ? ResolvePools(active, languagePack, defaultPack, new[] { id }, biasLanguage, parentLanguage, vocabulary,
-                            priorities, new List<string>(), snapshot: snapshot, baseVocabulary: baseVocabulary, poolRenames: poolMigrations.Ids)[id]
+                            priorities, new List<string>(), snapshot: snapshot, baseVocabulary: baseVocabulary, poolRenames: poolMigrations.Ids,
+                            credits: vocabularyCredits)[id]
                         : Array.Empty<Word>();
                 return words;
             },
@@ -928,7 +955,7 @@ internal static partial class Configuration
     private static Dictionary<string, Word[]> ResolvePools(Dictionary<string, NamingPack> active, string selected,
         string fallback, string[] usedPools, long? languageId, long? languageParent, LanguageNaming language, Dictionary<string, int> priorities,
         List<string> diagnostics, ISet<string> restrictedPools = null, NamingPack snapshot = null, bool baseVocabulary = false,
-        IReadOnlyDictionary<string, string> poolRenames = null)
+        IReadOnlyDictionary<string, string> poolRenames = null, Dictionary<string, string[]> credits = null)
     {
         var result = new Dictionary<string, Word[]>(StringComparer.Ordinal);
         if (usedPools.Length == 0) return result;
@@ -947,21 +974,31 @@ internal static partial class Configuration
         foreach (var id in usedPools)
         {
             var weights = new Dictionary<string, double>(StringComparer.Ordinal);
+            var sources = credits == null ? null : new List<(NamingPack Pack, IEnumerable<string> Terms)>();
             Dictionary<string, double> capturedPool = null;
             bool captured = snapshot != null && snapshot.Pools.TryGetValue(id, out capturedPool) &&
                 (selected == snapshot.Id || selected == null || !active[selected].Pools.ContainsKey(id));
             var basePack = selected != null && active[selected].Pools.ContainsKey(id) ? selected : fallback;
             bool hasBasePool = false;
-            if (captured) MergeMax(weights, capturedPool);
+            if (captured)
+            {
+                MergeMax(weights, capturedPool);
+                sources?.Add((snapshot, capturedPool.Keys));
+            }
             else if (basePack != null && active.TryGetValue(basePack, out var primary) && primary.Pools.TryGetValue(id, out var pool))
             {
                 MergeMax(weights, pool);
+                sources?.Add((primary, pool.Keys));
                 hasBasePool = true;
             }
             foreach (var priority in groups)
             {
                 if (captured) break;
-                var contributions = priority.Select(pack => Collapse(Operations(pack, id, selected, fallback, hasBasePool)))
+                var contributions = priority.Select(pack =>
+                {
+                    var (replacement, members) = Collapse(Operations(pack, id, selected, fallback, hasBasePool));
+                    return (Pack: pack, Replacement: replacement, Members: members);
+                })
                     .Where(patch => patch.Replacement != null || patch.Members.Count != 0).ToArray();
                 var replacements = contributions.Where(patch => patch.Replacement != null).ToArray();
                 if (replacements.Length != 0)
@@ -976,6 +1013,14 @@ internal static partial class Configuration
                     weights.Clear();
                     MergeMax(weights, replacements[0].Replacement);
                 }
+                if (sources != null)
+                    foreach (var contribution in contributions)
+                    {
+                        if (contribution.Replacement?.Count > 0)
+                            sources.Add((contribution.Pack, contribution.Replacement.Keys));
+                        if (contribution.Members.Count > 0)
+                            sources.Add((contribution.Pack, contribution.Members.Where(pair => pair.Value > 0).Select(pair => pair.Key)));
+                    }
                 foreach (var entry in contributions.SelectMany(patch => patch.Members).GroupBy(pair => pair.Key))
                 {
                     if (entry.Any(pair => !pair.Value.HasValue))
@@ -1060,6 +1105,10 @@ internal static partial class Configuration
                 if (candidates.Count == NameEngine.MaxWords) break;
             }
             result.Add(id, candidates.ToArray());
+            if (credits != null)
+                credits[id] = sources.Where(source => source.Terms.Any(term =>
+                        weights.TryGetValue(term, out double weight) && weight > 0 && vocabulary.ContainsKey(term)))
+                    .SelectMany(source => source.Pack.CreditsFor(id)).Distinct(StringComparer.Ordinal).ToArray();
         }
         return result;
     }

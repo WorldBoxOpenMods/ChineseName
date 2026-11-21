@@ -2,6 +2,7 @@
   "format": 1,
   "id": "example:river-names",
   "label": "江河用字",
+  "credits": ["中文名项目 · 词库扩展示例"],
   "supplemental": true,
   "priority": 20,
   "requires": { "chinesename:classic": 1 },

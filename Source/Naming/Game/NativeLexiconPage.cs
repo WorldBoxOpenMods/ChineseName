@@ -81,7 +81,8 @@ internal sealed class NativeLexiconPage : MonoBehaviour
         }
         else
         {
-            Row(transform, "BackToLexicons", PoolLabel(_pool), "返回", () => OpenPool(null));
+            Row(transform, "BackToLexicons", PoolLabel(_pool), "返回", () => OpenPool(null),
+                tooltip: WithCredits(_pool, _effective.GetPoolCredits(_pool)));
             RenderPoolSettings(service, world, settings);
         }
 
@@ -131,7 +132,8 @@ internal sealed class NativeLexiconPage : MonoBehaviour
             var preferences = settings?.PreferencesFor(id).OrderByDescending(pair => pair.Value).ToArray();
             string hint = preferences == null || preferences.Length == 0 ? id :
                 string.Join("\n", preferences.Select(pair => GroupName(pair.Key) + " " + pair.Value.ToString("P0")));
-            Row(_results, "LexiconPool." + id, PoolLabel(id), "查看", () => OpenPool(id), tooltip: hint);
+            var row = Row(_results, "LexiconPool." + id, PoolLabel(id), "查看", () => OpenPool(id));
+            BindHint(row, () => WithCredits(hint, _effective.GetPoolCredits(id)));
         }
         if (ids.Length == 0) Row(_results, "NoPools", "", "没有匹配的词库");
         else if (ids.Length > 60) Row(_results, "MorePools", "", "搜索查看更多词库");
