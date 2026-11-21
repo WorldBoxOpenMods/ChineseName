@@ -2,6 +2,9 @@
   "format": 1,
   "id": "chinesename:species-lexicon",
   "label": "内置物种风格",
+  "credits": [
+    "中文名项目 · 按游戏物种、环境和习性整理词表"
+  ],
   "supplemental": true,
   "words": [
     {

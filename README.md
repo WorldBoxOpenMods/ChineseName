@@ -8,6 +8,8 @@
 
 ![原版命名学的城市名字形和语言预览](Doc/screenshots/onomastics.png)
 
+在「世界信息 → 命名包」和「语言 → 词库」悬停可查看署名。[词库贡献者与资料来源](Examples/Packages/README.md#贡献者与资料来源)
+
 ## 给接入模组的 Agent
 
 在 NML 清单声明 `CHINESENAME` 依赖。用 `RegisterCategory` 登记新类别的输入、默认内容、字形和预制条件，用 `NameRequest` 接入实际取名。用 `ExtendCategory` 和 `WorldNamingInputs.RegisterInput` 给原版类别扩展输入、字形和条件。已有类别和新物种也可以补充规则或词库。[API 实现](Source/Naming/NamingService.cs) · [请求与结果](Source/Naming/Contracts.cs) · [接入示例和包格式](Doc/命名框架重构/实现与验证.md#其他模组接入)

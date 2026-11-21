@@ -2,6 +2,7 @@
   "format": 1,
   "id": "chinesename:conditional-arrangements",
   "label": "条件排列示例",
+  "credits": ["中文名项目 · 命名排列整理"],
   "requires": {
     "chinesename:classic": 1
   },

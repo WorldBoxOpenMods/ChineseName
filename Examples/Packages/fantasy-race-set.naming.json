@@ -2,6 +2,9 @@
   "format": 1,
   "id": "chinesename:fantasy-race-set",
   "label": "西幻",
+  "credits": [
+    "一米（Inmny） · 命名排列整理"
+  ],
   "requires": {
     "chinesename:classic": 1,
     "chinesename:fantasy-race-lexicon": 1
@@ -475,6 +478,21 @@
             "pool": "chinesename:western-clan"
           }
         ]
+      },
+      {
+        "id": "fantasy-race-set.human",
+        "priority": 50,
+        "useNativeWordGroups": true,
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-clan-human"
+          }
+        ],
+        "when": {
+          "culture-species": "human"
+        }
       },
       {
         "id": "fantasy-race-set.elf",

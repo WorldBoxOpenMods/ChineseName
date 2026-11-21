@@ -2,6 +2,9 @@
   "format": 1,
   "id": "chinesename:western-localized",
   "label": "西式本地化",
+  "credits": [
+    "一米（Inmny） · 西式译名排列整理"
+  ],
   "requires": {
     "chinesename:classic": 1
   },
@@ -110,6 +113,20 @@
             "pool": "chinesename:western-clan"
           }
         ]
+      },
+      {
+        "id": "human",
+        "writing": "Chinese",
+        "parts": [
+          {
+            "id": "name",
+            "pool": "chinesename:western-clan-human"
+          }
+        ],
+        "when": {
+          "culture-species": "human"
+        },
+        "priority": 5
       }
     ],
     "worldbox:army": [

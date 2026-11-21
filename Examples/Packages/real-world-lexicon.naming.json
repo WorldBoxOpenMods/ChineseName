@@ -2,6 +2,10 @@
   "format": 1,
   "id": "chinesename:real-world-lexicon",
   "label": "地域译名词库",
+  "credits": [
+    "中文名项目 · 现版选词与整理",
+    "《中文名宗法制》2.2 · 部分古埃及与草原词表参考"
+  ],
   "supplemental": true,
   "words": [
     {

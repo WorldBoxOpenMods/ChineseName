@@ -2,6 +2,7 @@
   "format": 1,
   "id": "chinesename:nordic-geography",
   "label": "北欧沿革",
+  "credits": ["中文名项目 · 命名排列整理"],
   "supplemental": true,
   "requires": {
     "chinesename:world-nordic-set": 1,

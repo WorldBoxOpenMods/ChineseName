@@ -2,6 +2,7 @@
   "format": 1,
   "id": "chinesename:local-exonyms",
   "label": "通商外称",
+  "credits": ["中文名项目 · 附属模组命名排列"],
   "supplemental": true,
   "requires": {
     "chinesename:classic": 1

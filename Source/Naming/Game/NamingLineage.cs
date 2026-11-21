@@ -33,6 +33,25 @@ internal static class NamingLineage
     private static ulong Seed(long id) =>
         unchecked((ulong)(World.world?.map_stats?.life_dna ?? 0) ^ (ulong)id);
 
+    [HarmonyPatch(typeof(Culture), nameof(Culture.createCulture))]
+    internal static class HumanCultureFounding
+    {
+        private static void Postfix(Culture __instance, Actor pActor)
+        {
+            if (pActor.asset.id != "human" || pActor.hasCulture()) return;
+            var world = WorldNamingStore.LineageWorld();
+            if (world == null || world.Cultures.ContainsKey(__instance.id)) return;
+            string pack = NamingApi.Current.PickHumanCulturePack(world, Seed(__instance.id));
+            if (pack == null) return;
+            var settings = new CultureNaming { Pack = pack };
+            // 原版旧地图只保留已有文化的存量排列，新文化继续用抽中的预设。
+            if (world.UseSavedVanillaCards)
+                foreach (var meta in NativeOnomastics.Categories)
+                    settings.Cards[NativeOnomastics.Type(meta)] = new CardNaming();
+            WorldNamingStore.SetCulture(__instance.id, settings);
+        }
+    }
+
     [HarmonyPatch(typeof(Culture), nameof(Culture.cloneAndEvolveOnomastics))]
     internal static class CultureSplit
     {

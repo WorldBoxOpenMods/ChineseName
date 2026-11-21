@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NeoModLoader.General;
 using UnityEngine;
@@ -162,12 +163,21 @@ internal static class NativeNamingSettings
             action();
         };
         row.on_hover_value_out = Tooltip.hideTooltip;
-        if (tooltip != null)
-            row.on_hover_value = () => Tooltip.show(row, SettingsTooltip, new TooltipData
-            {
-                tip_name = row.name_text.text,
-                tip_description = tooltip
-            });
+        if (tooltip != null) BindHint(row, () => tooltip);
+    }
+
+    internal static void BindHint(KeyValueField row, Func<string> hint) =>
+        row.on_hover_value = () => Tooltip.show(row, SettingsTooltip, new TooltipData
+        {
+            tip_name = row.name_text.text,
+            tip_description = hint()
+        });
+
+    internal static string WithCredits(string hint, IEnumerable<string> credits)
+    {
+        var lines = credits.Take(9).ToArray();
+        if (lines.Length == 0) return hint;
+        return hint + "\n\n贡献与来源\n" + string.Join("\n", lines.Take(8)) + (lines.Length == 9 ? "\n…" : "");
     }
 
     private static void AddValueButton(KeyValueField row)

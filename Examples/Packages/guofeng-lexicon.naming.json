@@ -2,6 +2,11 @@
   "format": 1,
   "id": "chinesename:guofeng-lexicon",
   "label": "国风乡土词库",
+  "credits": [
+    "中文名项目 · 现版选词与整理",
+    "《中文名》1.5.1 国风变体 · 姓氏与双字名参考",
+    "一米、凸( →_→ )凸、太一、康康 · 全文明版 2.0 词表参考"
+  ],
   "supplemental": true,
   "words": [
     {
@@ -1505,8 +1510,8 @@
       "text": "桂舟"
     },
     {
-      "id": "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3",
-      "text": "白鹭"
+      "id": "chinesename:guofeng-lexicon.w-fd4190a6dc15b896c4b7",
+      "text": "白洲"
     },
     {
       "id": "chinesename:guofeng-lexicon.w-77303e12efe864b6af95",
@@ -2322,7 +2327,7 @@
       "chinesename:guofeng-lexicon.w-69dc9d8c5a1f8709a63d": 1,
       "chinesename:guofeng-lexicon.w-3d2c5360873f87d1c1a0": 1,
       "chinesename:guofeng-lexicon.w-88f779a684a87ff07dac": 1,
-      "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3": 1,
+      "chinesename:guofeng-lexicon.w-fd4190a6dc15b896c4b7": 1,
       "chinesename:guofeng-lexicon.w-77303e12efe864b6af95": 1,
       "chinesename:guofeng-lexicon.w-b11e0a306636605684bc": 1,
       "chinesename:guofeng-lexicon.w-7958f11d5ad3e39f958e": 1,
@@ -3012,7 +3017,7 @@
         "chinesename:guofeng-lexicon.w-69dc9d8c5a1f8709a63d",
         "chinesename:guofeng-lexicon.w-3d2c5360873f87d1c1a0",
         "chinesename:guofeng-lexicon.w-88f779a684a87ff07dac",
-        "chinesename:guofeng-lexicon.w-a175ab76714588b1b1c3",
+        "chinesename:guofeng-lexicon.w-fd4190a6dc15b896c4b7",
         "chinesename:guofeng-lexicon.w-77303e12efe864b6af95",
         "chinesename:guofeng-lexicon.w-b11e0a306636605684bc",
         "chinesename:guofeng-lexicon.w-7958f11d5ad3e39f958e",

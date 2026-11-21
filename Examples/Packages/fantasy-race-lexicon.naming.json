@@ -2,6 +2,11 @@
   "format": 1,
   "id": "chinesename:fantasy-race-lexicon",
   "label": "西幻诸族词库",
+  "credits": [
+    "中文名项目 · 现版选词与整理",
+    "一米、凸( →_→ )凸、太一、康康 · 全文明版 2.0 词表参考",
+    "《中文名宗法制》2.2 · 部分种族词表参考"
+  ],
   "supplemental": true,
   "words": [
     {
