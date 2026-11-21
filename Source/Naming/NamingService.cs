@@ -16,6 +16,7 @@ public sealed class NamingService
     private readonly Dictionary<string, Func<Dictionary<string, object>, bool>> _contexts = new(StringComparer.Ordinal);
     private readonly Dictionary<string, List<Action<Dictionary<string, object>>>> _examples = new(StringComparer.Ordinal);
     private readonly Dictionary<string, List<Func<string, string, string>>> _conditionIcons = new(StringComparer.Ordinal);
+    private readonly HashSet<(string Type, string Field)> _scopedInputs = new();
     private Dictionary<string, NamingPack> _packs = new(StringComparer.Ordinal);
     private readonly Dictionary<string, Func<NameRequest, IEnumerable<Word>>> _providers = new(StringComparer.Ordinal);
     private readonly HashSet<string> _modDefaults = new(StringComparer.Ordinal);
@@ -117,8 +118,18 @@ public sealed class NamingService
 
     internal bool MatchesExpression(ConditionalArrangement arrangement, NameRequest request) =>
         CanMatch(arrangement, _types[request.Type]) &&
-        arrangement.Expression.Evaluate(term => MatchesCondition(request.Type, term.Field, term,
-            request.Inputs.TryGetValue(term.Field, out var value) ? NameEngine.Value(value) : null)) == true;
+        arrangement.Expression.Evaluate(term => InputApplies(request.Type, term.Field, request.Inputs)
+            ? MatchesCondition(request.Type, term.Field, term,
+                request.Inputs.TryGetValue(term.Field, out var value) ? NameEngine.Value(value) : null)
+            : null) == true;
+
+    internal void ScopeInput(string type, string field) => _scopedInputs.Add((type, field));
+
+    internal bool IsScopedInput(string type, string field) => _scopedInputs.Contains((type, field));
+
+    internal bool InputApplies(string type, string field, IReadOnlyDictionary<string, object> inputs) =>
+        !IsScopedInput(type, field) || inputs.TryGetValue(field, out var value) &&
+        !string.IsNullOrWhiteSpace(NameEngine.Value(value));
 
     internal bool CanMatch(ConditionalArrangement arrangement, NameType type) =>
         arrangement.IsConfigured && arrangement.Expression.Leaves().All(term => ValidTerm(type, term));

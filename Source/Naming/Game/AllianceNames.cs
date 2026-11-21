@@ -51,7 +51,7 @@ internal static class AllianceNames
         Add("founder-short", newFounder?.Short ?? KingdomNames.Short(founder, savedFounder));
         Add("partner-short", Planned(partner)?.Short ?? KingdomNames.Short(partner, savedPartner));
         return VanillaNames.Request(VanillaNames.Alliance, founder?.king, unchecked((ulong)IndependentNames.Seed(alliance.id)),
-            culture: founder?.culture?.id, language: founder?.language?.id, inputs: inputs);
+            culture: founder?.culture?.id, language: founder?.language?.id, inputs: inputs, subject: alliance);
 
         KingdomNames.Calculated Planned(Kingdom kingdom) =>
             kingdom != null && projected?.TryGetValue(kingdom.id, out var name) == true ? name : null;

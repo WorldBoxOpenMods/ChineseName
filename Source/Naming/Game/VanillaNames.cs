@@ -98,7 +98,7 @@ internal static class VanillaNames
 
     internal static NameRequest Request(string type, Actor actor, ulong seed, ActorSex sex = ActorSex.None,
         string kind = null, long? culture = null, long? language = null, IReadOnlyDictionary<string, string> fixedParts = null,
-        Dictionary<string, object> inputs = null)
+        Dictionary<string, object> inputs = null, NanoObject subject = null, WorldTile tile = null)
     {
         inputs ??= new Dictionary<string, object>();
         if (actor?.asset != null)
@@ -127,7 +127,10 @@ internal static class VanillaNames
             _ => null
         };
         if (!string.IsNullOrWhiteSpace(parent) && parent.Length <= 256) inputs.TryAdd("origin", parent);
-        return new NameRequest(type, seed, culture ?? actor?.culture?.id, language ?? actor?.language?.id, inputs, fixedParts);
+        culture ??= actor?.culture?.id;
+        language ??= actor?.language?.id;
+        WorldNamingInputs.AddInputs(type, subject, actor, culture, language, tile, inputs);
+        return new NameRequest(type, seed, culture, language, inputs, fixedParts);
     }
 
     internal static string Generate(string type, Actor source, long seed, ActorSex sex = ActorSex.None, string kind = null,
@@ -183,7 +186,8 @@ internal static class VanillaNames
         if (father == mother) mother = father == parent1 ? parent2 : parent1;
         string paternal = SurnameForChild(father);
         string maternal = SurnameForChild(mother);
-        if (TrySetBirthSurname(child, PersonRequest(child).WithParentSurnames(paternal, maternal))) return;
+        var request = PersonRequest(child).WithParentSurnames(paternal, maternal);
+        if (TryFoundSurname(child, request, atBirth: true) || TrySetBirthSurname(child, request)) return;
 
         // 无可用出生排列时，保留当时的亲代信息，供后续命名恢复。
         if (paternal != null) child.data.set(FatherSurnameKey, paternal);
@@ -203,6 +207,38 @@ internal static class VanillaNames
         var result = NamingApi.Current.Generate(request);
         if (!result.Success) return false;
         SaveSurname(actor, request, result);
+        return true;
+    }
+
+    private static bool TryFoundSurname(Actor actor, NameRequest request, bool atBirth = false, Func<string, bool> accept = null)
+    {
+        if (request.FixedParts.ContainsKey(Surname) || actor.data.custom_name || !string.IsNullOrEmpty(actor.data.name) ||
+            actor.hasFamily() || !actor.isSapient() || actor.language == null ||
+            WorldNamingInputs.SurnameFounder(actor) is not { } founded)
+            return false;
+
+        var relatives = new HashSet<string>(actor.getParents().Select(SurnameOf), StringComparer.Ordinal)
+        {
+            request.FatherSurname, request.MotherSurname
+        };
+        var usage = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var member in World.world.units.dict.Values)
+            if (member.isAlive() && SurnameOf(member) is { Length: > 0 } surname)
+            {
+                usage.TryGetValue(surname, out int count);
+                usage[surname] = count + 1;
+            }
+
+        var branch = request.ForSurnameFounding(surname =>
+            string.IsNullOrWhiteSpace(surname) || relatives.Contains(surname) ? int.MaxValue :
+            usage.TryGetValue(surname, out int count) ? count : 0);
+        var result = NamingApi.Current.Generate(branch, accept);
+        if (!result.Success || !result.Sources.TryGetValue(Surname, out var source) || source.Kind != "pool" ||
+            !result.Parts.TryGetValue(Surname, out string value) || branch.SurnameUsage(value) == int.MaxValue)
+            return false;
+        if (atBirth) SaveSurname(actor, branch, result);
+        else SavePerson(actor, branch, result);
+        founded(actor);
         return true;
     }
 
@@ -255,7 +291,7 @@ internal static class VanillaNames
             projected(realm) is { Length: > 0 and <= 256 } founderCountry)
             inputs["origin"] = founderCountry;
         return Request(NativeOnomastics.City, actor, unchecked((ulong)seed),
-            culture: culture, language: city.language?.id, inputs: inputs);
+            culture: culture, language: city.language?.id, inputs: inputs, subject: city, tile: city.getTile());
     }
 
     internal static Dictionary<string, object> CityInputs(City city, Func<Kingdom, string> projected = null)
@@ -271,6 +307,7 @@ internal static class VanillaNames
     internal static bool TryNamePerson(Actor actor, Func<string, bool> accept = null)
     {
         var request = PersonRequest(actor);
+        if (TryFoundSurname(actor, request, accept: accept)) return true;
         var result = NamingApi.Current.Generate(request, accept);
         if (!result.Success) return false;
         SavePerson(actor, request, result);
@@ -284,7 +321,7 @@ internal static class VanillaNames
             fixedParts = new Dictionary<string, string> { [Surname] = surname };
         actor.data.get(FatherSurnameKey, out string father);
         actor.data.get(MotherSurnameKey, out string mother);
-        return Request(Person, actor, PersonSeed(actor), actor.data.sex, fixedParts: fixedParts)
+        return Request(Person, actor, PersonSeed(actor), actor.data.sex, fixedParts: fixedParts, subject: actor)
             .WithParentSurnames(father, mother);
     }
 

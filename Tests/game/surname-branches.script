@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const string terrain = "__SURNAME_BRANCHES_TERRAIN__";
+const string stateKey = "chinesename.surname-branches.v1", surnameKey = "chinesename.surname.v1";
+const string person = "worldbox:person", family = "worldbox:family", pool = "chinesename:surname";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+int State(BaseSystemData data) { data.get(stateKey, out int state); return state; }
+string Surname(Actor actor) { actor.data.get(surnameKey, out string value); return value; }
+char Glyph(string id) => AssetManager.onomastics_library.get(id).short_id;
+bool Draw(long seed, long id, long salt) =>
+    new System.Random(unchecked((int)(seed ^ (id * 2654435761L) ^ salt))).Next(8) == 0;
+if (File.Exists(terrain))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+}
+Check(!SmoothLoader.isLoading(), "The fixture world did not load.");
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var zones = world.zone_calculator.zones.Where(zone => zone.canStartCityHere()).ToArray();
+var site = zones.First();
+var tile = site.centerTile;
+var splitTile = zones.OrderByDescending(zone => Math.Abs(zone.centerTile.x - tile.x) +
+    Math.Abs(zone.centerTile.y - tile.y)).First().centerTile;
+var father = world.units.createNewUnit("human", tile, pAdultAge: true);
+father.data.sex = ActorSex.Male;
+father.data.set(surnameKey, "敖");
+father.setName("敖原");
+var kingdom = world.kingdoms.makeNewCivKingdom(father);
+var culture = world.cultures.newCulture(father, true);
+father.setCulture(culture);
+var sourceLanguage = world.languages.newLanguage(father, true);
+father.joinLanguage(sourceLanguage);
+kingdom.setUnitMetas(father);
+world.cultures.checkLists();
+var home = world.cities.buildNewCity(father, site);
+father.joinCity(home);
+kingdom.setCapital(home);
+world.cities.checkLists();
+world.kingdoms.checkLists();
+Check(State(home.data) == 0, "An independent capital was treated as a migrant city.");
+
+var branchLanguage = world.languages.newLanguage(father, false);
+var migrantLanguage = world.languages.newLanguage(father, false);
+father.joinLanguage(sourceLanguage);
+world.languages.checkLists();
+var config = service.GetWorld();
+config.UseSavedVanillaCards = false;
+var main = service.GetPackage(service.DefaultPack);
+var surnameWords = main.Words.Where(word => main.Pools[pool].ContainsKey(word.Id)).ToArray();
+var li = surnameWords.Single(word => word.Text == "李").Id;
+void Vocabulary(Language language, params string[] words)
+{
+    config.Languages[language.id] = new LanguageNaming();
+    config.Languages[language.id].Pools[pool] = new PoolEdit
+    {
+        ExcludeIds = surnameWords.Where(word => !words.Contains(word.Text)).Select(word => word.Id).ToList(),
+        Bias = new Dictionary<string, double> { [li] = 100 }
+    };
+}
+Vocabulary(sourceLanguage, "敖", "李");
+Vocabulary(branchLanguage, "敖", "李", "欧阳");
+Vocabulary(migrantLanguage, "敖", "李", "公孙");
+if (!config.Cultures.TryGetValue(culture.id, out var naming))
+    config.Cultures.Add(culture.id, naming = new CultureNaming());
+naming.Cards[person] = new CardNaming
+{
+    Enabled = true, Inheritance = SurnameOrder.Father,
+    Template = "0" + Glyph("chinesename_as_pool") + Glyph("chinesename_keep_surname") + "1|0:chinesename/surname;1:青"
+};
+naming.Cards[family] = new CardNaming { Enabled = true, Template = Glyph("chinesename:founder-surname") + "0|0:氏" };
+WorldNamingStore.Apply(config);
+
+Actor Resident(Culture owner, Language language, string surname, string name, City city = null)
+{
+    city ??= home;
+    var actor = world.units.createNewUnit("human", city.getTile(), pAdultAge: true);
+    actor.data.sex = ActorSex.Male;
+    if (surname != null) actor.data.set(surnameKey, surname);
+    if (name != null) actor.setName(name);
+    actor.setCulture(owner);
+    actor.joinLanguage(language);
+    actor.joinCity(city);
+    return actor;
+}
+var common = Resident(culture, sourceLanguage, "李", "李重");
+var oldFamily = world.families.newFamily(father, tile, null);
+Check(oldFamily.name == "敖氏", "The original family arrangement generated " + oldFamily.name);
+var babyBefore = BabyMaker.makeBaby(father, null, ActorSex.Male, pTile: tile);
+Check(Surname(babyBefore) == "敖" && babyBefore.getName() == "敖青", "Normal inheritance before a split failed.");
+
+// Pick a world seed for one successful split, one unsuccessful split, one pending split on disk, and one migrant city.
+long cultureId = world.map_stats.id_culture, cityId = world.map_stats.id_city;
+long seed = Enumerable.Range(1, 200000).First(value => Draw(value, cultureId, 0x43554c54) &&
+    !Draw(value, cultureId + 1, 0x43554c54) && Draw(value, cultureId + 2, 0x43554c54) && Draw(value, cityId, 0x43495459));
+world.map_stats.life_dna = seed;
+Culture Split(Actor founder)
+{
+    var previous = founder.culture;
+    founder.setCurrentTilePosition(splitTile);
+    Check(AssetManager.plots_library.get("culture_divide").action(founder), "The native culture plot failed.");
+    founder.setCurrentTilePosition(tile);
+    world.cultures.checkLists();
+    Check(founder.culture != previous, "The culture plot did not produce a new culture.");
+    return founder.culture;
+}
+var branchParent = Resident(culture, branchLanguage, "敖", "敖远");
+var branch = Split(branchParent);
+Check(State(branch.data) == 1 && branchParent.getName() == "敖远", "The split lost the opportunity or renamed its founder.");
+father.setCulture(branch);
+var oldChild = BabyMaker.makeBaby(father, null, ActorSex.Male, pTile: tile);
+Check(oldChild.family == oldFamily && Surname(oldChild) == "敖" && oldChild.getName() == "敖青" && State(branch.data) == 1,
+    "A member of the existing 敖氏 absorbed the opportunity.");
+father.setCulture(culture);
+var founder = BabyMaker.makeBaby(branchParent, null, ActorSex.Male, pTile: tile);
+Check(Surname(founder) == "欧阳" && founder.getName() == "欧阳青" && State(branch.data) == 2,
+    "The culture branch did not take its unused surname despite the stronger weight on 李: " + founder.getName() +
+    " / " + Surname(founder) + " / " + State(branch.data));
+var branchFamily = world.families.newFamily(founder, tile, null);
+var descendant = BabyMaker.makeBaby(founder, null, ActorSex.Male, pTile: tile);
+Check(branchFamily.name == "欧阳氏" && descendant.family == branchFamily && Surname(descendant) == "欧阳" &&
+    descendant.getName() == "欧阳青", "The new family name or descendant did not inherit 欧阳.");
+var later = BabyMaker.makeBaby(branchParent, null, ActorSex.Male, pTile: tile);
+Check(Surname(later) == "敖" && later.getName() == "敖青", "The same split opened a second surname.");
+
+var noBranchParent = Resident(culture, branchLanguage, "敖", "敖安");
+var noBranch = Split(noBranchParent);
+var regular = BabyMaker.makeBaby(noBranchParent, null, ActorSex.Male, pTile: tile);
+Check(State(noBranch.data) == 2 && Surname(regular) == "敖", "A split outside the founding chance opened a new surname.");
+
+var pendingParent = Resident(culture, sourceLanguage, "敖", "敖宁");
+var pending = Split(pendingParent);
+pendingParent.joinLanguage(branchLanguage);
+Check(State(pending.data) == 1, "No pending cultural branch to test on reload.");
+
+var settler = Resident(culture, migrantLanguage, "敖", "敖行");
+world.units.checkContainer();
+world.units.prepareForMetaChecks();
+world.cities.beginChecksUnits();
+var target = zones.First(zone => zone.isGoodForNewCity(settler));
+settler.setCurrentTilePosition(target.centerTile);
+Check(new ai.behaviours.BehCheckBuildCity().execute(settler) == ai.behaviours.BehResult.Continue, "The native migration failed.");
+world.cities.checkLists();
+var migrant = settler.city;
+Check(WorldNamingInputs.CityOrigin(migrant) == home.id && State(migrant.data) == 1 && settler.getName() == "敖行",
+    "The founding event lost its origin or renamed the migrant.");
+var migrantFounder = Resident(culture, migrantLanguage, null, null, migrant);
+Check(migrantFounder.getName() == "公孙青" && Surname(migrantFounder) == "公孙" && State(migrant.data) == 2,
+    "The first unnamed migrant did not take the language's unused surname: " + migrantFounder.getName());
+var migrantFamily = world.families.newFamily(migrantFounder, target.centerTile, null);
+var migrantChild = BabyMaker.makeBaby(migrantFounder, null, ActorSex.Male, pTile: target.centerTile);
+Check(migrantFamily.name == "公孙氏" && migrantChild.family == migrantFamily && migrantChild.getName() == "公孙青" &&
+    Surname(migrantChild) == "公孙", "The migrant family or child lost 公孙.");
+Check(oldFamily.name == "敖氏" && father.getName() == "敖原" && Surname(father) == "敖" && common.getName() == "李重",
+    "A previously named person or family was renamed.");
+
+world.units.checkContainer();
+world.families.checkLists();
+world.kingdoms.checkLists();
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "surname-branches");
+Directory.CreateDirectory(folder);
+var record = new
+{
+    people = new[] { father, oldChild, branchParent, founder, descendant, regular, settler, migrantFounder, migrantChild }
+        .Select(actor => new { id = actor.id, name = actor.getName(), surname = Surname(actor), family = actor.family?.id ?? -1 }),
+    families = new[] { oldFamily, branchFamily, migrantFamily }.Select(group => new { id = group.id, name = group.name }),
+    branchParent = branchParent.id, pendingParent = pendingParent.id, migrantParent = migrantFounder.id,
+    branch = branch.id, pending = pending.id, migrant = migrant.id
+};
+File.WriteAllText(Path.Combine(folder, "branches.json"), NamingJson.Write(record));
+SaveManager.saveWorldToDirectory(folder);
+return record;

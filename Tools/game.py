@@ -17,6 +17,7 @@ ENTRIES = ("Source", "Content", "Locales", "GameResources", "Examples/Packages",
 EXAMPLE = REPO / "Examples/SpellNames"
 EXONYMS = REPO / "Addons/CultureExonyms"
 HISTORY = REPO / "Addons/HistoryEvents"
+SURNAME_BRANCHES = REPO / "Addons/SurnameBranches"
 
 
 def main():
@@ -26,6 +27,7 @@ def main():
     parser.add_argument("--spell-example", action="store_true")
     parser.add_argument("--culture-exonyms", action="store_true")
     parser.add_argument("--history-events", action="store_true")
+    parser.add_argument("--surname-branches", action="store_true")
     parser.add_argument("--cultiway", choices=("with-chinesename", "alone"))
     parser.add_argument("--root", type=Path, default=Path.home() / ".local/state/chinesename-dev")
     actions = parser.add_subparsers(dest="action", required=True)
@@ -38,7 +40,7 @@ def main():
     actions.add_parser("status")
     actions.add_parser("stop")
     args = parser.parse_args()
-    if (args.culture_exonyms or args.history_events) and args.cultiway == "alone":
+    if (args.culture_exonyms or args.history_events or args.surname_branches) and args.cultiway == "alone":
         parser.error("ChineseName add-ons require ChineseName in the snapshot")
 
     spec = importlib.util.spec_from_file_location(
@@ -98,6 +100,7 @@ def main():
             example = dev.mod_inputs(EXAMPLE) if args.spell_example else None
             exonyms = dev.mod_inputs(EXONYMS) if args.culture_exonyms else None
             history = dev.mod_inputs(HISTORY) if args.history_events else None
+            branches = dev.mod_inputs(SURNAME_BRANCHES) if args.surname_branches else None
             toolbox = Path(state["toolboxSource"])
             names = [name for name in dev.git(toolbox, "ls-files", "-z").split("\0")
                      if name and (toolbox / name).is_file() and not name.startswith("Client/")]
@@ -115,6 +118,8 @@ def main():
                     (not args.culture_exonyms or dev.mod_inputs(mods / "CultureExonyms") == exonyms) and
                     state.get("historyInputs") == history and
                     (not args.history_events or dev.mod_inputs(mods / "HistoryEvents") == history) and
+                    state.get("surnameBranchInputs") == branches and
+                    (not args.surname_branches or dev.mod_inputs(mods / "SurnameBranches") == branches) and
                     (args.cultiway == "alone" or dev.mod_inputs(mods / MOD) == before) and
                     dev.file_digest([mods / "DebugToolbox" / name for name in names],
                                     mods / "DebugToolbox") == toolbox_inputs):
@@ -144,6 +149,10 @@ def main():
                 dev.copy_path(HISTORY, mods / "HistoryEvents")
                 if dev.mod_inputs(mods / "HistoryEvents") != history or dev.mod_inputs(HISTORY) != history:
                     raise dev.DevError("History event inputs changed while staging the run")
+            if args.surname_branches:
+                dev.copy_path(SURNAME_BRANCHES, mods / "SurnameBranches")
+                if dev.mod_inputs(mods / "SurnameBranches") != branches or dev.mod_inputs(SURNAME_BRANCHES) != branches:
+                    raise dev.DevError("Surname branch inputs changed while staging the run")
             if args.cultiway != "alone" and (dev.mod_inputs(mods / MOD) != before or dev.mod_inputs(REPO) != before):
                 raise dev.DevError("Mod inputs changed while staging the run")
             cache = self.game / "worldbox_Data/StreamingAssets/mods/NML"
@@ -154,6 +163,7 @@ def main():
             state["spellInputs"] = example
             state["exonymInputs"] = exonyms
             state["historyInputs"] = history
+            state["surnameBranchInputs"] = branches
             state["cultiwayMode"] = args.cultiway
             state["cultiwayInputs"] = cultiway_inputs
             state["inputs"] = dict(before, commit=dev.git(REPO, "rev-parse", "HEAD"))
@@ -196,6 +206,8 @@ def main():
                 expected["CHINESENAME_CULTUREEXONYMS"] = "CultureExonyms"
             if state.get("historyInputs"):
                 expected["CHINESENAME_HISTORYEVENTS"] = "HistoryEvents"
+            if state.get("surnameBranchInputs"):
+                expected["CHINESENAME_SURNAMEBRANCHES"] = "SurnameBranches"
             if loaded != set(expected):
                 raise dev.DevError("Unexpected mods in the isolated snapshot: " + ", ".join(sorted(loaded)))
             for uid, folder in expected.items():
@@ -210,6 +222,8 @@ def main():
                 raise dev.DevError("Culture exonyms changed. Stop and restart this environment.")
             if state.get("historyInputs") and state["historyInputs"] != dev.mod_inputs(HISTORY):
                 raise dev.DevError("History events changed. Stop and restart this environment.")
+            if state.get("surnameBranchInputs") and state["surnameBranchInputs"] != dev.mod_inputs(SURNAME_BRANCHES):
+                raise dev.DevError("Surname branches changed. Stop and restart this environment.")
             if state.get("cultiwayInputs") and state["cultiwayInputs"] != dev.mod_inputs(cultiway):
                 raise dev.DevError("Cultiway inputs changed. Stop and restart this environment.")
             if state.get("cultiwayMode") == "alone":

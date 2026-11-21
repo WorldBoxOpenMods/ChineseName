@@ -136,7 +136,7 @@ internal static class NativeNamingGlyphs
     private static void AddContext(CultureNameGlyph input)
     {
         if (!RegisterOutput(input.Id, input.ShortCode, input.Icon, input.Label, input.Description,
-            (_, data, _, _, index, _) => NativeOnomastics.DrawInputGlyph(input, data, index)))
+            (_, data, builder, _, index, _) => NativeOnomastics.DrawInputGlyph(input, data, index, builder.Length)))
             throw new InvalidOperationException("Duplicate native glyph ID or short code: " + input.Id);
     }
 

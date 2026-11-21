@@ -115,7 +115,7 @@ internal static class IndependentNames
         kingdom ??= attacker ?? defender;
         AddName(inputs, "origin", Name(kingdom));
         return VanillaNames.Request(VanillaNames.War, kingdom?.king, unchecked((ulong)Seed(seed)),
-            kind: war.id, culture: kingdom?.culture?.id, language: kingdom?.language?.id, inputs: inputs);
+            kind: war.id, culture: kingdom?.culture?.id, language: kingdom?.language?.id, inputs: inputs, subject: existing);
     }
 
     [HarmonyPatch(typeof(Book), nameof(Book.newBook))]
@@ -141,7 +141,7 @@ internal static class IndependentNames
         var inputs = new Dictionary<string, object>();
         PlaceNames.BookInputs(book, author, inputs);
         var request = VanillaNames.Request("worldbox:book", author, unchecked((ulong)Seed(book.id)), kind: template,
-            culture: culture, language: language, inputs: inputs);
+            culture: culture, language: language, inputs: inputs, subject: book, tile: author?.city?.getTile());
         return WorldNamingInputs.RestoreBookInputs(template, book, request);
     }
 
@@ -167,7 +167,7 @@ internal static class IndependentNames
         plot.data.get("chinesename.plot-language.v1", out long language, -1L);
         return VanillaNames.Request(VanillaNames.Plot, author, unchecked((ulong)Seed(plot.id)), inputs: inputs,
             culture: author?.culture?.id ?? (plot.data.name_culture_id >= 0 ? plot.data.name_culture_id : null),
-            language: author?.language?.id ?? (language >= 0 ? language : null));
+            language: author?.language?.id ?? (language >= 0 ? language : null), subject: plot);
     }
 
     [HarmonyPatch(typeof(Army), nameof(Army.generateName))]
@@ -212,7 +212,7 @@ internal static class IndependentNames
             AddName(inputs, "origin", origin);
             return VanillaNames.Request("worldbox:army", null, unchecked((ulong)Seed(army.id ^ kingdom.id)),
                 culture: city?.culture?.id ?? kingdom.culture?.id, language: city?.language?.id ?? kingdom.language?.id,
-                inputs: inputs);
+                inputs: inputs, subject: army, tile: city?.getTile());
         }
 
         internal static void Save(Army army, Kingdom kingdom, string name)
@@ -225,9 +225,16 @@ internal static class IndependentNames
     [HarmonyPatch(typeof(Subspecies), nameof(Subspecies.generateName))]
     internal static class SubspeciesName
     {
+        private const string OriginX = "chinesename.subspecies-origin-x.v1", OriginY = "chinesename.subspecies-origin-y.v1";
+
         private static bool Prefix(Subspecies __instance, ActorAsset pAsset, WorldTile pTile)
         {
-            var request = Request(__instance, pAsset, pTile?.Type?.biome_asset?.id);
+            if (pTile != null)
+            {
+                __instance.data.set(OriginX, pTile.x);
+                __instance.data.set(OriginY, pTile.y);
+            }
+            var request = Request(__instance, pAsset, pTile?.Type?.biome_asset?.id, pTile);
             if (request == null) return true;
             var used = new HashSet<string>(World.world.subspecies.Where(other => other != __instance)
                 .Select(other => other.name), StringComparer.OrdinalIgnoreCase);
@@ -237,12 +244,21 @@ internal static class IndependentNames
             return false;
         }
 
-        internal static NameRequest Request(Subspecies subspecies, ActorAsset asset, string biome)
+        internal static WorldTile Origin(Subspecies subspecies)
+        {
+            subspecies.data.get(OriginX, out int x, -1);
+            subspecies.data.get(OriginY, out int y, -1);
+            return x >= 0 && y >= 0 ? World.world.GetTile(x, y) : null;
+        }
+
+        internal static NameRequest Request(Subspecies subspecies, ActorAsset asset, string biome, WorldTile tile = null)
         {
             if (asset == null) return null;
+            tile ??= Origin(subspecies);
             var inputs = new Dictionary<string, object> { ["species"] = asset.id };
             if (biome != null) inputs["kind"] = biome;
-            return new NameRequest("worldbox:subspecies", unchecked((ulong)Seed(subspecies.id)), inputs: inputs);
+            return VanillaNames.Request("worldbox:subspecies", null, unchecked((ulong)Seed(subspecies.id)),
+                language: tile?.zone_city?.language?.id, inputs: inputs, subject: subspecies, tile: tile);
         }
     }
 
@@ -313,7 +329,8 @@ internal static class IndependentNames
         string material = string.IsNullOrEmpty(item.data.material) ? asset?.material : item.data.material;
         if (!string.IsNullOrEmpty(material)) inputs["material"] = material.ToLowerInvariant().Replace('_', '-');
         return VanillaNames.Request("worldbox:item", maker, unchecked((ulong)seed), inputs: inputs,
-            culture: maker?.culture?.id ?? origin?.culture?.id, language: maker?.language?.id ?? origin?.language?.id);
+            culture: maker?.culture?.id ?? origin?.culture?.id, language: maker?.language?.id ?? origin?.language?.id,
+            subject: item);
     }
 
     internal static NameRequest ExistingItemRequest(Item item)

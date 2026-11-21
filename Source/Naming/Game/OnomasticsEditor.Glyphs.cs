@@ -113,12 +113,18 @@ public sealed partial class OnomasticsEditor
     {
         string target = NativeNamingTab.CurrentType(_tab);
         bool current = target != null && _type?.Id == target && _culture == SelectedMetas.selected_culture;
+        var service = NamingApi.Current;
+        Dictionary<string, object> inputs = null;
         foreach (var button in _palette)
         {
             string id = button.onomastics_asset.id;
             bool show;
             if (NativeNamingGlyphs.Find(id) != null) show = false; // 旧短码只用于读取和迁移。
-            else if (NativeNamingGlyphs.FindInput(id) != null || id is NativeNamingGlyphs.AsPool or NativeNamingGlyphs.KeepSurname)
+            else if (NativeNamingGlyphs.FindInput(id) is { } glyph)
+                show = current && NativeNamingGlyphs.AppliesTo(id, target) &&
+                    (!service.IsScopedInput(target, glyph.Field) || _page != null && service.InputApplies(target,
+                        glyph.Field, inputs ??= PreviewInputs(_type, _culture, _page)));
+            else if (id is NativeNamingGlyphs.AsPool or NativeNamingGlyphs.KeepSurname)
                 show = current && NativeNamingGlyphs.AppliesTo(id, target);
             else if (id == NativeNamingGlyphs.RuleSeparator)
                 show = current && _rule != null &&

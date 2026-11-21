@@ -269,7 +269,9 @@ for name, (label, stems, suffix) in {
     ref = pool(pool_id, stems.split(), label)
     pack["poolAliases"][label] = ref
     parts = [part("name", ref)]
-    if name == "army":
+    if name == "family":
+        parts = [{"id": "name", "input": "founder-surname", "fallbackPool": ref}, text("suffix", suffix)]
+    elif name == "army":
         parts.append(part("suffix", army_ending))
     elif name == "subspecies":
         parts += [part("trait", species_traits, optional=True, chance=.65), part("suffix", species_ending)]

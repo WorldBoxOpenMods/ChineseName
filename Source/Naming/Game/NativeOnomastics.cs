@@ -131,8 +131,9 @@ internal static class NativeOnomastics
                 int marker = groups.IndexOf(NativeNamingGlyphs.KeepSurname);
                 int index = marker - 1;
                 if (index >= 0 && groups[index] == NativeNamingGlyphs.AsPool) index--;
-                if (index < 0 || !IsWordGroup(groups[index]) || groups.LastIndexOf(NativeNamingGlyphs.KeepSurname) != marker)
-                    throw new InvalidOperationException($"第 {branch} 种排列需要一枚紧贴姓氏词组或其「作为词库」字形的姓氏覆盖。");
+                if (index < 0 || !(IsWordGroup(groups[index]) || NativeNamingGlyphs.FindInput(groups[index]) != null) ||
+                    groups.LastIndexOf(NativeNamingGlyphs.KeepSurname) != marker)
+                    throw new InvalidOperationException($"第 {branch} 种排列的姓氏覆盖须紧贴姓氏词组、词库或输入字形。");
                 if (!groups.Where((id, position) => position != index).Any(IsWordGroup))
                     throw new InvalidOperationException($"第 {branch} 种排列缺少名字词组。");
             }
@@ -433,6 +434,10 @@ internal static class NativeOnomastics
         var layout = cards.getFullTemplateData();
         if (layout.FirstOrDefault(id => !AssetManager.onomastics_library.dict.ContainsKey(id)) is string missingGlyph)
             return Failure(NameFailureReason.MissingGlyph, missingGlyph);
+        var service = NamingApi.Current;
+        foreach (string id in layout)
+            if (NativeNamingGlyphs.FindInput(id) is { } glyph && !service.InputApplies(type.Id, glyph.Field, request.Inputs))
+                return Failure(NameFailureReason.InapplicableInput, glyph.Label);
         var writing = request.Writing ?? sourceRule?.Writing ?? NameWriting.Original;
         bool explicitSeparators = choice.ExplicitSeparators || layout.Contains(NativeNamingGlyphs.RuleSeparator);
         var separator = sourceRule == null || explicitSeparators ? "" : NameEngine.Separator(sourceRule, writing);
@@ -670,22 +675,26 @@ internal static class NativeOnomastics
         internal NamePartSource CardSource(NamePartSource source, string group, int position) =>
             new NamePartSource(source.Kind, source.Reference, source.MissingTranslation, group, position);
 
-        internal string PickInput(CultureNameGlyph glyph, int index)
+        internal string PickInput(CultureNameGlyph glyph, int index, int offset)
         {
+            bool surname = IsMarked(index);
+            string outputRole = surname ? VanillaNames.Surname : glyph.Field;
+            if (surname && FixedSurname != null)
+                return Record(glyph.Id, index, offset, outputRole, FixedSurname, new NamePartSource("inherited"), surname: true);
             string fixedRole = Choice.Roles.TryGetValue(glyph.Id, out string mapped) ? mapped : glyph.Field;
             if (Request.FixedParts.TryGetValue(fixedRole, out string fixedText))
-                return Record(glyph.Id, index, 0, fixedRole, fixedText, new NamePartSource("inherited"), surname: false);
+                return Record(glyph.Id, index, offset, fixedRole, fixedText, new NamePartSource("inherited"), surname);
             if (Choice.Roles.TryGetValue(glyph.Id, out string role) && Rule?.Parts.FirstOrDefault(part => part.Id == role) is Part bound &&
                 NativeNamingGlyphs.ForInput(Request.Type, bound) == glyph)
             {
                 string drawn = NameEngine.DrawPart(bound, Request, Effective, Writing, Draws, _unusedProviders,
-                    null, null, ref Random, out var origin);
+                    null, null, ref Random, out var origin, surname ? Request.SurnameUsage : null);
                 if (string.IsNullOrWhiteSpace(drawn))
                 {
                     var problem = NameEngine.PartFailure(bound, origin, Effective);
                     MarkFailure(problem.Reason, problem.Reference);
                 }
-                return Record(glyph.Id, index, 0, glyph.Field, drawn, origin, surname: false);
+                return Record(glyph.Id, index, offset, outputRole, drawn, origin, surname);
             }
             string text = Request.Inputs.TryGetValue(glyph.Field, out var value) ? NameEngine.Value(value) : null;
             var source = new NamePartSource("input", glyph.Field);
@@ -694,7 +703,8 @@ internal static class NativeOnomastics
                 string prefix = glyph.PoolPrefix;
                 string pool = prefix != null && Ids.Local(text)
                     ? NameEngine.PoolPrefix(prefix) + text : null;
-                text = NameEngine.DrawPool(pool, glyph.FallbackPool ?? prefix, Effective, Writing, ref Random, out source);
+                text = NameEngine.DrawPool(pool, glyph.FallbackPool ?? prefix, Effective, Writing, ref Random, out source,
+                    surname ? Request.SurnameUsage : null);
             }
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -703,7 +713,7 @@ internal static class NativeOnomastics
                 string issue = "命名卡片缺少输入或候选 · " + Request.Type + "/" + glyph.Field;
                 if (!_diagnostics.Contains(issue)) _diagnostics.Add(issue);
             }
-            return Record(glyph.Id, index, 0, glyph.Field, text, source, surname: false);
+            return Record(glyph.Id, index, offset, outputRole, text, source, surname);
         }
 
         internal string Pick(string group, int index, int offset)
@@ -713,6 +723,7 @@ internal static class NativeOnomastics
             string role = Role(group, Choice);
             var part = Rule?.Parts.FirstOrDefault(candidate => candidate.Id == role);
             bool surname = IsMarked(index) || SurnameCard == group;
+            var surnameUsage = surname ? Request.SurnameUsage : null;
             if (surname && FixedSurname != null)
             {
                 value = FixedSurname;
@@ -722,8 +733,8 @@ internal static class NativeOnomastics
                 source = new NamePartSource("inherited");
             else if (HasPoolSelector(index))
             {
-                string pool = SelectPool(group);
-                value = NameEngine.DrawPool(pool, null, Effective, Writing, ref Random, out source);
+                string pool = SelectPool(group, surnameUsage);
+                value = NameEngine.DrawPool(pool, null, Effective, Writing, ref Random, out source, surnameUsage);
                 if (value == null)
                 {
                     var problem = _poolFailures.TryGetValue(group, out var recorded)
@@ -742,7 +753,7 @@ internal static class NativeOnomastics
                 else
                 {
                     value = NameEngine.DrawPart(part, Request, Effective, Writing, Draws, _unusedProviders,
-                        null, null, ref Random, out source);
+                        null, null, ref Random, out source, surnameUsage);
                     if (value == null && !part.Optional)
                     {
                         var problem = NameEngine.PartFailure(part, source, Effective);
@@ -754,7 +765,8 @@ internal static class NativeOnomastics
             }
             else if (Pools.TryGetValue(group, out var words))
             {
-                value = NameEngine.RenderWord(NameEngine.PickWord(words, ref Random), Writing, "pool", Effective.PoolId(Choice.Pools[group]), out source);
+                var word = NameEngine.PickPoolWord(words, Writing, surnameUsage, ref Random);
+                value = NameEngine.RenderWord(word, Writing, "pool", Effective.PoolId(Choice.Pools[group]), out source);
                 if (value == null) MarkFailure(NameFailureReason.EmptyVocabulary, Choice.Pools[group]);
             }
             else
@@ -774,7 +786,7 @@ internal static class NativeOnomastics
             return index >= 0 && index + 1 < branch.Count && branch[index + 1] == NativeNamingGlyphs.AsPool;
         }
 
-        private string SelectPool(string group)
+        private string SelectPool(string group, Func<string, int> surnameUsage)
         {
             if (!_poolOptions.TryGetValue(group, out var options))
             {
@@ -802,7 +814,13 @@ internal static class NativeOnomastics
                 _poolOptions[group] = options = pools.ToArray();
                 if (options.Length == 0) _diagnostics.Add("词库字形 · 左侧词组需要至少一个可用的词库名称。");
             }
-            return options.Length == 0 ? null : options.GetRandom();
+            if (options.Length == 0) return null;
+            if (surnameUsage == null || options.Length == 1) return options.GetRandom();
+            var ranked = options.Select(pool => (Pool: pool,
+                Usage: Effective.GetPool(pool).Min(word => NameEngine.SurnameUse(word, Writing, surnameUsage)))).ToArray();
+            int best = ranked.Min(option => option.Usage);
+            return best == int.MaxValue ? null : ranked.Where(option => option.Usage == best)
+                .Select(option => option.Pool).ToArray().GetRandom();
         }
 
         private string Record(string group, int index, int offset, string role, string value, NamePartSource source, bool surname)
@@ -844,8 +862,8 @@ internal static class NativeOnomastics
     internal static string DrawGlyph(string id, OnomasticsData data, int index, int offset) =>
         _draw is { } scope && ReferenceEquals(scope.Cards, data) ? scope.Pick(id, index, offset) : "";
 
-    internal static string DrawInputGlyph(CultureNameGlyph glyph, OnomasticsData data, int index) =>
-        _draw is { } scope && ReferenceEquals(scope.Cards, data) ? scope.PickInput(glyph, index) : "";
+    internal static string DrawInputGlyph(CultureNameGlyph glyph, OnomasticsData data, int index, int offset) =>
+        _draw is { } scope && ReferenceEquals(scope.Cards, data) ? scope.PickInput(glyph, index, offset) : "";
 
     [HarmonyPatch(typeof(OnomasticsLibrary), nameof(OnomasticsLibrary.groupAction))]
     internal static class DrawGroup

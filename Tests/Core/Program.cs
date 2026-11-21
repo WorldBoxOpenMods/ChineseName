@@ -256,6 +256,16 @@ var singleClause = new ConditionalArrangement
 };
 Check(scenarioService.Matches(NamingJson.Copy(singleClause), extendedRequest),
     "A standalone clause must survive a save without becoming an empty condition group.");
+scenarioService.ScopeInput(scenarioType, "alternate-stem");
+var uncheckedScope = new Dictionary<string, object> { ["form"] = "blade" };
+var unavailableInput = new NameRequest(scenarioType, 0, inputs: uncheckedScope);
+singleClause.Expression = new ArrangementCondition
+{
+    Field = "alternate-stem", Test = ArrangementTest.Equal, Values = new() { "火刃" }, Negated = true
+};
+Check(scenarioService.Matches(singleClause, extendedRequest) && !scenarioService.Matches(singleClause, unavailableInput) &&
+    !ArrangementExamples.TryApply(scenarioService, extendedType, singleClause, uncheckedScope) &&
+    !uncheckedScope.ContainsKey("alternate-stem"), "Negation and preview must preserve a scoped field's absence.");
 var legacyClauses = NamingJson.Read<ConditionalArrangement>("""
     {"conditions":{"kind":{"values":["normal"]},"size":{"test":"Present"}}}
     """);
@@ -484,6 +494,13 @@ var societyCategories = new[] { "city", "kingdom", "culture", "language", "famil
 foreach (string category in societyCategories.Concat(new[] { "religion", "subspecies", "plot" }))
     catalog.RegisterType(new NameType("worldbox:" + category, category, context));
 catalog.InstallPack(bundled);
+const string familyType = "worldbox:family";
+var founderFamily = catalog.Generate(new NameRequest(familyType, 7,
+    inputs: new Dictionary<string, object> { ["founder-surname"] = "敖" }));
+var unnamedFamily = catalog.Generate(new NameRequest(familyType, 7));
+Check(founderFamily.Text == "敖一门" && founderFamily.Sources["name"].Reference == "founder-surname" &&
+    unnamedFamily.Success && unnamedFamily.Sources["name"].Reference == "chinesename:family-name",
+    "Default family naming must use the known surname and retain its fallback pool.");
 const string allianceType = "worldbox:alliance";
 var namedAlliance = catalog.Generate(new NameRequest(allianceType, 7, inputs: new Dictionary<string, object>
 {

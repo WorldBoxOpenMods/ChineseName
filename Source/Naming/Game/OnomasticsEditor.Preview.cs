@@ -25,17 +25,19 @@ public sealed partial class OnomasticsEditor
     }
 
     private static NameRequest PartPreviewRequest(NameType type, Culture culture, PartsPage page, Rule rule) =>
-        PreviewRequest(type, culture, page, PreviewInputs(type, page, rule));
+        PreviewRequest(type, culture, page, PreviewInputs(type, culture, page, rule));
 
-    private static Dictionary<string, object> PreviewInputs(NameType type, PartsPage page, Rule rule = null)
+    private static Dictionary<string, object> PreviewInputs(NameType type, Culture culture, PartsPage page, Rule rule = null)
     {
         var inputs = new Dictionary<string, object>();
         foreach (var field in type.Fields.Values)
         {
+            if (NamingApi.Current.IsScopedInput(type.Id, field.Id)) continue;
             string text = SampleValue(page, rule, field);
             if (string.IsNullOrWhiteSpace(text)) continue;
             if (ArrangementExamples.Input(field, text) is { } value) inputs[field.Id] = value;
         }
+        WorldNamingInputs.AddInputs(type.Id, null, null, culture.id, page.ReferenceLanguage, null, inputs, preview: true);
         return inputs;
     }
 

@@ -109,6 +109,8 @@ internal static class PlaceNames
 
     internal static string CityStem(City city) => Capture(city)?.Display;
 
+    internal static long? CityOrigin(City city) => Read<CityReference>(city?.data, OriginKey)?.Id;
+
     internal static (long Id, string Name, Dictionary<long, string> Exonyms)? RebellionOrigin(War war) =>
         Read<CityReference>(war.data, RebellionKey) is { } city ? (city.Id, city.Display, city.Exonyms) : null;
 

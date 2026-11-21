@@ -150,7 +150,8 @@ internal static class NameEngine
                     }
                     NamePartSource source = fixedPart ? new NamePartSource("inherited") : null;
                     if (!fixedPart && (part.Chance == 1 || random.Next() < part.Chance))
-                        value = DrawPart(part, request, effective, writing, parts, customPools, providers, diagnostics, ref random, out source);
+                        value = DrawPart(part, request, effective, writing, parts, customPools, providers, diagnostics,
+                            ref random, out source, part.Id == NameRequest.SurnamePart ? request.SurnameUsage : null);
                     if (value == null && !part.Optional)
                     {
                         string detail = "part:" + rule.Id + "/" + part.Id;
@@ -194,7 +195,7 @@ internal static class NameEngine
     internal static string DrawPart(Part part, NameRequest request, EffectiveNames effective, NameWriting writing,
         Dictionary<string, string> parts, Dictionary<string, Word[]> customPools,
         IReadOnlyDictionary<string, Func<NameRequest, IEnumerable<Word>>> providers, List<string> diagnostics,
-        ref NamingRandom random, out NamePartSource source)
+        ref NamingRandom random, out NamePartSource source, Func<string, int> surnameUsage = null)
     {
         if (part.Literal != null) { source = new NamePartSource("literal"); return part.Literal; }
         if (part.Choices != null)
@@ -207,7 +208,7 @@ internal static class NameEngine
             source = new NamePartSource("input", part.Input);
             string value = request.Inputs.TryGetValue(part.Input, out var input) ? Value(input) : null;
             if (!string.IsNullOrWhiteSpace(value) || part.FallbackPool == null) return value;
-            return DrawPool(part.FallbackPool, null, effective, writing, ref random, out source);
+            return DrawPool(part.FallbackPool, null, effective, writing, ref random, out source, surnameUsage);
         }
         if (part.Copy != null)
         {
@@ -220,7 +221,7 @@ internal static class NameEngine
             if (part.PoolInput != null)
                 pool = request.Inputs.TryGetValue(part.PoolInput, out var input) && input is string suffix && Ids.Local(suffix)
                     ? PoolPrefix(pool) + suffix : null;
-            return DrawPool(pool, part.FallbackPool, effective, writing, ref random, out source);
+            return DrawPool(pool, part.FallbackPool, effective, writing, ref random, out source, surnameUsage);
         }
         if (part.Provider != null && !customPools.TryGetValue(part.Provider, out _))
             customPools[part.Provider] = ReadProvider(part.Provider, providers, request, diagnostics);
@@ -231,7 +232,7 @@ internal static class NameEngine
     internal static string PoolPrefix(string id) => id.EndsWith("-", StringComparison.Ordinal) ? id : id + ".";
 
     internal static string DrawPool(string pool, string fallback, EffectiveNames effective, NameWriting writing,
-        ref NamingRandom random, out NamePartSource source)
+        ref NamingRandom random, out NamePartSource source, Func<string, int> surnameUsage = null)
     {
         pool = effective.PoolId(pool);
         var words = pool == null ? Array.Empty<Word>() : effective.GetPool(pool);
@@ -240,7 +241,26 @@ internal static class NameEngine
             pool = effective.PoolId(fallback);
             words = effective.GetPool(pool);
         }
-        return RenderWord(PickWord(words, ref random), writing, "pool", pool, out source);
+        return RenderWord(PickPoolWord(words, writing, surnameUsage, ref random), writing, "pool", pool, out source);
+    }
+
+    internal static int SurnameUse(Word word, NameWriting writing, Func<string, int> usage) =>
+        usage(writing == NameWriting.Chinese ? word.Chinese ?? word.Text : word.Text);
+
+    internal static Word PickPoolWord(Word[] words, NameWriting writing, Func<string, int> usage, ref NamingRandom random)
+    {
+        if (usage == null) return PickWord(words, ref random);
+        int lowest = int.MaxValue;
+        var preferred = new List<Word>();
+        foreach (var word in words)
+        {
+            int count = SurnameUse(word, writing, usage);
+            if (count == int.MaxValue || count > lowest) continue;
+            if (count < lowest) preferred.Clear();
+            lowest = count;
+            preferred.Add(word);
+        }
+        return PickWord(preferred.ToArray(), ref random);
     }
 
     internal static string RenderWord(Word word, NameWriting writing, string kind, string reference, out NamePartSource source)

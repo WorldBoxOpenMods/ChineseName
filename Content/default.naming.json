@@ -4127,7 +4127,8 @@
         "parts": [
           {
             "id": "name",
-            "pool": "chinesename:family-name"
+            "input": "founder-surname",
+            "fallbackPool": "chinesename:family-name"
           },
           {
             "id": "suffix",

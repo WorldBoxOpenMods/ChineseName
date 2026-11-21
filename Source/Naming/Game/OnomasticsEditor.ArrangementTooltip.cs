@@ -73,7 +73,8 @@ public sealed partial class OnomasticsEditor
         {
             var sample = draw == 0 ? request : request.WithSeed(unchecked(request.Seed + (ulong)draw));
             var result = NativeOnomastics.GenerateCards(sample, effective, previewChoice, rule, cards);
-            if (result.Failures.Any(failure => failure.Reason is NameFailureReason.MissingGlyph or NameFailureReason.InvalidArrangement)) break;
+            if (result.Failures.Any(failure => failure.Reason is NameFailureReason.MissingGlyph or
+                    NameFailureReason.InvalidArrangement or NameFailureReason.InapplicableInput)) break;
             if (IsPreviewName(result) && seen.Add(result.Text)) samples.Add(result.Text);
         }
         return samples.ToArray();
