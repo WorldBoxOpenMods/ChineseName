@@ -7,6 +7,9 @@ namespace Chinese_Name.Naming;
 public sealed class CultureVariant
 {
     public string Type { get; set; }
+    public ConditionalArrangement Arrangement { get; set; }
+    public List<string> Landforms { get; set; } = new();
+    public List<string> Species { get; set; } = new();
     public string Rule { get; set; }
     public string Part { get; set; }
     public string Literal { get; set; }
@@ -17,6 +20,7 @@ public sealed class WordGroup
 {
     public string Pool { get; set; }
     public List<string> Words { get; set; } = new();
+    public List<string> Landforms { get; set; } = new();
 }
 
 internal static partial class Configuration
@@ -29,18 +33,23 @@ internal static partial class Configuration
         {
             var value = pair.Value;
             if (!Ids.Local(pair.Key) || value == null || !Ids.Qualified(value.Type) ||
-                !Ids.Local(value.Rule) || !Ids.Local(value.Part) ||
-                (value.Literal != null) == value.Chance.HasValue ||
-                (value.Literal != null && !Ids.Text(value.Literal, 128)) ||
-                (value.Chance.HasValue && !(value.Chance.Value > 0 && value.Chance.Value <= 1)))
+                !value.Landforms.All(Ids.Local) || !value.Species.All(Ids.Local) || !ValidVariant(value))
                 throw new FormatException("Invalid culture variant: " + pair.Key);
         }
         foreach (var pair in pack.WordGroups)
             if (!Ids.Local(pair.Key) || pair.Value == null || !Ids.Qualified(pair.Value.Pool) ||
                 pair.Value.Words.Count is 0 or > NameEngine.MaxWords ||
-                pair.Value.Words.Any(id => !Ids.Qualified(id)))
+                pair.Value.Words.Any(id => !Ids.Qualified(id)) || !pair.Value.Landforms.All(Ids.Local))
                 throw new FormatException("Invalid word group: " + pair.Key);
     }
+
+    private static bool ValidVariant(CultureVariant variant) =>
+        variant.Arrangement is { } arrangement
+            ? variant.Rule == null && variant.Part == null && variant.Literal == null && !variant.Chance.HasValue &&
+              !arrangement.Disabled && ValidArrangement(arrangement) && arrangement.IsConfigured
+            : Ids.Local(variant.Rule) && Ids.Local(variant.Part) &&
+              (variant.Literal != null && !variant.Chance.HasValue && Ids.Text(variant.Literal, 128) ||
+               variant.Literal == null && variant.Chance is > 0 and <= 1);
 
     private static IEnumerable<NamingPack> EvolutionPacks(Dictionary<string, NamingPack> active,
         string selected, string fallback, bool language)
@@ -61,6 +70,40 @@ internal static partial class Configuration
                 variant.Type == type && variant.Rule == rule) return variant;
         return null;
     }
+
+    private static bool AllowsArrangement(CultureNaming culture, string type) =>
+        culture != null && !culture.Arrangements.ContainsKey(type) &&
+        !(culture.Cards.TryGetValue(type, out var cards) && cards.Enabled) &&
+        !culture.Rules.Keys.Any(key => key.StartsWith(type + "/", StringComparison.Ordinal)) &&
+        !culture.Presets.ContainsKey(type);
+
+    private static IReadOnlyList<string> AdoptedArrangements(CultureNaming culture, string type)
+    {
+        if (culture.ArrangementVariants.TryGetValue(type, out var variants)) return variants;
+        return culture.Variants.TryGetValue(type, out string legacy) ? new[] { legacy } : Array.Empty<string>();
+    }
+
+    private static IEnumerable<(string Origin, ConditionalArrangement Arrangement)> InheritedArrangements(CultureNaming culture, string type,
+        Dictionary<string, NamingPack> active, string selected, string fallback, NamingPack snapshot)
+    {
+        if (snapshot != null || !AllowsArrangement(culture, type)) yield break;
+        var adopted = AdoptedArrangements(culture, type);
+        if (adopted.Count == 0) yield break;
+        var byId = ArrangementPacks(active, selected, fallback).ToDictionary(pack => pack.Id, StringComparer.Ordinal);
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (string id in adopted)
+        {
+            int separator = id.IndexOf('/');
+            if (separator > 0 && byId.TryGetValue(id.Substring(0, separator), out var pack) &&
+                pack.CultureVariants.TryGetValue(id.Substring(separator + 1), out var variant) &&
+                variant.Type == type && variant.Arrangement is { } arrangement && seen.Add(arrangement.Id))
+                yield return (id, arrangement);
+        }
+    }
+
+    private static IEnumerable<NamingPack> ArrangementPacks(Dictionary<string, NamingPack> active, string selected,
+        string fallback) => EvolutionPacks(active, selected, fallback, false)
+            .Where(pack => pack.Supplemental || pack.Id == selected);
 
     private static WordGroup FindWordGroup(Dictionary<string, NamingPack> active,
         string selected, string fallback, string id, string pool, NamingPack snapshot = null)
@@ -132,25 +175,49 @@ internal static partial class Configuration
     }
 
     internal static bool EvolveCulture(CultureNaming culture, WorldNaming world, IEnumerable<NameType> types,
-        IReadOnlyDictionary<string, NamingPack> packs, string fallback, IEnumerable<string> defaults, ulong seed)
+        IReadOnlyDictionary<string, NamingPack> packs, string fallback, IEnumerable<string> defaults, ulong seed,
+        string landform = null, string species = null)
     {
         var diagnostics = new List<string>();
         var active = ResolveCulturePacks(packs, world, culture, fallback, defaults, diagnostics, out var snapshot);
         var selected = Select(active, diagnostics, culture.Pack, world.CulturePack, fallback);
         var byType = types.ToDictionary(type => type.Id, StringComparer.Ordinal);
+        var nativeOptions = snapshot == null ? ArrangementPacks(active, selected, fallback)
+            .SelectMany(pack => pack.CultureVariants.Select(pair => (Id: pack.Id + "/" + pair.Key, Variant: pair.Value)))
+            .Where(option => option.Variant.Arrangement != null && byType.ContainsKey(option.Variant.Type) &&
+                AllowsArrangement(culture, option.Variant.Type) &&
+                (option.Variant.Landforms.Count == 0 || option.Variant.Landforms.Contains(landform)) &&
+                (option.Variant.Species.Count == 0 || option.Variant.Species.Contains(species)))
+            .OrderBy(option => option.Id, StringComparer.Ordinal).ToArray() : [];
+        // 同一类有物种专属排列时，普通变体不在后来几代盖过它。
+        var specificTypes = nativeOptions.Where(option => option.Variant.Species.Count > 0)
+            .Select(option => option.Variant.Type).ToHashSet();
+        nativeOptions = nativeOptions.Where(option =>
+            (option.Variant.Species.Count > 0 || !specificTypes.Contains(option.Variant.Type)) &&
+            !AdoptedArrangements(culture, option.Variant.Type).Contains(option.Id)).ToArray();
+        if (nativeOptions.Length > 0)
+        {
+            var option = nativeOptions[Index(nativeOptions.Length, seed)];
+            string type = option.Variant.Type;
+            culture.ArrangementVariants[type] = AdoptedArrangements(culture, type).Prepend(option.Id).ToList();
+            culture.Variants.Remove(type);
+            return true;
+        }
         var rules = new Dictionary<string, Rule[]>(StringComparer.Ordinal);
         var options = new List<(string Rule, string Variant)>();
         foreach (var pack in EvolutionPacks(active, selected, fallback, false))
         foreach (var pair in pack.CultureVariants)
         {
             var variant = pair.Value;
-            if (!byType.TryGetValue(variant.Type, out var type) ||
+            if (variant.Arrangement != null || variant.Landforms.Count > 0 && !variant.Landforms.Contains(landform) ||
+                variant.Species.Count > 0 && !variant.Species.Contains(species) ||
+                !byType.TryGetValue(variant.Type, out var type) ||
                 (culture.Cards.TryGetValue(variant.Type, out var cards) && cards.Enabled)) continue;
             string key = variant.Type + "/" + variant.Rule;
             string id = pack.Id + "/" + pair.Key;
             if (culture.Variants.TryGetValue(key, out var previous) && previous == id) continue;
             if (!rules.TryGetValue(type.Id, out var available))
-                rules[type.Id] = available = ResolveRules(type, active, selected, fallback, culture, world.PackPriorities, diagnostics, snapshot);
+                rules[type.Id] = available = ResolveRules(type, active, selected, fallback, culture, world.PackPriorities, diagnostics, snapshot, out _);
             var rule = available.FirstOrDefault(value => value.Id == variant.Rule);
             culture.Rules.TryGetValue(key, out var playerEdit);
             var evolved = rule == null ? null : ApplyVariant(rule, variant, playerEdit);
@@ -190,7 +257,7 @@ internal static partial class Configuration
                 StringComparer.Ordinal);
     internal static bool EvolveLanguage(LanguageNaming language, WorldNaming world,
         IReadOnlyDictionary<string, NamingPack> packs, string fallback, IEnumerable<string> defaults, ulong seed, bool split,
-        ISet<string> preferredPools = null, long? culture = null)
+        ISet<string> preferredPools = null, long? culture = null, string landform = null)
     {
         var diagnostics = new List<string>();
         CultureNaming cultureSettings = null;
@@ -198,21 +265,25 @@ internal static partial class Configuration
         var active = ResolveCulturePacks(packs, world, cultureSettings, fallback, defaults, diagnostics, out var snapshot);
         var basis = SelectCulturePack(active, diagnostics, world, culture, fallback);
         var selected = SelectLanguagePack(active, diagnostics, world, language, basis, fallback);
+        var pools = active.Values.SelectMany(pack => pack.Pools.Keys.Concat(pack.PoolPatches.Select(patch => patch.Pool)))
+            .ToHashSet(StringComparer.Ordinal);
+        var migrations = PackageMigrations.Pools(active.Values, pools, diagnostics);
+        var inherited = migrations.Language(language, diagnostics);
         var definitions = WordGroupDefinitions(active, selected, fallback, snapshot);
         if (!split && preferredPools != null) definitions = definitions.Where(group => preferredPools.Contains(group.Group.Pool));
         var groups = GroupIds(definitions);
         if (groups.Count == 0) return false;
         var locked = new HashSet<string>(StringComparer.Ordinal);
-        var available = ResolvePools(active, selected, fallback, groups.Keys.ToArray(), null, null, language,
-            world.PackPriorities, diagnostics, locked, snapshot);
+        var available = ResolvePools(active, selected, fallback, groups.Keys.ToArray(), null, null, inherited,
+            world.PackPriorities, diagnostics, locked, snapshot, poolRenames: migrations.Ids);
         var options = new List<(string Pool, string[] Groups)>();
         foreach (var pool in groups.OrderBy(pair => pair.Key, StringComparer.Ordinal))
         {
             if (locked.Contains(pool.Key)) continue;
-            language.Pools.TryGetValue(pool.Key, out var player);
+            inherited.Pools.TryGetValue(pool.Key, out var player);
             var words = available[pool.Key];
             if (words.Length < 2) continue;
-            var preferred = split ? PreferredWords(language, active, selected, fallback, pool.Key, diagnostics, snapshot) : null;
+            var preferred = split ? PreferredWords(inherited, active, selected, fallback, pool.Key, diagnostics, snapshot) : null;
             var eligible = new List<string>();
             foreach (string id in pool.Value)
             {
@@ -229,9 +300,16 @@ internal static partial class Configuration
         {
             if (preferredPools != null && options.Any(option => preferredPools.Contains(option.Pool)))
                 options.RemoveAll(option => !preferredPools.Contains(option.Pool));
+            if (landform != null)
+            {
+                var regional = options.Select(option => (option.Pool, Groups: option.Groups.Where(id =>
+                    FindWordGroup(active, selected, fallback, id, option.Pool, snapshot).Landforms.Contains(landform)).ToArray()))
+                    .Where(option => option.Groups.Length > 0).ToList();
+                if (regional.Count > 0) options = regional;
+            }
             var (pool, choices) = options[Index(options.Count, seed)];
             string next = choices[Index(choices.Length, seed ^ NamingRandom.Hash(pool))];
-            var preferences = language.PreferencesFor(pool).ToDictionary(pair => pair.Key, pair => pair.Value * (1 - LanguageShift),
+            var preferences = inherited.PreferencesFor(pool).ToDictionary(pair => pair.Key, pair => pair.Value * (1 - LanguageShift),
                 StringComparer.Ordinal);
             preferences.TryGetValue(next, out double weight);
             preferences[next] = weight + LanguageShift;

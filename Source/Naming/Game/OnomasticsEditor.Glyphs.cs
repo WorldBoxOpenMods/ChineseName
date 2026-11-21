@@ -137,13 +137,22 @@ public sealed partial class OnomasticsEditor
         if (data == null) return;
         if (UsesCards(_card, _rule))
         {
-            if (NativeNamingArrangement.TryUpgrade(_type.Id, data, _rule, _card, out var upgraded))
+            string template = _card.DraftTemplate ?? _card.Template;
+            bool refreshed = template != null && data.getShortTemplate() != template;
+            using var decoded = refreshed ? NativeNamingArrangement.ReadTemplate(template) : null;
+            if (refreshed && decoded == null)
+            {
+                if (!NativeNamingArrangement.FillDefault(data, _type.Id, _rule, _page.Effective, out bool changed) || !changed) return;
+            }
+            else if (decoded != null) NativeNamingArrangement.ReplaceData(data, decoded);
+            if ((!refreshed || decoded != null) && NativeNamingArrangement.TryUpgrade(_type.Id, data, _rule, _card, out var upgraded))
             {
                 _card = upgraded;
                 DraftCulture(_culture.id).Cards[_type.Id] = upgraded;
                 _page.PreviewRevision++;
             }
-            else if (!NativeNamingArrangement.ShowLegacySeparators(data, _card, _rule)) return;
+            else if (!refreshed && !NativeNamingArrangement.ShowLegacySeparators(data, _card, _rule)) return;
+            if (refreshed) _page.PreviewRevision++;
         }
         else
         {
@@ -156,7 +165,7 @@ public sealed partial class OnomasticsEditor
 
     private CardNaming ReadArrangementChoice()
     {
-        var choice = NativeOnomastics.Selection(_draft, _culture, _type.Id);
+        var choice = NativeOnomastics.Selection(_draft, _culture, _type.Id, _page.Effective, _rule);
         if (!NativeNamingTab.HasChanged(_culture.id, _type.Id)) return choice;
         if (!UsesCards(choice, _rule)) return NativeNamingArrangement.ForRule(_type.Id, _rule);
         if (choice.ExplicitSeparators || !NativeNamingTab.HadRuleSeparator(_culture.id, _type.Id)) return choice;
@@ -169,7 +178,9 @@ public sealed partial class OnomasticsEditor
     {
         if (Visible && CurrentContext && _editingArrangement != null)
         {
-            _conditionalDraft.loadFromShortTemplate(_editingArrangement.Cards.Template);
+            using var restored = NativeNamingArrangement.ReadTemplate(_editingArrangement.Cards.Template);
+            if (restored == null) return true;
+            NativeNamingArrangement.ReplaceData(_conditionalDraft, restored);
             _page.Message = null;
             _page.PreviewRevision++;
             _tab.loadFromTemplate();
@@ -182,6 +193,7 @@ public sealed partial class OnomasticsEditor
         {
             var settings = DraftCulture(_culture.id);
             settings.Rules.Remove(RuleKey(_type, _rule));
+            settings.DefaultArrangementEdits.Remove(CultureNaming.DefaultArrangementKey(_type.Id, _page.Effective.ArrangementBasis, _rule.Id));
             settings.Cards[_type.Id] = new CardNaming { Enabled = false };
             NativeNamingTab.ForgetDraft(_culture.id, _type.Id);
             _tab.loadFromTemplate();

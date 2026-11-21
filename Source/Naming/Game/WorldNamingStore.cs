@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using HarmonyLib;
 using NeoModLoader.services;
@@ -11,13 +12,25 @@ public static class WorldNamingStore
 {
     private const string SaveKey = "chinesename.rules.v1";
     private const string DraftKey = "chinesename.draft.v1";
+    private const string CulturePrefix = "chinesename.culture.v1/";
+    private const string LanguagePrefix = "chinesename.language.v1/";
+
+    private sealed class SavedLanguage
+    {
+        public LanguageNaming Settings { get; set; }
+        public long? Parent { get; set; }
+    }
+
     private static NamingService _service;
     private static MapStats _map;
     private static string _packDirectory;
     private static string _bundledPackDirectory;
     private static string _loadError;
+    private static readonly HashSet<long> UnavailableCultures = new();
+    private static readonly HashSet<long> UnavailableLanguages = new();
+    private static readonly List<string> LoadIssues = new();
     private static string _bundledSpeciesPack;
-    private static readonly HashSet<string> DiskPacks = new(StringComparer.Ordinal);
+    private static Dictionary<string, (string Path, NamingPack Pack)> _installedFiles = new(StringComparer.Ordinal);
     private static readonly HashSet<string> BundledPacks = new(StringComparer.Ordinal);
 
     public static string PackageDirectory => _packDirectory;
@@ -26,8 +39,8 @@ public static class WorldNamingStore
     {
         var defaultPack = ReadPack(Path.Combine(modFolder, "Content", "default.naming.json"));
         _service = new NamingService(defaultPack.Id);
-        _service.GameRule = NativeOnomastics.Generate;
-        foreach (var type in VanillaNames.Types) _service.RegisterType(type);
+        _service.GameCandidates = NativeOnomastics.Candidates;
+        _service.ArrangementCodec = NativeNamingArrangement.Codec;
         VanillaNamingConditions.Register(_service);
         _service.InstallPack(defaultPack);
         var species = ReadPack(Path.Combine(modFolder, "Content", "species-defaults.naming.json"));
@@ -50,50 +63,114 @@ public static class WorldNamingStore
     public static IReadOnlyList<string> ReloadPacks()
     {
         var errors = new List<string>();
-        var bundled = ReadPacks(_bundledPackDirectory, errors);
-        var files = new Dictionary<string, NamingPack>(bundled, StringComparer.Ordinal);
-        foreach (var file in ReadPacks(_packDirectory, errors))
-            files[file.Key] = file.Value;
-        foreach (var id in DiskPacks) _service.UninstallPack(id);
-        DiskPacks.Clear();
-        BundledPacks.Clear();
-        foreach (var pack in files.Values)
+        var previousByPath = _installedFiles.Values.ToDictionary(file => file.Path, file => file.Pack, StringComparer.Ordinal);
+        Dictionary<string, (string Path, NamingPack Pack)> bundled;
+        Dictionary<string, (string Path, NamingPack Pack)> files;
+        try
         {
-            try
-            {
-                _service.InstallPack(pack);
-                DiskPacks.Add(pack.Id);
-                if (bundled.ContainsKey(pack.Id)) BundledPacks.Add(pack.Id);
-            }
-            catch (Exception error) { errors.Add(pack.Id + " · " + error.Message); }
+            bundled = ReadPacks(_bundledPackDirectory, previousByPath, errors);
+            files = new(bundled, StringComparer.Ordinal);
+            foreach (var entry in ReadPacks(_packDirectory, previousByPath, errors))
+                files[entry.Key] = entry.Value;
         }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            errors.Add("命名包目录读取失败，沿用当前版本 · " + error.Message);
+            return errors;
+        }
+
+        var catalog = _service.PackageCatalog();
+        foreach (string id in _installedFiles.Keys) catalog.Remove(id);
+        foreach (var entry in files.ToArray())
+        {
+            if (catalog.TryAdd(entry.Key, entry.Value.Pack)) continue;
+            errors.Add("命名包 ID 已注册 · " + entry.Key);
+            files.Remove(entry.Key);
+        }
+        KeepCompatibleVersions(files, catalog, errors);
+        _service.ReplacePackageCatalog(catalog);
+        _installedFiles = files;
+        BundledPacks.Clear();
+        BundledPacks.UnionWith(bundled.Keys.Where(files.ContainsKey));
         return errors;
     }
 
-    private static Dictionary<string, NamingPack> ReadPacks(string directory, List<string> errors)
+    private static Dictionary<string, (string Path, NamingPack Pack)> ReadPacks(string directory,
+        IReadOnlyDictionary<string, NamingPack> previousByPath, List<string> errors)
     {
-        var files = new Dictionary<string, NamingPack>(StringComparer.Ordinal);
-        if (!Directory.Exists(directory)) return files;
-        var duplicates = new HashSet<string>(StringComparer.Ordinal);
+        var candidates = new List<(string Path, NamingPack Pack)>();
+        if (!Directory.Exists(directory)) return new(StringComparer.Ordinal);
         foreach (var file in Directory.GetFiles(directory, "*.naming.json").OrderBy(file => file, StringComparer.Ordinal))
         {
             try
             {
                 var pack = ReadPack(file);
-                // 此词库现在随模组加载，之前安装的同 ID 文件可以继续留在存档目录。
-                if (pack.Id == _bundledSpeciesPack) continue;
+                if (pack?.Id == _bundledSpeciesPack) continue;
                 Configuration.Validate(pack);
-                if (files.ContainsKey(pack.Id)) duplicates.Add(pack.Id);
-                else files.Add(pack.Id, pack);
+                candidates.Add((file, pack));
             }
-            catch (Exception error) { errors.Add(Path.GetFileName(file) + " · " + error.Message); }
+            catch (Exception error)
+            {
+                bool retained = previousByPath.TryGetValue(file, out var previous);
+                if (retained) candidates.Add((file, previous));
+                errors.Add(Path.GetFileName(file) + " · " + error.Message + (retained ? " · 沿用上次有效版本" : ""));
+            }
         }
-        foreach (var id in duplicates)
+        var files = new Dictionary<string, (string Path, NamingPack Pack)>(StringComparer.Ordinal);
+        foreach (var group in candidates.GroupBy(file => file.Pack.Id, StringComparer.Ordinal))
         {
-            files.Remove(id);
-            errors.Add("重复的命名包 ID · " + id);
+            var first = group.First();
+            if (group.Count() == 1) files.Add(group.Key, first);
+            else
+            {
+                bool retained = _installedFiles.TryGetValue(group.Key, out var previous) &&
+                    Path.GetDirectoryName(previous.Path) == directory;
+                if (retained)
+                {
+                    string path = group.Any(file => file.Path == previous.Path) ? previous.Path : first.Path;
+                    files.Add(group.Key, (path, previous.Pack));
+                }
+                errors.Add("重复的命名包 ID · " + group.Key + (retained ? " · 沿用上次有效版本" : ""));
+            }
         }
         return files;
+    }
+
+    private static void KeepCompatibleVersions(Dictionary<string, (string Path, NamingPack Pack)> files,
+        Dictionary<string, NamingPack> catalog, List<string> errors)
+    {
+        var world = _service.ActiveWorld;
+        var current = _service.ActivePacks(world);
+        if (current.Count == 0) return;
+        bool restored;
+        do
+        {
+            restored = false;
+            var available = _service.ActivePacks(world, catalog);
+            foreach (var entry in current.Where(entry => !available.ContainsKey(entry.Key) && catalog.ContainsKey(entry.Key)))
+            {
+                string id = entry.Key;
+                var next = catalog[id];
+                if (next.Requires.Any(requirement =>
+                    (!entry.Value.Requires.TryGetValue(requirement.Key, out int before) || before < requirement.Value) &&
+                    (!available.TryGetValue(requirement.Key, out var dependency) || dependency.Version < requirement.Value)))
+                    Restore(id, "更新后的依赖不可用");
+                foreach (var requirement in entry.Value.Requires)
+                    if (files.TryGetValue(requirement.Key, out var dependency) && dependency.Pack.Version < requirement.Value &&
+                        current.TryGetValue(requirement.Key, out var previous) && previous.Version >= requirement.Value)
+                        Restore(requirement.Key, "版本低于 " + id + " 的依赖要求");
+            }
+        } while (restored);
+
+        void Restore(string id, string message)
+        {
+            if (!files.TryGetValue(id, out var next) || !_installedFiles.TryGetValue(id, out var before) ||
+                ReferenceEquals(next.Pack, before.Pack)) return;
+            files[id] = (next.Path, before.Pack);
+            catalog[id] = before.Pack;
+            restored = true;
+            errors.Add(id + " · " + message + " · 沿用上次有效版本");
+        }
     }
 
     private static bool EnableNewBundledPacks(WorldNaming world)
@@ -142,7 +219,7 @@ public static class WorldNamingStore
         }
         else if (language.HasValue && !culture.HasValue && world.Languages.TryGetValue(language.Value, out var languageEdits))
         {
-            pack.LanguageEdits = languageEdits.Pools;
+            pack.LanguageEdits = _service.Inspect(new NameRequest(VanillaNames.Person, 0, language: language), world).LanguageSettings.Pools;
             basis = languageEdits.Pack ?? world.LanguagePack ?? _service.DefaultPack;
             bases = pack.LanguageBases;
         }
@@ -209,21 +286,90 @@ public static class WorldNamingStore
 
     public static void Apply(WorldNaming draft)
     {
-        Sync();
-        if (_map == null) throw new InvalidOperationException("No world is active.");
+        RequireWorld();
         if (_loadError != null) throw new InvalidOperationException(_loadError);
-        draft.InitializedBundledPacks = _service.ActiveWorld.InitializedBundledPacks;
-        string json = NamingJson.WriteWorld(draft);
-        _service.SetWorld(draft);
-        Save(_map, json);
+        var previous = _service.ActiveWorld;
+        var next = draft.WithoutProfiles();
+        next.InitializedBundledPacks = previous.InitializedBundledPacks;
+        next.Cultures = new(draft.Cultures);
+        next.Languages = new(draft.Languages);
+        next.LanguageParents = new(draft.LanguageParents);
+
+        var header = next.WithoutProfiles();
+        foreach (long id in UnavailableCultures) Retain(id, previous.Cultures, next.Cultures, header.Cultures);
+        foreach (long id in UnavailableLanguages)
+        {
+            Retain(id, previous.Languages, next.Languages, header.Languages);
+            Retain(id, previous.LanguageParents, next.LanguageParents, header.LanguageParents);
+        }
+        foreach (var link in next.LanguageParents)
+            if (!next.Languages.ContainsKey(link.Key)) header.LanguageParents[link.Key] = link.Value;
+
+        string json = NamingJson.WriteWorld(header);
+        var profiles = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var entry in next.Cultures)
+            if (!UnavailableCultures.Contains(entry.Key))
+                profiles.Add(ProfileKey(CulturePrefix, entry.Key), NamingJson.WriteProfile(entry.Value));
+        foreach (var entry in next.Languages)
+            if (!UnavailableLanguages.Contains(entry.Key))
+                profiles.Add(ProfileKey(LanguagePrefix, entry.Key), WriteLanguage(entry.Value,
+                    next.LanguageParents.TryGetValue(entry.Key, out long parent) ? parent : null));
+
+        var stored = _map.custom_data?.custom_data_string;
+        var removed = ProfileKeys(_map).Where(key => !profiles.ContainsKey(key) &&
+            TryProfileId(key, out bool culture, out long id) && !(culture ? UnavailableCultures : UnavailableLanguages).Contains(id)).ToArray();
+        _service.SetWorld(next);
+        SaveIfChanged(SaveKey, json);
+        foreach (var entry in profiles) SaveIfChanged(entry.Key, entry.Value);
+        foreach (string key in removed) _map.custom_data.removeString(key);
+
+        void SaveIfChanged(string key, string content)
+        {
+            if (stored == null || !stored.TryGetValue(key, out string before) || before != content) Save(_map, content, key);
+        }
+
+        static void Retain<T>(long id, Dictionary<long, T> previous, Dictionary<long, T> current, Dictionary<long, T> header)
+        {
+            if (previous.TryGetValue(id, out var fallback)) header[id] = current[id] = fallback;
+            else current.Remove(id);
+        }
     }
 
-    internal static void Update(Func<WorldNaming, bool> edit)
+    internal static WorldNaming LineageWorld()
     {
         Sync();
-        if (_map == null || _loadError != null) return;
-        var draft = _service.GetWorld();
-        if (edit(draft)) Apply(draft);
+        return _map != null ? _service.ActiveWorld : null;
+    }
+
+    internal static IReadOnlyList<string> StorageWarnings()
+    {
+        Sync();
+        return LoadIssues.ToArray();
+    }
+
+    private static void RequireWorld()
+    {
+        Sync();
+        if (_map == null) throw new InvalidOperationException("No world is active.");
+    }
+
+    internal static void SetCulture(long id, CultureNaming settings)
+    {
+        RequireWorld();
+        if (UnavailableCultures.Contains(id)) throw new InvalidOperationException("此文化的原始命名设置无法读取，已保留供恢复。");
+        var owned = NamingJson.Copy(settings);
+        Save(_map, NamingJson.WriteProfile(owned), ProfileKey(CulturePrefix, id));
+        _service.SetCulture(id, owned);
+    }
+
+    internal static void SetLanguage(long id, LanguageNaming settings, long? parent = null)
+    {
+        RequireWorld();
+        if (UnavailableLanguages.Contains(id)) throw new InvalidOperationException("此语言的原始词库设置无法读取，已保留供恢复。");
+        if (!parent.HasValue && _service.ActiveWorld.LanguageParents.TryGetValue(id, out long previous)) parent = previous;
+        var owned = NamingJson.Copy(settings);
+        Save(_map, WriteLanguage(owned, parent), ProfileKey(LanguagePrefix, id));
+        _service.SetLanguage(id, owned, parent);
     }
 
     internal static void ApplyPackageSelection(WorldNaming world)
@@ -251,8 +397,7 @@ public static class WorldNamingStore
         if (!world.Cultures.TryGetValue(culture, out var settings))
             world.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
-        if (snapshot != null)
-            foreach (string type in snapshot.Arrangements.Keys) settings.Arrangements.Remove(type);
+        if (snapshot != null) ReplaceCapturedArrangements(settings, snapshot);
         if (snapshot != null && !world.AppliedPresets.ContainsKey(pack))
             world.AppliedPresets.Add(pack, snapshot);
         var used = new HashSet<string>(world.Cultures.Values.Select(value => value.Pack), StringComparer.Ordinal);
@@ -264,19 +409,30 @@ public static class WorldNamingStore
         if (!draft.Cultures.TryGetValue(culture, out settings))
             draft.Cultures[culture] = settings = new CultureNaming();
         settings.Pack = pack;
-        if (snapshot != null)
-            foreach (string type in snapshot.Arrangements.Keys) settings.Arrangements.Remove(type);
+        if (snapshot != null) ReplaceCapturedArrangements(settings, snapshot);
         SaveDraft(draft);
         return pack;
     }
 
+    private static void ReplaceCapturedArrangements(CultureNaming settings, NamingPack snapshot)
+    {
+        foreach (string type in snapshot.Rules.Keys.Concat(snapshot.Arrangements.Keys).Distinct(StringComparer.Ordinal))
+        {
+            settings.ResetArrangements(type);
+            settings.Cards[type] = new CardNaming();
+            settings.Presets.Remove(type);
+            foreach (string key in settings.Rules.Keys.Where(key => key.StartsWith(type + "/", StringComparison.Ordinal)).ToArray())
+                settings.Rules.Remove(key);
+        }
+    }
+
     internal static void ApplyLanguageSettings(long language, Action<LanguageNaming> edit)
     {
-        var world = NamingApi.Current.GetWorld();
-        if (!world.Languages.TryGetValue(language, out var settings))
-            world.Languages[language] = settings = new LanguageNaming();
+        RequireWorld();
+        var settings = _service.ActiveWorld.Languages.TryGetValue(language, out var previous)
+            ? NamingJson.Copy(previous) : new LanguageNaming();
         edit(settings);
-        Apply(world);
+        SetLanguage(language, settings);
         if (!HasSavedDraft()) return;
         var draft = GetSavedDraft();
         draft.Languages[language] = settings;
@@ -292,7 +448,7 @@ public static class WorldNamingStore
     private static void Load(MapStats map)
     {
         _map = map;
-        _loadError = null;
+        ResetLoadIssues();
         try
         {
             string json = null;
@@ -301,26 +457,85 @@ public static class WorldNamingStore
             {
                 var saved = NamingJson.Read<WorldNaming>(json);
                 bool changed = saved?.Format == 1 && EnableNewBundledPacks(saved);
+                string current = changed ? NamingJson.WriteWorld(saved) : null;
+                if (saved?.Format == 1) LoadProfiles(map, saved);
                 _service.SetWorld(saved);
-                if (changed) Save(map, NamingJson.WriteWorld(saved));
+                if (changed) Save(map, current);
                 return;
             }
         }
         catch (Exception error)
         {
-            _loadError = "Unable to load the saved naming configuration: " + error.Message;
-            LogService.LogWarning(_loadError);
+            _loadError = "世界的命名包设置无法读取，已保留原始记录。";
+            Report(_loadError, error);
         }
         var settings = new WorldNaming { UseSavedVanillaCards = map != null && _loadError == null };
         bool initialized = map != null && EnableNewBundledPacks(settings);
-        _service.SetWorld(settings);
         if (initialized && _loadError == null) Save(map, NamingJson.WriteWorld(settings));
+        LoadProfiles(map, settings);
+        _service.SetWorld(settings);
     }
 
-    private static void Save(MapStats map, string json)
+    private static IEnumerable<string> ProfileKeys(MapStats map) =>
+        (map?.custom_data?.custom_data_string?.Keys ?? Enumerable.Empty<string>()).Where(key =>
+            key.StartsWith(CulturePrefix, StringComparison.Ordinal) || key.StartsWith(LanguagePrefix, StringComparison.Ordinal));
+
+    private static string ProfileKey(string prefix, long id) => prefix + id.ToString(CultureInfo.InvariantCulture);
+
+    private static string WriteLanguage(LanguageNaming settings, long? parent) =>
+        NamingJson.WriteProfile(new SavedLanguage { Settings = settings, Parent = parent });
+
+    private static bool TryProfileId(string key, out bool culture, out long id)
+    {
+        culture = key.StartsWith(CulturePrefix, StringComparison.Ordinal);
+        string prefix = culture ? CulturePrefix : LanguagePrefix;
+        return long.TryParse(key.Substring(prefix.Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out id) &&
+            key == ProfileKey(prefix, id);
+    }
+
+    private static void LoadProfiles(MapStats map, WorldNaming saved)
+    {
+        foreach (string key in ProfileKeys(map))
+        {
+            if (!TryProfileId(key, out bool culture, out long id)) continue;
+            try
+            {
+                string json = map.custom_data.custom_data_string[key];
+                if (culture)
+                    saved.Cultures[id] = NamingJson.ReadProfile<CultureNaming>(json) ?? throw new FormatException("Missing culture settings.");
+                else
+                {
+                    var entry = NamingJson.ReadProfile<SavedLanguage>(json);
+                    saved.Languages[id] = entry?.Settings ?? throw new FormatException("Missing language settings.");
+                    if (entry.Parent.HasValue) saved.LanguageParents[id] = entry.Parent.Value;
+                }
+            }
+            catch (Exception error) when (error is FormatException or Newtonsoft.Json.JsonException)
+            {
+                (culture ? UnavailableCultures : UnavailableLanguages).Add(id);
+                Report((culture ? "文化 " : "语言 ") + id + " 的命名设置无法读取，已保留原始记录。", error);
+            }
+        }
+    }
+
+    private static void Report(string issue, Exception error)
+    {
+        LoadIssues.Add(issue);
+        LogService.LogWarning(issue + " " + error.Message);
+    }
+
+    private static void ResetLoadIssues()
+    {
+        _loadError = null;
+        UnavailableCultures.Clear();
+        UnavailableLanguages.Clear();
+        LoadIssues.Clear();
+    }
+
+    private static void Save(MapStats map, string json, string key = SaveKey)
     {
         map.custom_data ??= new SaveCustomData();
-        map.custom_data.set(SaveKey, json);
+        map.custom_data.set(key, json);
     }
 
     [HarmonyPatch(typeof(MapStats), nameof(MapStats.initNewWorld))]
@@ -329,7 +544,7 @@ public static class WorldNamingStore
         private static void Prefix(MapStats __instance)
         {
             _map = __instance;
-            _loadError = null;
+            ResetLoadIssues();
             var settings = new WorldNaming();
             EnableNewBundledPacks(settings);
             _service.SetWorld(settings);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chinese_Name.Naming;
+using UnityEngine.UI;
 
 var result = ChineseNameExample.SpellNames.Generate("fire", "blade", 42);
 if (!result.Success || result.Text != "炎刃诀" || result.Parts["form"] != "刃")
@@ -10,4 +11,31 @@ var type = NamingApi.Current.Types.Single(value => value.Id == ChineseNameExampl
 var request = new NameRequest(type.Id, 42, inputs: new Dictionary<string, object> { ["element"] = "fire", ["form"] = "blade" });
 if (NamingApi.Current.Preview(request).Text != result.Text || !type.Fields["element"].Required)
     throw new InvalidOperationException("The editor cannot discover or preview the extension schema.");
-return new { type = type.Id, result.Text, declared = type.Fields.Keys.ToArray() };
+
+Config.paused = true;
+var world = World.world;
+var tile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
+var actor = world.units.createNewUnit("human", tile);
+var culture = world.cultures.newCulture(actor, true);
+actor.setCulture(culture);
+world.cultures.checkLists();
+world.console.Hide();
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+SelectedUnit.select(actor);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_mod_" + type.Id).toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+var glyph = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Single(button => button.onomastics_asset.id == "spell-example:form-name").onomastics_asset;
+tab.loadTemplate(glyph.short_id + "0|0:诀");
+for (int i = 0; i < 12; i++) await Game.NextFrame();
+string preview = window.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+string named = ChineseNameExample.SpellNames.Generate("fire", "blade", 42, culture.id).Text;
+if (preview != "刃诀" || named != preview)
+    throw new InvalidOperationException($"The native example editor previewed {preview} and the mod generated {named}.");
+return new { type = type.Id, result.Text, preview, named, declared = type.Fields.Keys.ToArray() };

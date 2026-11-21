@@ -1,0 +1,164 @@
+{
+  "format": 1,
+  "id": "chinesename:wafuu-geography",
+  "label": "和风沿革",
+  "supplemental": true,
+  "requires": {
+    "chinesename:wafuu-set": 1,
+    "chinesename:wafuu-lexicon": 1
+  },
+  "cultureBases": [
+    "chinesename:wafuu-set"
+  ],
+  "cultureVariants": {
+    "wafuu-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "arrangement": {
+        "id": "wafuu-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/wafuu-lexicon.city-root;1:湊",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "wafuu-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "arrangement": {
+        "id": "wafuu-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/wafuu-lexicon.city-root;1:岛",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "wafuu-mountain": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "arrangement": {
+        "id": "wafuu-mountain",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/wafuu-lexicon.city-root;1:宿",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    }
+  },
+  "wordGroups": {
+    "wafuu-harbor": {
+      "pool": "chinesename:wafuu-lexicon.city-root",
+      "words": [
+        "chinesename:wafuu-lexicon.w-b9cd34e00f5e4972e1d8",
+        "chinesename:wafuu-lexicon.w-9d3a0f81180855e809a3",
+        "chinesename:wafuu-lexicon.w-e86257f639ee3341983a",
+        "chinesename:wafuu-lexicon.w-0939bf30f1013ada6626",
+        "chinesename:wafuu-lexicon.w-980408b99b3a8e4ea49b",
+        "chinesename:wafuu-lexicon.w-3d4acdaaa4bd88f3ce7a",
+        "chinesename:wafuu-lexicon.w-47d1a144a84cabe87ee9",
+        "chinesename:wafuu-lexicon.w-5041c3a64357938bb203",
+        "chinesename:wafuu-lexicon.w-8e59fa7795da21fad246"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "wafuu-island": {
+      "pool": "chinesename:wafuu-lexicon.city-root",
+      "words": [
+        "chinesename:wafuu-lexicon.w-e11c00041b0df82dcee1",
+        "chinesename:wafuu-lexicon.w-3fa6dc6ae8a5bd55bd7d",
+        "chinesename:wafuu-lexicon.w-139001abc6d971e6ce1c",
+        "chinesename:wafuu-lexicon.w-6d7cf1277a54c8ed2bfa",
+        "chinesename:wafuu-lexicon.w-e86257f639ee3341983a",
+        "chinesename:wafuu-lexicon.w-9d3a0f81180855e809a3",
+        "chinesename:wafuu-lexicon.w-e7bd4790834f1eaebfc7",
+        "chinesename:wafuu-lexicon.w-b9cd34e00f5e4972e1d8",
+        "chinesename:wafuu-lexicon.w-3d4acdaaa4bd88f3ce7a",
+        "chinesename:wafuu-lexicon.w-e94db51c58809f0e0595"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "wafuu-mountain": {
+      "pool": "chinesename:wafuu-lexicon.city-root",
+      "words": [
+        "chinesename:wafuu-lexicon.w-a338ca7f9f7d00b5edbd",
+        "chinesename:wafuu-lexicon.w-48890a65f715ae9ff562",
+        "chinesename:wafuu-lexicon.w-79ad0de6838a23a278b7",
+        "chinesename:wafuu-lexicon.w-e94db51c58809f0e0595",
+        "chinesename:wafuu-lexicon.w-56b52a21868c529984fa",
+        "chinesename:wafuu-lexicon.w-907f279b2dc895f71a7f",
+        "chinesename:wafuu-lexicon.w-c11a9670fde791882ff3",
+        "chinesename:wafuu-lexicon.w-39a30fe58f6fe0452652",
+        "chinesename:wafuu-lexicon.w-4fc74e2a7562717e32c9",
+        "chinesename:wafuu-lexicon.w-68900392fc62b2ba06e2",
+        "chinesename:wafuu-lexicon.w-fbc40e605db721bee656"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ]
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "format": 1,
+  "id": "chinesename:local-exonyms",
+  "label": "通商外称",
+  "supplemental": true,
+  "requires": {
+    "chinesename:classic": 1
+  },
+  "rules": {
+    "chinesename:exonym": [
+      {
+        "id": "city",
+        "priority": 10,
+        "when": {
+          "kind": "city"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "城"
+          }
+        ]
+      },
+      {
+        "id": "city-alternate",
+        "priority": 5,
+        "when": {
+          "kind": "city"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "邑"
+          }
+        ]
+      },
+      {
+        "id": "realm",
+        "priority": 10,
+        "when": {
+          "kind": "kingdom"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "邦"
+          }
+        ]
+      },
+      {
+        "id": "realm-alternate",
+        "priority": 5,
+        "when": {
+          "kind": "kingdom"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "国"
+          }
+        ]
+      }
+    ]
+  }
+}

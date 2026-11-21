@@ -48,6 +48,88 @@ Check(service.Generate(new NameRequest(type, 0)).Status == GenerationStatus.Inva
 Check(service.Generate(new NameRequest("tests:unknown", 0)).Status == GenerationStatus.UnknownType, "Report missing type.");
 Check(service.Generate(Request(), _ => false).Status == GenerationStatus.Exhausted, "Bound rejected names.");
 
+var cache = new NamingService("tests:base");
+cache.RegisterType(service.Types.Single());
+cache.InstallPack(service.GetPackage("tests:base"));
+var hot = Request(culture: 1, language: 1);
+var cold = Request(culture: 2, language: 2);
+var hotNames = cache.Inspect(hot, null);
+var coldNames = cache.Inspect(cold, null);
+for (int id = 3; id <= 515; id++)
+{
+    cache.Inspect(Request(culture: id, language: id), null);
+    cache.Inspect(hot, null);
+}
+Check(ReferenceEquals(hotNames, cache.Inspect(hot, null)) && !ReferenceEquals(coldNames, cache.Inspect(cold, null)),
+    "Cache pressure should evict the oldest context and retain recently used ones.");
+var beforeScopeEdit = cache.ActiveWorld;
+coldNames = cache.Inspect(cold, null);
+cache.SetCulture(2, new CultureNaming { Parent = 1 });
+Check(!ReferenceEquals(beforeScopeEdit, cache.ActiveWorld) && !beforeScopeEdit.Cultures.ContainsKey(2) &&
+    !ReferenceEquals(coldNames, cache.Inspect(cold, null)) && ReferenceEquals(hotNames, cache.Inspect(hot, null)),
+    "A culture edit should refresh that culture and leave other resolutions usable.");
+cache.SetLanguage(40, new LanguageNaming(), parent: 7);
+cache.SetLanguage(42, new LanguageNaming { BiasOrigin = 40 }, parent: 40);
+var childRequest = Request(language: 42);
+var childNames = cache.Inspect(childRequest, null);
+cache.SetLanguage(40, new LanguageNaming(), parent: 7);
+Check(ReferenceEquals(childNames, cache.Inspect(childRequest, null)), "Editing a parent's words should preserve the child's snapshot.");
+cache.SetLanguage(40, new LanguageNaming(), parent: 8);
+Check(!ReferenceEquals(childNames, cache.Inspect(childRequest, null)) && ReferenceEquals(hotNames, cache.Inspect(hot, null)),
+    "Changing a bias origin's parent should refresh exactly the dependent contexts.");
+const string rejectedContext = "tests:rejected-context", brokenContext = "tests:broken-context";
+cache.RegisterType(new NameType(rejectedContext, "无效情境"));
+cache.RegisterType(new NameType(brokenContext, "异常情境"));
+cache.RegisterContext(rejectedContext, _ => false);
+cache.RegisterContext(brokenContext, _ => throw new InvalidOperationException("test callback"));
+Check(cache.Generate(new NameRequest(rejectedContext, 0)).Status == GenerationStatus.InvalidInput &&
+    cache.Generate(new NameRequest(brokenContext, 0)).Status == GenerationStatus.ContextError &&
+    cache.Preview(new NameRequest(brokenContext, 0)).Status == GenerationStatus.ContextError && cache.Generate(hot).Success,
+    "A throwing context should be distinguishable from invalid input without interfering with other types.");
+
+const string inheritedType = "tests:inheritance";
+var inheritedNames = new NamingService("tests:inheritance");
+inheritedNames.RegisterType(new NameType(inheritedType, "姓氏", new[] { new InputField("kind", InputKind.Text) },
+    fixedParts: new[] { "surname" }));
+inheritedNames.InstallPack(Read("""
+    {"format":1,"id":"tests:inheritance","rules":{"tests:inheritance":[
+        {"id":"omit","priority":3,"when":{"kind":"no-surname"},"parts":[
+            {"id":"surname","literal":"赵","optional":true,"chance":0},{"id":"given","literal":"青"}]},
+        {"id":"maternal","priority":2,"inheritance":"Mother","parts":[
+            {"id":"surname","literal":"赵"},{"id":"given","pool":"tests:empty"}]},
+        {"id":"paternal","priority":1,"inheritance":"Father","parts":[
+            {"id":"surname","literal":"赵"},{"id":"given","literal":"青"}]}
+    ]}}
+    """));
+var parents = new NameRequest(inheritedType, 0).WithParentSurnames("欧阳", "李");
+var inheritedName = inheritedNames.Generate(parents);
+Check(inheritedName.Text == "欧阳青" && inheritedName.RuleId == "paternal" && inheritedName.Sources["surname"].Kind == "inherited",
+    "An earlier failed arrangement decided the inherited surname.");
+Check(inheritedNames.Preview(parents.WithParentSurnames("", null)).Text == "赵青" &&
+    inheritedNames.Generate(new NameRequest(inheritedType, 0, fixedParts: new Dictionary<string, string> { ["surname"] = "" })
+        .WithParentSurnames("欧阳", "李")).Text == "青", "An unknown parent and an explicit absence of a surname were conflated.");
+Check(inheritedNames.Generate(new NameRequest(inheritedType, 0, inputs: new Dictionary<string, object> { ["kind"] = "no-surname" })
+    .WithParentSurnames("欧阳", "李")).Text == "青", "Inheritance added a surname that the winning rule omitted.");
+
+const string orderedType = "tests:ordered-search";
+var ordered = new NamingService("tests:ordered-base");
+ordered.RegisterType(new NameType(orderedType, "顺序试验", new[] { new InputField("place", InputKind.Text) }));
+ordered.InstallPack(Read("""
+    {"format":1,"id":"tests:ordered-base","rules":{"tests:ordered-search":[
+        {"id":"one","priority":6,"parts":[{"id":"name","pool":"tests:absent"}]},
+        {"id":"two","priority":5,"parts":[{"id":"name","pool":"tests:empty"}]},
+        {"id":"three","priority":4,"parts":[{"id":"name","input":"place"}]},
+        {"id":"four","priority":3,"parts":[{"id":"name","literal":"退回"}]},
+        {"id":"five","priority":2,"parts":[{"id":"name","literal":"澄江府"}]},
+        {"id":"six","priority":1,"parts":[{"id":"name","literal":"松岭城"}]}
+    ]},"pools":{"tests:empty":{}}}
+    """));
+var tried = ordered.Generate(new NameRequest(orderedType, 1), text => text != "退回");
+Check(tried.RuleId == "five" && tried.Text == "澄江府" &&
+    tried.Failures.Select(failure => failure.Reason).SequenceEqual(new[] { NameFailureReason.MissingVocabulary,
+        NameFailureReason.EmptyVocabulary, NameFailureReason.MissingInput, NameFailureReason.Rejected }),
+    "The fifth eligible rule was skipped or earlier failures were lost.");
+
 service.RegisterCultureCondition(type, "kind", "类别", new Dictionary<string, string> { ["sapient"] = "生物" });
 service.RegisterCultureCondition(type, "kind", "其他模组的类别", new Dictionary<string, string> { ["spirit"] = "灵体" });
 Check(service.Conditions(type)["kind"].Label == "类别" &&
@@ -99,6 +181,81 @@ var example = new Dictionary<string, object> { ["kind"] = "other", ["town"] = "�
 Check(ArrangementExamples.TryApply(service, logic, grouping, example) &&
       service.Matches(grouping, new NameRequest(logicType, 0, inputs: example)),
     "The preview scenario must satisfy the same grouped condition as generation.");
+const string scenarioType = "tests:scenario";
+var scenarioService = new NamingService("tests:scenario");
+var scenario = new NameType(scenarioType, "器物", new[]
+{
+    new InputField("form", InputKind.Text, example: "ball"), new InputField("stem", InputKind.Text, required: true)
+});
+scenarioService.RegisterType(scenario);
+scenarioService.RegisterContext(scenarioType, inputs =>
+{
+    if (!inputs.TryGetValue("form", out var form)) return false;
+    if (Equals(form, "ball")) inputs["stem"] = "器珠";
+    else if (Equals(form, "blade")) inputs["stem"] = "器刃";
+    else return false;
+    return true;
+});
+scenarioService.InstallPack(Read("""
+    {"format":1,"id":"tests:scenario","rules":{"tests:scenario":[
+        {"id":"blade","when":{"form":"blade"},"parts":[{"id":"name","input":"stem"}]}
+    ]}}
+    """));
+var blade = NamingJson.Read<ConditionalArrangement>("""
+    {"expression":{"children":[{"field":"form","values":["blade"]},{"field":"stem","values":["器刃"]}]}}
+    """);
+var rawExample = new Dictionary<string, object> { ["form"] = "ball" };
+Check(ArrangementExamples.TryApply(scenarioService, scenario, blade, rawExample) &&
+    scenarioService.Preview(new NameRequest(scenarioType, 0, inputs: rawExample)).Text == "器刃" &&
+    scenarioService.Generate(new NameRequest(scenarioType, 0, inputs: new Dictionary<string, object> { ["form"] = "blade" })).Text == "器刃" &&
+    scenarioService.Generate(new NameRequest(scenarioType, 0)).Status == GenerationStatus.InvalidInput,
+    "Derived fields must be available to condition preview and runtime, and invalid combinations must report invalid input.");
+var extension = new NamingCategoryExtension(scenarioType);
+extension.Input(new InputField("alternate-stem", InputKind.Text, example: "水刃"));
+extension.Presence("alternate-stem", "异名", "有异名", "无异名");
+extension.InputGlyph("tests:alternate-stem", '\uE550', "alternate-stem", "异名", "ui/Icons/iconBooks");
+scenarioService.ExtendCategory(extension);
+var extendedType = scenarioService.Types.Single(type => type.Id == scenarioType);
+var extendedRequest = new NameRequest(scenarioType, 1,
+    inputs: new Dictionary<string, object> { ["form"] = "blade", ["alternate-stem"] = "水刃" });
+var alternate = NamingJson.Read<ConditionalArrangement>("""
+    {"expression":{"children":[{"field":"alternate-stem","test":"Registered","values":["present"]}]}}
+    """);
+Check(extendedType.Fields.ContainsKey("alternate-stem") && extendedType.Fields.ContainsKey("stem") &&
+    scenarioService.CultureGlyphs["tests:alternate-stem"].ShortCode == '\uE550' &&
+    scenarioService.Matches(alternate, extendedRequest) && scenarioService.Generate(extendedRequest).Text == "器刃",
+    "Extending a category must expose new inputs and keep existing context preparation and rules.");
+var duplicate = new NamingCategoryExtension(scenarioType);
+duplicate.Input(new InputField("other-source", InputKind.Text));
+duplicate.Presence("other-source", "其他来源", "有", "无");
+duplicate.InputGlyph("tests:other-source", '\uE550', "other-source", "其他来源", "ui/Icons/iconBooks");
+bool rejectedDuplicate = false;
+try { scenarioService.ExtendCategory(duplicate); }
+catch (ArgumentException) { rejectedDuplicate = true; }
+Check(rejectedDuplicate && !scenarioService.Types.Single(type => type.Id == scenarioType).Fields.ContainsKey("other-source") &&
+    !scenarioService.Conditions(scenarioType).ContainsKey("other-source"),
+    "Reject a glyph collision before changing the target category.");
+
+var overlay = new NamingPack
+{
+    Format = 1, Id = "tests:scenario-overlay", Supplemental = true, CultureBases = { "tests:scenario" },
+    Arrangements = { [scenarioType] = new() { new ConditionalArrangement
+    {
+        Id = "alternate", Expression = alternate.Expression, Cards = new CardNaming { Enabled = true, Template = "0|0:异名" }
+    } } }
+};
+Check(scenarioService.Inspect(extendedRequest, null).Arrangements.Count == 0, "The optional arrangement leaked before install.");
+scenarioService.RegisterDefaultPack(overlay);
+var extendedNames = scenarioService.Inspect(extendedRequest, null);
+Check(extendedNames.Arrangements.Single().Id == "alternate" &&
+    extendedNames.ArrangementOwners["alternate"].Key == "tests:scenario-overlay/alternate",
+    "A supplemental arrangement must keep its owner's identity when it augments the selected preset.");
+var singleClause = new ConditionalArrangement
+{
+    Expression = new ArrangementCondition { Field = "alternate-stem", Test = ArrangementTest.Present }
+};
+Check(scenarioService.Matches(NamingJson.Copy(singleClause), extendedRequest),
+    "A standalone clause must survive a save without becoming an empty condition group.");
 var legacyClauses = NamingJson.Read<ConditionalArrangement>("""
     {"conditions":{"kind":{"values":["normal"]},"size":{"test":"Present"}}}
     """);
@@ -173,13 +330,154 @@ Check(spellName.Text == "炎刃诀" && spellName.Diagnostics.Contains("provider:
 var bundled = NamingJson.Read<NamingPack>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "default.naming.json")));
 Configuration.Validate(bundled);
 
+const string cityType = "worldbox:city";
+var places = Read(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "place-history.naming.json")));
+var history = new NamingService(bundled.Id);
+history.RegisterType(new NameType(cityType, "城市", new[] { new InputField("landform", InputKind.Text) }));
+const string historyType = "worldbox:book";
+history.RegisterType(new NameType(historyType, "书籍", new[] { "topic", "author-city", "historical-event", "historical-event-kind" }
+    .Select(field => new InputField(field, InputKind.Text))));
+history.InstallPack(bundled);
+history.InstallPack(places);
+var timeline = new WorldNaming { EnabledPacks = new List<string> { places.Id } };
+timeline.Cultures[1] = new CultureNaming { Pack = places.Id };
+string BookArrangement(string topic, string eventKind = null)
+{
+    var inputs = new Dictionary<string, object> { ["topic"] = topic, ["author-city"] = "澄江" };
+    if (eventKind != null)
+    {
+        inputs["historical-event"] = "古事";
+        inputs["historical-event-kind"] = eventKind;
+    }
+    var request = new NameRequest(historyType, 0, culture: 1, inputs: inputs);
+    return history.Inspect(request, timeline).Arrangements.FirstOrDefault(value => history.Matches(value, request))?.Id;
+}
+Check(BookArrangement("history", "war") == "city-annals", "Incident arrangements leaked into the base preset.");
+var incidentPack = Read(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "history-events.naming.json")));
+history.RegisterDefaultPack(incidentPack);
+foreach (string eventKind in new[] { "war", "rebellion", "migration", "founding" })
+    Check(BookArrangement("history", eventKind) == eventKind + "-annals", "The local annals eclipsed an incident: " + eventKind);
+Check(BookArrangement("history") == "city-annals" && BookArrangement("fable", "war") == null,
+    "A non-historical book or a book without an event used an incident arrangement.");
+timeline.Cultures[1].ArrangementEdits[historyType] = new ArrangementEdits
+{
+    Changes = { [places.Id + "/rebellion-annals"] = new ArrangementEdit { Template = "\uE12A0|0:实录" } }
+};
+var incidentNames = history.Inspect(new NameRequest(historyType, 0, culture: 1), timeline);
+Check(incidentNames.Arrangements.Single(row => row.Id == "rebellion-annals").Cards.Template == "\uE12A0|0:实录",
+    "Moving the incident arrangement into the addon lost its existing culture edit.");
+foreach (var (id, parent, landform, arrangement) in new[]
+{
+    (2L, 1L, "coast", "harbor-towns"), (3L, 2L, "island", "island-towns"),
+    (4L, 1L, "river-valley", "river-crossings"), (5L, 1L, "mountain", "mountain-passes")
+})
+{
+    var child = timeline.Cultures[id] = NamingJson.Copy(timeline.Cultures[parent]);
+    Check(history.EvolveCulture(child, timeline, (ulong)id, landform), "A culture did not adopt its local arrangement.");
+    var request = new NameRequest(cityType, 1, culture: id,
+        inputs: new Dictionary<string, object> { ["landform"] = landform });
+    Check(history.Inspect(request, timeline).Arrangements.First(item => history.Matches(item, request)).Id == arrangement,
+        "The chosen arrangement does not match its local terrain.");
+    Check(!history.EvolveCulture(child, timeline, (ulong)id, landform), "Repeated splits duplicated the same arrangement.");
+}
+var port = new NameRequest(cityType, 1, culture: 3, inputs: new Dictionary<string, object> { ["landform"] = "coast" });
+Check(history.Inspect(port, NamingJson.Copy(timeline)).Arrangements.First(item => history.Matches(item, port)).Id == "harbor-towns"
+    && timeline.Cultures[2].ArrangementVariants[cityType].SequenceEqual(new[] { places.Id + "/harbor-towns" })
+    && timeline.Cultures[1].ArrangementVariants.Count == 0,
+    "The island branch lost its inherited coast arrangement or changed an ancestor.");
+var previousCoast = new CultureNaming { Pack = places.Id,
+    Variants = new Dictionary<string, string> { [cityType] = places.Id + "/harbor-towns" } };
+Check(history.EvolveCulture(previousCoast, timeline, 6, "island") &&
+    previousCoast.ArrangementVariants[cityType].SequenceEqual(new[] { places.Id + "/island-towns", places.Id + "/harbor-towns" }),
+    "The previous single-variant save must keep its coastal arrangement after a later split.");
+var editedCity = NamingJson.Copy(timeline.Cultures[2]);
+editedCity.Arrangements[cityType] = NamingJson.Copy(places.Arrangements[cityType]);
+Check(!history.EvolveCulture(editedCity, timeline, 7, "island") &&
+    NamingJson.Write(editedCity.Arrangements[cityType]) == NamingJson.Write(places.Arrangements[cityType]),
+    "An island variant superseded a hand-edited arrangement.");
+
+var arranging = new NamingService(bundled.Id);
+arranging.RegisterType(new NameType(cityType, "城市", new[] { new InputField("landform", InputKind.Text) }));
+arranging.InstallPack(bundled);
+ConditionalArrangement Starter(string id, string landform, string text) => new()
+{
+    Id = id, Cards = new CardNaming { Enabled = true, Template = "0|0:" + text },
+    Expression = new ArrangementCondition
+    {
+        Children = new() { new() { Field = "landform", Test = ArrangementTest.Equal, Values = new() { landform } } }
+    }
+};
+var changingPack = new NamingPack { Format = 1, Id = "tests:changing-style" };
+changingPack.Arrangements[cityType] = new() { Starter("river", "river-valley", "澄江"), Starter("port", "coast", "潮口"),
+    Starter("removed", "plain", "平原") };
+arranging.InstallPack(changingPack);
+var settings = new WorldNaming { EnabledPacks = new() { changingPack.Id } };
+var customCity = settings.Cultures[38] = new CultureNaming { Pack = changingPack.Id };
+var requestCity = new NameRequest(cityType, 0, culture: 38);
+var before = arranging.Inspect(requestCity, settings);
+var changes = new ArrangementEdits();
+var changed = before.Arrangements.Take(2).Select(NamingJson.Copy).ToList();
+changed[0].Cards.Template = "0|0:澄江府";
+changed[1].Disabled = true;
+changed.Reverse();
+changed.Add(Starter("personal", "mountain", "云关"));
+changes.Update(before, changed, reorder: true);
+customCity.ArrangementEdits[cityType] = changes;
+settings = NamingJson.Copy(settings);
+arranging.UninstallPack(changingPack.Id);
+Check(arranging.Inspect(requestCity, settings).Arrangements.Single().Id == "personal",
+    "Uninstalling the preset removed a local arrangement or treated an override as a local arrangement.");
+changingPack.Arrangements[cityType] = new() { Starter("river", "basin", "澄溪"), Starter("island", "island", "海邑"),
+    Starter("port", "coast", "沧港"), Starter("removed", "plain", "绿洲") };
+arranging.InstallPack(changingPack);
+var after = arranging.Inspect(requestCity, settings).Arrangements;
+Check(after.Select(item => item.Id).SequenceEqual(new[] { "island", "port", "river", "personal" }) &&
+    after[1].Disabled && after[1].Cards.Template == "0|0:沧港" &&
+    after[2].Cards.Template == "0|0:澄江府" && after[2].Expression.Children.Single().Values.Single() == "basin",
+    "A preset update froze unedited fields, restored a deletion, or lost relative order.");
+var reedNames = new NamingPack { Format = 1, Id = "tests:reed-names", Supplemental = true };
+reedNames.CultureVariants["coast"] = new CultureVariant { Type = cityType, Arrangement = Starter("river", "coast", "苇港") };
+arranging.InstallPack(reedNames);
+settings.EnabledPacks.Add(reedNames.Id);
+settings.Cultures[38].ArrangementVariants[cityType] = new() { reedNames.Id + "/coast" };
+var fromReeds = arranging.Inspect(requestCity, settings).Arrangements.Single(item => item.Id == "river");
+Check(fromReeds.Cards.Template == "0|0:苇港", "An edit intended for a base row leaked into a different pack's row with the same ID.");
+settings.EnabledPacks.Remove(reedNames.Id);
+Check(arranging.Inspect(requestCity, settings).Arrangements.Single(item => item.Id == "river").Cards.Template == "0|0:澄江府",
+    "Removing the variant did not restore the base row's own edit.");
+var preserved = NamingJson.Read<ArrangementEdit>("""{"template":"0|0:旧整条"}""");
+Check(preserved.Template == "0|0:旧整条" && preserved.Layout == null, "Previous full-template edits must remain readable.");
+
+var originalLayout = new ArrangementLayout(new[] { "one", "two" }, new() { ["one"] = "溪", ["two"] = "府" });
+var editedLayout = new ArrangementLayout(new[] { "two", "one" }, new() { ["one"] = "澄江", ["two"] = "府" });
+var semanticEdit = originalLayout.Changes(editedLayout, null, new Dictionary<string, string> { ["one"] = "root", ["two"] = "suffix" });
+var newLayout = new ArrangementLayout(new[] { "two", "one" }, new() { ["one"] = "驿", ["two"] = "涧" });
+var newRoles = new Dictionary<string, string> { ["two"] = "river", ["one"] = "suffix" };
+var unresolved = new HashSet<string>();
+var dormant = newLayout.Apply(semanticEdit, newRoles, unresolved: part => unresolved.Add(part));
+Check(unresolved.SetEquals(new[] { "root" }) && dormant.Glyphs.SequenceEqual(newLayout.Glyphs) && dormant.WordGroup("one") == "驿",
+    "An unmapped semantic edit should preserve the new default slots and order.");
+var partRenames = new Dictionary<string, string> { ["root"] = "river" };
+var rebound = newLayout.Apply(semanticEdit, newRoles, partRenames);
+Check(rebound.Glyphs.SequenceEqual(new[] { "one", "two" }) && rebound.WordGroup("two") == "澄江" && rebound.WordGroup("one") == "驿",
+    "A renamed part should carry its text and place in the edited order to its new slot.");
+var resetGroup = new ArrangementLayout(rebound.Glyphs, newLayout.Groups);
+var retainedOrder = newLayout.Changes(resetGroup, semanticEdit, newRoles, partRenames);
+Check(retainedOrder.PartGroups.Count == 0 && retainedOrder.GlyphParts.Count == 2,
+    "Resetting a migrated word group should remove the old override without resetting the order.");
+Check(!PackageMigrations.Valid(new Dictionary<string, string> { ["first"] = "second", ["second"] = "first" }, Ids.Local),
+    "A declared migration cycle should be rejected.");
+settings.Cultures[38].Arrangements[cityType] = new() { Starter("legacy", "coast", "旧名") };
+Check(arranging.Inspect(requestCity, settings).Arrangements.Single().Id == "legacy",
+    "An older full-list override must take precedence.");
+
 var lexicons = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Lexicons"), "*.naming.json")
     .Select(file => Read(File.ReadAllText(file))).ToArray();
 Check(lexicons.Length != 0, "Optional lexicon fixtures must be present.");
 var catalog = new NamingService(bundled.Id);
 const string city = "worldbox:city";
 var context = new[] { "species", "kind", "culture-species", "founder-surname", "attacker", "defender",
-    "origin", "founder-short", "partner-short", "station", "topic", "material", "equipment", "stage", "plot" }
+    "origin", "founder-short", "partner-short", "station", "topic", "material", "equipment", "stage", "plot", "landform" }
     .Select(id => new InputField(id, InputKind.Text)).ToArray();
 catalog.RegisterType(new NameType("worldbox:person", "姓名", context, fixedParts: new[] { "surname" }));
 var societyCategories = new[] { "city", "kingdom", "culture", "language", "family", "clan", "war", "alliance", "army", "book", "motto", "item" };
@@ -271,6 +569,33 @@ foreach (var style in namingSets)
     var dependency = style.Requires.Keys.Single(id => id != bundled.Id);
     bindings.EnabledPacks.Remove(dependency);
     Check(catalog.Preview(cityRequest, bindings).Text == baselineCity, "A missing lexicon must restore the fallback.");
+}
+
+foreach (var (packageName, count) in new[] { ("wafuu-geography", 3), ("fantasy-geography", 12) })
+{
+    var geography = Read(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Geography", packageName + ".naming.json")));
+    catalog.InstallPack(geography);
+    var bindings = NamingJson.Copy(enabledLexicons);
+    string basis = geography.CultureBases.Single();
+    bindings.EnabledPacks.AddRange(new[] { basis, geography.Id });
+    Check(geography.CultureVariants.Count == count && geography.WordGroups.Count == count, "Missing regional content: " + packageName);
+    foreach (var (key, variant) in geography.CultureVariants)
+    foreach (string landform in variant.Landforms)
+    {
+        string species = variant.Species.SingleOrDefault() ?? "human";
+        var culture = bindings.Cultures[1] = new CultureNaming { Pack = basis };
+        var request = new NameRequest(cityType, 7, culture: 1, inputs: new Dictionary<string, object>
+        {
+            ["landform"] = landform, ["culture-species"] = species
+        });
+        Check(catalog.EvolveCulture(culture, bindings, 7, landform, species), "Missing eligible geography variant: " + key);
+        var regional = catalog.Inspect(request, bindings);
+        var group = geography.WordGroups[key];
+        var candidates = regional.GetPool(group.Pool).Select(word => word.Id).ToHashSet();
+        Check(regional.Arrangements.First(item => catalog.Matches(item, request)).Id == key &&
+            group.Landforms.SequenceEqual(variant.Landforms) && group.Words.Count < candidates.Count &&
+            group.Words.All(candidates.Contains), "A geographic arrangement does not match its culture or vocabulary: " + key);
+    }
 }
 
 var regionNames = catalog.GetWorld();

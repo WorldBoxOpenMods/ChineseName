@@ -1,0 +1,177 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string person = "worldbox:person", surnameKey = "chinesename.surname.v1";
+void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); }
+async System.Threading.Tasks.Task Frames(int count = 12)
+{
+    for (int frame = 0; frame < count; frame++) await Game.NextFrame();
+}
+string Surname(Actor actor) { actor.data.get(surnameKey, out string name); return name; }
+
+Config.paused = true;
+var world = World.world;
+var tile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
+var father = world.units.createNewUnit("human", tile);
+var mother = world.units.createNewUnit("human", tile);
+father.data.sex = ActorSex.Male;
+mother.data.sex = ActorSex.Female;
+father.setName("欧阳松");
+mother.setName("李梅");
+father.data.set(surnameKey, "欧阳");
+mother.data.set(surnameKey, "李");
+world.kingdoms.makeNewCivKingdom(father);
+var culture = world.cultures.newCulture(father, true);
+father.setCulture(culture);
+mother.setCulture(culture);
+var language = world.languages.newLanguage(father, true);
+father.joinLanguage(language);
+mother.joinLanguage(language);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+
+string Short(string id) => AssetManager.onomastics_library.get(id).short_id.ToString();
+string surname = Short("chinesename_keep_surname"), asPool = Short("chinesename_as_pool");
+ConditionalArrangement Row(string id, string template, SurnameOrder order = SurnameOrder.Father) => new()
+{
+    Id = id, Cards = new CardNaming { Enabled = true, Template = template, Inheritance = order },
+    Expression = new ArrangementCondition
+    {
+        Children = new List<ArrangementCondition>
+        {
+            new() { Field = "kind", Test = ArrangementTest.Equal, Values = new List<string> { "sapient" } }
+        }
+    }
+};
+var broad = Row("mother", "0" + surname + "1" + asPool + "|0:赵;1:tests/absent", SurnameOrder.Mother);
+var fallback = Row("father", "0" + surname + "1|0:赵;1:青");
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+if (!settings.Cultures.TryGetValue(culture.id, out var cultureSettings))
+    settings.Cultures[culture.id] = cultureSettings = new CultureNaming();
+cultureSettings.Arrangements[person] = new List<ConditionalArrangement> { broad, fallback };
+WorldNamingStore.Apply(settings);
+NameRequest Request(string fixedSurname = null) => new NameRequest(person, 0, culture.id, language.id,
+    new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" },
+    fixedSurname == null ? null : new Dictionary<string, string> { ["surname"] = fixedSurname })
+    .WithParentSurnames("欧阳", "李");
+var preview = service.Preview(Request());
+Check(preview.Text == "欧阳青" && preview.ArrangementId == "father" && preview.Failures.Any(failure => failure.ArrangementId == "mother"),
+    "The preview did not choose the successful arrangement's inheritance.");
+Check(service.Generate(Request("陈")).Text == "陈青" && service.Generate(Request("")).Text == "青",
+    "An explicit surname or explicit absence should override both parents.");
+
+world.console.Hide();
+SelectedUnit.select(father);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(button => button.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.mother").onClick.Invoke();
+await Frames();
+string screenPreview = shell.GetComponentsInChildren<Text>().First(label => label.name == "PreviewName").text;
+Check(screenPreview == preview.Text, "The original editor preview used different parental surnames: " + screenPreview);
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.father").onClick.Invoke();
+await Frames();
+tab.loadTemplate("0" + surname + "1|0:赵;1:川");
+await Frames();
+string editedPreview = shell.GetComponentsInChildren<Text>().First(label => label.name == "PreviewName").text;
+Check(editedPreview == "欧阳川" && service.Generate(Request()).Text == editedPreview,
+    "Editing the fallback in the original palette did not update the shared result.");
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+
+Actor Child(Actor first, Actor second)
+{
+    var actor = BabyMaker.makeBaby(first, second, ActorSex.Female, pTile: tile);
+    actor.setCulture(culture);
+    actor.joinLanguage(language);
+    return actor;
+}
+var child = Child(father, mother);
+Check(Surname(child) == "欧阳" && string.IsNullOrEmpty(child.data.name) && child.getName() == editedPreview,
+    "A failed maternal arrangement left the wrong surname on the newborn.");
+var delayed = Child(father, mother);
+Check(Surname(delayed) == "欧阳" && string.IsNullOrEmpty(delayed.data.name), "The delayed child had no inherited surname.");
+var old = world.units.createNewUnit("human", tile);
+old.data.sex = ActorSex.Male;
+old.setName("Alfred");
+old.data.removeString(surnameKey);
+old.setCulture(culture);
+old.joinLanguage(language);
+var descendant = Child(old, null);
+string firstGeneration = descendant.getName();
+Check(firstGeneration == "赵川" && Surname(old) == null && old.getName() == "Alfred",
+    $"Legacy parent became {old.getName()} ({Surname(old)}), descendant became {firstGeneration}.");
+
+const string artifact = "tests:fixed-glyph";
+service.RegisterType(new NameType(artifact, "器物", new[] { new Chinese_Name.Naming.InputField("kind", InputKind.Text) },
+    fixedParts: new[] { "stem" }));
+service.RegisterCultureOnomastics(artifact);
+settings = service.GetWorld();
+var mapped = Row("mapped", "01|0:木;1:刃");
+mapped.Cards.Roles["group_1"] = "stem";
+settings.Cultures[culture.id].Arrangements[artifact] = new List<ConditionalArrangement> { Row("unmapped", "0|0:木刃"), mapped };
+WorldNamingStore.Apply(settings);
+var fixedName = service.Generate(new NameRequest(artifact, 0, culture.id, language.id,
+    new Dictionary<string, object> { ["kind"] = "sapient" }, new Dictionary<string, string> { ["stem"] = "玄铁" }));
+Check(fixedName.Text == "玄铁刃" && fixedName.ArrangementId == "mapped" && fixedName.Sources["stem"].Kind == "inherited",
+    "A mod arrangement ignored its declared fixed part.");
+
+const string poolPack = "tests:birth-language", givenPool = "tests:birth-language.given";
+service.InstallPack(new NamingPack { Id = poolPack, Format = 1, Supplemental = true,
+    Words = new List<Word> { new() { Id = "tests:qing", Text = "青" }, new() { Id = "tests:lan", Text = "岚" } },
+    Pools = new Dictionary<string, Dictionary<string, double>> { [givenPool] = new() { ["tests:qing"] = 1, ["tests:lan"] = 1 } },
+    PoolAliases = new Dictionary<string, string> { ["换语给名"] = givenPool } });
+var destination = world.cultures.newCulture(father, true);
+var dialect = world.languages.newLanguage(father, false);
+world.cultures.checkLists(); world.languages.checkLists();
+settings = service.GetWorld();
+settings.EnabledPacks.Add(poolPack);
+settings.Cultures[destination.id] = new CultureNaming { Arrangements = new Dictionary<string, List<ConditionalArrangement>>
+    { [person] = new() { Row("different-culture", "0" + surname + "1" + asPool + "|0:赵;1:换语给名", SurnameOrder.Mother) } } };
+settings.Languages[dialect.id] = new LanguageNaming { Pools = new Dictionary<string, PoolEdit>
+    { [givenPool] = new() { ExcludeIds = new List<string> { "tests:qing" } } } };
+WorldNamingStore.Apply(settings);
+delayed.setCulture(destination);
+delayed.joinLanguage(dialect);
+mother.data.set(surnameKey, "孟");
+Check(Surname(delayed) == "欧阳" && string.IsNullOrEmpty(delayed.data.name), "Changing culture and language materialized the name.");
+world.units.checkContainer();
+long childId = child.id, delayedId = delayed.id, unknownId = old.id;
+string folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "surname-fallback");
+Directory.CreateDirectory(folder);
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Unable to reload the surname fixture.");
+Config.paused = true;
+var reloaded = World.world.units.get(childId);
+Check(reloaded.getName() == editedPreview && Surname(reloaded) == "欧阳" && Surname(World.world.units.get(unknownId)) == null,
+    "The inherited surname or the parent's unknown state changed after reloading.");
+var reloadedDelayed = World.world.units.get(delayedId);
+Check(Surname(reloadedDelayed) == "欧阳" && string.IsNullOrEmpty(reloadedDelayed.data.name) && reloadedDelayed.getName() == "欧阳岚",
+    "The first name after reloading did not combine the birth surname with the current language.");
+SelectedUnit.select(reloaded);
+SelectedMetas.selected_culture = reloaded.culture;
+ScrollWindow.showWindow("culture");
+shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(button => button.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.father").onClick.Invoke();
+await Frames();
+Check(tab.getOnomasticsData().getGroupString("group_2") == "川" &&
+    shell.GetComponentsInChildren<Text>().First(label => label.name == "PreviewName").text == editedPreview,
+    "The original editor did not restore the edited surname arrangement and preview.");
+return new { preview = screenPreview, editedPreview, name = reloaded.getName(), delayedName = reloadedDelayed.getName(),
+    surname = Surname(reloaded), modName = fixedName.Text };

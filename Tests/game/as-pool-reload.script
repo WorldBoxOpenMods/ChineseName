@@ -19,16 +19,15 @@ var branch = world.cultures.get(ids[1]);
 var father = world.units.get(ids[5]);
 var child = world.units.get(ids[6]);
 var order = new[] { "group_1", "chinesename_as_pool", "chinesename_keep_surname", "group_2", "chinesename_as_pool" };
+var service = NamingApi.Current;
+var state = service.GetWorld();
 foreach (var culture in new[] { source, branch })
 {
-    var cards = culture.getOnomasticData(MetaType.Unit);
-    Check(cards.getFullTemplateData().SequenceEqual(order) &&
-        cards.getGroupString("group_1") == "afakasa agafasa", "The native short template failed to round-trip.");
+    var edit = state.Cultures[culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith("worldbox:person/")).Value;
+    Check(edit.Glyphs.SequenceEqual(order) && edit.Groups["group_1"] == "afakasa agafasa", "The name layout failed to round-trip.");
 }
 child.data.get("chinesename.surname.v1", out string surname);
 Check(father.getName() == "欧阳青" && child.getName() == "欧阳怀" && surname == "欧阳", "Saved names or surname changed.");
-var service = NamingApi.Current;
-var state = service.GetWorld();
 Check(state.Cultures[branch.id].Parent == source.id && state.LanguageParents[ids[4]] == ids[2],
     "Culture or language lineage was lost.");
 var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" };

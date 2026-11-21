@@ -12,6 +12,8 @@ const string root = "group_1", suffixCard = "group_2";
 var exchange = "__EXCHANGE__";
 var output = Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT");
 var world = World.world;
+Config.paused = true;
+ScrollWindow.hideAllEvent(pWithAnimation: false);
 world.console.Hide();
 void Check(bool ok, string message) { if (!ok) throw new Exception(message); }
 var tile = world.tiles_list.First(t => t.Type.ground && t.zone.city == null);
@@ -58,9 +60,28 @@ string Position(Selectable btn)
     var p = RectTransformUtility.WorldToScreenPoint(rect.GetComponentInParent<Canvas>().worldCamera, rect.TransformPoint(rect.rect.center));
     return $" {(int)p.x} {UnityEngine.Screen.height - (int)p.y}";
 }
+async System.Threading.Tasks.Task ScrollTo(Selectable control)
+{
+    var rect = (RectTransform)control.transform;
+    var scroll = shell.scrollRect;
+    var viewport = scroll.viewport;
+    var fixedPreview = tab.text_name_examples.transform.parent;
+    float top = Mathf.Min(viewport.rect.yMax, RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, fixedPreview).min.y);
+    var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(viewport, rect);
+    float range = scroll.content.rect.height - viewport.rect.height;
+    if (range > 0)
+    {
+        if (bounds.max.y > top - 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.max.y - top + 3) / range);
+        else if (bounds.min.y < viewport.rect.yMin + 3)
+            scroll.verticalNormalizedPosition = Mathf.Clamp01(scroll.verticalNormalizedPosition + (bounds.min.y - viewport.rect.yMin - 3) / range);
+    }
+    for (int i = 0; i < 8; i++) await Game.NextFrame();
+}
 int seq = 0;
 async System.Threading.Tasks.Task Send(string action, Selectable control = null, Selectable other = null)
 {
+    if (control != null) await ScrollTo(control);
     var point = control == null ? "" : Position(control);
     if (other != null) point += Position(other);
     string path = Path.Combine(exchange, ++seq + ".mouse");
@@ -88,7 +109,7 @@ async System.Threading.Tasks.Task Words(string id, string words)
     await Send("click", field);
     GUIUtility.systemCopyBuffer = words;
     await Send("paste");
-    Check(field.text.Trim() == words && field.isFocused, "The native input did not accept " + words);
+    Check(field.text.Trim() == words && field.isFocused, $"The native input did not accept {words}: focused={field.isFocused}, text={field.text}, mouse={Input.mousePosition}, target={Position(field)}");
     await Send("enter");
     shell.scrollRect.verticalNormalizedPosition = 1;
     for (int i = 0; i < 10; i++) await Game.NextFrame();

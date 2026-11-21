@@ -49,6 +49,10 @@ world.languages.checkLists();
 var service = NamingApi.Current;
 var pack = service.GetPackage(service.DefaultPack);
 var config = new WorldNaming();
+config.Cultures[culture.id] = new CultureNaming
+{
+    Arrangements = new Dictionary<string, List<ConditionalArrangement>> { [warType] = new List<ConditionalArrangement>() }
+};
 foreach (var (language, text) in new[] { (parent, "雪耻之役"), (other, "复仇之战") })
 {
     var candidate = pack.Words.Single(word => word.Text == text && pack.Pools[revenge].ContainsKey(word.Id));

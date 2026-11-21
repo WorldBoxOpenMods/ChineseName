@@ -56,9 +56,10 @@ internal sealed class NativeLexiconPage : MonoBehaviour
         if (_language == null) return;
         var service = NamingApi.Current;
         var world = service.ActiveWorld;
-        world.Languages.TryGetValue(_language.id, out var settings);
         var speaker = Speaker;
         _effective = service.Inspect(new NameRequest(VanillaNames.Person, 0, speaker?.culture.id, _language.id), world);
+        var settings = _effective.LanguageSettings;
+        _pool = _effective.PoolId(_pool);
         if (_chooseSource)
         {
             Row(transform, "BackToLexicons", "语言词库", "返回", () => ChooseSource(false));
@@ -99,8 +100,7 @@ internal sealed class NativeLexiconPage : MonoBehaviour
     private void Filter()
     {
         Clear(_results);
-        var state = NamingApi.Current.ActiveWorld;
-        state.Languages.TryGetValue(_language.id, out var settings);
+        var settings = _effective.LanguageSettings;
         if (_pool == null) RenderPools(settings);
         else RenderWords(settings);
     }
@@ -272,7 +272,14 @@ internal sealed class NativeLexiconPage : MonoBehaviour
     private void Apply(Action<LanguageNaming> edit)
     {
         if (_language == null || SelectedMetas.selected_language != _language) return;
-        try { WorldNamingStore.ApplyLanguageSettings(_language.id, edit); }
+        try
+        {
+            WorldNamingStore.ApplyLanguageSettings(_language.id, settings =>
+            {
+                if (_pool != null) _effective.PoolMigrations.AdoptPool(settings, _pool);
+                edit(settings);
+            });
+        }
         catch (InvalidOperationException error)
         {
             Row(transform, "LanguageEditError", error.Message, "");

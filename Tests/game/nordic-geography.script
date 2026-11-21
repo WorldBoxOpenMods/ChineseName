@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway;
+using Cultiway.Core;
+using Cultiway.Core.EventSystem;
+using Cultiway.Core.EventSystem.Events;
+using Cultiway.Utils.Extension;
+using UnityEngine;
+
+const string nordic = "chinesename:world-nordic-set", atlas = "chinesename:world-styles-lexicon";
+const string geography = "chinesename:nordic-geography", cats = "chinesename:species-lexicon";
+const string pool = cats + ".cat.place", cityType = "worldbox:city";
+const string surnameKey = "chinesename.surname.v1", terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool yes, string message) { if (!yes) throw new InvalidOperationException(message); }
+
+if (File.Exists(terrain))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The independent terrain did not load.");
+    Config.paused = false;
+    EventSystemHub.Publish(new WorldGeneratedEvent
+    {
+        WorldSeedId = MapBox.current_world_seed_id, Width = MapBox.width, Height = MapBox.height
+    });
+}
+
+var world = World.world;
+var regions = WorldboxGame.I.GeoRegions;
+var zones = world.zone_calculator.zones.Where(zone => zone.centerTile.Type.ground && !zone.hasCity()).ToArray();
+var largest = zones.GroupBy(zone => zone.centerTile.region.island).OrderByDescending(group => group.Count()).First().ToArray();
+var inland = largest.First(zone => zone.isGoodForNewCity());
+for (int frame = 0; frame < 1000 && regions.GetPrimaryGeoRegionForTile(inland.centerTile) == null; frame++)
+    await Game.NextFrame();
+Check(regions.GetPrimaryGeoRegionForTile(inland.centerTile) != null, "GeoRegion did not install its current map.");
+Config.paused = true;
+
+bool Lowland(WorldTile tile)
+{
+    var shape = tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landform)?.data.CategoryId;
+    return shape == null || shape.EndsWith(".Plain");
+}
+bool Island(WorldTile tile) => Lowland(tile) && (tile.GetExtend().GetGeoRegion(GeoRegionLayer.Archipelago) != null ||
+    tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landmass)?.data.CategoryId.EndsWith(".Island") == true);
+bool Coast(WorldTile tile)
+{
+    if (Island(tile) || !Lowland(tile)) return false;
+    for (int x = -8; x <= 8; x++)
+        for (int y = Math.Abs(x) - 8; y <= 8 - Math.Abs(x); y++)
+            if (regions.GetPrimaryGeoRegionForTile(world.GetTile(tile.x + x, tile.y + y))?.data.CategoryId.EndsWith(".Sea") == true)
+                return true;
+    return false;
+}
+
+var service = NamingApi.Current;
+var stock = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+foreach (string file in new[] { "world-nordic-set.naming.json", "world-styles-lexicon.naming.json" })
+    File.Copy(Path.Combine(stock, file), Path.Combine(WorldNamingStore.PackageDirectory, file), true);
+var scan = WorldNamingStore.ReloadPacks();
+Check(scan.Count == 0, string.Join(", ", scan));
+var settings = service.GetWorld();
+foreach (string id in new[] { nordic, atlas })
+    if (!settings.EnabledPacks.Contains(id)) settings.EnabledPacks.Add(id);
+WorldNamingStore.Apply(settings);
+
+var founder = world.units.createNewUnit("civ_cat", inland.centerTile, pAdultAge: true);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var parent = world.cultures.newCulture(founder, true);
+founder.setCulture(parent);
+founder.data.sex = ActorSex.Male;
+var sourceLanguage = world.languages.newLanguage(founder, true);
+founder.joinLanguage(sourceLanguage);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+
+settings = service.GetWorld();
+settings.Cultures[parent.id] = new CultureNaming { Pack = nordic };
+if (!settings.Languages.TryGetValue(sourceLanguage.id, out var settingsLanguage))
+    settings.Languages[sourceLanguage.id] = settingsLanguage = new LanguageNaming();
+var catalog = service.GetPackage(cats).Words.ToDictionary(word => word.Text, word => word.Id);
+settingsLanguage.Groups[pool] = cats + "/cat.place.homeland";
+settingsLanguage.Pools[pool] = new PoolEdit
+{
+    Bias = new Dictionary<string, double> { [catalog["猫眼台"]] = 1.4 },
+    ExcludeIds = new List<string> { catalog["暖庭"] }
+};
+var edits = NamingJson.Write(settingsLanguage.Pools);
+WorldNamingStore.Apply(settings);
+founder.data.set(surnameKey, (string)null);
+founder.generateNewName();
+founder.data.get(surnameKey, out string surname);
+Check(founder.getName().EndsWith("·" + surname) && !string.IsNullOrEmpty(surname), "The Nordic personal arrangement did not apply.");
+var original = world.cities.buildNewCity(founder, inland);
+founder.joinCity(original);
+kingdom.setCapital(original);
+
+(Culture Culture, Language Language) Split(WorldTile tile)
+{
+    founder.setCurrentTilePosition(tile);
+    Check(AssetManager.plots_library.get("culture_divide").action(founder), "Original culture split failed.");
+    Check(AssetManager.plots_library.get("language_divergence").action(founder), "Original language split failed.");
+    world.cultures.checkLists(); world.languages.checkLists();
+    return (founder.culture, founder.language);
+}
+City Build(TileZone zone, string ending)
+{
+    var before = founder.city;
+    new ai.behaviours.BehCheckBuildCity().execute(founder);
+    var city = founder.city;
+    Check(city != before && city.getTile().zone == zone && city.name.EndsWith(ending) && !city.name.Contains("暖庭"),
+        "Actual founding did not use the Nordic creature variant: " + city.name);
+    world.cities.checkLists();
+    return city;
+}
+
+var shore = largest.First(zone => Coast(zone.centerTile) && zone.isGoodForNewCity(founder));
+var (coastalCulture, coastalLanguage) = Split(shore.centerTile);
+var port = Build(shore, "维克");
+var landmass = port.getTile().GetExtend().GetGeoRegion(GeoRegionLayer.Landmass);
+var islandZone = zones.First(zone => Island(zone.centerTile) &&
+    zone.centerTile.GetExtend().GetGeoRegion(GeoRegionLayer.Landmass) != landmass && zone.isGoodForNewCity(founder));
+var (islandCulture, islandLanguage) = Split(islandZone.centerTile);
+var island = Build(islandZone, "霍尔姆");
+
+settings = service.GetWorld();
+Check(settings.Cultures[coastalCulture.id].ArrangementVariants[cityType].SequenceEqual(new[] { geography + "/nordic-harbor-cats" }) &&
+    settings.Cultures[islandCulture.id].ArrangementVariants[cityType].SequenceEqual(new[] { geography + "/nordic-island-cats", geography + "/nordic-harbor-cats" }) &&
+    settings.Cultures[islandCulture.id].Pack == nordic, "The active Nordic preset did not keep both cat arrangements.");
+Check(settings.LanguageParents[coastalLanguage.id] == sourceLanguage.id && settings.LanguageParents[islandLanguage.id] == coastalLanguage.id,
+    "The language lineage was not kept.");
+var first = settings.Languages[coastalLanguage.id];
+var second = settings.Languages[islandLanguage.id];
+Check(NamingJson.Write(first.Pools) == edits && NamingJson.Write(second.Pools) == edits &&
+    first.GroupPreferences[pool].ContainsKey(geography + "/cat-harbors") &&
+    second.GroupPreferences[pool].ContainsKey(geography + "/cat-islands"), "The cat dialect lost its local word group or player edits.");
+
+var spouse = world.units.createNewUnit("civ_cat", island.getTile(), pAdultAge: true);
+spouse.setCulture(islandCulture);
+spouse.joinLanguage(islandLanguage);
+spouse.data.sex = ActorSex.Female;
+var kitten = BabyMaker.makeBaby(founder, spouse, ActorSex.Female, pTile: island.getTile());
+kitten.data.get(surnameKey, out string childSurname);
+Check(childSurname == surname && kitten.getName().EndsWith("·" + surname), "The inherited surname changed.");
+var input = new Dictionary<string, object> { ["landform"] = "coast", ["culture-species"] = "civ_cat" };
+var sample = service.Preview(new NameRequest(cityType, 15, islandCulture.id, islandLanguage.id, input));
+Check(sample.Text.EndsWith("维克") && sample.Sources["name"].Reference == pool, "The island branch preview lost its inherited coastal style.");
+
+var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "nordic-geography");
+Directory.CreateDirectory(output);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+world.cities.checkLists(); world.kingdoms.checkLists();
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "ids.txt"), new[] { port.id, island.id, islandCulture.id, islandLanguage.id, kitten.getID() }
+    .Select(id => id.ToString()).Concat(new[] { port.name, island.name, surname }));
+return new { root = original.name, port = port.name, island = island.name, surname, kitten = kitten.getName(), preview = sample.Text, output };

@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+
+const string contacts = "chinesename.exonyms.v1", residence = "chinesename.residence.v1";
+void Check(bool value, string message) { if (!value) throw new InvalidOperationException(message); }
+string NameFor(BaseSystemData data, long culture)
+{
+    data.get(contacts, out string saved);
+    return saved == null ? null : (string)JObject.Parse(saved)[culture.ToString()]?["name"];
+}
+double? Since(Actor actor)
+{
+    actor.data.get(residence, out string saved);
+    return saved == null ? null : (double?)JObject.Parse(saved)["since"];
+}
+Book WriteHistory(Actor author)
+{
+    var book = World.world.books.newObject();
+    var type = AssetManager.book_types.list.First(entry => entry.name_template == "book_name_history");
+    book.newBook(author, type, null, null, null, null);
+    return book;
+}
+
+Config.paused = true;
+var world = World.world;
+var zones = world.zone_calculator.zones.Where(zone => zone.centerTile.Type.ground && !zone.hasCity()).ToArray();
+int Distance(TileZone a, TileZone b) => Math.Abs(a.centerTile.x - b.centerTile.x) + Math.Abs(a.centerTile.y - b.centerTile.y);
+var destination = zones.First();
+var origin = zones.First(zone => Distance(zone, destination) > 48);
+var visitorOrigin = zones.First(zone => Distance(zone, destination) > 48 && Distance(zone, origin) > 48);
+
+(City City, Actor Actor) Found(TileZone zone, string place, string country, bool historical = false)
+{
+    var actor = world.units.createNewUnit("human", zone.centerTile, pAdultAge: true);
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    actor.setCulture(world.cultures.newCulture(actor, true));
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    kingdom.setUnitMetas(actor);
+    world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+    if (historical)
+    {
+        const string history = "chinesename:place-history";
+        var service = NamingApi.Current;
+        var draft = service.GetWorld();
+        var naming = draft.Cultures[actor.culture.id] = new CultureNaming { Pack = history };
+        naming.Arrangements["worldbox:book"] = new List<ConditionalArrangement>
+        {
+            service.GetPackage(history).Arrangements["worldbox:book"].Single(item => item.Id == "city-annals")
+        };
+        WorldNamingStore.Apply(draft);
+    }
+    var city = world.cities.buildNewCity(actor, zone);
+    actor.joinCity(city);
+    kingdom.setCapital(city);
+    city.setName(place);
+    kingdom.setName(country);
+    world.cities.checkLists(); world.kingdoms.checkLists();
+    return (city, actor);
+}
+
+void UpdateResidents()
+{
+    world.units.checkContainer();
+    world.units.prepareForMetaChecks();
+    world.cities.beginChecksUnits();
+}
+
+var (host, native) = Found(destination, "澄江", "松岭国");
+var (home, resident) = Found(origin, "青原", "临川国", true);
+var (visitorHome, visitor) = Found(visitorOrigin, "东原", "白川国");
+long residentId = resident.id, visitorId = visitor.id, hostId = host.id, homeId = home.id, nativeId = native.id;
+double arrived = world.getCurWorldTime();
+resident.joinCity(host);
+visitor.joinCity(host);
+Check(resident.culture != host.culture && visitor.culture != host.culture && Since(resident) == arrived && Since(native) == null,
+    "Native city membership did not record foreign residence.");
+var early = WriteHistory(resident);
+Check(early.name == "澄江纪", "A book written on arrival did not use the formal name: " + early.name);
+world.map_stats.world_time += 65;
+UpdateResidents();
+Check(host.units.Contains(resident) && host.units.Contains(visitor), "The native city lost its two residents.");
+host.updateAge();
+Check(NameFor(host.data, resident.culture.id) == null && NameFor(host.kingdom.data, resident.culture.id) == null,
+    "A single year created an exonym.");
+visitor.joinCity(visitorHome);
+Check(Since(visitor) == null, "Leaving the host city did not clear continuous residence.");
+visitor.joinCity(host);
+double returned = world.getCurWorldTime();
+Check(Since(visitor) == returned, "Moving back did not reset the residence timer.");
+
+string output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "resident-exonyms");
+Directory.CreateDirectory(output);
+world.books.checkLists();
+long earlyId = early.id;
+SaveManager.saveWorldToDirectory(output);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(output, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The partial-residence save did not load.");
+Config.paused = true;
+world = World.world;
+resident = world.units.get(residentId);
+visitor = world.units.get(visitorId);
+native = world.units.get(nativeId);
+home = world.cities.get(homeId);
+host = world.cities.get(hostId);
+Check(Since(resident) == arrived && Since(visitor) == returned, "Reload reset residence times.");
+UpdateResidents();
+world.map_stats.world_time = arrived + 121;
+host.updateAge();
+string cityAlias = NameFor(host.data, resident.culture.id), realmAlias = NameFor(host.kingdom.data, resident.culture.id);
+Check(cityAlias == "澄江城" && realmAlias == "松岭邦", "Two years of residence did not create both names.");
+Check(NameFor(host.data, visitor.culture.id) == null && NameFor(host.kingdom.data, visitor.culture.id) == null,
+    "A second stay inherited time from the first stay.");
+Check(NameFor(host.data, native.culture.id) == null && host.name == "澄江" && host.kingdom.name == "松岭国",
+    "Residence changed the formal name or produced a same-culture exonym.");
+
+var history = WriteHistory(resident);
+var war = world.wars.newWar(home.kingdom, host.kingdom, AssetManager.war_types_library.get("normal"));
+Check(world.books.get(earlyId).name == "澄江纪" && history.name == "澄江城纪" && war.name == "临川国与松岭邦之战",
+    "New or existing books and wars have the wrong names: " + history.name + " / " + war.name);
+resident.joinCity(home);
+world.map_stats.world_time = returned + 121;
+UpdateResidents();
+host.updateAge();
+string visitorAlias = NameFor(host.data, visitor.culture.id);
+Check(visitorAlias != null && NameFor(host.data, resident.culture.id) == cityAlias,
+    "A fresh two-year stay failed or an existing exonym was lost when the resident left.");
+return new { official = host.name, cityAlias, realmAlias, visitorAlias, book = history.name, war = war.name };

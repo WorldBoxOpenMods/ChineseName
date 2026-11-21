@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "id": "chinesename:war-exonyms",
+  "label": "战争外称",
+  "supplemental": true,
+  "requires": {
+    "chinesename:place-history": 1
+  },
+  "cultureBases": [
+    "chinesename:place-history"
+  ],
+  "arrangements": {
+    "worldbox:war": [
+      {
+        "id": "war-exonym",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "normal"
+              ]
+            },
+            {
+              "field": "opponent-exonym",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:与;1:之战"
+        }
+      }
+    ]
+  }
+}

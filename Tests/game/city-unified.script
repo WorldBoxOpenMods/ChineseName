@@ -1,0 +1,100 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
+
+const string type = "worldbox:city", pool = "chinesename:river-places";
+void Check(bool value, string reason) { if (!value) throw new InvalidOperationException(reason); }
+async System.Threading.Tasks.Task Frames()
+{
+    for (int i = 0; i < 12; i++) await Game.NextFrame();
+}
+
+Config.paused = true;
+var world = World.world;
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+var tile = world.tiles_list.First(tile => tile.Type.ground && tile.zone.city == null);
+var founder = world.units.createNewUnit("human", tile);
+world.kingdoms.makeNewCivKingdom(founder);
+var culture = world.cultures.newCulture(founder, true);
+founder.setCulture(culture);
+var river = world.languages.newLanguage(founder, true);
+var other = world.languages.newLanguage(founder, false);
+founder.joinLanguage(river);
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var settings = service.GetWorld();
+var pack = service.GetPackage(service.DefaultPack);
+void Restrict(Language language, string text)
+{
+    var word = pack.Words.Single(word => word.Text == text && pack.Pools[pool].ContainsKey(word.Id));
+    settings.Languages[language.id] = new LanguageNaming
+    {
+        Pools = new Dictionary<string, PoolEdit>
+        {
+            [pool] = new() { ExcludeIds = pack.Pools[pool].Keys.Where(id => id != word.Id).ToList() }
+        }
+    };
+}
+Restrict(river, "澄江");
+Restrict(other, "临川");
+WorldNamingStore.Apply(settings);
+
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_city").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+string Preview()
+{
+    var line = window.transform.FindRecursive("PreviewName");
+    Check(line != null && line.GetComponent<Selectable>() == null, "The preview must be read-only.");
+    return line.GetComponent<Text>().text;
+}
+OnomasticsAssetButton Glyph(string id, bool palette) =>
+    (palette ? tab.parent_asset_specials : tab.parent_name_variation_1)
+    .GetComponentsInChildren<OnomasticsAssetButton>().Single(button => button.onomastics_asset.id == id);
+var marker = Glyph("chinesename_as_pool", true);
+var hyphen = Glyph("hyphen", true);
+Check(marker.transform.parent == hyphen.transform.parent, "Both glyphs must be in the same original palette.");
+tab.loadTemplate("0" + marker.onomastics_asset.short_id + "1|0:江河地名;1:府");
+await Frames();
+Check(Preview() == "澄江府", "The group alias did not use the first language: " + Preview());
+Button Flag(Language lang) => window.GetComponentsInChildren<Button>().Single(button => button.name == "PreviewLanguage." + lang.id);
+Flag(other).onClick.Invoke();
+await Frames();
+Check(Preview() == "临川府" &&
+    service.Generate(new NameRequest(type, 0, culture.id, other.id)).Text == Preview(),
+    "The second language did not change the same arrangement.");
+Flag(river).onClick.Invoke();
+
+tab.loadTemplate("01|0:澄江;1:州");
+await Frames();
+Check(Preview() == "澄江州", "The original editor did not apply the new group words.");
+hyphen.button.onClick.Invoke();
+await Frames();
+Check(tab.getOnomasticsData().getFullTemplateData().Contains("hyphen"), "The original palette did not insert the hyphen.");
+var drag = tab.name_variation_1_drag_container;
+drag.updateChildrenData();
+drag.switchElements(Glyph("hyphen", false).GetComponent<DragOrderElement>(), Glyph("group_2", false).GetComponent<DragOrderElement>());
+drag.on_order_changed.Invoke();
+await Frames();
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(new[] { "group_1", "hyphen", "group_2" }) &&
+    Preview() == "澄江-州", "The original arrangement callback did not persist the order: " + Preview());
+var city = world.cities.buildNewCity(founder, tile.zone);
+Check(city.name == Preview() && service.Generate(new NameRequest(type, 0, culture.id, river.id)).Text == city.name,
+    "The founded city, editor preview and generated name differ.");
+world.units.checkContainer(); world.cities.checkLists(); world.cultures.checkLists(); world.kingdoms.checkLists();
+var save = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "city-glyph-save");
+SaveManager.saveWorldToDirectory(save);
+File.WriteAllLines(Path.Combine(save, "expected.txt"), new[] { culture.id, river.id, city.id }.Select(id => id.ToString()));
+return new { languages = new[] { "澄江府", "临川府" }, city = city.name, save };

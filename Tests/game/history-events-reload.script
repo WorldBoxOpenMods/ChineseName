@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
+
+const string type = "worldbox:book", eventKey = "chinesename.book-event.v1";
+const string edited = "player-migration-notes", eventGlyph = "chinesename:historical-event";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+string Citation(Book book) { book.data.get(eventKey, out string value); return value; }
+Book Write(Actor author, string topic)
+{
+    var asset = AssetManager.book_types.list.Single(entry => entry.name_template == topic);
+    var book = World.world.books.newObject();
+    book.newBook(author, asset, null, null, null, null);
+    return book;
+}
+
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var runs = output.Parent.Parent;
+var fixtures = Directory.EnumerateFiles(runs.FullName, "books.json", SearchOption.AllDirectories)
+    .Where(path => path.EndsWith("/history-events/books.json")).OrderBy(path => path, StringComparer.Ordinal).ToArray();
+Check(fixtures.Length > 0, "Run history-events.script before the cold reload.");
+var expected = JObject.Parse(File.ReadAllText(fixtures.Last()));
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(fixtures.Last()), "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The event world did not load after removing history events.");
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var author = world.units.get((long)expected["author"]);
+Check(!service.Packages.Contains("chinesename:history-events") &&
+    !service.Types.Single(category => category.Id == type).Fields.ContainsKey("historical-event") &&
+    !AssetManager.onomastics_library.dict.ContainsKey(eventGlyph), "History event definitions are still registered.");
+
+foreach (var book in expected["books"])
+{
+    var saved = world.books.get((long)book["id"]);
+    string citation = Citation(saved);
+    Check(saved.name == (string)book["name"] && (citation == null ? book["citation"] == null :
+        JToken.DeepEquals(JObject.Parse(citation), JObject.Parse((string)book["citation"]))),
+        "The saved title or citation changed: " + saved.name);
+}
+
+var edits = service.GetWorld().Cultures[author.culture.id].ArrangementEdits[type];
+var row = edits.Added[edited];
+Check(row.Cards.Template == "\uE12A0|0:见闻" && row.Expression.Field == "historical-event-kind" &&
+    edits.Changes["chinesename:history-events/rebellion-annals"].Layout.Groups.ContainsValue("实录"),
+    "The saved template or condition was lost.");
+var request = new NameRequest(type, 0, author.culture.id, author.language.id,
+    new Dictionary<string, object> { ["topic"] = "history", ["author-city"] = "白石府" });
+var fallback = service.Preview(request);
+Check(fallback.Success && fallback.Text == "白石府纪" && fallback.ArrangementId == "city-annals" &&
+    fallback.Failures.Any(failure => failure.ArrangementId == edited && failure.Reason == NameFailureReason.MissingGlyph &&
+        failure.Reference == "U+E12A"), "Wrong preview result: " + fallback.Text + " / " + fallback.ArrangementId + " / " +
+    NamingJson.Write(fallback.Failures) + " / " + string.Join(", ", WorldNamingInputs.ConditionalArrangements(request).Select(item => item.Id)));
+var fresh = Write(author, "book_name_history");
+var fable = Write(author, "book_name_fable");
+Check(fresh.name == "白石府纪" && Citation(fresh) == null && !string.IsNullOrWhiteSpace(fable.name) && Citation(fable) == null,
+    "New books did not use their base naming paths: " + fresh.name + " / " + fable.name);
+Check(WorldNamingInputs.CityFounding(author.city) is { } founded && founded.Name != author.city.name,
+    "Founding names were lost when history events was removed.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+SelectedUnit.select(author);
+SelectedMetas.selected_culture = author.culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_book").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+window.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + edited).onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+string issue = window.transform.FindRecursive("PreviewIssue")?.GetComponent<Text>()?.text;
+Check(issue?.Contains("缺少字形 U+E12A") == true, "The native editor did not explain the unavailable glyph: " + issue);
+
+var eventBook = world.books.get((long)expected["eventBook"]);
+var exonymBook = world.books.get((long)expected["exonymBook"]);
+return new { preserved = expected["books"].Count(), eventBook = eventBook.name,
+    exonymBook = exonymBook.name, historyFallback = fresh.name, fable = fable.name, issue };

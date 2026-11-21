@@ -26,19 +26,51 @@ public sealed partial class OnomasticsEditor
         Icon(dice.transform, "Dice", "ui/Icons/iconDice", 10);
 
         var result = _page.Result;
+        string fallback = PreviewFallback(result);
         var poolIssue = result?.Diagnostics.FirstOrDefault(value => value.StartsWith("词库字形", StringComparison.Ordinal));
         if (_page.Message != null || !IsPreviewName(result))
         {
             PreviewLine("PreviewError", "草稿无法预览", 14, 11, SampleColor);
             var issue = result?.Diagnostics.FirstOrDefault(value => value.StartsWith("卡片", StringComparison.Ordinal) ||
                 value.StartsWith("命名卡片", StringComparison.Ordinal) || value.StartsWith("请为", StringComparison.Ordinal));
-            PreviewLine("PreviewIssue", _page.Message ?? poolIssue ?? issue ?? "请检查命名设置。", 20, 9, IssueColor);
+            if (result?.Status == GenerationStatus.ContextError)
+                issue = "模组情境转换失败 · " + _type.Label;
+            PreviewLine("PreviewIssue", _page.Message ?? fallback ?? poolIssue ?? issue ?? "请检查命名设置。", 20, 9, IssueColor);
             return;
         }
 
-        var issueLabel = poolIssue ?? ConditionalPreviewNotice(result);
+        var issueLabel = fallback ?? poolIssue ?? ConditionalPreviewNotice(result);
         RenderSamples(issueLabel == null ? 3 : 2);
         if (issueLabel != null) PreviewLine("PreviewIssue", issueLabel, 10, 8, IssueColor);
+    }
+
+    private string PreviewFallback(NameResult result)
+    {
+        var failure = result?.Failures.FirstOrDefault();
+        if (failure == null) return null;
+        string reason = failure.Reason switch
+        {
+            NameFailureReason.MissingGlyph => "缺少字形",
+            NameFailureReason.MissingInput => "缺少输入",
+            NameFailureReason.MissingVocabulary => "缺少词库",
+            NameFailureReason.AmbiguousVocabulary => "词库名有重名",
+            NameFailureReason.EmptyVocabulary => "词库无可用词",
+            NameFailureReason.UnavailableRule => "绑定规则不可用",
+            NameFailureReason.InvalidArrangement => "排列不可用",
+            NameFailureReason.Rejected => "结果不符合要求",
+            _ => "无法生成有效名称"
+        };
+        if (failure.Reference != null && failure.Reason != NameFailureReason.InvalidArrangement)
+            reason += " " + failure.Reference;
+        string NameOf(string id)
+        {
+            for (int index = 0; index < Arrangements.Count; index++)
+                if (Arrangements[index].Id == id) return "第 " + (index + 1) + " 条排列";
+            return id;
+        }
+        string skipped = failure.ArrangementId != null ? NameOf(failure.ArrangementId) : failure.RuleId ?? "当前排列";
+        string winner = result.ArrangementId != null ? NameOf(result.ArrangementId) : result.RuleId ?? "默认";
+        return result.Success ? "跳过「" + skipped + "」 · " + reason + " · 使用「" + winner + "」" : reason;
     }
 
     private void PreviewLine(string id, string value, float height, int size, Color color)
@@ -98,7 +130,9 @@ public sealed partial class OnomasticsEditor
         string id = RuleKey(_type, _rule);
         draft.Rules.TryGetValue(id, out var rule);
         var appliedRule = active != null && active.Rules.TryGetValue(id, out var edit) ? edit : null;
-        var activeCards = NativeOnomastics.Selection(NamingApi.Current.ActiveWorld, _culture, _type.Id);
+        var activeCards = NativeOnomastics.Selection(NamingApi.Current.ActiveWorld, _culture, _type.Id, _page.Effective, _rule);
+        string key = CultureNaming.DefaultArrangementKey(_type.Id, _page.Effective.ArrangementBasis, _rule.Id);
+        if (active?.DefaultArrangementEdits.ContainsKey(key) == true && !draft.DefaultArrangementEdits.ContainsKey(key)) return true;
         if ((activeCards?.Enabled == true) != raw || NamingJson.Write(rule) != NamingJson.Write(appliedRule)) return true;
         if (!raw) return false;
         if (NativeNamingTab.HasChanged(_culture.id, _type.Id)) return true;

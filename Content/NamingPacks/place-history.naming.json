@@ -1,0 +1,311 @@
+{
+  "format": 1,
+  "id": "chinesename:place-history",
+  "label": "沿革地名",
+  "useAsLanguageDefault": true,
+  "requires": {
+    "chinesename:classic": 1
+  },
+  "arrangements": {
+    "worldbox:city": [
+      {
+        "id": "from-settlers",
+        "expression": {
+          "children": [
+            {
+              "field": "source-city",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:新"
+        }
+      },
+      {
+        "id": "from-region",
+        "expression": {
+          "children": [
+            {
+              "field": "region-name",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:城"
+        }
+      }
+    ],
+    "worldbox:war": [
+      {
+        "id": "rebellion-at-city",
+        "expression": {
+          "children": [
+            {
+              "field": "kind",
+              "test": "Equal",
+              "values": [
+                "rebellion"
+              ]
+            },
+            {
+              "field": "rebellion-city",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:之乱"
+        }
+      }
+    ],
+    "worldbox:book": [
+      {
+        "id": "city-annals",
+        "expression": {
+          "children": [
+            {
+              "field": "topic",
+              "test": "Equal",
+              "values": [
+                "history"
+              ]
+            },
+            {
+              "field": "author-city",
+              "test": "Present"
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "0|0:纪"
+        }
+      }
+    ]
+  },
+  "cultureVariants": {
+    "harbor-towns": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "arrangement": {
+        "id": "harbor-towns",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/coastal-places;1:港",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "island-towns": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "arrangement": {
+        "id": "island-towns",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/coastal-places;1:邑",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "river-crossings": {
+      "type": "worldbox:city",
+      "landforms": [
+        "river-valley"
+      ],
+      "arrangement": {
+        "id": "river-crossings",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "river-valley"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/river-places;1:埠",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "mountain-passes": {
+      "type": "worldbox:city",
+      "landforms": [
+        "mountain",
+        "canyon",
+        "basin"
+      ],
+      "arrangement": {
+        "id": "mountain-passes",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "mountain",
+                "canyon",
+                "basin"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/hill-places;1:关",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    }
+  },
+  "wordGroups": {
+    "coastal-bays": {
+      "pool": "chinesename:coastal-places",
+      "words": [
+        "chinesename:coastal-places.6f6e-751f",
+        "chinesename:coastal-places.4e1c-6e7e",
+        "chinesename:coastal-places.767d-6e7e",
+        "chinesename:coastal-places.9752-6e7e",
+        "chinesename:coastal-places.671b-6f6e",
+        "chinesename:coastal-places.542c-6f6e",
+        "chinesename:coastal-places.6d66-9633",
+        "chinesename:coastal-places.767d-6c99",
+        "chinesename:coastal-places.94f6-6c99",
+        "chinesename:coastal-places.6f31-6f6e",
+        "chinesename:coastal-places.971e-6e7e"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "coastal-islands": {
+      "pool": "chinesename:coastal-places",
+      "words": [
+        "chinesename:coastal-places.9e6d-6d32",
+        "chinesename:coastal-places.9e7f-5c7f",
+        "chinesename:coastal-places.957f-5c7f",
+        "chinesename:coastal-places.6ca7-5c7f",
+        "chinesename:coastal-places.7075-5c7f",
+        "chinesename:coastal-places.6930-6c40"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    },
+    "river-streams": {
+      "pool": "chinesename:river-places",
+      "words": [
+        "chinesename:river-places.6f84-6c5f",
+        "chinesename:river-places.4e34-5ddd",
+        "chinesename:river-places.6e05-6c85",
+        "chinesename:river-places.5170-6eaa",
+        "chinesename:river-places.9752-6eaa",
+        "chinesename:river-places.6d1b-5ddd",
+        "chinesename:river-places.9e7f-6eaa",
+        "chinesename:river-places.6e05-6f33",
+        "chinesename:river-places.53cc-6eaa",
+        "chinesename:river-places.6d63-6eaa"
+      ],
+      "landforms": [
+        "river-valley"
+      ]
+    },
+    "river-fords": {
+      "pool": "chinesename:river-places",
+      "words": [
+        "chinesename:river-places.4e91-6d25",
+        "chinesename:river-places.5357-6d66",
+        "chinesename:river-places.70df-6d66",
+        "chinesename:river-places.5e73-6d25",
+        "chinesename:river-places.9e6d-6c40",
+        "chinesename:river-places.82a6-6c40",
+        "chinesename:river-places.6816-9e64-6e21"
+      ],
+      "landforms": [
+        "river-valley"
+      ]
+    },
+    "hill-ridges": {
+      "pool": "chinesename:hill-places",
+      "words": [
+        "chinesename:hill-places.6816-5cad",
+        "chinesename:hill-places.767d-5cb3",
+        "chinesename:hill-places.666f-5c71",
+        "chinesename:hill-places.677e-5cad",
+        "chinesename:hill-places.5317-5cb3",
+        "chinesename:hill-places.9e7f-5cad",
+        "chinesename:hill-places.91d1-5cab",
+        "chinesename:hill-places.4e91-5cab",
+        "chinesename:hill-places.7fe0-5cf0"
+      ],
+      "landforms": [
+        "mountain",
+        "canyon"
+      ]
+    },
+    "hill-settlements": {
+      "pool": "chinesename:hill-places",
+      "words": [
+        "chinesename:hill-places.5357-9675",
+        "chinesename:hill-places.9752-5ca9",
+        "chinesename:hill-places.677e-5ca9",
+        "chinesename:hill-places.77f3-95e8",
+        "chinesename:hill-places.9e7f-539f",
+        "chinesename:hill-places.5d16-5dde"
+      ],
+      "landforms": [
+        "basin"
+      ]
+    }
+  }
+}

@@ -21,9 +21,7 @@ var cat = world.units.get(ids[4]);
 var oldCountry = world.kingdoms.get(ids[3]);
 Check(korea?.language?.id == ids[2] && cat?.language?.id == ids[6] && oldCountry?.name == "新罗国",
     "The saved names or language links changed.");
-Check(world.cultures.get(ids[1]).getOnomasticData(MetaType.Kingdom).getGroupString("group_2") == "邦" &&
-      world.cultures.get(ids[5]).getOnomasticData(MetaType.City).getGroupString("group_2") == "市" &&
-      korea.generateName(MetaType.Kingdom, 7) == "百济邦" && cat.generateName(MetaType.City, 7) == "谧檐市",
+Check(korea.generateName(MetaType.Kingdom, 7) == "百济邦" && cat.generateName(MetaType.City, 7) == "谧檐市",
     "The edited regional or species arrangement did not survive.");
 var service = NamingApi.Current;
 var request = new NameRequest("worldbox:person", 0, ids[1], ids[2],

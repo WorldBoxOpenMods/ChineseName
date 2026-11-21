@@ -17,8 +17,39 @@ async System.Threading.Tasks.Task Frames(int count = 10)
 const string package = "chinesename:conditional-arrangements";
 var service = NamingApi.Current;
 var pack = service.GetPackage(package);
-Check(pack != null && pack.Arrangements.Keys.ToHashSet().SetEquals(service.Types.Select(type => type.Id)),
+var stockTypes = service.Types.Where(type => type.Id.StartsWith("worldbox:", StringComparison.Ordinal)).ToArray();
+Check(pack != null && pack.Arrangements.Keys.ToHashSet().SetEquals(stockTypes.Select(type => type.Id)),
     "The bundled examples do not cover all registered stock types.");
+var published = new[]
+{
+    "chinesename_unit_surname", "chinesename_unit_first", "chinesename_unit_given", "chinesename_unit_middle",
+    "chinesename_city_name", "chinesename_city_suffix", "chinesename_rule_separator", "chinesename_keep_surname",
+    "chinesename_as_pool", "chinesename_war_attacker", "chinesename_war_defender",
+    "chinesename:founder-surname", "chinesename:station-city", "chinesename:founding-kingdom",
+    "chinesename:book-topic", "chinesename:equipment-kind", "chinesename:equipment-material",
+    "chinesename:plot-action", "chinesename:alliance-founder-short", "chinesename:alliance-partner-short",
+    "chinesename:source-city", "chinesename:region-name", "chinesename:rebellion-city", "chinesename:author-city",
+    "chinesename:opponent-exonym", "chinesename:war-origin", "chinesename:historical-event",
+    "chinesename:author-city-founding-name", "chinesename:source-city-founding-name"
+};
+var glyphs = AssetManager.onomastics_library;
+bool exonyms = service.Types.Any(type => type.Id == "chinesename:exonym");
+bool history = service.Types.Single(type => type.Id == "worldbox:book").Fields.ContainsKey("historical-event");
+bool Available(int index) => index switch { 0x18 => exonyms, 0x1a => history, _ => true };
+var owners = new[] { "war", "war", "family", "army", "alliance", "book", "item", "item", "plot",
+    "alliance", "alliance", "city", "city", "war", "book", "war", "war", "book", "book", "city" };
+for (int index = 0; index < published.Length; index++)
+{
+    char code = (char)(0xE110 + index);
+    glyphs.dict.TryGetValue(published[index], out var glyph);
+    if (!Available(index))
+    {
+        Check(glyph == null && glyphs.getByShortId(code.ToString()) == null, "The addon glyph is present in the base mod.");
+        continue;
+    }
+    Check(glyph?.short_id == code && glyphs.getByShortId(code.ToString()) == glyph,
+        "The published ID or short code changed for " + published[index]);
+}
 var world = World.world;
 Config.paused = true;
 Config.tooltips_active = true;
@@ -41,7 +72,7 @@ WorldNamingStore.Apply(config);
 
 var examples = new Dictionary<string, string>();
 var worldTypes = new HashSet<string> { "worldbox:subspecies", "worldbox:world", "worldbox:player" };
-foreach (var type in service.Types)
+foreach (var type in stockTypes)
 {
     var item = pack.Arrangements[type.Id].Single();
     var inputs = type.Fields.Values.Where(field => field.Example != null).ToDictionary(field => field.Id, field => field.Example);
@@ -68,11 +99,16 @@ var tab = shell.GetComponentInChildren<OnomasticsTab>();
 for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
 await Frames();
 var visited = new List<string>();
-foreach (var type in service.Types.Where(type => !worldTypes.Contains(type.Id)))
+foreach (var type in stockTypes.Where(type => !worldTypes.Contains(type.Id)))
 {
     string id = type.Id == "worldbox:person" ? "unit" : type.Id.Substring("worldbox:".Length);
     tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_" + id).toggle.click();
     await Frames();
+    var visible = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Select(button => button.onomastics_asset.id).ToHashSet();
+    for (int glyph = 0; glyph < owners.Length; glyph++)
+        Check(visible.Contains(published[glyph + 9]) == (owners[glyph] == id && Available(glyph + 9)),
+            published[glyph + 9] + " appeared in the wrong palette for " + type.Id);
     var item = pack.Arrangements[type.Id].Single();
     var tileButton = shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + item.Id);
     tileButton.onClick.Invoke();

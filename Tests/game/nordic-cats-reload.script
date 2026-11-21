@@ -26,19 +26,19 @@ var founder = world.units.get(ids[1]);
 var kitten = world.units.get(ids[2]);
 var city = world.cities.get(ids[5]);
 var country = world.kingdoms.get(ids[6]);
-var cards = culture.getOnomasticData(MetaType.Unit);
+var service = NamingApi.Current;
+var data = service.GetWorld();
+var edit = data.Cultures[culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith("worldbox:person/")).Value;
 var layout = new[] { "group_3", "chinesename_as_pool", "chinesename_rule_separator", "group_1",
     "chinesename_as_pool", "chinesename_keep_surname" };
-Check(cards.getFullTemplateData().SequenceEqual(layout) && cards.getGroupString("group_3") == "灵猫个体名" &&
-    cards.getGroupString("group_1") == "灵猫地名词根" && founder.getName() == "夜瞳·猫眼台" &&
+Check((edit.Glyphs == null || edit.Glyphs.SequenceEqual(layout)) && edit.Groups["group_3"] == "灵猫个体名" &&
+    edit.Groups["group_1"] == "灵猫地名词根" && founder.getName() == "夜瞳·猫眼台" &&
     samples.Contains(kitten.getName()) && city.name == "猫眼台" && country.name == "猫眼台领",
     "The saved names or native arrangement changed.");
 
-var service = NamingApi.Current;
-var data = service.GetWorld();
 const string given = cats + ".cat.given";
 Check(data.Cultures[ids[0]].Pack == nordic && data.Cultures[ids[7]].Pack == nordic &&
-    !data.Cultures[ids[7]].Cards.ContainsKey("worldbox:person") && data.LanguageParents[ids[4]] == ids[3] &&
+    !data.Cultures[ids[7]].DefaultArrangementEdits.Keys.Any(key => key.StartsWith("worldbox:person/")) && data.LanguageParents[ids[4]] == ids[3] &&
     Math.Abs(data.Languages[ids[4]].GroupPreferences[given][cats + "/cat.given.habits"] - .2) < 1e-9,
     "The style, culture isolation or language divergence did not survive.");
 var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "civ_cat", ["culture-species"] = "civ_cat" };
@@ -51,7 +51,7 @@ File.Move(vocabulary, vocabulary + ".disabled");
 try
 {
     Check(WorldNamingStore.ReloadPacks().Count == 0 && Person(ids[3], 0).Text == "夜瞳·猫眼台" &&
-        founder.getName() == "夜瞳·猫眼台" && cards.getGroupString("group_3") == "灵猫个体名",
+        founder.getName() == "夜瞳·猫眼台" && edit.Groups["group_3"] == "灵猫个体名",
         "Removing a legacy copy of the now-bundled vocabulary changed a name or an arrangement.");
 }
 finally

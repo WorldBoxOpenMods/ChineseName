@@ -1,0 +1,196 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using ai.behaviours;
+
+const string contacts = "chinesename.exonyms.v1", nordic = "chinesename:world-nordic-set";
+const string historyPack = "chinesename:place-history", atlas = "chinesename:world-styles-lexicon";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+
+var world = World.world;
+Config.paused = true;
+var service = NamingApi.Current;
+var stock = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "ChineseName", "Examples", "Packages");
+foreach (string file in new[] { "world-nordic-set.naming.json", "world-styles-lexicon.naming.json" })
+    File.Copy(Path.Combine(stock, file), Path.Combine(WorldNamingStore.PackageDirectory, file), true);
+var errors = WorldNamingStore.ReloadPacks();
+Check(errors.Count == 0, "The Nordic packages did not load: " + string.Join(", ", errors));
+
+var draft = service.GetWorld();
+foreach (string id in new[] { nordic, atlas })
+    if (!draft.EnabledPacks.Contains(id)) draft.EnabledPacks.Add(id);
+WorldNamingStore.Apply(draft);
+var towns = world.zone_calculator.zones.Where(zone => zone.centerTile.Type.ground && !zone.hasCity()).ToArray();
+var origin = towns.First().centerTile;
+var second = towns.First(zone => !zone.hasCity() && Math.Abs(zone.centerTile.x - origin.x) + Math.Abs(zone.centerTile.y - origin.y) > 48).centerTile;
+var third = towns.First(zone => !zone.hasCity() &&
+    Math.Abs(zone.centerTile.x - origin.x) + Math.Abs(zone.centerTile.y - origin.y) > 48 &&
+    Math.Abs(zone.centerTile.x - second.x) + Math.Abs(zone.centerTile.y - second.y) > 48).centerTile;
+
+(City City, Actor Founder) Found(WorldTile tile, string people, string cityName, string realm, string preset)
+{
+    var actor = world.units.createNewUnit(people, tile, pAdultAge: true);
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    var culture = world.cultures.newCulture(actor, true);
+    actor.setCulture(culture);
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    kingdom.setUnitMetas(actor);
+    world.units.checkContainer();
+    world.cultures.checkLists();
+    world.languages.checkLists();
+    if (preset != null)
+    {
+        var rules = service.GetWorld();
+        var naming = rules.Cultures[culture.id] = new CultureNaming { Pack = preset };
+        if (preset == historyPack)
+            naming.Arrangements["worldbox:book"] = new List<ConditionalArrangement>
+            {
+                service.GetPackage(historyPack).Arrangements["worldbox:book"].Single(item => item.Id == "city-annals")
+            };
+        WorldNamingStore.Apply(rules);
+    }
+    var city = world.cities.buildNewCity(actor, tile.zone);
+    actor.joinCity(city);
+    kingdom.setCapital(city);
+    city.setName(cityName);
+    kingdom.setName(realm);
+    return (city, actor);
+}
+var (local, localAuthor) = Found(origin, "human", "青原", "临川国", historyPack);
+var (foreign, foreignAuthor) = Found(second, "human", "澄江", "松岭国", null);
+var (northern, northernAuthor) = Found(third, "civ_cat", "贝尔根", "北庭领", nordic);
+var keeper = world.units.createNewUnit("human", origin, pAdultAge: true);
+keeper.setCulture(localAuthor.culture);
+keeper.joinLanguage(localAuthor.language);
+keeper.joinCity(local);
+world.units.checkContainer();
+world.cities.checkLists();
+world.kingdoms.checkLists();
+
+var dock = world.buildings.addBuilding("docks_human", foreign.getTile());
+Check(dock?.component_docks != null && dock.getCity() == foreign, "The original trade fixture did not create a destination dock.");
+Actor Boat(City home)
+{
+    var boat = world.units.createNewUnit("boat_trading_human", dock.current_tile, pAdultAge: true);
+    boat.joinCity(home);
+    boat.beh_building_target = dock;
+    return boat;
+}
+void Trade(Actor boat)
+{
+    new BehStayInBuildingTarget(0, 0).execute(boat);
+    Check(new BehBoatMakeTrade().execute(boat) == BehResult.Continue, "The native trade action failed.");
+    boat.exitBuilding();
+}
+var localBoat = Boat(local);
+var northernBoat = Boat(northern);
+string Alias(BaseSystemData target, Culture observer)
+{
+    target.get(contacts, out string text);
+    return text == null ? null : (string)JObject.Parse(text)[observer.id.ToString()]?["name"];
+}
+Book History(Actor author)
+{
+    var book = world.books.newObject();
+    var history = AssetManager.book_types.list.First(type => type.name_template == "book_name_history");
+    book.newBook(author, history, null, null, null, null);
+    return book;
+}
+var warType = AssetManager.war_types_library.get("normal");
+var earlyWar = world.wars.newWar(local.kingdom, foreign.kingdom, warType);
+world.wars.endWar(earlyWar, WarWinner.Peace);
+localAuthor.joinCity(foreign);
+var earlyBook = History(localAuthor);
+Check(earlyBook.name == "澄江纪", "The first book had the wrong formal place name: " + earlyBook.name);
+Trade(localBoat);
+Trade(northernBoat);
+Trade(localBoat);
+Check(Alias(foreign.data, localAuthor.culture) == null && Alias(foreign.data, northernAuthor.culture) == null,
+    "Same-year voyages created a lasting exonym.");
+world.map_stats.world_time += 61;
+Trade(localBoat);
+Trade(northernBoat);
+string cityAlias = Alias(foreign.data, localAuthor.culture);
+string nordicAlias = Alias(foreign.data, northernAuthor.culture);
+string realmAlias = Alias(foreign.kingdom.data, localAuthor.culture);
+Check(cityAlias == "澄江城" && nordicAlias == "澄江加德" && realmAlias == "松岭邦",
+    $"The two cultures did not form separate names ({cityAlias}, {nordicAlias}, {realmAlias}).");
+Check(Alias(foreign.data, foreignAuthor.culture) == null &&
+    foreign.name == "澄江" && foreign.kingdom.name == "松岭国", "Trade changed official names or created a same-culture exonym.");
+
+var bookWithAlias = History(localAuthor);
+var warWithAlias = world.wars.newWar(local.kingdom, foreign.kingdom, warType);
+Check(bookWithAlias.name == "澄江城纪" && warWithAlias.name == "临川国与松岭邦之战",
+    "The original book or war creation did not consume its culture's exonym.");
+Check(earlyBook.name == "澄江纪" && !earlyWar.name.Contains("松岭邦"), "Later contacts rewrote an existing name.");
+world.map_stats.world_time += 61;
+Trade(localBoat);
+Check(Alias(foreign.data, localAuthor.culture) == cityAlias, "Another trade redrew an established name.");
+
+const string rowId = "tests-player-exonym", warCategory = "worldbox:war";
+var editing = service.GetWorld();
+editing.Cultures[localAuthor.culture.id].Arrangements[warCategory] = new List<ConditionalArrangement>
+{
+    new()
+    {
+        Id = rowId,
+        Cards = new CardNaming { Enabled = true, Template = "\uE1290\uE1281|0:与;1:之战" },
+        Expression = new ArrangementCondition
+        {
+            Children = new List<ArrangementCondition>
+            {
+                new() { Field = "kind", Test = ArrangementTest.Equal, Values = new List<string> { "normal" } },
+                new() { Field = "opponent-exonym", Test = ArrangementTest.Registered, Values = new List<string> { "present" } }
+            }
+        }
+    }
+};
+WorldNamingStore.Apply(editing);
+world.console.Hide();
+SelectedUnit.select(localAuthor);
+SelectedMetas.selected_culture = localAuthor.culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_war").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+}
+await Frames();
+Button Find(string name) => window.GetComponentsInChildren<Button>().SingleOrDefault(button => button.name == name);
+Find("Arrangement." + rowId).onClick.Invoke();
+await Frames();
+if (Find("ConditionPresetField.opponent-exonym") is { } field)
+{
+    field.onClick.Invoke();
+    await Frames();
+}
+Check(Find("ConditionPreset.opponent-exonym.present") != null &&
+    tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+        .Any(button => button.onomastics_asset.id == "chinesename:opponent-exonym" && button.onomastics_asset.short_id == '\uE128'),
+    "The addon field, condition and original glyph were not registered on the existing war category.");
+tab.loadTemplate("\uE1290\uE1281|0:与;1:争衡");
+await Frames();
+string preview = window.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
+var editedWar = world.wars.newWar(local.kingdom, foreign.kingdom, warType);
+Check(preview == "临川国与松岭邦争衡" && editedWar.name == preview,
+    $"The editor previewed '{preview}', the war used '{editedWar.name}', and the template was '{tab.getOnomasticsData().getShortTemplate()}'.");
+
+world.units.checkContainer(); world.cities.checkLists(); world.kingdoms.checkLists();
+world.cultures.checkLists(); world.languages.checkLists(); world.books.checkLists(); world.wars.checkLists();
+var output = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "exonyms");
+Directory.CreateDirectory(output);
+SaveManager.saveWorldToDirectory(output);
+File.WriteAllLines(Path.Combine(output, "ids.txt"), new[] { foreign.id, local.id, localAuthor.id, northernAuthor.culture.id,
+    earlyBook.id, bookWithAlias.id, warWithAlias.id, editedWar.id }.Select(id => id.ToString()));
+return new { official = foreign.name, cityAlias, nordicAlias, realmAlias,
+    book = bookWithAlias.name, war = warWithAlias.name, editedWar = editedWar.name, output };

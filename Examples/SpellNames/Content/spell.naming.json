@@ -11,7 +11,7 @@
         "when": { "element": "fire" },
         "parts": [
           { "id": "element", "pool": "spell-example:fire" },
-          { "id": "form", "provider": "spell-example:form" },
+          { "id": "form", "input": "form-name" },
           { "id": "ending", "literal": "诀" }
         ]
       },
@@ -19,7 +19,7 @@
         "id": "other",
         "parts": [
           { "id": "element", "literal": "玄" },
-          { "id": "form", "provider": "spell-example:form" },
+          { "id": "form", "input": "form-name" },
           { "id": "ending", "literal": "诀" }
         ]
       }

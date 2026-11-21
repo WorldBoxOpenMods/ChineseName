@@ -1,0 +1,53 @@
+using System;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+
+void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var save = Directory.EnumerateFiles(output.Parent.Parent.FullName, "map.wbox", SearchOption.AllDirectories)
+    .Where(file => file.EndsWith("/place-history/map.wbox")).OrderBy(file => file, StringComparer.Ordinal).Last();
+var entries = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(save), "ids.txt"));
+var ids = entries.Take(11).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(save));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Timed out loading the saved world.");
+
+var world = World.world;
+Config.paused = true;
+var source = world.cities.get(ids[0]);
+var migrant = world.cities.get(ids[1]);
+var region = world.cities.get(ids[2]);
+var port = world.cities.get(ids[3]);
+var book = world.books.get(ids[4]);
+var war = world.wars.get(ids[5]);
+migrant.data.get("chinesename.city-origin.v1", out string origin);
+region.data.get("chinesename.city-region.v1", out string geography);
+Check(source.name == "怀远府" && migrant.name == "新澄江" &&
+    (long)JObject.Parse(origin)["id"] == source.id && (string)JObject.Parse(origin)["name"] == "澄江府",
+    "The saved source reference or either place name changed.");
+var island = world.cities.get(ids[8]);
+island.data.get("chinesename.city-origin.v1", out string islandOrigin);
+Check(region.name == (string)JObject.Parse(geography)["name"] + "城" && port.name == entries[11] &&
+    island.name == entries[12] && (long)JObject.Parse(islandOrigin)["id"] == port.id &&
+    (string)JObject.Parse(islandOrigin)["name"] == entries[11] &&
+    war.name == "澄江之乱" && book.name == "自澄江府迁往新澄江记", "Reading the map changed an established historical name.");
+var data = NamingApi.Current.GetWorld();
+const string cityType = "worldbox:city", pool = "chinesename:coastal-places";
+const string pack = "chinesename:place-history/";
+Check(data.Cultures[ids[9]].ArrangementVariants[cityType].SequenceEqual(new[] { pack + "island-towns", pack + "harbor-towns" }) &&
+    data.Cultures[ids[6]].ArrangementVariants[cityType].SequenceEqual(new[] { pack + "harbor-towns" }) &&
+    data.Cultures[ids[9]].Parent == ids[6] && data.LanguageParents[ids[10]] == ids[7] &&
+    data.Languages[ids[10]].GroupPreferences[pool].ContainsKey(pack + "coastal-islands"),
+    "The saved culture variant or language preference was lost.");
+
+var samples = new System.Collections.Generic.Dictionary<string, object> { ["landform"] = "coast" };
+var future = NamingApi.Current.Generate(new NameRequest(cityType, 12, ids[9], ids[10], samples));
+samples["landform"] = "island";
+var futureIsland = NamingApi.Current.Generate(new NameRequest(cityType, 12, ids[9], ids[10], samples));
+Check(future.Text?.EndsWith("港") == true && futureIsland.Text?.EndsWith("邑") == true,
+    "The restored culture and language cannot name both coastal and island towns.");
+return new { source = source.name, migrant = migrant.name, region = region.name, port = port.name,
+    island = island.name, book = book.name, war = war.name, nextPort = future.Text, nextIsland = futureIsland.Text, save };

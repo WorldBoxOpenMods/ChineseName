@@ -23,14 +23,14 @@ Config.paused = true;
 var actor = world.units.get(ids[0]);
 var culture = world.cultures.get(ids[1]);
 var city = world.cities.get(ids[2]);
-var cards = culture.getOnomasticData(MetaType.City);
-var order = new[] { "group_1", "chinesename_as_pool", "group_2" };
-Check(city?.name == "樱丘城" && actor?.language?.id == ids[4], "The saved name or the founder's language changed.");
-Check(cards.getFullTemplateData().SequenceEqual(order) && cards.getGroupString("group_1") == "和风地名主体" &&
-      cards.getGroupString("group_2") == "城", "The alias, glyph or hand-written suffix was lost.");
-
 var service = NamingApi.Current;
 var state = service.GetWorld();
+var edit = state.Cultures[culture.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith("worldbox:city/")).Value;
+var order = new[] { "group_1", "chinesename_as_pool", "group_2" };
+Check(city?.name == "樱丘城" && actor?.language?.id == ids[4], "The saved name or the founder's language changed.");
+Check(edit.Glyphs.SequenceEqual(order) && edit.Groups["group_1"] == "和风地名主体" &&
+      edit.Groups["group_2"] == "城", "The alias, glyph or hand-written suffix was lost.");
+
 var parent = state.Languages[ids[3]];
 var child = state.Languages[ids[4]];
 var preferences = child.GroupPreferences[pool];

@@ -49,7 +49,10 @@ public sealed partial class OnomasticsEditor
         return war == null ? null : SpriteTextureLoader.getSprite(war.path_icon);
     }
 
-    private Sprite FieldIcon(string field) => field switch
+    private Sprite ExtensionIcon(string field, string value = null) =>
+        NamingApi.Current.ConditionIcon(_type.Id, field, value) is { } path ? SpriteTextureLoader.getSprite(path) : null;
+
+    private Sprite FieldIcon(string field) => ExtensionIcon(field) ?? (field switch
     {
         "element" => SpriteTextureLoader.getSprite("ui/Icons/iconFire"),
         "form" => ConditionIcon("ball"),
@@ -61,6 +64,7 @@ public sealed partial class OnomasticsEditor
         "founder-surname" => GameIcon("iconFamilyList"),
         "founder-short" or "partner-short" => GameIcon("iconKingdomList"),
         "station" => GameIcon("iconCityList"),
+        PlaceNames.AuthorFoundingName or PlaceNames.SourceFoundingName => GameIcon("iconCityList"),
         "topic" => GameIcon("iconBooks"),
         "stage" or "equipment" or "material" => GameIcon("iconItemType"),
         "plot" => GameIcon("iconPlot"),
@@ -68,7 +72,7 @@ public sealed partial class OnomasticsEditor
         "kind" when _type.Id == "worldbox:motto" => GameIcon("iconDiplomacy"),
         "kind" when _type.Id == VanillaNames.Person => GameIcon("actor_traits/iconAttractive"),
         _ => ConditionIcon("term")
-    };
+    });
 
     private static Sprite GameIcon(string name) => SpriteTextureLoader.getSprite("ui/Icons/" + name);
 
@@ -79,7 +83,7 @@ public sealed partial class OnomasticsEditor
             return PresenceIcon(field, value == "present");
         if (value is "true" or "false") return PresenceIcon(field, value == "true");
 
-        var native = field switch
+        var native = ExtensionIcon(field, value) ?? (field switch
         {
             "sex" => GameIcon(value == "male" ? "iconMale" : "iconFemale"),
             "species" or VanillaNames.CultureSpecies => AssetManager.actor_library.get(value)?.getSpriteIcon(),
@@ -93,7 +97,7 @@ public sealed partial class OnomasticsEditor
                 "clan" => "iconClanList", "alliance" => "iconAlliance", _ => "iconKingdomList"
             }),
             _ => null
-        };
+        });
         if (native != null) return native;
 
         string prefix = "semantic." + field + ".";

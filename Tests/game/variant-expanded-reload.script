@@ -27,7 +27,8 @@ foreach (var line in await Load("variant-social"))
     var row = line.Split(' ');
     var culture = World.world.cultures.get(long.Parse(row[0]));
     var founder = World.world.units.get(long.Parse(row[1]));
-    Check(culture.getOnomasticData(MetaType.Language).getGroupString("group_2") == "话" &&
+    Check(NamingApi.Current.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Single(pair =>
+        pair.Key.StartsWith("worldbox:language/")).Value.Groups["group_2"] == "话" &&
         founder.language.id == long.Parse(row[2]), "The edited language cards did not survive.");
     var name = World.world.languages.newLanguage(founder, false).name;
     Check(name == row[3], "The saved arrangement now named a language " + name);
@@ -44,8 +45,9 @@ foreach (var line in await Load("variant-affairs"))
     var culture = world.cultures.get(cultureId);
     var founder = world.units.get(actorId);
     Check(world.wars.get(warId)?.name == row[4], "An already named war changed after reloading.");
-    var cards = service.GetWorld().Cultures[cultureId].Cards["worldbox:book"];
-    Check(cards.Enabled && cards.SourceRule != null, "The edited book cards lost their naming set binding.");
+    var bookEdit = service.GetWorld().Cultures[cultureId].DefaultArrangementEdits.Single(pair =>
+        pair.Key.StartsWith("worldbox:book/")).Value;
+    Check(bookEdit.Groups["group_2"] == "史略", "The edited book lost its suffix.");
     var inputs = new Dictionary<string, object> { ["topic"] = "warfare-manual", ["culture-species"] = culture.data.original_actor_asset };
     var result = service.Generate(new NameRequest("worldbox:book", 0, cultureId, languageId, inputs));
     Check(result.Text == "守城史略" && result.Diagnostics.Contains("原版命名学"), "Reload did not preserve the book edit.");

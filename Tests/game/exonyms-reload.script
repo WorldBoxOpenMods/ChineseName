@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
+
+const string rowId = "tests-player-exonym", type = "worldbox:war";
+const string originalTemplate = "\uE1290\uE1281|0:与;1:争衡";
+void Check(bool ok, string reason) { if (!ok) throw new InvalidOperationException(reason); }
+var output = new DirectoryInfo(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"));
+var runs = output.Parent.Parent;
+var files = Directory.EnumerateFiles(runs.FullName, "map.wbox", SearchOption.AllDirectories).ToArray();
+string original = files.Where(path => path.EndsWith("/exonyms/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).Last();
+string preserved = files.Where(path => path.EndsWith("/exonyms-without-addon/map.wbox")).OrderBy(path => path, StringComparer.Ordinal).LastOrDefault();
+bool installed = NeoModLoader.WorldBoxMod.LoadedMods.Any(mod => mod.GetDeclaration().UID == "CHINESENAME_CULTUREEXONYMS");
+string file = installed && preserved != null ? preserved : original;
+var ids = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(original), "ids.txt")).Select(long.Parse).ToArray();
+SaveManager.loadMapFromBytes(File.ReadAllBytes(file));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The exonym map did not reload.");
+Config.paused = true;
+var world = World.world;
+var foreign = world.cities.get(ids[0]);
+var home = world.cities.get(ids[1]);
+var author = world.units.get(ids[2]);
+var service = NamingApi.Current;
+bool HasField() => service.Types.Single(category => category.Id == type).Fields.ContainsKey("opponent-exonym");
+Check(installed == HasField() &&
+    installed == AssetManager.onomastics_library.dict.ContainsKey("chinesename:opponent-exonym") &&
+    installed == service.Packages.Contains("chinesename:local-exonyms"), "The snapshot did not switch all addon definitions together.");
+foreign.data.get("chinesename.exonyms.v1", out string saved);
+var aliases = JObject.Parse(saved);
+Check(foreign.name == "澄江" && foreign.kingdom.name == "松岭国" &&
+    (string)aliases[author.culture.id.ToString()]?["name"] == "澄江城" &&
+    (string)aliases[ids[3].ToString()]?["name"] == "澄江加德" &&
+    world.books.get(ids[4]).name == "澄江纪" && world.books.get(ids[5]).name == "澄江城纪" &&
+    world.wars.get(ids[6]).name == "临川国与松岭邦之战" &&
+    world.wars.get(ids[7]).name == "临川国与松岭邦争衡",
+    "The official names, aliases, or previously published books and wars changed after load.");
+var row = service.GetWorld().Cultures[author.culture.id].Arrangements[type].Single(item => item.Id == rowId);
+Check(row.Cards.Template == originalTemplate && row.Expression.Children.Any(clause => clause.Field == "opponent-exonym"),
+    "The world lost the saved glyph or condition.");
+
+var inputs = new Dictionary<string, object>
+{
+    ["kind"] = "normal", ["origin"] = "临川国", ["attacker"] = "临川国", ["defender"] = "松岭国"
+};
+if (installed) inputs.Add("opponent-exonym", "松岭邦");
+var result = service.Preview(new NameRequest(type, 0, author.culture.id, author.language.id, inputs));
+Check(result.Success && (installed ? result.Text == "临川国与松岭邦争衡" && result.ArrangementId == rowId :
+    result.ArrangementId != rowId && result.Failures.Any(failure => failure.ArrangementId == rowId &&
+        failure.Reason == NameFailureReason.MissingGlyph && failure.Reference == "U+E128")),
+    "Preview did not explain and skip the saved row when the addon glyph was missing.");
+
+var history = AssetManager.book_types.list.First(asset => asset.name_template == "book_name_history");
+var fresh = world.books.newObject();
+fresh.newBook(author, history, null, null, null, null);
+var war = world.wars.newWar(home.kingdom, foreign.kingdom, AssetManager.war_types_library.get("normal"));
+Check(fresh.name == (installed ? "澄江城纪" : "澄江纪") &&
+    (installed ? war.name == result.Text : war.name.StartsWith("临川国") && !war.name.Contains("松岭邦")),
+    "New books or wars did not use the active naming providers: " + fresh.name + " / " + war.name);
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+SelectedUnit.select(author);
+SelectedMetas.selected_culture = author.culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_war").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+window.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + rowId).onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+string issue = window.transform.FindRecursive("PreviewIssue")?.GetComponent<Text>()?.text;
+string EditedCityName() => service.Generate(new NameRequest("worldbox:city", 0, author.culture.id, author.language.id)).Text;
+if (installed)
+{
+    Check(tab.getOnomasticsData().getShortTemplate() == originalTemplate &&
+        window.transform.FindRecursive("PreviewName").GetComponent<Text>().text == "临川国与松岭邦争衡",
+        "The original editor did not restore the addon row's glyphs and condition.");
+    if (file == preserved)
+        Check(EditedCityName() == "青原城", "Reinstalling the addon overwrote a base arrangement edited in its absence.");
+}
+else
+{
+    Check(issue?.Contains("缺少字形 U+E128") == true, "The original editor did not identify the missing glyph: " + issue);
+    tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+    tab.loadTemplate("0|0:青原城");
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+    Check(tab.getOnomasticsData().getGroupString("group_1") == "青原城" && EditedCityName() == "青原城",
+        "The core editor could not save an unrelated city arrangement: " + EditedCityName());
+    var resident = world.units.createNewUnit("human", home.getTile(), pAdultAge: true);
+    resident.setCulture(foreign.culture);
+    resident.joinCity(home);
+    resident.data.get("chinesename.residence.v1", out string residence);
+    Check(residence == null, "The removed addon is still recording residence.");
+    world.units.checkContainer(); world.books.checkLists(); world.wars.checkLists();
+    SaveManager.saveWorldToDirectory(Path.Combine(output.FullName, "exonyms-without-addon"));
+}
+return new { installed, reopenedUninstalledSave = file == preserved, city = foreign.name, book = fresh.name,
+    war = war.name, existingBook = world.books.get(ids[5]).name, existingWar = world.wars.get(ids[7]).name, issue };

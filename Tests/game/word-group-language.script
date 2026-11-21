@@ -59,7 +59,9 @@ void Words(string group, string text)
     if (!tab.getOnomasticsData().getFullTemplateData().Contains(group))
         tab.clickAssetButton(button);
 }
-string LiveWords(Culture owner, string group) => owner.getOnomasticData(MetaType.City).getGroupString(group);
+DefaultArrangementEdit CityEdit(Culture owner) => service.GetWorld().Cultures[owner.id].DefaultArrangementEdits
+    .Single(pair => pair.Key.StartsWith(type + "/")).Value;
+string LiveWords(Culture owner, string group) => CityEdit(owner).Groups.TryGetValue(group, out var words) ? words : null;
 string Preview() => shell.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text;
 async System.Threading.Tasks.Task<string> PreviewIn(Language language)
 {
@@ -87,7 +89,7 @@ Check(cityRiver.name == first && cityHill.name == second,
 Words(suffix, "府 州 agafasa afakasa");
 for (int i = 0; i < 12; i++) await Game.NextFrame();
 string manualWords = LiveWords(culture, suffix);
-Check(culture.getOnomasticData(MetaType.City).isGroupEmpty(root) &&
+Check(string.IsNullOrEmpty(LiveWords(culture, root)) &&
     manualWords.Split(' ').ToHashSet().SetEquals(new[] { "府", "州", "agafasa", "afakasa" }),
     "The original input did not commit the mixed-script suffixes: " + manualWords);
 config = service.GetWorld();
@@ -116,10 +118,8 @@ Check(AssetManager.plots_library.get("culture_divide").action(founder), "The ori
 var branch = founder.culture;
 string branchWords = LiveWords(branch, suffix);
 Check(branch != culture && founder.language == dialect && LiveWords(culture, suffix) == manualWords &&
-    branch.getOnomasticData(MetaType.City).getFullTemplateData().SequenceEqual(new[] { root, suffix }) &&
-    branch.getOnomasticData(MetaType.City).isGroupEmpty(root) &&
-    branchWords.Split(' ').Where(word => word.Any(letter => letter > 127)).ToHashSet().SetEquals(new[] { "府", "州" }),
-    "The original culture plot did not copy the arrangement and retain the Chinese suffix words.");
+    CityEdit(branch).Glyphs.SequenceEqual(new[] { root, suffix }) && string.IsNullOrEmpty(LiveWords(branch, root)) &&
+    branchWords == manualWords, "The original culture plot did not retain the edited arrangement and its exact words.");
 Check(Enumerable.Range(1, 32).Select(seed => Generate(branch, dialect, (ulong)seed)).All(
     result => result.Success && branchWords.Split(' ').Contains(result.Parts[suffix])),
     "The derived culture did not generate from its own copied words.");

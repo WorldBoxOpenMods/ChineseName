@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Chinese_Name.Naming;
 using Chinese_Name.Naming.Game;
@@ -23,6 +24,7 @@ string Fireball(Actor actor = null) =>
 string originalName = Fireball();
 
 var world = World.world;
+Config.paused = true;
 var tile = world.tiles_list.First(candidate => candidate.Type.ground && candidate.zone.city == null);
 var otherTile = world.tiles_list.First(other => other.Type.ground && other.zone.city == null &&
     Math.Abs(other.x - tile.x) + Math.Abs(other.y - tile.y) > 40);
@@ -114,7 +116,12 @@ async System.Threading.Tasks.Task Set(string suffix)
     firstTab.loadTemplate(glyph + "4|4:" + suffix);
     await Frames();
 }
-ConditionalArrangement[] Saved() => service.GetWorld().Cultures[firstCulture.id].Arrangements[type].ToArray();
+ConditionalArrangement[] Saved()
+{
+    var edits = service.GetWorld().Cultures[firstCulture.id].ArrangementEdits[type];
+    var order = edits.Orders.Values.SingleOrDefault();
+    return order == null ? edits.Added.Values.ToArray() : order.Select(id => edits.Added[id]).ToArray();
+}
 
 async System.Threading.Tasks.Task ChoosePreset(string field, string value)
 {
@@ -166,4 +173,10 @@ Check(otherForm.Text == "火诀" && otherForm.Sources["element"].Reference == fi
     "A fire spell with a different form did not use the broader arrangement.");
 Check(Fireball(second) == secondBefore && Fireball() == originalName,
     "This culture's conditions leaked into another culture or into a shared spell.");
-return new { fireBall = Fireball(first), otherForm = otherForm.Text, secondCulture = Fireball(second), rows = Saved().Length };
+world.units.checkContainer();
+world.cities.checkLists(); world.kingdoms.checkLists();
+var save = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "conditional-cultiway");
+SaveManager.saveWorldToDirectory(save);
+File.WriteAllLines(Path.Combine(save, "expected.txt"), new[] { first.id.ToString(), second.id.ToString(),
+    secondLanguage.id.ToString(), Fireball(second), ballId, broadId });
+return new { fireBall = Fireball(first), otherForm = otherForm.Text, secondCulture = Fireball(second), rows = Saved().Length, save };

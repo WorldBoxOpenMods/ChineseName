@@ -134,7 +134,7 @@ shell.scrollRect.verticalNormalizedPosition = 1;
 await Frames(8);
 var edited = tab.getOnomasticsData().getShortTemplate();
 Check(edited == expected[3].Replace(";1:湾", ";1:港") &&
-    service.GetWorld().Cultures[culture.id].Cards["worldbox:city"].Enabled, "The native editor did not apply changes.");
+    service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Keys.Any(key => key.StartsWith("worldbox:city/")), "The native editor did not apply changes.");
 await Mouse("move", shell.GetComponentsInChildren<Text>().First(item => item.name == "PreviewName"));
 var preview = shell.GetComponentsInChildren<Text>().First(item => item.name == "PreviewName").text;
 Check(places.Any(root => preview == root + "港"), "The edited preview ignored the imported vocabulary.");

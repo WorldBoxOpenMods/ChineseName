@@ -1,0 +1,221 @@
+{
+  "format": 1,
+  "id": "chinesename:nordic-geography",
+  "label": "北欧沿革",
+  "supplemental": true,
+  "requires": {
+    "chinesename:world-nordic-set": 1,
+    "chinesename:species-lexicon": 1
+  },
+  "cultureBases": [
+    "chinesename:world-nordic-set"
+  ],
+  "cultureVariants": {
+    "nordic-harbor": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "arrangement": {
+        "id": "nordic-harbor",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/world-styles-lexicon.nordic.city;1:维克",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "nordic-harbor-cats": {
+      "type": "worldbox:city",
+      "landforms": [
+        "coast",
+        "peninsula"
+      ],
+      "species": [
+        "cat",
+        "civ_cat"
+      ],
+      "arrangement": {
+        "id": "nordic-harbor-cats",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "coast",
+                "peninsula"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "cat",
+                "civ_cat"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/species-lexicon.cat.place;1:维克",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "nordic-island": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "arrangement": {
+        "id": "nordic-island",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/world-styles-lexicon.nordic.city;1:霍尔姆",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    },
+    "nordic-island-cats": {
+      "type": "worldbox:city",
+      "landforms": [
+        "island",
+        "archipelago"
+      ],
+      "species": [
+        "cat",
+        "civ_cat"
+      ],
+      "arrangement": {
+        "id": "nordic-island-cats",
+        "expression": {
+          "children": [
+            {
+              "field": "landform",
+              "test": "Equal",
+              "values": [
+                "island",
+                "archipelago"
+              ]
+            },
+            {
+              "field": "culture-species",
+              "test": "Equal",
+              "values": [
+                "cat",
+                "civ_cat"
+              ]
+            }
+          ]
+        },
+        "cards": {
+          "enabled": true,
+          "template": "01|0:chinesename/species-lexicon.cat.place;1:霍尔姆",
+          "roles": {
+            "group_1": "name"
+          }
+        }
+      }
+    }
+  },
+  "wordGroups": {
+    "cat-harbors": {
+      "pool": "chinesename:species-lexicon.cat.place",
+      "words": [
+        "chinesename:species-lexicon.w-00867b38a3e5d3b6ba28",
+        "chinesename:species-lexicon.w-f68db2f25ad85398b2e9",
+        "chinesename:species-lexicon.w-30a9d72c40b324124b45",
+        "chinesename:species-lexicon.w-3edd6e04b9e9e1d873cb"
+      ],
+      "landforms": [
+        "coast",
+        "peninsula"
+      ]
+    },
+    "cat-islands": {
+      "pool": "chinesename:species-lexicon.cat.place",
+      "words": [
+        "chinesename:species-lexicon.w-6bccfe63329e6ed8c43d",
+        "chinesename:species-lexicon.w-934a617ce8b541dd32fc",
+        "chinesename:species-lexicon.w-77626cb46351eaee9caf",
+        "chinesename:species-lexicon.w-bc6226bc501d5a42acd5"
+      ],
+      "landforms": [
+        "island",
+        "archipelago"
+      ]
+    }
+  },
+  "rules": {
+    "chinesename:exonym": [
+      {
+        "id": "nordic-city",
+        "priority": 20,
+        "when": {
+          "kind": "city"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "加德"
+          }
+        ]
+      },
+      {
+        "id": "nordic-realm",
+        "priority": 20,
+        "when": {
+          "kind": "kingdom"
+        },
+        "parts": [
+          {
+            "id": "name",
+            "input": "name"
+          },
+          {
+            "id": "title",
+            "literal": "领"
+          }
+        ]
+      }
+    ]
+  }
+}

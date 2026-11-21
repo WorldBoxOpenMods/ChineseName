@@ -40,6 +40,13 @@ internal static class NativeNamingTab
         BoundDraftGroups.Remove(key);
     }
 
+    internal static void ForgetDrafts(Func<long, string, bool> matches)
+    {
+        Sync();
+        foreach ((long culture, string type) in Drafts.Keys.Where(key => matches(key.Item1, key.Item2)).ToArray())
+            ForgetDraft(culture, type);
+    }
+
     internal static IEnumerable<(long Culture, string Type, string Template)> ChangedDrafts()
     {
         Sync();
@@ -58,24 +65,14 @@ internal static class NativeNamingTab
             template != original);
     }
 
-    private static string Category(string type)
-    {
-        if (NativeOnomastics.Meta(type) is MetaType meta) return "tab_onomastics_" + meta.ToString().ToLowerInvariant();
-        return NativeOnomastics.AdditionalCategories.Any(category => category.Type == type)
-            ? "tab_onomastics_" + type.Substring("worldbox:".Length)
-            : ModCategoryPrefix + type;
-    }
+    private static string ButtonId(string type, NamingService.CultureTab tab) => tab.Id ?? ModCategoryPrefix + type;
 
     internal static string CurrentType(OnomasticsTab tab)
     {
         if (tab._name_set_type != MetaType.None) return NativeOnomastics.Type(tab._name_set_type);
         string button = tab._tab_groups.getCurrentButton()?.name;
-        if (button?.StartsWith(ModCategoryPrefix, StringComparison.Ordinal) == true)
-        {
-            string type = button.Substring(ModCategoryPrefix.Length);
-            return NamingApi.Current.CultureOnomastics.ContainsKey(type) ? type : null;
-        }
-        return NativeOnomastics.AdditionalCategories.FirstOrDefault(category => Category(category.Type) == button).Type;
+        return NamingApi.Current.CultureOnomastics
+            .FirstOrDefault(category => ButtonId(category.Key, category.Value) == button).Key;
     }
 
     [HarmonyPatch(typeof(OnomasticsTab), nameof(OnomasticsTab.showCategoryGroups))]
@@ -83,35 +80,20 @@ internal static class NativeNamingTab
     {
         private static void Postfix(OnomasticsTab __instance)
         {
-            Add(MetaType.Culture, "文化名称");
-            Add(MetaType.Language, "语言名称");
-            Add(MetaType.Religion, "宗教名称");
             var group = __instance._tab_groups;
-            var service = NamingApi.Current;
-            var types = service.Types.ToDictionary(type => type.Id);
-            var categories = NativeOnomastics.AdditionalCategories.Select(category =>
-                (category.Type, Icon: "ui/Icons/" + category.Icon, category.Description)).Concat(
-                service.CultureOnomastics.OrderBy(entry => entry.Key, StringComparer.Ordinal)
-                    .Where(entry => NativeOnomastics.Meta(entry.Key) == null && Category(entry.Key).StartsWith(ModCategoryPrefix, StringComparison.Ordinal))
-                    .Select(entry => (Type: entry.Key, entry.Value.Icon, entry.Value.Description)));
+            var categories = NamingApi.Current.CultureOnomastics
+                .OrderBy(category => category.Value.Order).ThenBy(category => category.Key, StringComparer.Ordinal);
             foreach (var category in categories)
             {
-                string key = Category(category.Type);
-                LM.AddToCurrentLocale(key, types[category.Type].Label);
-                LM.AddToCurrentLocale(key + "_description", category.Description);
-                group.tryAddButton(category.Icon, key, __instance.loadNameSet,
-                    () => __instance._name_set_type = MetaType.None);
+                var native = NativeOnomastics.Meta(category.Key);
+                if (native.HasValue && category.Value.Id == null) continue;
+                string key = ButtonId(category.Key, category.Value);
+                LM.AddToCurrentLocale(key, category.Value.Label);
+                LM.AddToCurrentLocale(key + "_description", category.Value.Description);
+                group.tryAddButton(category.Value.Icon, key, __instance.loadNameSet,
+                    () => __instance._name_set_type = native ?? MetaType.None);
             }
             FitCategories(group);
-
-            void Add(MetaType type, string label)
-            {
-                string tab = Category(NativeOnomastics.Type(type));
-                LM.AddToCurrentLocale(tab, label);
-                LM.AddToCurrentLocale(tab + "_description", "编辑本文化生成" + label + "的规则。");
-                __instance._tab_groups.tryAddButton("ui/Icons/icon" + type, tab, __instance.loadNameSet,
-                    () => __instance._name_set_type = type);
-            }
         }
 
         private static void FitCategories(TabTogglesGroup group)
@@ -193,11 +175,12 @@ internal static class NativeNamingTab
         {
             var applied = NativeOnomastics.Selection(NamingApi.Current.ActiveWorld, culture, id);
             var saved = reset ? null : NativeOnomastics.Selection(WorldNamingStore.GetSavedDraft(), culture, id)?.DraftTemplate;
-            existing = saved == null ? NativeOnomastics.Read(culture, id, applied, reset) : NativeOnomastics.Parse(saved);
+            var restoredDraft = saved == null ? null : NativeNamingArrangement.ReadTemplate(saved);
+            existing = restoredDraft ?? NativeOnomastics.Read(culture, id, applied, reset);
             Drafts[key] = existing;
             if (!reset)
             {
-                using var stored = saved == null ? null : NativeOnomastics.Read(culture, id, applied);
+                using var stored = restoredDraft == null ? null : NativeOnomastics.Read(culture, id, applied);
                 Originals[key] = (stored ?? existing).getShortTemplate();
             }
         }

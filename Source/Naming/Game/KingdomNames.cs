@@ -27,6 +27,11 @@ internal static class KingdomNames
             kingdom.data.get(ShortName, out string shortName);
             if (name == full && !string.IsNullOrWhiteSpace(shortName)) return shortName;
         }
+        return WithoutTitle(name);
+    }
+
+    private static string WithoutTitle(string name)
+    {
         name = name.Trim();
         foreach (string suffix in Titles)
         {
@@ -39,19 +44,42 @@ internal static class KingdomNames
     internal static string Generate(Kingdom kingdom, Actor source, long seed, long? culture = null,
         long? language = null, Func<string, bool> accept = null)
     {
+        var naming = Calculate(Request(kingdom, source, seed, culture, language), request => NamingApi.Current.Generate(request, accept));
+        if (naming == null) return null;
+        Save(kingdom, naming);
+        return naming.Text;
+    }
+
+    internal sealed class Calculated(string text, string root)
+    {
+        internal string Text { get; } = text;
+        internal string Root { get; } = root;
+        internal string Short => Root ?? WithoutTitle(Text);
+    }
+
+    internal static NameRequest Request(Kingdom kingdom, Actor source, long seed, long? culture, long? language)
+    {
         var inputs = new Dictionary<string, object>();
         if (kingdom.data.original_actor_asset is string species)
             inputs["species"] = inputs[VanillaNames.CultureSpecies] = species;
-        var request = VanillaNames.Request(VanillaNames.Kingdom, source, unchecked((ulong)seed),
+        return VanillaNames.Request(VanillaNames.Kingdom, source, unchecked((ulong)seed),
             culture: culture, language: language, inputs: inputs);
-        var result = NamingApi.Current.Generate(request, accept);
+    }
+
+    internal static Calculated Calculate(NameRequest request, Func<NameRequest, NameResult> generate)
+    {
+        var result = generate(request);
         if (!result.Success) return null;
         string shortName = result.Parts.TryGetValue("suffix", out string suffix) && !string.IsNullOrWhiteSpace(suffix) &&
             result.Parts.TryGetValue("name", out string root) && !string.IsNullOrWhiteSpace(root) && root != result.Text
             ? root : null;
-        kingdom.data.set(FullName, shortName == null ? null : result.Text);
-        kingdom.data.set(ShortName, shortName);
-        return result.Text;
+        return new Calculated(result.Text, shortName);
+    }
+
+    internal static void Save(Kingdom kingdom, Calculated naming)
+    {
+        kingdom.data.set(FullName, naming.Root == null ? null : naming.Text);
+        kingdom.data.set(ShortName, naming.Root);
     }
 
     [HarmonyPatch(typeof(Kingdom), nameof(Kingdom.newCivKingdom))]

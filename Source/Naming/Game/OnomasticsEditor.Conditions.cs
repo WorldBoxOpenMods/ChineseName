@@ -350,37 +350,21 @@ public sealed partial class OnomasticsEditor
     private NameRequest Scenario(ConditionalArrangement arrangement, out bool matches)
     {
         var service = NamingApi.Current;
-        var inputs = _type.Fields.Values.Select(field => (field.Id, Value: _page.Samples.TryGetValue(field.Id, out var sample)
-            ? ArrangementExamples.Input(field, sample) : field.Example)).Where(pair => pair.Value != null).ToDictionary(pair => pair.Id, pair => pair.Value);
+        var inputs = PreviewInputs(_type, _page);
         matches = ArrangementExamples.TryApply(service, _type, arrangement, inputs);
-        switch (_type.Id)
-        {
-            case "worldbox:book" when inputs.TryGetValue("topic", out var topic):
-                inputs["kind"] = "book_name_" + ((string)topic).Replace('-', '_');
-                break;
-            case VanillaNames.Plot when inputs.TryGetValue("plot", out var plot):
-                inputs["kind"] = ((string)plot).Replace('-', '_');
-                break;
-            case VanillaNames.Alliance:
-                if (inputs.ContainsKey("founder-short") && inputs.ContainsKey("partner-short")) inputs["kind"] = "founding-pair";
-                else inputs.Remove("kind");
-                break;
-            case "worldbox:item" when inputs.TryGetValue("stage", out var stage):
-                if (Equals(stage, "reforge")) inputs["kind"] = stage;
-                else if (inputs.TryGetValue("equipment", out var equipment)) inputs["kind"] = ((string)equipment).Replace('-', '_');
-                break;
-        }
+        service.PrepareExample(_type.Id, inputs);
         if (_type.Id == VanillaNames.War && inputs.TryGetValue("kind", out var war) && Equals(war, "spite") &&
             inputs.TryGetValue("defender", out var defender))
         {
             inputs.Remove("defender");
             if (matches && !service.MatchesExpression(arrangement, Request())) inputs["defender"] = defender;
         }
-        var request = Request();
-        matches = matches && service.MatchesExpression(arrangement, request);
-        return request;
+        var sample = Request();
+        var prepared = service.PrepareContext(sample);
+        matches = matches && prepared != null && service.MatchesExpression(arrangement, prepared);
+        return prepared ?? sample;
 
-        NameRequest Request() => new(_type.Id, _page.Seed, _culture.id, _page.ReferenceLanguage, inputs);
+        NameRequest Request() => PreviewRequest(_type, _culture, _page, inputs);
     }
 
     private string ConditionalPreviewNotice(NameResult result)
@@ -390,8 +374,7 @@ public sealed partial class OnomasticsEditor
         if (_editingArrangement is { IsConfigured: false }) return "设置好条件后将参与取名";
         if (_editingArrangement?.Disabled == true) return "此排列已停用";
         if (_editingArrangement != null && !_previewMatchesExpression) return "未找到符合此条件的预览情境";
-        const string prefix = "排列:";
-        string id = result?.Diagnostics.FirstOrDefault(item => item.StartsWith(prefix, StringComparison.Ordinal))?.Substring(prefix.Length);
+        string id = result?.ArrangementId;
         if (id == _editingArrangement?.Id) return null;
         return "此情境使用「" + ArrangementLabel(Arrangements.FirstOrDefault(item => item.Id == id)) + "」";
     }

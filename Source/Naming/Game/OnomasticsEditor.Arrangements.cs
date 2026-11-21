@@ -202,7 +202,7 @@ public sealed partial class OnomasticsEditor
     {
         var expression = item.Expression;
         if (_type.Id != VanillaNames.War || expression.Any || expression.Negated) return null;
-        var kind = expression.Children.FirstOrDefault(term => !term.Negated && term.Field == "kind" &&
+        var kind = expression.Children?.FirstOrDefault(term => !term.Negated && term.Field == "kind" &&
             term.Test is ArrangementTest.Equal or ArrangementTest.Registered && term.Values.Count == 1);
         if (kind == null) return null;
         return WarConditionIcon(kind.Values[0]);
@@ -212,8 +212,14 @@ public sealed partial class OnomasticsEditor
     {
         if (_editingArrangement?.Id == arrangement?.Id) return;
         if (_commitPending) Render();
-        var data = arrangement == null ? null : NativeNamingArrangement.ReadPackaged(_type.Id, arrangement.Cards);
-        if (arrangement != null && data == null) throw new InvalidOperationException("当前排列所需的字形不可用。");
+        OnomasticsData data = null;
+        if (arrangement != null)
+        {
+            data = NativeNamingArrangement.ReadPackaged(_type.Id, arrangement.Cards, out var failure);
+            if (data == null)
+                throw new InvalidOperationException(failure.Reason == NameFailureReason.MissingGlyph
+                    ? "当前排列缺少字形 " + failure.Reference : failure.Reference ?? "当前排列不可用。");
+        }
         ClearConditionalDraft();
         CloseConditionEditor();
         _editingArrangement = arrangement;
@@ -259,17 +265,37 @@ public sealed partial class OnomasticsEditor
         if (_editingArrangement?.Id == item.Id) _editingArrangement = item;
     }
 
-    private void PersistArrangements(List<ConditionalArrangement> arrangements)
+    private void PersistArrangements(List<ConditionalArrangement> arrangements, bool reorder = false)
     {
         var service = NamingApi.Current;
-        var world = service.GetWorld();
-        if (!world.Cultures.TryGetValue(_culture.id, out var settings))
-            world.Cultures[_culture.id] = settings = new CultureNaming();
-        settings.Arrangements[_type.Id] = arrangements;
-        WorldNamingStore.Apply(world);
-        DraftCulture(_culture.id).Arrangements[_type.Id] = arrangements;
+        var world = service.ActiveWorld;
+        var settings = world.Cultures.TryGetValue(_culture.id, out var previous) ? NamingJson.Copy(previous) : new CultureNaming();
+        var request = new NameRequest(_type.Id, 0, _culture.id, _page.ReferenceLanguage);
+        var draft = DraftCulture(_culture.id);
+        if (settings.Arrangements.ContainsKey(_type.Id))
+        {
+            // 旧档中整套覆盖的排列继续保留原有含义。
+            settings.Arrangements[_type.Id] = arrangements;
+            draft.Arrangements[_type.Id] = NamingJson.Copy(arrangements);
+        }
+        else
+        {
+            if (!settings.ArrangementEdits.TryGetValue(_type.Id, out var edits)) edits = new ArrangementEdits();
+            edits.Update(service.Inspect(request, world), arrangements, reorder);
+            if (edits.IsEmpty)
+            {
+                settings.ArrangementEdits.Remove(_type.Id);
+                draft.ArrangementEdits.Remove(_type.Id);
+            }
+            else
+            {
+                settings.ArrangementEdits[_type.Id] = edits;
+                draft.ArrangementEdits[_type.Id] = NamingJson.Copy(edits);
+            }
+        }
+        WorldNamingStore.SetCulture(_culture.id, settings);
         _applied = service.ActiveWorld;
-        _page.Effective.Arrangements = arrangements;
+        _page.Effective = service.Inspect(request, _applied);
         if (WorldNamingStore.HasSavedDraft()) SavePartsDraft();
     }
 
@@ -296,7 +322,7 @@ public sealed partial class OnomasticsEditor
         if (_page.PreviewRevision != _page.RenderedRevision)
         {
             _page.RenderedRevision = _page.PreviewRevision;
-            CollectPreview(service, request, service.ActiveWorld, null, _page);
+            CollectPreview(service, request, service.ActiveWorld, _page);
         }
         _page.Effective = service.Inspect(request, service.ActiveWorld);
         UpdatePalette();
@@ -335,7 +361,7 @@ public sealed partial class OnomasticsEditor
             var moving = items[from];
             items.RemoveAt(from);
             items.Insert(to, moving);
-            PersistArrangements(items);
+            PersistArrangements(items, reorder: true);
         });
     }
 }

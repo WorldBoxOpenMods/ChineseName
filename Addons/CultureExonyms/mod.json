@@ -1,0 +1,8 @@
+{
+  "name": "中文名 · 文化外称",
+  "author": "ChineseName",
+  "version": "1.0.0",
+  "GUID": "ChineseName.CultureExonyms",
+  "Dependencies": ["CHINESENAME"],
+  "description": "让通商与共居形成文化外称，供战争和史书命名使用。"
+}

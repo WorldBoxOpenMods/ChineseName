@@ -36,3 +36,7 @@ if __name__ == "__main__":
     packs = sorted((ROOT / "Examples/Packages").glob("*.naming.json"))
     build(args.output / "ChineseName.zip", "ChineseName", ROOT, mod_entries,
           ((pack, "Content/NamingPacks/" + pack.name) for pack in packs))
+    build(args.output / "ChineseName-CultureExonyms.zip", "ChineseName-CultureExonyms",
+          ROOT / "Addons/CultureExonyms", ("Source", "Content", "mod.json", "LICENSE"))
+    build(args.output / "ChineseName-HistoryEvents.zip", "ChineseName-HistoryEvents",
+          ROOT / "Addons/HistoryEvents", ("Source", "Content", "mod.json", "LICENSE"))

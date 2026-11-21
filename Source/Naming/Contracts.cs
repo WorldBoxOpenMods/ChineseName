@@ -7,8 +7,13 @@ using System.Text.RegularExpressions;
 namespace Chinese_Name.Naming;
 
 public enum InputKind { Text, Integer, Flag }
-public enum GenerationStatus { Success, UnknownType, InvalidInput, NoRule, Exhausted }
+public enum GenerationStatus { Success, UnknownType, InvalidInput, NoRule, Exhausted, ContextError }
 public enum NameWriting { Original, Chinese }
+public enum NameFailureReason
+{
+    MissingGlyph, MissingInput, MissingVocabulary, AmbiguousVocabulary, EmptyVocabulary, UnavailableRule,
+    InvalidArrangement, InvalidResult, Rejected
+}
 
 public sealed class InputField
 {
@@ -68,6 +73,8 @@ public sealed class NameType
 
 public sealed class NameRequest
 {
+    internal const string SurnamePart = "surname";
+
     public NameRequest(string type, ulong seed, long? culture = null, long? language = null,
         IReadOnlyDictionary<string, object> inputs = null, IReadOnlyDictionary<string, string> fixedParts = null,
         NameWriting? writing = null)
@@ -89,6 +96,57 @@ public sealed class NameRequest
     // An empty string is an explicit decision to omit the part.
     public IReadOnlyDictionary<string, string> FixedParts { get; }
     public NameWriting? Writing { get; }
+    internal string FatherSurname { get; private set; }
+    internal string MotherSurname { get; private set; }
+    internal NamingService ContextOwner { get; private set; }
+
+    /// <summary>Provide known parental surnames for candidates that use surname inheritance.</summary>
+    public NameRequest WithParentSurnames(string father, string mother)
+    {
+        if (father == FatherSurname && mother == MotherSurname) return this;
+        if (father != null && !Ids.Text(father, 128)) throw new ArgumentException("Invalid surname.", nameof(father));
+        if (mother != null && !Ids.Text(mother, 128)) throw new ArgumentException("Invalid surname.", nameof(mother));
+        return WithSeed(Seed, father, mother);
+    }
+
+    internal NameRequest WithSeed(ulong seed) => WithSeed(seed, FatherSurname, MotherSurname);
+
+    private NameRequest WithSeed(ulong seed, string father, string mother) =>
+        new NameRequest(this, seed)
+        {
+            FatherSurname = father,
+            MotherSurname = mother
+        };
+
+    private NameRequest(NameRequest source, ulong seed)
+    {
+        Type = source.Type;
+        Seed = seed;
+        Culture = source.Culture;
+        Language = source.Language;
+        Inputs = source.Inputs;
+        FixedParts = source.FixedParts;
+        Writing = source.Writing;
+        ContextOwner = source.ContextOwner;
+    }
+
+    internal NameRequest WithPreparedInputs(NamingService service, IReadOnlyDictionary<string, object> inputs) =>
+        new NameRequest(Type, Seed, Culture, Language, inputs, FixedParts, Writing)
+        {
+            FatherSurname = FatherSurname,
+            MotherSurname = MotherSurname,
+            ContextOwner = service
+        };
+
+    internal string ResolveSurname(SurnameOrder order)
+    {
+        if (FixedParts.TryGetValue(SurnamePart, out string value)) return value;
+        if (order == SurnameOrder.New) return null;
+        bool motherFirst = order == SurnameOrder.Mother || order == SurnameOrder.Random && new NamingRandom(Seed).Next() < 0.5;
+        var first = motherFirst ? MotherSurname : FatherSurname;
+        var second = motherFirst ? FatherSurname : MotherSurname;
+        return !string.IsNullOrEmpty(first) ? first : string.IsNullOrEmpty(second) ? null : second;
+    }
 
     private static IReadOnlyDictionary<string, T> Copy<T>(IReadOnlyDictionary<string, T> source) =>
         new ReadOnlyDictionary<string, T>((source ?? new Dictionary<string, T>())
@@ -99,9 +157,10 @@ internal sealed class CultureNameGlyph
 {
     internal readonly string Type, Id, Field, Label, Icon, PoolPrefix, Description, FallbackPool;
     internal readonly char ShortCode;
+    internal readonly bool PublishedLocalId;
 
     internal CultureNameGlyph(string type, string id, char shortCode, string field, string label, string icon,
-        string poolPrefix, string description, string fallbackPool = null)
+        string poolPrefix, string description, string fallbackPool = null, bool publishedLocalId = false)
     {
         Type = type;
         Id = id;
@@ -112,6 +171,7 @@ internal sealed class CultureNameGlyph
         PoolPrefix = poolPrefix;
         Description = description;
         FallbackPool = fallbackPool;
+        PublishedLocalId = publishedLocalId;
     }
 }
 
@@ -119,7 +179,8 @@ public sealed class NameResult
 {
     internal NameResult(GenerationStatus status, string text, Dictionary<string, string> parts,
         IEnumerable<string> diagnostics, IEnumerable<string> partOrder = null,
-        Dictionary<string, NamePartSource> sources = null, string separator = null, IReadOnlyList<string> cardBranch = null)
+        Dictionary<string, NamePartSource> sources = null, string separator = null, IReadOnlyList<string> cardBranch = null,
+        string ruleId = null, string arrangementId = null)
     {
         Status = status;
         Text = text;
@@ -129,6 +190,8 @@ public sealed class NameResult
         Sources = new ReadOnlyDictionary<string, NamePartSource>(sources ?? new Dictionary<string, NamePartSource>());
         Separator = separator;
         CardBranch = cardBranch;
+        RuleId = ruleId;
+        ArrangementId = arrangementId;
     }
 
     public GenerationStatus Status { get; }
@@ -136,10 +199,35 @@ public sealed class NameResult
     public string Text { get; }
     public IReadOnlyDictionary<string, string> Parts { get; }
     public IReadOnlyList<string> PartOrder { get; }
-    public IReadOnlyList<string> Diagnostics { get; }
+    public IReadOnlyList<string> Diagnostics { get; private set; }
     public IReadOnlyDictionary<string, NamePartSource> Sources { get; }
+    public string RuleId { get; }
+    public string ArrangementId { get; }
+    public IReadOnlyList<NameFailure> Failures { get; private set; } = Array.Empty<NameFailure>();
     internal string Separator { get; }
     internal IReadOnlyList<string> CardBranch { get; }
+
+    internal void SetFailures(IEnumerable<NameFailure> failures, bool nativeFallback)
+    {
+        Failures = Array.AsReadOnly(failures.ToArray());
+        if (nativeFallback) Diagnostics = Array.AsReadOnly(Diagnostics.Append("中文规则回退").Distinct().ToArray());
+    }
+}
+
+public sealed class NameFailure
+{
+    internal NameFailure(string ruleId, string arrangementId, NameFailureReason reason, string reference)
+    {
+        RuleId = ruleId;
+        ArrangementId = arrangementId;
+        Reason = reason;
+        Reference = reference;
+    }
+
+    public string RuleId { get; }
+    public string ArrangementId { get; }
+    public NameFailureReason Reason { get; }
+    public string Reference { get; }
 }
 
 public sealed class NamePartSource

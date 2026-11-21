@@ -137,7 +137,8 @@ Check(Preview().text == "樱丘城", "The original alias arrangement did not res
 File.Delete(PackagePath(wafuu.Path));
 Check(WorldNamingStore.ReloadPacks().Count == 0 && CityName(home) == original && city.name == "樱丘城",
     "Removing the word pack did not fall back while retaining the existing name.");
-Check(culture.getOnomasticData(MetaType.City).getShortTemplate() == originalArrangement,
+Check(service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Single(pair =>
+    pair.Key.StartsWith("worldbox:city/")).Value.Groups["group_1"] == "和风地名主体",
     "Removing the pack discarded the stored alias.");
 File.Copy(wafuu.Path, PackagePath(wafuu.Path));
 Check(WorldNamingStore.ReloadPacks().Count == 0 && CityName(home) == "樱丘城",

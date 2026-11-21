@@ -15,6 +15,18 @@ internal static class AllianceNames
     internal static string Generate(Alliance alliance, Kingdom founder = null, Kingdom partner = null,
         Func<string, bool> accept = null)
     {
+        return Calculate(Request(alliance, founder, partner), request => NamingApi.Current.Generate(request, accept), accept);
+    }
+
+    internal static string Calculate(NameRequest request, Func<NameRequest, NameResult> generate, Func<string, bool> accept)
+    {
+        var result = generate(request);
+        return result.Success ? result.Text : accept == null || accept("同盟") ? "同盟" : null;
+    }
+
+    internal static NameRequest Request(Alliance alliance, Kingdom founder = null, Kingdom partner = null,
+        IReadOnlyDictionary<long, KingdomNames.Calculated> projected = null)
+    {
         var world = World.world;
         var data = alliance.data;
         string savedFounder = data.founder_kingdom_name;
@@ -33,12 +45,16 @@ internal static class AllianceNames
             partner = members.Where(member => member != founder).OrderBy(member => member.id).FirstOrDefault();
 
         var inputs = new Dictionary<string, object>();
-        string founderName = founder?.name;
+        var newFounder = Planned(founder);
+        string founderName = newFounder?.Text ?? founder?.name;
         Add("origin", string.IsNullOrWhiteSpace(founderName) ? savedFounder : founderName);
-        Add("founder-short", KingdomNames.Short(founder, savedFounder));
-        Add("partner-short", KingdomNames.Short(partner, savedPartner));
-        string kind = inputs.ContainsKey("founder-short") && inputs.ContainsKey("partner-short") ? "founding-pair" : null;
-        return IndependentNames.FromKingdom(VanillaNames.Alliance, founder, alliance.id, kind, inputs, accept) ?? "同盟";
+        Add("founder-short", newFounder?.Short ?? KingdomNames.Short(founder, savedFounder));
+        Add("partner-short", Planned(partner)?.Short ?? KingdomNames.Short(partner, savedPartner));
+        return VanillaNames.Request(VanillaNames.Alliance, founder?.king, unchecked((ulong)IndependentNames.Seed(alliance.id)),
+            culture: founder?.culture?.id, language: founder?.language?.id, inputs: inputs);
+
+        KingdomNames.Calculated Planned(Kingdom kingdom) =>
+            kingdom != null && projected?.TryGetValue(kingdom.id, out var name) == true ? name : null;
 
         void Add(string field, string value)
         {

@@ -6,6 +6,10 @@ namespace Chinese_Name.Naming.Game;
 
 internal static class NativeNamingArrangement
 {
+    internal static readonly ArrangementCodec Codec = new(
+        code => AssetManager.onomastics_library.getByShortId(code)?.id,
+        id => AssetManager.onomastics_library.dict.TryGetValue(id, out var glyph) ? glyph.short_id.ToString() : null);
+
     internal static bool Visible(Part part) => part.Chance != 0 && part.Literal != "";
 
     // 部件必须能无损对应到游戏实际执行的字形。
@@ -14,19 +18,60 @@ internal static class NativeNamingArrangement
     internal static string[] Default(string type, Rule rule, out Dictionary<string, string> roles) =>
         Default(type, rule, out roles, out _, null);
 
-    internal static OnomasticsData ReadPackaged(string type, CardNaming cards)
+    internal static OnomasticsData ReadPackaged(string type, CardNaming cards) =>
+        ReadPackaged(type, cards, out _);
+
+    internal static OnomasticsData ReadPackaged(string type, CardNaming cards,
+        out (NameFailureReason Reason, string Reference) failure, string template = null)
     {
+        failure = (NameFailureReason.InvalidArrangement, null);
         if (cards == null) return null;
+        var data = ReadTemplate(template ?? cards.Template, out failure);
+        if (data == null) return null;
+        try
+        {
+            NativeOnomastics.Validate(data, type, cards);
+            return data;
+        }
+        catch (InvalidOperationException error)
+        {
+            data.Dispose();
+            failure = (NameFailureReason.InvalidArrangement, error.Message);
+            return null;
+        }
+    }
+
+    internal static OnomasticsData ReadTemplate(string template) => ReadTemplate(template, out _);
+
+    internal static void ReplaceData(OnomasticsData target, OnomasticsData source)
+    {
+        target.setTemplateData(source.getFullTemplateData());
+        target.groups.Clear();
+        foreach (var group in source.groups) target.setGroup(group.Key, group.Value.characters_string);
+    }
+
+    private static OnomasticsData ReadTemplate(string template, out (NameFailureReason Reason, string Reference) failure)
+    {
+        failure = (NameFailureReason.InvalidArrangement, null);
         var data = new OnomasticsData();
         try
         {
-            data.loadFromShortTemplate(cards.Template);
-            NativeOnomastics.Validate(data, type, cards);
+            data.loadFromShortTemplate(template);
             return data;
         }
         catch (Exception error) when (error is ArgumentException or InvalidOperationException)
         {
+            failure = (NameFailureReason.InvalidArrangement, error.Message);
             data.Dispose();
+            var layout = template?.Trim('\n', '\r', ' ', '"', '`').Split('|');
+            if (layout?.Length == 2)
+            {
+                var library = AssetManager.onomastics_library;
+                var tokens = layout[0].Select(code => code.ToString()).Concat(layout[1].Split(';')
+                    .Select(group => group.Split(':')).Where(group => group.Length == 2).Select(group => group[0]));
+                if (tokens.FirstOrDefault(token => library.getByShortId(token) == null) is string missing)
+                    failure = (NameFailureReason.MissingGlyph, string.Join(" ", missing.Select(code => $"U+{(int)code:X4}")));
+            }
             return null;
         }
     }
@@ -113,6 +158,29 @@ internal static class NativeNamingArrangement
         foreach (var term in terms) data.setGroup(term.Key, term.Value);
         changed = true;
         return true;
+    }
+
+    internal static CardNaming ApplyDefaultEdit(string type, Rule rule, EffectiveNames effective, DefaultArrangementEdit edit,
+        Action<string> unresolved = null)
+    {
+        using var data = new OnomasticsData();
+        if (!FillDefault(data, type, rule, effective, out _)) return null;
+        var layout = Codec.Read(data.getShortTemplate());
+        var choice = ForRule(type, rule);
+        string template = Codec.Write(layout.Apply(edit, choice.Roles, effective.RulePartRenames(rule.Id), unresolved));
+        if (template == null) return null;
+        choice.SourceRule = rule.Id;
+        choice.Template = template;
+        return choice;
+    }
+
+    internal static DefaultArrangementEdit CompareDefault(OnomasticsData data, string type, Rule rule, EffectiveNames effective,
+        DefaultArrangementEdit previous)
+    {
+        using var baseline = new OnomasticsData();
+        if (!FillDefault(baseline, type, rule, effective, out _)) return null;
+        return Codec.Read(baseline.getShortTemplate()).Changes(Codec.Read(data.getShortTemplate()), previous,
+            ForRule(type, rule).Roles, effective.RulePartRenames(rule.Id)) ?? new DefaultArrangementEdit();
     }
 
     private static string GroupForPart(bool person, string part) => (person, part) switch

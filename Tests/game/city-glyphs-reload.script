@@ -18,9 +18,8 @@ var culture = world.cultures.get(ids[0]);
 var city = world.cities.get(ids[2]);
 Check(city?.name == "澄江-州", "Existing city name did not survive.");
 var expected = new[] { "group_1", "hyphen", "group_2" };
-Check(culture.getOnomasticData(MetaType.City).getFullTemplateData().SequenceEqual(expected), "Saved vanilla layout was lost.");
 var name = NamingApi.Current.Generate(new NameRequest("worldbox:city", 0, ids[0], ids[1]));
-Check(name.Text == city.name && culture.getOnomasticData(MetaType.City).getGroupString("group_2") == "州", "Generation after reload differs.");
+Check(name.Text == city.name, "Generation after reload differs.");
 ScrollWindow.hideAllEvent(pWithAnimation: false);
 SelectedMetas.selected_city = city;
 SelectedMetas.selected_culture = culture;
@@ -32,6 +31,7 @@ tab._tab_groups._toggles.Find(item => item.name == "tab_onomastics_city").toggle
 for (int i = 0; i < 120 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
 for (int i = 0; i < 12; i++) await Game.NextFrame();
 Check(tab.parent_asset_specials.gameObject.activeInHierarchy &&
+    tab.getOnomasticsData().getGroupString("group_2") == "州" &&
     tab.getOnomasticsData().getFullTemplateData().SequenceEqual(expected), "Editor did not reopen saved layout.");
 var line = shell.transform.FindRecursive("PreviewName");
 var preview = line.GetComponent<Text>().text;

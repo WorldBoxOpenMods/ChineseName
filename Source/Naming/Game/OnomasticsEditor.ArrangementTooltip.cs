@@ -31,7 +31,8 @@ public sealed partial class OnomasticsEditor
         var service = NamingApi.Current;
         var choice = item?.Cards ?? (UsesCards(_card, _rule) ? _card : NativeNamingArrangement.ForRule(_type.Id, _rule));
         bool matches = true;
-        var request = item == null ? PartPreviewRequest(_type, _culture, _page, _rule, choice) : Scenario(item, out matches);
+        var request = item == null ? PartPreviewRequest(_type, _culture, _page, _rule) : Scenario(item, out matches);
+        var prepared = service.PrepareContext(request);
         var effective = service.Inspect(request, item == null ? _draft : service.ActiveWorld);
         using var cards = item == null ? ReadDefaultTooltipCards(choice, effective) :
             NativeNamingArrangement.ReadPackaged(_type.Id, choice);
@@ -45,11 +46,11 @@ public sealed partial class OnomasticsEditor
         var samples = Array.Empty<string>();
         string notice = "暂无命名样例";
         if (item is { IsConfigured: true } && !matches) notice = "未找到符合条件的命名样例";
-        else if (cards != null && choice.Enabled && NameEngine.InputError(_type, request) == null)
+        else if (cards != null && choice.Enabled && prepared != null)
         {
-            var rule = item == null ? _rule : NativeOnomastics.BoundRule(choice, request, effective);
+            var rule = item == null ? _rule : NativeOnomastics.BoundRule(choice, prepared, effective);
             if (choice.SourceRule == null || rule != null)
-                samples = CollectArrangementSamples(request, effective, choice, rule, cards);
+                samples = CollectArrangementSamples(prepared, effective, choice, rule, cards);
         }
         Tooltip.show(button.gameObject, ArrangementTooltip, new ArrangementTipData
         {
@@ -70,10 +71,9 @@ public sealed partial class OnomasticsEditor
         var seen = new HashSet<string>(StringComparer.Ordinal);
         for (int draw = 0; draw < PreviewDraws && samples.Count < PreviewNames; draw++)
         {
-            var sample = draw == 0 ? request : new NameRequest(request.Type, unchecked(request.Seed + (ulong)draw),
-                request.Culture, request.Language, request.Inputs, request.FixedParts, request.Writing);
-            var result = NativeOnomastics.GenerateCards(_type, sample, effective, null, previewChoice, rule, cards);
-            if (result.Status == GenerationStatus.NoRule) break;
+            var sample = draw == 0 ? request : request.WithSeed(unchecked(request.Seed + (ulong)draw));
+            var result = NativeOnomastics.GenerateCards(sample, effective, previewChoice, rule, cards);
+            if (result.Failures.Any(failure => failure.Reason is NameFailureReason.MissingGlyph or NameFailureReason.InvalidArrangement)) break;
             if (IsPreviewName(result) && seen.Add(result.Text)) samples.Add(result.Text);
         }
         return samples.ToArray();
@@ -81,8 +81,9 @@ public sealed partial class OnomasticsEditor
 
     private OnomasticsData ReadDefaultTooltipCards(CardNaming choice, EffectiveNames effective)
     {
-        if (NativeNamingTab.DraftTemplate(_culture.id, _type.Id) is string template)
-            return NativeOnomastics.Parse(template);
+        if (NativeNamingTab.DraftTemplate(_culture.id, _type.Id) is string template &&
+            NativeNamingArrangement.ReadTemplate(template) is { } draft)
+            return draft;
         var cards = NativeOnomastics.Read(_culture, _type.Id, choice);
         if (!UsesCards(_card, _rule)) NativeNamingArrangement.FillDefault(cards, _type.Id, _rule, effective, out _);
         return cards;

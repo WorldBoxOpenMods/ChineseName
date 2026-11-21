@@ -1,0 +1,141 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+
+const string cityType = "worldbox:city", bookType = "worldbox:book", pack = "chinesename:place-history";
+const string terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+if (File.Exists(terrain))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The isolated terrain did not load.");
+}
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+var zones = world.zone_calculator.zones.Where(zone => zone.canStartCityHere()).ToArray();
+var capital = zones.First();
+var distant = zones.First(zone => Math.Abs(zone.centerTile.x - capital.centerTile.x) +
+    Math.Abs(zone.centerTile.y - capital.centerTile.y) >= 48);
+
+ArrangementCondition Condition(string field, ArrangementTest test, params string[] values) =>
+    new() { Field = field, Test = test, Values = values.ToList() };
+ConditionalArrangement Arrangement(string id, string template, params ArrangementCondition[] terms) =>
+    new() { Id = id, Cards = new CardNaming { Enabled = true, Template = template },
+        Expression = new ArrangementCondition { Children = terms.ToList() } };
+void Set(Culture culture, string type, params ConditionalArrangement[] arrangements)
+{
+    var draft = service.GetWorld();
+    if (!draft.Cultures.TryGetValue(culture.id, out var naming))
+        draft.Cultures[culture.id] = naming = new CultureNaming { Pack = pack };
+    if (arrangements.Length == 0) naming.Arrangements.Remove(type);
+    else naming.Arrangements[type] = arrangements.ToList();
+    WorldNamingStore.Apply(draft);
+}
+Actor Found(TileZone site, string stem)
+{
+    var actor = world.units.createNewUnit("human", site.centerTile, pAdultAge: true);
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    actor.setCulture(world.cultures.newCulture(actor, true));
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    kingdom.setUnitMetas(actor);
+    world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+    var arrangement = Arrangement("fixture-city", "01|0:" + stem + ";1:府", Condition("kind", ArrangementTest.Present));
+    arrangement.Cards.Roles["group_1"] = "name";
+    Set(actor.culture, cityType, arrangement);
+    actor.joinCity(world.cities.buildNewCity(actor, site));
+    kingdom.setCapital(actor.city);
+    world.cities.checkLists(); world.kingdoms.checkLists();
+    Set(actor.culture, cityType);
+    Check(actor.city.name == stem + "府", "The original city name did not generate.");
+    return actor;
+}
+Actor Resident(Actor example, City city)
+{
+    var actor = world.units.createNewUnit("human", city.getTile(), pAdultAge: true);
+    actor.setCulture(example.culture);
+    actor.joinLanguage(example.language);
+    actor.joinCity(city);
+    world.units.checkContainer(); world.units.prepareForMetaChecks(); world.cities.beginChecksUnits();
+    return actor;
+}
+City Settle(Actor settler)
+{
+    var target = zones.First(zone => zone.isGoodForNewCity(settler));
+    settler.setCurrentTilePosition(target.centerTile);
+    Check(new ai.behaviours.BehCheckBuildCity().execute(settler) == ai.behaviours.BehResult.Continue,
+        "The native city founding action failed.");
+    world.cities.checkLists();
+    return settler.city;
+}
+Book History(Actor author)
+{
+    var type = AssetManager.book_types.list.Single(asset => asset.name_template == "book_name_history");
+    var book = world.books.newObject();
+    book.newBook(author, type, null, null, null, null);
+    return book;
+}
+char Glyph(string name) => AssetManager.onomastics_library.get("chinesename:" + name).short_id;
+
+world.map_stats.world_time += 5;
+var host = Found(capital, "澄江");
+var city = host.city;
+var foreign = Found(distant, "临川");
+var writer = Resident(foreign, city);
+var first = Settle(Resident(host, city));
+Check(first.name == "新澄江", "The first settlement did not inherit the current stem: " + first.name);
+world.map_stats.world_time += 121;
+city.updateAge();
+city.setName("怀远府");
+city.data.custom_name = true;
+world.map_stats.world_time += 61;
+var second = Settle(Resident(host, city));
+Check(second.name == "新怀远府", "The new settlement did not use the new formal name: " + second.name);
+
+void Migration(string clue) => Set(writer.culture, bookType, Arrangement("migration-source", Glyph("historical-event") + "0|0:记",
+    Condition("topic", ArrangementTest.Equal, "history"), Condition("historical-event-kind", ArrangementTest.Equal, "migration"),
+    Condition("historical-event", ArrangementTest.Prefix, clue)));
+Migration("自澄江府");
+var older = History(writer);
+Check(older.name == "自澄江府迁往新澄江记", "The first migration gained a later name: " + older.name);
+Migration("自澄江城");
+var newer = History(writer);
+Check(newer.name == "自澄江城迁往新怀远府记", "The second migration lost the already-known exonym: " + newer.name);
+var notes = Arrangement("old-and-current", $"{Glyph("author-city-founding-name")}0{Glyph("author-city")}|0:又称",
+    Condition("author-city-founding-name", ArrangementTest.Present));
+Set(writer.culture, bookType, notes);
+var foreignNotes = History(writer);
+Set(host.culture, bookType, notes);
+var localNotes = History(host);
+Check(foreignNotes.name == "澄江府又称澄江城" && localNotes.name == "澄江府又称怀远府",
+    "The two authors could not use the founding name together with their current name.");
+
+Set(host.culture, cityType, Arrangement("inherit-old-city", "0" + Glyph("source-city-founding-name") + "|0:古",
+    Condition("source-city-founding-name", ArrangementTest.Present)));
+var third = Settle(Resident(host, city));
+Check(third.name == "古澄江府", "The new settlement could not use the original city name: " + third.name);
+
+long cityId = city.id, thirdId = third.id, writerId = writer.id;
+var titles = new[] { older, newer, foreignNotes, localNotes }.ToDictionary(book => book.id, book => book.name);
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "city-name-history");
+Directory.CreateDirectory(folder);
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+world.cities.checkLists(); world.kingdoms.checkLists(); world.books.checkLists();
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The historical city did not reload.");
+Config.paused = true;
+world = World.world;
+city = world.cities.get(cityId);
+Check(city.name == "怀远府" && city.data.past_names.Select(entry => entry.name).SequenceEqual(new[] { "澄江府", "怀远府" }) &&
+    world.cities.get(thirdId).name == "古澄江府", "The native official name history changed on reload.");
+var reloaded = History(world.units.get(writerId));
+Check(reloaded.name == "澄江府又称澄江城" && titles.All(title => world.books.get(title.Key).name == title.Value),
+    "A historical title or the saved old-name arrangement changed on reload.");
+return new { official = city.name, foundedAs = city.data.past_names[0].name, books = titles.Values,
+    namedAfterOldCity = world.cities.get(thirdId).name, reloaded = reloaded.name };

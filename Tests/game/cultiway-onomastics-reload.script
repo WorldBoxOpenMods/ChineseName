@@ -20,9 +20,12 @@ var first = world.units.get(ids[4]);
 var second = world.units.get(ids[5]);
 var service = NamingApi.Current;
 var state = service.GetWorld();
+DefaultArrangementEdit SpellEdit(long culture) => state.Cultures[culture].DefaultArrangementEdits
+    .Single(pair => pair.Key.StartsWith("cultiway:spell/")).Value;
 Check(first?.culture?.id == ids[0] && second?.culture?.id == ids[1] &&
-    state.Cultures[ids[0]].Cards["cultiway:spell"].Template == "04|4:诀" &&
-    state.Cultures[ids[1]].Cards["cultiway:spell"].Template == "40|4:引", "The two cultures' spell arrangements did not survive.");
+    SpellEdit(ids[0]).Glyphs.SequenceEqual(new[] { "group_1", "group_5" }) && SpellEdit(ids[0]).Groups["group_5"] == "诀" &&
+    SpellEdit(ids[1]).Glyphs.SequenceEqual(new[] { "group_5", "group_1" }) && SpellEdit(ids[1]).Groups["group_5"] == "引",
+    "The two cultures' spell arrangements did not survive.");
 var asset = Cultiway.Content.SkillEntities.Fireball;
 string Fireball(Actor creator) =>
     new SkillContainerBuilder(asset).UseAnimation(0).Build(SkillContainerBuildMode.RuleOnly, creator).Name.value;

@@ -1,0 +1,272 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Cultiway;
+using Cultiway.Core;
+using Cultiway.Core.EventSystem;
+using Cultiway.Core.EventSystem.Events;
+using Cultiway.Utils.Extension;
+using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
+
+const string cityType = "worldbox:city", packId = "chinesename:place-history", pool = "chinesename:coastal-places";
+void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); }
+const string terrainFixture = "__PLACE_HISTORY_TERRAIN__";
+if (File.Exists(terrainFixture))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrainFixture));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The isolated terrain fixture did not load.");
+    Config.paused = false;
+    EventSystemHub.Publish(new WorldGeneratedEvent
+    {
+        WorldSeedId = MapBox.current_world_seed_id, Width = MapBox.width, Height = MapBox.height
+    });
+}
+var world = World.world;
+var regions = WorldboxGame.I.GeoRegions;
+var zones = world.zone_calculator.zones.Where(zone => zone.centerTile.Type.ground && !zone.hasCity()).ToArray();
+int midX = zones.Max(zone => zone.centerTile.x) / 2, midY = zones.Max(zone => zone.centerTile.y) / 2;
+var site = zones.GroupBy(zone => zone.centerTile.region.island).OrderByDescending(entries => entries.Count()).First()
+    .OrderBy(zone => Math.Abs(zone.centerTile.x - midX) + Math.Abs(zone.centerTile.y - midY))
+    .First();
+for (int frame = 0; frame < 1000 && regions.GetPrimaryGeoRegionForTile(site.centerTile) == null; frame++)
+    await Game.NextFrame();
+Check(regions.GetPrimaryGeoRegionForTile(site.centerTile) != null, "GeoRegion data was still unavailable.");
+Config.paused = true;
+var founder = world.units.createNewUnit("human", site.centerTile);
+var kingdom = world.kingdoms.makeNewCivKingdom(founder);
+var parent = world.cultures.newCulture(founder, true);
+founder.setCulture(parent);
+var root = world.languages.newLanguage(founder, true);
+founder.joinLanguage(root);
+world.units.checkLists();
+world.cultures.checkLists();
+world.languages.checkLists();
+
+var service = NamingApi.Current;
+var draft = service.GetWorld();
+Check(draft.EnabledPacks.Contains(packId), "The bundled place preset is not enabled.");
+draft.Cultures[parent.id] = new CultureNaming { Pack = packId };
+draft.Cultures[parent.id].Arrangements[cityType] = new List<ConditionalArrangement>
+{
+    new() {
+        Id = "test-original-city", Expression = new ArrangementCondition {
+            Children = new List<ArrangementCondition> { new() { Field = "kind", Test = ArrangementTest.Present } }
+        },
+        Cards = new CardNaming { Enabled = true, Template = "01|0:澄江;1:府",
+            Roles = new Dictionary<string, string> { ["group_1"] = "name" } }
+    }
+};
+WorldNamingStore.Apply(draft);
+var original = world.cities.buildNewCity(founder, site);
+founder.joinCity(original);
+kingdom.setCapital(original);
+Check(original.name == "澄江府", "The original city was named " + original.name);
+
+draft = service.GetWorld();
+draft.Cultures[parent.id].Arrangements.Remove(cityType);
+WorldNamingStore.Apply(draft);
+var settlers = new List<Actor> { founder };
+for (int i = 0; i < 34; i++)
+{
+    var settler = world.units.createNewUnit("human", site.centerTile, pAdultAge: true);
+    settlers.Add(settler);
+    settler.data.created_time = world.getCurWorldTime() - 1200;
+    settler.joinCity(original);
+}
+world.units.checkLists();
+world.cities.checkLists();
+world.kingdoms.checkLists();
+world.units.prepareForMetaChecks();
+world.cities.beginChecksUnits();
+foreach (var settler in settlers.Where(actor => !original.units.Contains(actor))) original.listUnit(settler);
+original.data.created_time = world.getCurWorldTime() - 1200;
+original.status.population_adults = original.units.Count;
+original.recalculateNeighbourZones();
+original.recalculateNeighbourCities();
+
+var expansion = new BehKingCheckNewCityFoundation();
+var expanded = expansion.execute(founder);
+world.cities.checkLists();
+var migrant = kingdom.getCities().FirstOrDefault(city => city != original);
+Check(migrant?.name == "新澄江", "Original expansion returned " + expanded + ", city " + migrant?.name +
+    $"; hasCapital={kingdom.hasCapital()}, units={original.countUnits()}, adults={original.status.population_adults}, needsSettlers={original.needSettlers()}, zones={world.city_zone_helper.city_place_finder.zones.Count}");
+migrant.data.get("chinesename.city-origin.v1", out string migration);
+Check(migration != null && (string)JObject.Parse(migration)["name"] == "澄江府" &&
+    (string)JObject.Parse(migration)["stem"] == "澄江",
+    "The historical destination lost the full source name or its stem.");
+
+var history = AssetManager.book_types.list.First(type => type.name_template == "book_name_history");
+var book = world.books.newObject();
+book.newBook(founder, history, null, null, null, null);
+const string migrationBook = "自澄江府迁往新澄江记";
+Check(book.name == migrationBook, "The original book creation produced " + book.name);
+
+bool IsNearSea(WorldTile tile)
+{
+    for (int dx = -8; dx <= 8; dx++)
+        for (int dy = Math.Abs(dx) - 8; dy <= 8 - Math.Abs(dx); dy++)
+            if (regions.GetPrimaryGeoRegionForTile(world.GetTile(tile.x + dx, tile.y + dy))?.data.CategoryId.EndsWith(".Sea") == true)
+                return true;
+    return false;
+}
+bool Lowland(WorldTile tile)
+{
+    var form = tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landform)?.data.CategoryId;
+    return form == null || form.EndsWith(".Plain");
+}
+bool Island(TileZone zone)
+{
+    var tile = zone.centerTile;
+    return Lowland(tile) && (tile.GetExtend().GetGeoRegion(GeoRegionLayer.Archipelago) != null ||
+        tile.GetExtend().GetGeoRegion(GeoRegionLayer.Landmass)?.data.CategoryId.EndsWith(".Island") == true);
+}
+bool Coastal(TileZone zone) => Lowland(zone.centerTile) && !Island(zone) && IsNearSea(zone.centerTile);
+var coast = zones.First(zone => !zone.hasCity() && Coastal(zone));
+var regional = world.cities.buildNewCity(founder, coast);
+var region = regions.GetPrimaryGeoRegionForTile(regional.getTile());
+Check(regional.name == region.name + "城", "The new settlement ignored the GeoRegion’s actual displayed name.");
+var portSite = zones.FirstOrDefault(zone => zone.centerTile.isSameIsland(site.centerTile) &&
+    Coastal(zone) && zone.isGoodForNewCity(founder));
+Check(portSite != null, "The isolated map had no valid coastal settlement site.");
+founder.setCurrentTilePosition(portSite.centerTile);
+
+draft = service.GetWorld();
+if (!draft.Languages.TryGetValue(root.id, out var rootLanguage))
+    draft.Languages[root.id] = rootLanguage = new LanguageNaming();
+var classic = service.GetPackage(service.DefaultPack);
+var biased = classic.Words.First(word => classic.Pools[pool].ContainsKey(word.Id));
+var excluded = classic.Words.Last(word => classic.Pools[pool].ContainsKey(word.Id));
+rootLanguage.Groups[pool] = classic.Id + "/coastal-islands";
+rootLanguage.Pools[pool] = new PoolEdit { ExcludeText = new List<string> { excluded.Text },
+    Bias = new Dictionary<string, double> { [biased.Id] = 1.5 } };
+string handEdits = NamingJson.Write(rootLanguage.Pools);
+WorldNamingStore.Apply(draft);
+Check(AssetManager.plots_library.get("culture_divide").action(founder), "The real culture split did not run.");
+var child = founder.culture;
+var next = service.GetWorld();
+Check(child != parent && next.Cultures[child.id].Parent == parent.id &&
+    next.Cultures[child.id].ArrangementVariants[cityType].SequenceEqual(new[] { packId + "/harbor-towns" }) &&
+    !next.Cultures[parent.id].ArrangementVariants.ContainsKey(cityType), "The coastal arrangement did not arise in the child culture alone.");
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The real language split did not run.");
+var language = founder.language;
+next = service.GetWorld();
+var split = next.Languages[language.id];
+split.GroupPreferences.TryGetValue(pool, out var group);
+Check(next.LanguageParents[language.id] == root.id && NamingJson.Write(split.Pools) == handEdits &&
+    group != null && group.ContainsKey(packId + "/coastal-bays"),
+    "The language lost its coastal preference or manual edits: " + NamingJson.Write(split.GroupPreferences));
+
+var cityContext = new Dictionary<string, object> { ["landform"] = "coast", ["region-name"] = region.name };
+var childName = service.Generate(new NameRequest(cityType, 24, child.id, language.id, cityContext));
+var parentName = service.Generate(new NameRequest(cityType, 24, parent.id, language.id, cityContext));
+Check(childName.Text.EndsWith("港") && childName.Sources["name"].Reference == pool &&
+    parentName.Text == region.name + "城", "Culture and language did not choose their respective arrangement and pool.");
+Check(Enumerable.Range(1, 128).Any(seed =>
+    service.Generate(new NameRequest(cityType, (ulong)seed, child.id, root.id, cityContext)).Text !=
+    service.Generate(new NameRequest(cityType, (ulong)seed, child.id, language.id, cityContext)).Text),
+    "Changing only the language did not change any fixed-seed coastal names.");
+void CheckMigration(City destination, City from)
+{
+    destination.data.get("chinesename.city-origin.v1", out string text);
+    Check(text != null && (long)JObject.Parse(text)["id"] == from.id && (string)JObject.Parse(text)["name"] == from.name,
+        "The settlement lost its actual migration source: " + destination.name);
+}
+new ai.behaviours.BehCheckBuildCity().execute(founder);
+var port = founder.city;
+Check(port != original && port.name.EndsWith("港"), "The migrant founding hook did not use the harbor arrangement: " + port.name);
+CheckMigration(port, original);
+world.cities.checkLists();
+string portName = port.name;
+
+var portLandmass = port.getTile().GetExtend().GetGeoRegion(GeoRegionLayer.Landmass);
+var islandZones = zones.Where(zone => Island(zone) &&
+    zone.centerTile.GetExtend().GetGeoRegion(GeoRegionLayer.Landmass) != portLandmass).ToArray();
+var islandSite = islandZones.FirstOrDefault(zone => zone.isGoodForNewCity(founder));
+Check(islandSite != null, "No site ready for settlement on a distinct island, " + islandZones.Length + " candidate zones.");
+founder.setCurrentTilePosition(islandSite.centerTile);
+world.cultures.checkLists();
+world.languages.checkLists();
+Check(AssetManager.plots_library.get("culture_divide").action(founder), "The island culture split did not run.");
+var islandCulture = founder.culture;
+Check(AssetManager.plots_library.get("language_divergence").action(founder), "The island language split did not run.");
+var islandLanguage = founder.language;
+next = service.GetWorld();
+var islandPreferences = next.Languages[islandLanguage.id].GroupPreferences[pool];
+Check(next.Cultures[islandCulture.id].Parent == child.id &&
+    next.Cultures[islandCulture.id].ArrangementVariants[cityType].SequenceEqual(new[] { packId + "/island-towns", packId + "/harbor-towns" }) &&
+    next.Cultures[child.id].ArrangementVariants[cityType].SequenceEqual(new[] { packId + "/harbor-towns" }),
+    "The island culture lost its inherited harbor pattern or modified its parent.");
+Check(next.LanguageParents[islandLanguage.id] == language.id &&
+    NamingJson.Write(next.Languages[islandLanguage.id].Pools) == handEdits &&
+    Math.Abs(islandPreferences[packId + "/coastal-islands"] - 0.2) < 1e-10 &&
+    Math.Abs(islandPreferences[packId + "/coastal-bays"] - 0.16) < 1e-10 &&
+    Math.Abs(next.Languages[language.id].GroupPreferences[pool][packId + "/coastal-bays"] - 0.2) < 1e-10,
+    "The island language did not preserve its old bias and manual edits: " + NamingJson.Write(islandPreferences));
+new ai.behaviours.BehCheckBuildCity().execute(founder);
+var island = founder.city;
+Check(island != port && island.name.EndsWith("邑") && port.name == portName,
+    "The island settlement did not use its new rule or modified its source.");
+CheckMigration(island, port);
+Check(!portName.Contains(excluded.Text) && !island.name.Contains(excluded.Text),
+    "A language exclusion was ignored during settlement naming.");
+
+var insurgent = world.units.createNewUnit("human", original.getTile());
+insurgent.joinCity(original);
+insurgent.setCulture(parent);
+insurgent.joinLanguage(root);
+var rebellion = world.plots.newPlot(insurgent, AssetManager.plots_library.get("rebellion"), true);
+DiplomacyHelpersRebellion.startRebellion(insurgent, rebellion, false);
+rebellion.finishPlot(PlotState.Finished, insurgent);
+world.wars.checkLists();
+var war = world.wars.list.Last(item => item.getAsset().id == "rebellion");
+Check(war.name == "澄江之乱", "The rebellion was named " + war.name);
+
+original.setName("怀远府");
+original.data.custom_name = true;
+Check(migrant.name == "新澄江" && book.name == migrationBook && war.name == "澄江之乱",
+    "Renaming their source changed an existing destination name.");
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = islandCulture;
+SelectedMetas.selected_city = island;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_city").toggle.click();
+for (int frame = 0; frame < 150 && ScrollWindow.isAnimationActive(); frame++) await Game.NextFrame();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+var icons = tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>()
+    .Where(button => button.onomastics_asset?.id is "chinesename:source-city" or "chinesename:region-name").ToArray();
+Check(icons.Length == 2 && icons.All(icon => icon.gameObject.activeInHierarchy), "The new glyphs are not in the native city palette.");
+var branch = shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.harbor-towns");
+branch.onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+Check(shell.GetComponentsInChildren<Text>().First(text => text.name == "PreviewName").text.EndsWith("港"),
+    "The evolved branch did not use the normal preview.");
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.island-towns").onClick.Invoke();
+for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+Check(shell.GetComponentsInChildren<Text>().First(text => text.name == "PreviewName").text.EndsWith("邑"),
+    "The island and inherited coastal arrangements could not both be previewed.");
+
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "place-history");
+Directory.CreateDirectory(folder);
+world.units.checkLists();
+world.cultures.checkLists();
+world.languages.checkLists();
+world.cities.checkLists();
+world.books.checkLists();
+world.kingdoms.checkLists();
+SaveManager.saveWorldToDirectory(folder);
+File.WriteAllLines(Path.Combine(folder, "ids.txt"), new [] { original.id, migrant.id, regional.id, port.id,
+    book.id, war.id, child.id, language.id, island.id, islandCulture.id, islandLanguage.id }
+    .Select(id => id.ToString()).Concat(new[] { port.name, island.name }));
+return new { migrant = migrant.name, region = region.name, regional = regional.name, port = port.name,
+    island = island.name, war = war.name, book = book.name, language = group, islandPreferences, folder };

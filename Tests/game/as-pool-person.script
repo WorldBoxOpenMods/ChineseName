@@ -69,7 +69,8 @@ for (int i = 0; i < 12; i++) await Game.NextFrame();
 Check(Display() == (string.IsNullOrEmpty(Surname(leader)) ? "欧阳" : Surname(leader)) + "青",
     "The native preview did not combine the two glyphs: " + Display());
 var personOrder = new[] { root, marker, surnameGlyph, given, marker };
-Check(culture.getOnomasticData(MetaType.Unit).getFullTemplateData().SequenceEqual(personOrder),
+Check(tab.getOnomasticsData().getFullTemplateData().SequenceEqual(personOrder) &&
+    service.GetWorld().Cultures[culture.id].DefaultArrangementEdits.Values.Any(edit => edit.Glyphs.SequenceEqual(personOrder)),
     "The native culture did not save the combination.");
 
 Actor NewPerson(Language language, ActorSex sex = ActorSex.Male)
@@ -88,7 +89,7 @@ Check(father.getName() == "欧阳青" && mother.getName() == "李怀" && Surname
 var child = BabyMaker.makeBaby(father, mother, ActorSex.Female, pTile: tile);
 child.setCulture(culture);
 child.joinLanguage(other);
-Check(Surname(child) == "欧阳" && child.getName() == "欧阳怀", "Child did not keep the surname and use its own language.");
+Check(child.getName() == "欧阳怀" && Surname(child) == "欧阳", "Child did not keep the surname and use its own language.");
 
 var inputs = new Dictionary<string, object> { ["kind"] = "sapient", ["species"] = "human" };
 NameResult Person(Culture owner, Language language, string inherited = null) =>
@@ -118,12 +119,14 @@ Check(branchLanguage != origin && settings.LanguageParents[branchLanguage.id] ==
     settings.Languages[branchLanguage.id].Pools[surnamePool].ExcludeIds.SequenceEqual(settings.Languages[origin.id].Pools[surnamePool].ExcludeIds) &&
     Person(culture, branchLanguage).Text == "欧阳青",
     "Language divergence changed selector aliases or dropped the parent language's pool settings.");
-var aliasesBefore = culture.getOnomasticData(MetaType.Unit).getGroupString(root);
+var originalEdits = settings.Cultures[culture.id].DefaultArrangementEdits;
+var aliasesBefore = originalEdits.Single(pair => pair.Key.StartsWith(person + "/")).Value.Groups[root];
 Check(AssetManager.plots_library.get("culture_divide").action(leader), "The original culture split failed.");
 var branch = leader.culture;
-Check(branch != culture && branch.getOnomasticData(MetaType.Unit).getFullTemplateData().SequenceEqual(personOrder) &&
-    branch.getOnomasticData(MetaType.Unit).getGroupString(root) == aliasesBefore &&
-    branch.getOnomasticData(MetaType.Unit).getGroupString(given) == "给名首字" && Person(branch, branchLanguage).Text == "欧阳青",
+var branchEdit = service.GetWorld().Cultures[branch.id].DefaultArrangementEdits.Single(pair => pair.Key.StartsWith(person + "/")).Value;
+Check(branch != culture && branchEdit.Glyphs.SequenceEqual(personOrder) &&
+    branchEdit.Groups[root] == aliasesBefore && branchEdit.Groups[given] == "给名首字" &&
+    Person(branch, branchLanguage).Text == "欧阳青",
     "The child culture mutated the lookup aliases or lost native arrangement.");
 
 var savedFolder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "pool-glyph-save");

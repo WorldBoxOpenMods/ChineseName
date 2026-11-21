@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Chinese_Name.Naming;
 using Chinese_Name.Naming.Game;
+using UnityEngine.UI;
 
 void Check(bool condition, string message)
 {
@@ -34,6 +36,12 @@ var bundled = service.GetPackage(service.DefaultPack);
 Check(bundled.Words.Any(word => word.Text + "界" == world.map_stats.name) &&
       bundled.Words.Any(word => word.Text + "君" == world.map_stats.player_name),
     "New worlds did not receive their bundled world and creator names.");
+string size = MapSizeLibrary.getPreset(Math.Max(Config.ZONE_AMOUNT_X, Config.ZONE_AMOUNT_Y));
+var scope = new Dictionary<string, object> { ["kind"] = size };
+CheckName("world preview", service.Preview(new NameRequest("worldbox:world", unchecked((ulong)world.map_stats.life_dna), inputs: scope)).Text,
+    world.map_stats.name);
+CheckName("creator preview", service.Preview(new NameRequest("worldbox:player", unchecked((ulong)world.map_stats.life_dna), inputs: scope)).Text,
+    world.map_stats.player_name);
 var pack = new NamingPack { Format = 1, Id = "chinesename:entrypoints", Supplemental = true, Priority = 1000 };
 var own = service.GetWorld();
 foreach (var entry in fixture)
@@ -97,5 +105,57 @@ item.setName("传家宝");
 item.reforge(1);
 CheckName("manual item", item.name, "传家宝");
 
-return new { verified = fixture.Keys, preserve = new[] { army.name, item.name }, legendary,
-    worldName = world.map_stats.name, creator = world.map_stats.player_name };
+founder.joinCity(city);
+city.setCulture(culture);
+city.setLanguage(language);
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+SelectedUnit.select(founder);
+SelectedMetas.selected_culture = culture;
+ScrollWindow.showWindow("culture");
+var window = ScrollWindow.getCurrentWindow();
+window.tabs.showTab("Onomastics");
+var tab = window.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(item => item.name == "tab_onomastics_unit").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+async System.Threading.Tasks.Task Frames()
+{
+    for (int frame = 0; frame < 12; frame++) await Game.NextFrame();
+}
+async System.Threading.Tasks.Task Click(string id)
+{
+    window.GetComponentsInChildren<Button>().Single(button => button.name == id).onClick.Invoke();
+    await Frames();
+}
+await Frames();
+await Click("ArrangementAdd");
+if (window.GetComponentsInChildren<Button>().Any(button => button.name == "ConditionPresetField.kind"))
+    await Click("ConditionPresetField.kind");
+await Click("ConditionPreset.kind.boat");
+tab.loadTemplate("4|4:清波渔舟");
+await Frames();
+CheckName("boat preview", window.transform.FindRecursive("PreviewName")?.GetComponent<Text>()?.text ??
+    window.transform.FindRecursive("PreviewIssue")?.GetComponent<Text>()?.text, "清波渔舟");
+var boat = world.units.createNewUnit("boat_fishing", tile);
+boat.joinCity(city);
+boat.data.name = null;
+CheckName("actual fishing boat", boat.getName(), "清波渔舟");
+var voidElves = CursedSacrifice.getVoidElvesSubspecies();
+CheckName("void event", voidElves?.name, "虚空精灵");
+
+string worldName = world.map_stats.name, creatorName = world.map_stats.player_name;
+long subspeciesId = subspecies.id, boatId = boat.id, cultureId = culture.id, languageId = language.id;
+world.units.checkContainer(); world.subspecies.checkLists();
+var folder = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "scope-and-boats");
+SaveManager.saveWorldToDirectory(folder);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(folder, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "Could not reopen the world-scoped fixture.");
+Config.paused = true;
+CheckName("restored world", world.map_stats.name, worldName);
+CheckName("restored creator", world.map_stats.player_name, creatorName);
+CheckName("restored subspecies", world.subspecies.get(subspeciesId)?.name, fixture["subspecies"]);
+CheckName("restored boat", world.units.get(boatId)?.data.name, "清波渔舟");
+CheckName("restored boat arrangement", service.Preview(new NameRequest("worldbox:person", 7, cultureId, languageId,
+    new Dictionary<string, object> { ["kind"] = "boat", ["species"] = "boat_fishing" })).Text, "清波渔舟");
+return new { verified = fixture.Keys, boat = "清波渔舟", legendary, worldName, creator = creatorName };

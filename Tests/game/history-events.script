@@ -1,0 +1,279 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Chinese_Name.Naming;
+using Chinese_Name.Naming.Game;
+using Newtonsoft.Json.Linq;
+using UnityEngine.UI;
+
+const string pack = "chinesename:place-history";
+const string eventKey = "chinesename.book-event.v1", conflictKey = "chinesename.kingdom-conflicts.v2";
+const string legacyConflictKey = "chinesename.kingdom-conflict.v1";
+const string terrain = "__PLACE_HISTORY_TERRAIN__";
+void Check(bool ok, string message) { if (!ok) throw new InvalidOperationException(message); }
+async System.Threading.Tasks.Task Frames(int count = 10)
+{
+    for (int i = 0; i < count; i++) await Game.NextFrame();
+}
+JObject Citation(Book book)
+{
+    book.data.get(eventKey, out string saved);
+    return saved == null ? null : JObject.Parse(saved);
+}
+Book Write(Actor author, string topic = "book_name_history")
+{
+    var asset = AssetManager.book_types.list.First(entry => entry.name_template == topic);
+    var book = World.world.books.newObject();
+    book.newBook(author, asset, null, null, null, null);
+    return book;
+}
+void Expect(Book book, string kind, long id, string name)
+{
+    var citation = Citation(book);
+    Check(book.name == name && (string)citation?["kind"] == kind && (long?)citation?["id"] == id,
+        "Wrong name or citation: " + book.name + " / " + citation);
+}
+
+if (File.Exists(terrain))
+{
+    SaveManager.loadMapFromBytes(File.ReadAllBytes(terrain));
+    for (int frame = 0; frame < 1000 && SmoothLoader.isLoading(); frame++) await Game.NextFrame();
+    Check(!SmoothLoader.isLoading(), "The isolated terrain did not load.");
+}
+Config.paused = true;
+var world = World.world;
+var service = NamingApi.Current;
+bool exonymsInstalled = service.Types.Any(type => type.Id == "chinesename:exonym");
+var zones = world.zone_calculator.zones.Where(zone => zone.canStartCityHere()).ToArray();
+int Distance(TileZone a, TileZone b) => Math.Abs(a.centerTile.x - b.centerTile.x) + Math.Abs(a.centerTile.y - b.centerTile.y);
+var origin = zones.First();
+var opponent = zones.First(zone => Distance(zone, origin) >= 48);
+var neutral = zones.First(zone => Distance(zone, origin) >= 48 && Distance(zone, opponent) >= 48);
+
+(City City, Actor Author) Found(TileZone zone, string name, string nation)
+{
+    var actor = world.units.createNewUnit("human", zone.centerTile, pAdultAge: true);
+    var kingdom = world.kingdoms.makeNewCivKingdom(actor);
+    actor.setCulture(world.cultures.newCulture(actor, true));
+    actor.joinLanguage(world.languages.newLanguage(actor, true));
+    kingdom.setUnitMetas(actor);
+    world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+    var settings = service.GetWorld();
+    settings.Cultures[actor.culture.id] = new CultureNaming { Pack = pack };
+    WorldNamingStore.Apply(settings);
+    var city = world.cities.buildNewCity(actor, zone);
+    actor.joinCity(city);
+    kingdom.setCapital(city);
+    city.setName(name);
+    kingdom.setName(nation);
+    world.cities.checkLists(); world.kingdoms.checkLists();
+    return (city, actor);
+}
+
+world.map_stats.world_time += 4;
+var (home, author) = Found(origin, "澄江", "临川国");
+var (foreignCity, foreignAuthor) = Found(opponent, "松岭", "松岭国");
+var (otherCity, unrelated) = Found(neutral, "东原", "白川国");
+var homeRealm = home.kingdom;
+var foreignRealm = foreignCity.kingdom;
+home.data.get("chinesename.city-founding.v1", out string founded);
+string atFoundation = (string)JObject.Parse(founded)["to"]["name"];
+var foundation = Write(author);
+Expect(foundation, "founding", home.id, atFoundation + "建城记");
+var unrelatedFoundation = Write(unrelated);
+otherCity.data.removeString("chinesename.city-founding.v1");
+var oldCity = Write(unrelated);
+Check(oldCity.name == "东原纪" && Citation(oldCity) == null, "An old city without an event did not use the city arrangement.");
+var fable = Write(author, "book_name_fable");
+Check(Citation(fable) == null, "A fable received a history citation.");
+
+var conflict = world.wars.newWar(homeRealm, foreignRealm, AssetManager.war_types_library.get("normal"));
+Expect(Write(author), "founding", home.id, foundation.name);
+var resident = world.units.createNewUnit("human", foreignCity.getTile(), pAdultAge: true);
+resident.setCulture(author.culture);
+resident.joinLanguage(author.language);
+resident.joinCity(foreignCity);
+world.units.checkContainer(); world.units.prepareForMetaChecks(); world.cities.beginChecksUnits();
+world.map_stats.world_time += 121;
+foreignCity.updateAge();
+world.wars.endWar(conflict, WarWinner.Peace);
+world.wars.checkLists();
+var fromHome = Write(author);
+var fromForeign = Write(foreignAuthor);
+Expect(fromHome, "war", conflict.id, exonymsInstalled ? "临川国与松岭邦之战始末" : "临川国与松岭国之战始末");
+Expect(fromForeign, "war", conflict.id, "临川国与松岭国之战始末");
+Check(Write(unrelated).name == oldCity.name, "An unrelated kingdom wrote about someone else's war.");
+foreignRealm.data.get(conflictKey, out string indexed);
+foreignRealm.data.removeString(conflictKey);
+Expect(Write(foreignAuthor), "war", conflict.id, fromForeign.name);
+long oldWar = conflict.id;
+world.wars.removeObject(conflict);
+world.wars.checkLists();
+Expect(Write(author), "war", oldWar, fromHome.name);
+foreignRealm.data.removeString(conflictKey);
+foreignRealm.data.set(legacyConflictKey, JArray.Parse(indexed).Single().ToString());
+Expect(Write(foreignAuthor), "war", oldWar, fromForeign.name);
+
+world.map_stats.world_time += 61;
+var destinationZone = zones.First(zone => zone.isGoodForNewCity(author));
+author.setCurrentTilePosition(destinationZone.centerTile);
+Check(new ai.behaviours.BehCheckBuildCity().execute(author) == ai.behaviours.BehResult.Continue,
+    "The native migrant founding action failed.");
+var destination = author.city;
+world.cities.checkLists();
+string destinationName = destination.name;
+var migration = Write(author);
+Expect(migration, "migration", destination.id, "自澄江迁往" + destinationName + "记");
+Expect(Write(author), "migration", destination.id, migration.name);
+var varied = Write(author);
+Expect(varied, "founding", destination.id, destinationName + "建城记");
+
+var history = WorldNamingInputs.ConditionalArrangements(new NameRequest("worldbox:book", 0, author.culture.id, author.language.id));
+var rules = service.GetWorld();
+var bookArrangements = rules.Cultures[author.culture.id].Arrangements;
+bookArrangements["worldbox:book"] = history.Where(item => item.Id is "war-annals" or "city-annals").ToList();
+WorldNamingStore.Apply(rules);
+var chosenWar = Write(author);
+Expect(chosenWar, "war", oldWar, fromHome.name);
+bookArrangements["worldbox:book"].Reverse();
+WorldNamingStore.Apply(rules);
+var cityFirst = Write(author);
+Check(cityFirst.name == "澄江纪" && Citation(cityFirst) == null, "A history arrangement ignored the player's city-first order.");
+var noEvent = new ConditionalArrangement
+{
+    Id = "no-incident", Cards = new CardNaming { Enabled = true, Template = "0|0:无事录" },
+    Expression = new ArrangementCondition
+    {
+        Children = new List<ArrangementCondition> { new() { Field = "historical-event", Test = ArrangementTest.Absent } }
+    }
+};
+bookArrangements["worldbox:book"].Insert(0, noEvent);
+rules.Cultures[unrelated.culture.id].Arrangements["worldbox:book"] =
+    new List<ConditionalArrangement> { noEvent, history.Single(item => item.Id == "city-annals") };
+WorldNamingStore.Apply(rules);
+var absence = Write(author);
+Check(absence.name == cityFirst.name && Citation(absence) == null, "An absence condition matched while events were available.");
+Check(Write(unrelated).name == "无事录", "An absence condition did not match a city without any events.");
+bookArrangements.Remove("worldbox:book");
+rules.Cultures[unrelated.culture.id].Arrangements.Remove("worldbox:book");
+WorldNamingStore.Apply(rules);
+
+world.map_stats.world_time += 61;
+var square = otherCity.getTile();
+var storageTile = otherCity.zones.Select(zone => zone.centerTile).First(tile => tile != square && tile.Type.ground);
+world.buildings.addBuilding("bonfire", square);
+var stockpile = world.buildings.addBuilding("stockpile", storageTile);
+stockpile.addResources("wheat", 24);
+world.buildings.checkLists();
+world.cities.setDirtyBuildings(otherCity);
+world.cities.beginChecksBuildings();
+world.units.checkContainer(); world.units.prepareForMetaChecks(); world.cities.beginChecksUnits();
+Check(otherCity.getBuildingOfType("type_bonfire") != null && otherCity.countFoodTotal() >= 10 &&
+    otherCity.getMainSubspecies() != null, "The native immigration fixture has no bonfire, food, or population.");
+WorldLawLibrary.world_law_civ_migrants.toggle(true);
+long immigrants = otherCity.getTotalMigrated();
+for (int attempt = 0; attempt < 24 && otherCity.getTotalMigrated() == immigrants; attempt++)
+    WorldBehaviourActions.updateMigrants();
+Check(otherCity.getTotalMigrated() > immigrants, "The world did not spawn its native immigrants.");
+var immigration = Write(unrelated);
+Expect(immigration, "migration", otherCity.id, "迁入东原记");
+
+world.map_stats.world_time += 61;
+destination.setName("白石");
+var uprising = world.plots.newPlot(author, AssetManager.plots_library.get("rebellion"), true);
+DiplomacyHelpersRebellion.startRebellion(author, uprising, false);
+uprising.finishPlot(PlotState.Finished, author);
+world.wars.checkLists(); world.kingdoms.checkLists();
+var revolt = world.wars.list.Last(war => war.data.war_type == "rebellion");
+world.map_stats.world_time += 61;
+world.wars.endWar(revolt, WarWinner.Peace);
+var rebellion = Write(author);
+Expect(rebellion, "rebellion", revolt.id, "白石之乱纪略");
+var full = new Dictionary<string, string>
+{
+    ["war-annals"] = "临川国与松岭邦之战始末", ["rebellion-annals"] = "澄江之乱纪略",
+    ["migration-annals"] = "自澄江迁往新澄江记", ["founding-annals"] = "澄江建城记", ["city-annals"] = "澄江纪"
+};
+
+ScrollWindow.hideAllEvent(pWithAnimation: false);
+world.console.Hide();
+SelectedUnit.select(author);
+SelectedMetas.selected_culture = author.culture;
+ScrollWindow.showWindow("culture");
+var shell = ScrollWindow.getCurrentWindow();
+shell.tabs.showTab("Onomastics");
+var tab = shell.GetComponentInChildren<OnomasticsTab>();
+tab._tab_groups._toggles.Single(toggle => toggle.name == "tab_onomastics_book").toggle.click();
+for (int i = 0; i < 150 && ScrollWindow.isAnimationActive(); i++) await Game.NextFrame();
+await Frames();
+foreach (var (id, text) in full)
+{
+    shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement." + id).onClick.Invoke();
+    await Frames();
+    var preview = shell.GetComponentsInChildren<Text>().First(item => item.name == "PreviewName").text;
+    Check(preview == text, "The editor's example was wrong for " + id + ": " + preview);
+}
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "Arrangement.rebellion-annals").onClick.Invoke();
+await Frames();
+Check(tab.parent_asset_specials.GetComponentsInChildren<OnomasticsAssetButton>().Any(button =>
+    button.onomastics_asset?.id == "chinesename:historical-event" && button.gameObject.activeInHierarchy),
+    "The native book glyph palette is missing the historical event.");
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "ConditionPresetField.historical-event-kind").onClick.Invoke();
+await Frames();
+foreach (string kind in new[] { "war", "rebellion", "migration", "founding" })
+    Check(shell.GetComponentsInChildren<Button>().Any(button => button.name == "ConditionPreset.historical-event-kind." + kind),
+        "The native condition palette is missing " + kind);
+shell.GetComponentsInChildren<Button>().Single(button => button.name == "ConditionPresetField.historical-event").onClick.Invoke();
+await Frames();
+Check(shell.GetComponentsInChildren<Button>().Any(button => button.name == "ConditionPreset.historical-event.present"),
+    "The native condition palette is missing the event presence condition.");
+var glyph = AssetManager.onomastics_library.get("chinesename:historical-event").short_id;
+tab.loadTemplate(glyph + "0|0:实录");
+await Frames();
+var customized = Write(author);
+Expect(customized, "rebellion", revolt.id, "白石之乱实录");
+
+var persisted = service.GetWorld();
+var edits = persisted.Cultures[author.culture.id].ArrangementEdits["worldbox:book"];
+edits.Added["player-migration-notes"] = new ConditionalArrangement
+{
+    Id = "player-migration-notes", Cards = new CardNaming { Enabled = true, Template = glyph + "0|0:见闻" },
+    Expression = new ArrangementCondition
+    {
+        Field = "historical-event-kind", Test = ArrangementTest.Equal, Values = new List<string> { "migration" }
+    }
+};
+edits.Orders[pack] = new List<string> { "player-migration-notes", pack + "/city-annals" };
+WorldNamingStore.Apply(persisted);
+
+var books = new[] { foundation, unrelatedFoundation, oldCity, fromHome, fromForeign, migration, varied,
+    chosenWar, cityFirst, immigration, rebellion, customized }
+    .Select(book => (Id: book.id, Name: book.name, Citation: Citation(book)?.ToString())).ToArray();
+long authorId = author.id, foreignAuthorId = foreignAuthor.id, revoltId = revolt.id;
+destination.setName("白石府");
+foreignRealm.setName("松岭王国");
+world.units.checkContainer(); world.cultures.checkLists(); world.languages.checkLists();
+world.cities.checkLists(); world.kingdoms.checkLists(); world.books.checkLists(); world.wars.checkLists();
+string directory = Path.Combine(Environment.GetEnvironmentVariable("CHINESENAME_DEV_OUTPUT"), "history-events");
+Directory.CreateDirectory(directory);
+File.WriteAllText(Path.Combine(directory, "books.json"), NamingJson.Write(new
+{
+    Author = authorId, EventBook = customized.id, ExonymBook = fromHome.id,
+    Books = books.Select(book => new { book.Id, book.Name, book.Citation })
+}));
+SaveManager.saveWorldToDirectory(directory);
+SaveManager.loadMapFromBytes(File.ReadAllBytes(Path.Combine(directory, "map.wbox")));
+for (int i = 0; i < 1000 && SmoothLoader.isLoading(); i++) await Game.NextFrame();
+Check(!SmoothLoader.isLoading(), "The event world did not reload.");
+Config.paused = true;
+world = World.world;
+foreach (var expected in books)
+{
+    var saved = world.books.get(expected.Id);
+    Check(saved?.name == expected.Name && Citation(saved)?.ToString() == expected.Citation,
+        "Reload changed a saved book or its event: " + expected.Name);
+}
+Expect(Write(world.units.get(foreignAuthorId)), "war", oldWar, "临川国与松岭国之战始末");
+Expect(Write(world.units.get(authorId)), "rebellion", revoltId, "白石之乱实录");
+return new { exonymsInstalled, books = books.Select(book => book.Name).ToArray(), previews = full, directory };
